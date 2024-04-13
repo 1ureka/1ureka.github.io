@@ -13,7 +13,7 @@ import { DRAWER_IMAGE_WIDTH, DRAWER_WIDTH } from "../../utils/store";
 import { ALBUM_SELECTED, ALBUM_ROWS } from "../../utils/store";
 
 import GlassBox from "../../components/GlassBox";
-import AlbumImage from "../../components/AlbumImage";
+import AlbumImage from "./SidebarImage";
 import { delay } from "../../utils/utils";
 
 const profileImage = "/favicon.png";

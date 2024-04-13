@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Box, Skeleton } from "@mui/material";
-import { decode } from "../utils/utils";
-import { THUMBNAILS } from "../utils/store";
+import { decode } from "../../utils/utils";
+import { THUMBNAILS } from "../../utils/store";
 import { useRecoilValueLoadable } from "recoil";
-import { useWindowFocus } from "../utils/hooks";
+import { useWindowFocus } from "../../utils/hooks";
 
 export default React.forwardRef(({ name, style, isView }, ref) => {
   const dataUrl = useRecoilValueLoadable(THUMBNAILS(name));
