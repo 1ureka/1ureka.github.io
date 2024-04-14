@@ -219,7 +219,7 @@ function Content() {
 
 //
 // Background
-function Background() {
+export function SceneBackground() {
   const matche1 = useMediaQuery("(min-width:1700px)");
   const matche2 = useMediaQuery("(min-width:1200px)");
 
@@ -263,7 +263,6 @@ function Background() {
 export default function Section() {
   return (
     <React.Fragment>
-      <Background />
       <Content />
     </React.Fragment>
   );

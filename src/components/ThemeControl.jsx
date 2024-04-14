@@ -6,7 +6,7 @@ import { useSetRecoilState } from "recoil";
 import { THEME } from "../utils/store";
 import { getSystemTheme } from "../utils/utils";
 
-export default function ThemeControl({ size, direction, placement }) {
+export default function ThemeControl({ size, direction, placement, color }) {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const setTheme = useSetRecoilState(THEME);
   const settings = ["Light", "Dark", "System"];
@@ -26,7 +26,11 @@ export default function ThemeControl({ size, direction, placement }) {
   return (
     <React.Fragment>
       <Tooltip title="Change Mode" placement={placement}>
-        <IconButton onClick={handleOpenUserMenu} size={size ? size : "medium"}>
+        <IconButton
+          onClick={handleOpenUserMenu}
+          size={size ? size : "medium"}
+          color={color}
+        >
           <Brightness5Icon />
         </IconButton>
       </Tooltip>

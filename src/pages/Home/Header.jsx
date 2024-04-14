@@ -7,10 +7,10 @@ import { Tabs, Tab } from "@mui/material";
 import Inventory2Icon from "@mui/icons-material/Inventory2";
 import LoginRoundedIcon from "@mui/icons-material/LoginRounded";
 import MenuOpenRoundedIcon from "@mui/icons-material/MenuOpenRounded";
-
 import ThemeControl from "../../components/ThemeControl";
+
 import { useRecoilState, useRecoilValue } from "recoil";
-import { HOME_IS_AUTH, HOME_PAGE } from "../../utils/store";
+import { HOME_IS_AUTH, HOME_IS_SCROLLING, HOME_PAGE } from "../../utils/store";
 import { useNavigateTo } from "../../utils/hooks";
 
 const profileImage = "/favicon.png";
@@ -39,7 +39,7 @@ function Title({ isTop, sx }) {
             fontFamily: "Comfortaa",
             fontWeight: 700,
             textDecoration: "none",
-            color: "text.primary",
+            color: "inherit",
           }}
         >
           1ureka's CG
@@ -50,19 +50,32 @@ function Title({ isTop, sx }) {
 }
 
 function Navigation() {
+  const list = ["Intro", "Scene", "Props"];
+
+  const [isScrolling, setIsScrolling] = useRecoilState(HOME_IS_SCROLLING);
   const [homePage, setHomePage] = useRecoilState(HOME_PAGE);
 
-  const handleChange = (_, newValue) => {
-    setHomePage(newValue);
+  const handleChange = (_, val) => {
+    if (isScrolling) return;
+    setIsScrolling(true);
+    setHomePage((prev) => {
+      const oldTarget = prev.target;
+      const newTarget = list.indexOf(val);
+      const direction = newTarget - oldTarget > 0 ? 1 : -1;
+      return { current: oldTarget, target: newTarget, direction };
+    });
   };
 
   const tabSX = {
+    color: "inherit",
     transition: "background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
     "&:hover": { backgroundColor: "divider" },
   };
 
+  const value = list[homePage.target];
+
   return (
-    <Tabs value={homePage} onChange={handleChange} sx={{ flexGrow: 1 }}>
+    <Tabs value={value} onChange={handleChange} sx={{ flexGrow: 1 }}>
       <Tab label="Intro" sx={tabSX} value={"Intro"} />
       <Tab label="Scene" sx={tabSX} value={"Scene"} />
       <Tab label="Props" sx={tabSX} value={"Props"} />
@@ -79,18 +92,18 @@ function Tools({ sx }) {
     <Stack sx={{ flexGrow: 0, ...sx }} direction="row" spacing={0.5}>
       {isAuth ? (
         <Tooltip title="Manage Files">
-          <IconButton onClick={navigate1}>
+          <IconButton onClick={navigate1} color="inherit">
             <Inventory2Icon />
           </IconButton>
         </Tooltip>
       ) : (
         <Tooltip title="Sign In">
-          <IconButton onClick={navigate2}>
+          <IconButton onClick={navigate2} color="inherit">
             <LoginRoundedIcon />
           </IconButton>
         </Tooltip>
       )}
-      <ThemeControl />
+      <ThemeControl color="inherit" />
     </Stack>
   );
 }
@@ -99,22 +112,8 @@ export default function Header() {
   const matche1 = useMediaQuery("(min-width:1050px)");
   const matche2 = useMediaQuery("(min-width:850px)");
   const containerRef = React.useRef(null);
-  const [isTop, setIsTop] = React.useState(true);
-
-  React.useEffect(() => {
-    const handler = (entries) => {
-      entries.forEach(({ isIntersecting }) => {
-        setIsTop(isIntersecting);
-      });
-    };
-    const isTopOB = new IntersectionObserver(handler, {
-      threshold: 0.5,
-    });
-    isTopOB.observe(containerRef.current.nextSibling);
-    return () => {
-      isTopOB.disconnect();
-    };
-  }, []);
+  const homePage = useRecoilValue(HOME_PAGE);
+  const isTop = homePage.target === 0;
 
   return (
     <AppBar
@@ -123,6 +122,7 @@ export default function Header() {
       sx={{
         py: 1.5,
         px: matche1 ? 12 : 0,
+        color: isTop ? "white" : "text.primary",
         transition: "all 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
         backdropFilter: isTop ? "blur(0px)" : " blur(10px)",
         backgroundColor: isTop ? "appBarHide" : "appBar",

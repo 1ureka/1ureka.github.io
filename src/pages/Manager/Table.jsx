@@ -234,7 +234,7 @@ export default function EnhancedTable({ onDelete }) {
       <Paper sx={{ width: "100%", mb: 2 }}>
         <EnhancedTableToolbar onDelete={onDelete} />
         <TableContainer>
-          <Table sx={{ minWidth: 750 }}>
+          <Table sx={{ minWidth: 300 }}>
             <EnhancedTableHead />
             <EnhancedTableBody />
           </Table>

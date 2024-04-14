@@ -309,7 +309,7 @@ export default function Content() {
 
   return (
     <React.Fragment>
-      <Background />
+      {/* <Background /> */}
       {match ? <CoverSelect selected={selected} onChange={handleRadio} /> : ""}
       <ThemeProvider theme={darkTheme}>
         <BottomComponents selected={selected} onChange={handleRadio} />

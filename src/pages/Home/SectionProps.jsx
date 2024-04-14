@@ -11,7 +11,6 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import { ALBUM_CATEGORY, ALBUM_SELECTED } from "../../utils/store";
 import { HOME_IS_AUTH } from "../../utils/store";
 
-const background = "/images/background/gridV.png";
 const status1 = "/images/clip/status1.webp";
 const status2 = "/images/clip/status2.webp";
 const status3 = "/images/clip/status3.webp";
@@ -57,6 +56,7 @@ function IntroCard() {
   return (
     <Card
       sx={{
+        zIndex: 1,
         py: 1,
         width: "450px",
         backdropFilter: "blur(15px)",
@@ -87,29 +87,6 @@ function IntroCard() {
 
       <IntroCardAction />
     </Card>
-  );
-}
-
-function Background() {
-  return (
-    <Box
-      sx={{
-        position: "absolute",
-        width: "100%",
-        height: "100%",
-        overflow: "visible",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        pointerEvents: "none",
-      }}
-    >
-      <img
-        src={background}
-        alt=""
-        style={{ width: "100%", height: "100%", objectFit: "cover" }}
-      />
-    </Box>
   );
 }
 
@@ -223,7 +200,6 @@ function Images() {
 export default function Content() {
   return (
     <React.Fragment>
-      <Background />
       <Images />
       <IntroCard />
     </React.Fragment>
