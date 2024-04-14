@@ -6,11 +6,16 @@ import { HOME_IS_SCROLLING, HOME_PAGE } from "../../utils/store";
 
 export const styles = style;
 
-export function useScrollAnimation() {
+export function useScrollAnimation(entered) {
   const homePage = useRecoilValue(HOME_PAGE);
   const setIsScrolling = useSetRecoilState(HOME_IS_SCROLLING);
 
   useEffect(() => {
+    if (!entered) {
+      setIsScrolling(false);
+      return;
+    }
+
     const currentIndex = homePage.current;
     const index = homePage.target;
     if (currentIndex === index) {
@@ -30,7 +35,6 @@ export function useScrollAnimation() {
     let dir = fromTop ? -1 : 1;
     let tl = gsap.timeline({
       defaults: { duration: 1.25, ease: "power1.inOut" },
-      onComplete: () => setIsScrolling(false),
     });
 
     if (currentIndex >= 0) {
@@ -52,7 +56,12 @@ export function useScrollAnimation() {
         { yPercent: 0 },
         0
       )
-      .fromTo(images[index], { yPercent: 15 * dir }, { yPercent: 0 }, 0)
+      .fromTo(
+        images[index],
+        { yPercent: 15 * dir },
+        { yPercent: 0, onComplete: () => setIsScrolling(false) },
+        0
+      )
       .to(
         headings[index],
         {
@@ -67,5 +76,5 @@ export function useScrollAnimation() {
     return () => {
       tl?.kill();
     };
-  }, [homePage.current, homePage.target, homePage.direction]);
+  }, [homePage, setIsScrolling, entered]);
 }

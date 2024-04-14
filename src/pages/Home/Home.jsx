@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Box, Grow } from "@mui/material";
 import { TransitionGroup } from "react-transition-group";
 import { useRecoilState, useSetRecoilState } from "recoil";
@@ -144,13 +144,9 @@ export default function Home() {
     };
   }, [isScrolling, setIsScrolling, setHomePage, wrap]);
 
-  const handleEntered = () => {
-    setHomePage((prev) => ({
-      ...prev,
-    }));
-  };
-
-  useScrollAnimation();
+  const [entered, setEntered] = useState(false);
+  const handleEntered = () => setEntered(true);
+  useScrollAnimation(entered);
 
   return (
     <TransitionGroup component={null}>

@@ -154,13 +154,13 @@ function useContentReset(ref) {
     };
     window.addEventListener("contextmenu", reset);
     return () => window.removeEventListener("contextmenu", reset);
-  }, []);
+  }, [ref]);
 }
 
 function useNameChangeReset(ref, name) {
   useEffect(() => {
     ref.current.centerView(1, 0);
-  }, [name]);
+  }, [ref, name]);
 }
 
 function Content() {

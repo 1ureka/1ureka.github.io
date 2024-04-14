@@ -43,7 +43,7 @@ function Title() {
           m: 0,
         }}
       >
-        1ureka's CG
+        {"1ureka's CG"}
       </Typography>
     </Stack>
   );

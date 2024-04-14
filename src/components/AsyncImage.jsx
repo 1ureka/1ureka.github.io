@@ -3,7 +3,7 @@ import { Box, Skeleton } from "@mui/material";
 import { decode } from "../utils/utils";
 import { useWindowFocus } from "../utils/hooks";
 
-export default React.forwardRef(({ src, style, ...props }, ref) => {
+function AsyncImage({ src, style, ...props }, ref) {
   const isWindowFocused = useWindowFocus();
   const [state, setState] = useState(false);
   const [_src, set_src] = useState(src);
@@ -52,4 +52,6 @@ export default React.forwardRef(({ src, style, ...props }, ref) => {
       )}
     </Box>
   );
-});
+}
+
+export default React.forwardRef(AsyncImage);
