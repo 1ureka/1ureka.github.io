@@ -15,7 +15,10 @@ import { useNavigateTo } from "../../utils/hooks";
 
 const profileImage = "/favicon.png";
 
-function Title({ isTop, sx }) {
+function Title({ sx }) {
+  const homePage = useRecoilValue(HOME_PAGE);
+  const isTop = homePage.target === 0;
+
   return (
     <Stack spacing={1} direction={"row"} alignItems="center" sx={sx}>
       <Avatar
@@ -39,7 +42,7 @@ function Title({ isTop, sx }) {
             fontFamily: "Comfortaa",
             fontWeight: 700,
             textDecoration: "none",
-            color: "inherit",
+            color: isTop ? "white" : "text.primary",
           }}
         >
           1ureka's CG
@@ -66,8 +69,10 @@ function Navigation() {
     });
   };
 
+  const isTop = homePage.target === 0;
+
   const tabSX = {
-    color: "inherit",
+    color: isTop ? "white" : "text.primary",
     transition: "background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
     "&:hover": { backgroundColor: "divider" },
   };
@@ -88,22 +93,25 @@ function Tools({ sx }) {
   const navigate1 = useNavigateTo("/manager");
   const navigate2 = useNavigateTo("/login");
 
+  const homePage = useRecoilValue(HOME_PAGE);
+  const isTop = homePage.target === 0;
+
   return (
     <Stack sx={{ flexGrow: 0, ...sx }} direction="row" spacing={0.5}>
       {isAuth ? (
         <Tooltip title="Manage Files">
-          <IconButton onClick={navigate1} color="inherit">
+          <IconButton onClick={navigate1} color={isTop ? "inherit" : "default"}>
             <Inventory2Icon />
           </IconButton>
         </Tooltip>
       ) : (
         <Tooltip title="Sign In">
-          <IconButton onClick={navigate2} color="inherit">
+          <IconButton onClick={navigate2} color={isTop ? "inherit" : "default"}>
             <LoginRoundedIcon />
           </IconButton>
         </Tooltip>
       )}
-      <ThemeControl color="inherit" />
+      <ThemeControl color={isTop ? "inherit" : "default"} />
     </Stack>
   );
 }
@@ -120,9 +128,9 @@ export default function Header() {
       ref={containerRef}
       position="absolute"
       sx={{
+        color: isTop ? "white" : "inherit",
         py: 1.5,
         px: matche1 ? 12 : 0,
-        color: isTop ? "white" : "text.primary",
         transition: "all 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
         backdropFilter: isTop ? "blur(0px)" : " blur(10px)",
         backgroundColor: isTop ? "appBarHide" : "appBar",
@@ -135,7 +143,7 @@ export default function Header() {
       <Container maxWidth="xl">
         {matche2 ? (
           <Toolbar>
-            <Title isTop={isTop} />
+            <Title />
             <Divider orientation="vertical" flexItem sx={{ mx: 1.5 }}></Divider>
             <Navigation />
             <Tools />
@@ -147,10 +155,7 @@ export default function Header() {
                 <MenuOpenRoundedIcon fontSize="large" />
               </IconButton>
             </Tooltip>
-            <Title
-              isTop={isTop}
-              sx={{ flexGrow: 1, justifyContent: "center" }}
-            />
+            <Title sx={{ flexGrow: 1, justifyContent: "center" }} />
             <Tools sx={{ flexDirection: "column" }} />
           </Toolbar>
         )}
