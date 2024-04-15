@@ -208,47 +208,47 @@ function AnimationControl({ onPaused }) {
 
 //
 // Background
-function Background() {
-  return (
-    <Box
-      sx={{
-        position: "absolute",
-        width: "100%",
-        height: "100%",
-        clipPath: "inset(0px)",
-      }}
-    >
-      <img
-        style={{
-          position: "absolute",
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-        }}
-        src={bg}
-        alt="bg Img"
-      />
-      <Box
-        sx={{
-          position: "absolute",
-          width: "100%",
-          height: "100%",
-          backgroundColor: "bgFilterLower",
-          maskImage: ` linear-gradient(rgb(0 0 0 / 0),  rgb(0 0 0 / 0), rgb(0 0 0 / 1))`,
-        }}
-      ></Box>
-      <Box
-        sx={{
-          position: "absolute",
-          width: "100%",
-          height: "100%",
-          backgroundColor: "bgFilterUpper",
-          maskImage: `linear-gradient(rgb(0 0 0 / 1),  rgb(0 0 0 / 0), rgb(0 0 0 / 0))`,
-        }}
-      ></Box>
-    </Box>
-  );
-}
+// function Background() {
+//   return (
+//     <Box
+//       sx={{
+//         position: "absolute",
+//         width: "100%",
+//         height: "100%",
+//         clipPath: "inset(0px)",
+//       }}
+//     >
+//       <img
+//         style={{
+//           position: "absolute",
+//           width: "100%",
+//           height: "100%",
+//           objectFit: "cover",
+//         }}
+//         src={bg}
+//         alt="bg Img"
+//       />
+//       <Box
+//         sx={{
+//           position: "absolute",
+//           width: "100%",
+//           height: "100%",
+//           backgroundColor: "bgFilterLower",
+//           maskImage: ` linear-gradient(rgb(0 0 0 / 0),  rgb(0 0 0 / 0), rgb(0 0 0 / 1))`,
+//         }}
+//       ></Box>
+//       <Box
+//         sx={{
+//           position: "absolute",
+//           width: "100%",
+//           height: "100%",
+//           backgroundColor: "bgFilterUpper",
+//           maskImage: `linear-gradient(rgb(0 0 0 / 1),  rgb(0 0 0 / 0), rgb(0 0 0 / 0))`,
+//         }}
+//       ></Box>
+//     </Box>
+//   );
+// }
 
 //
 // Contents

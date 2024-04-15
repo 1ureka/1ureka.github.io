@@ -1,4 +1,3 @@
-import * as React from "react";
 import { Toolbar, AppBar, Divider, useMediaQuery } from "@mui/material";
 import { Container, Stack, Avatar } from "@mui/material";
 import { Typography, Tooltip, IconButton } from "@mui/material";
@@ -45,7 +44,7 @@ function Title({ sx }) {
             color: isTop ? "white" : "text.primary",
           }}
         >
-          1ureka's CG
+          {"1ureka's CG"}
         </Typography>
       </Stack>
     </Stack>

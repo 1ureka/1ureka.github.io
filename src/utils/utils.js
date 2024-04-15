@@ -1,4 +1,3 @@
-import gsap from "gsap";
 import { Octokit } from "octokit";
 import Compressor from "compressorjs";
 
@@ -31,23 +30,6 @@ export const getSystemTheme = () => {
     window.matchMedia("(prefers-color-scheme: dark)").matches
     ? "dark"
     : "light";
-};
-
-/**
- * 滑動至指定元素。
- * @param {Node} target @param {number} duration
- * @returns {Promise<void>}
- */
-export const scrollTo = async (target, duration) => {
-  return new Promise((resolve) => {
-    gsap.to(target.parentElement, {
-      scrollTop: target.offsetTop,
-      duration: duration,
-      overwrite: "auto",
-      ease: "power2.inOut",
-      onComplete: resolve,
-    });
-  });
 };
 
 /**
@@ -99,6 +81,7 @@ export async function loadFile(path) {
 export async function deleteFile(path) {
   // const message = `delete ${path} ${Date()}`;
   // const detail = { path, message };
+  console.log(`刪除 ${path} 中`);
   await delay(2000);
 }
 

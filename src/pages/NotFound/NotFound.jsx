@@ -1,4 +1,3 @@
-import React from "react";
 import { Button, Container, Stack, Typography } from "@mui/material";
 import GridBackground from "../../components/GridBackground";
 import { useNavigateTo } from "../../utils/hooks";

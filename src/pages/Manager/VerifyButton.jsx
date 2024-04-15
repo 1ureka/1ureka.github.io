@@ -3,7 +3,7 @@ import { DialogActions, DialogContent, DialogTitle } from "@mui/material";
 import { Typography } from "@mui/material";
 import ImageSearchRoundedIcon from "@mui/icons-material/ImageSearchRounded";
 import { checkValid } from "../../utils/utils";
-import React, { useState } from "react";
+import { useState } from "react";
 
 function Progress() {
   return (

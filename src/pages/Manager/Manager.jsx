@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Grow, Stack, Tooltip } from "@mui/material";
 import { Box, Container, Divider, IconButton } from "@mui/material";
 import { ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
@@ -17,7 +17,6 @@ import { useNavigateTo } from "../../utils/hooks";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { MANAGER_CATEGORY } from "../../utils/store";
 import { TABLE_PAGE, TABLE_SELECTED } from "../../utils/store";
-import { delay } from "../../utils/utils";
 
 //
 // Element
@@ -28,7 +27,7 @@ function Title() {
         File Manager
       </Typography>
       <Typography sx={{ color: "text.secondary" }}>
-        Here's a list of all the images in the album!
+        {"Here's a list of all the images in the album!"}
       </Typography>
     </Stack>
   );

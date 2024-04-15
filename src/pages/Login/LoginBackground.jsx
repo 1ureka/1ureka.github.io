@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Typography } from "@mui/material";
 import { Box, useMediaQuery } from "@mui/material";
 
@@ -15,7 +15,7 @@ function BackgroundIntro() {
       sx={{ fontFamily: "Comfortaa", color: "white" }}
     >
       P17 is the first piece included in the portfolio, inspired by the anime
-      <i> Girls' Last Tour</i>.
+      <i> {"Girls' Last Tour"}</i>.
     </Typography>
   );
 }

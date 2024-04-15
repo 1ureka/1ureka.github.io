@@ -1,4 +1,3 @@
-import React from "react";
 import { Typography, Avatar, Grow } from "@mui/material";
 import { Box, Paper, Stack, useMediaQuery } from "@mui/material";
 import LockRoundedIcon from "@mui/icons-material/LockRounded";
@@ -29,7 +28,7 @@ function Title() {
         component="h1"
         sx={{ fontFamily: "Comfortaa", color: "white" }}
       >
-        1ureka's CG
+        {"1ureka's CG"}
       </Typography>
     </Stack>
   );
