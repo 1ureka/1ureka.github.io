@@ -11,10 +11,9 @@ export function useScrollAnimation(entered) {
   const setIsScrolling = useSetRecoilState(HOME_IS_SCROLLING);
 
   useEffect(() => {
-    if (!entered) {
-      setIsScrolling(false);
-      return;
-    }
+    setIsScrolling(true);
+
+    if (!entered) return;
 
     const currentIndex = homePage.current;
     const index = homePage.target;

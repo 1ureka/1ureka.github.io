@@ -55,12 +55,11 @@ function Title({ sx }) {
 function Navigation() {
   const list = ["Intro", "Scene", "Props"];
 
-  const [isScrolling, setIsScrolling] = useRecoilState(HOME_IS_SCROLLING);
+  const isScrolling = useRecoilValue(HOME_IS_SCROLLING);
   const [homePage, setHomePage] = useRecoilState(HOME_PAGE);
 
   const handleChange = (_, val) => {
     if (isScrolling) return;
-    setIsScrolling(true);
     setHomePage((prev) => {
       const oldTarget = prev.target;
       const newTarget = list.indexOf(val);
@@ -119,13 +118,12 @@ function Tools({ sx }) {
 export default function Header() {
   const matche1 = useMediaQuery("(min-width:1050px)");
   const matche2 = useMediaQuery("(min-width:850px)");
-  const containerRef = React.useRef(null);
+
   const homePage = useRecoilValue(HOME_PAGE);
   const isTop = homePage.target === 0;
 
   return (
     <AppBar
-      ref={containerRef}
       position="absolute"
       sx={{
         color: isTop ? "white" : "inherit",

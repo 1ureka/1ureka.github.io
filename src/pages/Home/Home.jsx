@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Box, Grow } from "@mui/material";
 import { TransitionGroup } from "react-transition-group";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { HOME_IS_AUTH, HOME_IS_SCROLLING, HOME_PAGE } from "../../utils/store";
 
 import Header from "./Header";
@@ -100,37 +100,31 @@ function ContainerProps() {
   );
 }
 
-export default function Home() {
-  gsap.registerPlugin(Observer);
-
-  useAuth();
-
-  const [isScrolling, setIsScrolling] = useRecoilState(HOME_IS_SCROLLING);
+function useScrollTrigger() {
+  const isScrolling = useRecoilValue(HOME_IS_SCROLLING);
   const setHomePage = useSetRecoilState(HOME_PAGE);
-  const wrap = gsap.utils.wrap(0, 3);
+  const observer = useRef(null);
 
   useEffect(() => {
-    const handleDown = () => {
-      if (isScrolling) return;
-      setIsScrolling(true);
+    gsap.registerPlugin(Observer);
+
+    const wrap = gsap.utils.wrap(0, 3);
+
+    const handleDown = () =>
       setHomePage((prev) => ({
         current: prev.target,
         target: wrap(prev.target - 1),
         direction: -1,
       }));
-    };
 
-    const handleUp = () => {
-      if (isScrolling) return;
-      setIsScrolling(true);
+    const handleUp = () =>
       setHomePage((prev) => ({
         current: prev.target,
         target: wrap(prev.target + 1),
         direction: 1,
       }));
-    };
 
-    const observer = Observer.create({
+    observer.current = Observer.create({
       type: "wheel,touch,pointer",
       wheelSpeed: -1,
       onDown: handleDown,
@@ -139,14 +133,33 @@ export default function Home() {
       preventDefault: true,
     });
 
+    observer.current.disable();
+
     return () => {
-      observer.kill();
+      observer.current.kill();
+      observer.current = null;
     };
-  }, [isScrolling, setIsScrolling, setHomePage, wrap]);
+  }, [setHomePage, observer]);
+
+  useEffect(() => {
+    if (!observer.current) return;
+
+    if (isScrolling) {
+      observer.current.disable();
+    } else {
+      observer.current.enable();
+    }
+  }, [isScrolling, observer]);
+}
+
+export default function Home() {
+  useAuth();
 
   const [entered, setEntered] = useState(false);
   const handleEntered = () => setEntered(true);
+
   useScrollAnimation(entered);
+  useScrollTrigger();
 
   return (
     <TransitionGroup component={null}>
