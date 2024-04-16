@@ -20,7 +20,7 @@ This website acts as both a platform to display 3D CG portfolios and my personal
 
 - **Visitor Mode**: Allows visitors to browse the landing page, divided into distinct sections with custom scroll transitions and unique animated designs.
 - **Admin Mode**: Upon logging in, users access the administrator mode. Here, they can explore two different themed portfolios and perform file management tasks such as addition, deletion, and integrity verification.
-- **Interactive Gallery**: Within portfolios, users can drag and zoom images and adjust parameters like exposure and saturation.
+- **Interactive Gallery**: Within portfolios, users can interact with images through zooming, panning, and pinching gestures, as well as adjusting parameters like exposure and saturation.
 
 ## Technologies Used
 
@@ -32,6 +32,7 @@ This website acts as both a platform to display 3D CG portfolios and my personal
 - **Material Icons**: Application icon set.
 - **Octokit**: GitHub API integration.
 - **GSAP (GreenSock Animation Platform)**: Used for animation effects.
+- **React Zoom Pan Pinch**: Handling interactive image functionalities.
 
 ## Installation
 

@@ -63,7 +63,7 @@ export async function loadFile(path) {
     const octokit = new Octokit({ auth: sessionStorage.getItem("password") });
     const fileContent = await octokit.rest.repos.getContent({
       owner: sessionStorage.getItem("username"),
-      repo: "Repo",
+      repo: "1ureka.store",
       path,
     });
     console.log(`載入${path}完成`);
@@ -98,7 +98,7 @@ export async function checkValid() {
     "POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches",
     {
       owner: sessionStorage.getItem("username"),
-      repo: "Repo",
+      repo: "1ureka.store",
       workflow_id: "validator.yml",
       ref: "main",
       headers: {
@@ -114,7 +114,7 @@ export async function checkValid() {
       data: { content },
     } = await octokit.request("GET /repos/{owner}/{repo}/contents/{path}", {
       owner: sessionStorage.getItem("username"),
-      repo: "Repo",
+      repo: "1ureka.store",
       path: "valid.json",
       headers: {
         "X-GitHub-Api-Version": "2022-11-28",
