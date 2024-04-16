@@ -12,8 +12,6 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import { ALBUM_CATEGORY, ALBUM_SELECTED } from "../../utils/store";
 import { HOME_IS_AUTH } from "../../utils/store";
 
-const viewportBackground = "/images/background/gridCam.png";
-
 //
 // Contents(Elements)
 function IntroCardAction() {
@@ -100,6 +98,31 @@ function FillBox({ sx }) {
   );
 }
 
+function CamClip() {
+  const matche = useMediaQuery("(min-width:1200px)");
+
+  return (
+    <Box
+      sx={{
+        position: "absolute",
+        left: "18%",
+        width: "400px",
+        height: "100%",
+        overflow: "visible",
+        display: matche ? "flex" : "none",
+        pointerEvents: "none",
+        filter: "drop-shadow(0px 0px 10px gray)",
+      }}
+    >
+      <img
+        src={"/images/clip/cam.png"}
+        alt=""
+        style={{ width: "100%", height: "100%", objectFit: "contain" }}
+      />
+    </Box>
+  );
+}
+
 //
 // Contents(Logic)
 function useAnimation(refs, onHideAtIndex) {
@@ -162,7 +185,7 @@ function ContentItems({ indexes, refs }) {
     { c: 1, r: 2, e: img(0) },
     { c: 2, r: 1, e: img(1) },
     { c: 1, r: 1, e: img(2) },
-    { c: matche ? 6 : 4, r: 6 },
+    { c: matche ? 6 : 4, r: 6, e: <CamClip /> },
     { c: 1, r: 1, e: img(3) },
     { c: 2, r: 1, e: <FillBox sx={colorP} /> },
     { c: 1, r: 2, e: img(4) },
@@ -218,48 +241,7 @@ function Content() {
 }
 
 //
-// Background
-export function SceneBackground() {
-  const matche1 = useMediaQuery("(min-width:1700px)");
-  const matche2 = useMediaQuery("(min-width:1200px)");
-
-  return (
-    <Box
-      sx={{
-        position: "absolute",
-        pr: matche1 ? 35 : 0,
-        left: "55%",
-        width: "50%",
-        height: "100%",
-        overflow: "visible",
-        display: matche2 ? "flex" : "none",
-        justifyContent: "center",
-        alignItems: "center",
-        pointerEvents: "none",
-        pt: 10,
-        maskImage: `
-        linear-gradient(-90deg, 
-          rgb(0 0 0 / 0),
-          rgb(0 0 0 / 0),
-          rgb(0 0 0 / 0.7),
-          rgb(0 0 0 / 1),
-          rgb(0 0 0 / 0.7),
-          rgb(0 0 0 / 0),
-          rgb(0 0 0 / 0)
-          )
-        `,
-        filter: "drop-shadow(0px 0px 10px gray)",
-      }}
-    >
-      <img
-        src={viewportBackground}
-        alt=""
-        style={{ width: "100%", height: "100%", objectFit: "cover" }}
-      />
-    </Box>
-  );
-}
-
+// Page
 export default function Section() {
   return (
     <React.Fragment>

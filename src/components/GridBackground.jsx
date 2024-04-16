@@ -19,10 +19,10 @@ export default function GridBackground() {
         filter: "drop-shadow(0px 0px 10px gray)",
         maskImage: `
             linear-gradient( to left,
-            rgb(0 0 0 / 0.6),
-            rgb(0 0 0 / 0),
-            rgb(0 0 0 / 0),
-            rgb(0 0 0 / 0.25)
+            rgb(0 0 0 / 0.3),
+            rgb(0 0 0 / 0.05),
+            rgb(0 0 0 / 0.05),
+            rgb(0 0 0 / 0.3)
             )
           `,
       }}

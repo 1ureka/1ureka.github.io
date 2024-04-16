@@ -8,7 +8,7 @@ import Header from "./Header";
 import SectionIntro from "./SectionIntro";
 import SectionScene from "./SectionScene";
 import SectionProps from "./SectionProps";
-import { SceneBackground } from "./SectionScene";
+import GridBackground from "../../components/GridBackground";
 
 import gsap from "gsap";
 import { Observer } from "gsap/Observer";
@@ -32,7 +32,7 @@ function Wrapper({ children }) {
 
 function ContainerIntro() {
   const bgStyle = {
-    backgroundImage: `linear-gradient( 180deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.3) 100% ),
+    backgroundImage: `linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.3) 100%),
     url(https://fakeimg.pl/1920x1080/?text=こんにちは&font=noto)`,
   };
 
@@ -54,6 +54,8 @@ function ContainerIntro() {
 }
 
 function ContainerScene() {
+  const bgStyle = { backgroundColor: "background.default" };
+
   const contents = (
     <div className={styles.contents}>
       <SectionScene />
@@ -63,13 +65,8 @@ function ContainerScene() {
   return (
     <div id="Scene" className={styles.section}>
       <Wrapper>
-        <Box
-          className={styles.background}
-          sx={(theme) => ({
-            backgroundColor: theme.palette.background.default,
-          })}
-        >
-          <SceneBackground />
+        <Box className={styles.background} sx={bgStyle}>
+          <GridBackground />
           {contents}
         </Box>
       </Wrapper>
