@@ -18,9 +18,9 @@ This website acts as both a platform to display 3D CG portfolios and my personal
 
 #### User Experience
 
-- **Visitor Mode**: Allows visitors to browse the landing page, divided into distinct sections with Snap Scroll feature and unique animated designs.
+- **Visitor Mode**: Allows visitors to browse the landing page, divided into distinct sections with custom scroll transitions and unique animated designs.
 - **Admin Mode**: Upon logging in, users access the administrator mode. Here, they can explore two different themed portfolios and perform file management tasks such as addition, deletion, and integrity verification.
-- **Interactive Gallery**: Within portfolios, users can drag to zoom images and adjust parameters like exposure and saturation for enhanced viewing experience.
+- **Interactive Gallery**: Within portfolios, users can drag and zoom images and adjust parameters like exposure and saturation.
 
 ## Technologies Used
 
