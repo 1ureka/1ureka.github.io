@@ -47,21 +47,20 @@ function IntroCardAction() {
 }
 
 function IntroCard() {
+  const sx = {
+    position: "absolute",
+    zIndex: 1,
+    py: 1,
+    width: "100%",
+    maxWidth: "100vw",
+    height: "100%",
+    display: "flex",
+    justifyContent: "space-between",
+    flexDirection: "column",
+    backgroundColor: "transparent",
+  };
   return (
-    <Card
-      sx={{
-        position: "absolute",
-        zIndex: 1,
-        py: 1,
-        width: "100%",
-        height: "100%",
-        display: "flex",
-        justifyContent: "space-between",
-        flexDirection: "column",
-        backgroundColor: "transparent",
-      }}
-      variant="outlined"
-    >
+    <Card sx={sx} variant="outlined">
       <CardContent>
         <Stack direction={"column"} spacing={1}>
           <Stack direction={"row"} alignItems={"flex-end"} spacing={2}>
@@ -98,29 +97,21 @@ function FillBox({ sx }) {
   );
 }
 
-function CamClip() {
+function ClipBox({ sx, src }) {
   const matche = useMediaQuery("(min-width:1200px)");
 
-  return (
-    <Box
-      sx={{
-        position: "absolute",
-        left: "18%",
-        width: "400px",
-        height: "100%",
-        overflow: "visible",
-        display: matche ? "flex" : "none",
-        pointerEvents: "none",
-        filter: "drop-shadow(0px 0px 10px gray)",
-      }}
-    >
-      <img
-        src={"/images/clip/cam.png"}
-        alt=""
-        style={{ width: "100%", height: "100%", objectFit: "contain" }}
-      />
-    </Box>
-  );
+  const style = {
+    position: "absolute",
+    width: "300px",
+    height: "500px",
+    display: matche ? "flex" : "none",
+    pointerEvents: "none",
+    filter: "drop-shadow(0px 0px 10px black)",
+    objectFit: "contain",
+    ...sx,
+  };
+
+  return <AsyncImage src={src} style={style} />;
 }
 
 //
@@ -178,14 +169,13 @@ function ContentItems({ indexes, refs }) {
     />
   );
 
-  const matche = useMediaQuery("(min-width:1200px)");
   const itemListConfig = [
-    { c: matche ? 2 : 4, r: 6 },
+    { c: 4, r: 6 },
     { c: 2, r: 2, e: <FillBox sx={colorS} /> },
     { c: 1, r: 2, e: img(0) },
     { c: 2, r: 1, e: img(1) },
     { c: 1, r: 1, e: img(2) },
-    { c: matche ? 6 : 4, r: 6, e: <CamClip /> },
+    { c: 4, r: 6 },
     { c: 1, r: 1, e: img(3) },
     { c: 2, r: 1, e: <FillBox sx={colorP} /> },
     { c: 1, r: 2, e: img(4) },
@@ -198,8 +188,14 @@ function ContentItems({ indexes, refs }) {
     { c: 2, r: 1, e: img(8) },
   ];
 
+  const sx = {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  };
+
   const imageListItems = itemListConfig.map(({ c, r, e }, i) => (
-    <ImageListItem key={i} cols={c} rows={r}>
+    <ImageListItem key={i} cols={c} rows={r} sx={sx}>
       {e}
       {i === 9 ? <IntroCard /> : ""}
     </ImageListItem>
@@ -228,12 +224,7 @@ function Content() {
       cols={14}
       rowHeight={130}
       gap={20}
-      sx={{
-        minWidth: "2100px",
-        position: "absolute",
-        pt: 10,
-        overflow: "visible",
-      }}
+      sx={{ minWidth: "2100px" }}
     >
       <ContentItems indexes={indexes} refs={refs} />
     </ImageList>
@@ -242,10 +233,33 @@ function Content() {
 
 //
 // Page
-export default function Section() {
+export function BackElements() {
+  const sx = {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    pt: 10,
+  };
+
   return (
-    <React.Fragment>
+    <Box sx={sx}>
       <Content />
-    </React.Fragment>
+    </Box>
+  );
+}
+
+export function FrontElements() {
+  const sx1 = { top: 100, left: 50, scale: "-1" };
+  const sx2 = { bottom: 100, right: 50 };
+  return (
+    <>
+      <ClipBox sx={sx1} src="/images/clip/cam.png" />
+      <ClipBox sx={sx2} src="/images/clip/cam.png" />
+    </>
   );
 }

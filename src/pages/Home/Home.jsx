@@ -6,9 +6,8 @@ import { HOME_IS_AUTH, HOME_IS_SCROLLING, HOME_PAGE } from "../../utils/store";
 
 import Header from "./Header";
 import SectionIntro from "./SectionIntro";
-import SectionScene from "./SectionScene";
 import SectionProps from "./SectionProps";
-import GridBackground from "../../components/GridBackground";
+import { FrontElements, BackElements } from "./SectionScene";
 
 import gsap from "gsap";
 import { Observer } from "gsap/Observer";
@@ -58,7 +57,7 @@ function ContainerScene() {
 
   const contents = (
     <div className={styles.contents}>
-      <SectionScene />
+      <FrontElements />
     </div>
   );
 
@@ -66,8 +65,8 @@ function ContainerScene() {
     <div id="Scene" className={styles.section}>
       <Wrapper>
         <Box className={styles.background} sx={bgStyle}>
-          <GridBackground />
           {contents}
+          <BackElements />
         </Box>
       </Wrapper>
     </div>
