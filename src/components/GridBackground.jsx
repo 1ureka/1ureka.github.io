@@ -1,37 +1,33 @@
 import { Box } from "@mui/material";
 
-const background = "/images/background/gridH.png";
-
-export default function GridBackground() {
+export default function name() {
   return (
     <Box
       sx={{
         zIndex: -1,
-        position: "fixed",
-        top: 0,
-        bottom: 0,
-        left: 0,
-        right: 0,
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        pointerEvents: "none",
-        filter: "drop-shadow(0px 0px 10px gray)",
-        maskImage: `
-            linear-gradient( to left,
-            rgb(0 0 0 / 0.3),
-            rgb(0 0 0 / 0.05),
-            rgb(0 0 0 / 0.05),
-            rgb(0 0 0 / 0.3)
-            )
-          `,
+        position: "absolute",
+        inset: 0,
       }}
     >
-      <img
-        src={background}
-        alt=""
-        style={{ width: "100%", height: "100%", objectFit: "cover" }}
-      />
+      <Box
+        sx={{
+          position: "absolute",
+          inset: 0,
+          backgroundImage: `url("/images/background/login.webp")`,
+          backgroundSize: "60% 60%",
+          filter: "brightness(1.7) grayscale(1)",
+        }}
+      ></Box>
+      <Box
+        sx={(theme) => ({
+          position: "absolute",
+          inset: 0,
+          backgroundImage: `radial-gradient(rgb(0 0 0 / 0) 0px,
+    ${theme.palette.background.default} 1px)`,
+          backgroundSize: "20px 20px",
+          backdropFilter: "blur(20px)",
+        })}
+      ></Box>
     </Box>
   );
 }
