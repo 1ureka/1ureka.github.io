@@ -1,5 +1,5 @@
 import { Button, Container, Stack, Typography } from "@mui/material";
-import GridBackground from "../../components/GridBackground";
+import Background from "../../components/Background";
 import { useNavigateTo } from "../../utils/hooks";
 
 export default function NotFound() {
@@ -7,7 +7,7 @@ export default function NotFound() {
 
   return (
     <Container sx={{ py: 10, height: "100%" }}>
-      <GridBackground />
+      <Background />
       <Stack
         direction={"column"}
         alignItems={"center"}

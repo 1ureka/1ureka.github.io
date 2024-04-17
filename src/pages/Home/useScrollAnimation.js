@@ -22,7 +22,7 @@ export function useScrollAnimation(entered) {
       return;
     }
 
-    const direction = homePage.direction;
+    const direction = index === 0 ? -1 : homePage.direction;
 
     const sections = document.querySelectorAll(`.${style.section}`);
     const outerWrappers = gsap.utils.toArray(`.${style.wraper1}`);

@@ -6,7 +6,7 @@ import { ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
 import ArrowBackIosNewRoundedIcon from "@mui/icons-material/ArrowBackIosNewRounded";
 
 import EnhancedTable from "./Table";
-import GridBackground from "../../components/GridBackground";
+import Background from "../../components/Background";
 import DialogA from "./DialogA";
 import DialogD from "./DialogD";
 import AddButton from "./AddButton";
@@ -129,7 +129,7 @@ export default function Manager() {
           }}
         >
           <Container sx={{ py: 10 }}>
-            <GridBackground />
+            <Background />
             <ManagerHeader onAdd={handleOpenAddDialog} />
             <Divider sx={{ my: 2 }} variant="middle" />
             <EnhancedTable onDelete={handleOpenDelDialog} />
