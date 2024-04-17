@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { Grow, Stack, Tooltip } from "@mui/material";
-import { Box, Container, Divider, IconButton } from "@mui/material";
+import { Grow, Stack, Tooltip, useMediaQuery } from "@mui/material";
+import { Box, Divider, IconButton } from "@mui/material";
 import { ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 
 import ArrowBackIosNewRoundedIcon from "@mui/icons-material/ArrowBackIosNewRounded";
 
 import EnhancedTable from "./Table";
-import Background from "../../components/Background";
 import DialogA from "./DialogA";
 import DialogD from "./DialogD";
 import AddButton from "./AddButton";
@@ -62,6 +62,20 @@ function CategoryToggleButton() {
   );
 }
 
+function Background() {
+  const sx = {
+    zIndex: -1,
+    position: "absolute",
+    inset: 0,
+    backgroundImage: `url("/images/background/project.webp")`,
+    backgroundPosition: "center center",
+    overflow: "hidden",
+    opacity: 0.7,
+  };
+
+  return <Box sx={sx}></Box>;
+}
+
 //
 // Content
 function ManagerHeader({ onAdd }) {
@@ -71,6 +85,7 @@ function ManagerHeader({ onAdd }) {
       direction={"row"}
       alignItems={"center"}
       justifyContent={"space-between"}
+      gap={10}
     >
       <Stack direction={"row"} alignItems={"center"} spacing={2}>
         <Tooltip title={"Go Back"}>
@@ -99,7 +114,7 @@ function ManagerFooter() {
   );
 }
 
-export default function Manager() {
+function Manager() {
   const [openAddDialog, setOpenAddDialog] = useState(false);
   const [openDelDialog, setOpenDelDialog] = useState(false);
 
@@ -118,30 +133,50 @@ export default function Manager() {
     setOpenDelDialog(false);
   };
 
+  const match = useMediaQuery("(min-width:750px)");
+
+  const containerStyle = (theme) => {
+    const backgroundColor = alpha(theme.palette.background.default, 0.95);
+    const boxShadow = theme.shadows[10];
+
+    return {
+      position: "absolute",
+      py: 15,
+      px: match ? 15 : 0,
+      width: match ? "auto" : "100%",
+      inset: 0,
+      overflow: "auto",
+      scrollbarColor: "gray transparent",
+      justifySelf: "center",
+      boxShadow,
+      backgroundColor,
+    };
+  };
+
+  return (
+    <Box sx={containerStyle} maxWidth="lg">
+      <ManagerHeader onAdd={handleOpenAddDialog} />
+      <Divider sx={{ my: 2 }} variant="middle" />
+      <EnhancedTable onDelete={handleOpenDelDialog} />
+      <Divider sx={{ my: 2 }} variant="middle" />
+      <ManagerFooter />
+      <DialogD open={openDelDialog} onClose={handleCloseDelDialog} />
+      <DialogA
+        open={openAddDialog}
+        onClose={handleCloseAddDialog}
+        list={addImgs}
+      />
+    </Box>
+  );
+}
+
+export default function Content() {
   return (
     <TransitionGroup component={null}>
       <Grow>
-        <Box
-          sx={{
-            height: "100%",
-            overflow: "auto",
-            scrollbarColor: "gray transparent",
-          }}
-        >
-          <Container sx={{ py: 10 }}>
-            <Background />
-            <ManagerHeader onAdd={handleOpenAddDialog} />
-            <Divider sx={{ my: 2 }} variant="middle" />
-            <EnhancedTable onDelete={handleOpenDelDialog} />
-            <Divider sx={{ my: 2 }} variant="middle" />
-            <ManagerFooter />
-            <DialogD open={openDelDialog} onClose={handleCloseDelDialog} />
-            <DialogA
-              open={openAddDialog}
-              onClose={handleCloseAddDialog}
-              list={addImgs}
-            />
-          </Container>
+        <Box sx={{ position: "absolute", inset: 0, display: "flex" }}>
+          <Background />
+          <Manager />
         </Box>
       </Grow>
     </TransitionGroup>
