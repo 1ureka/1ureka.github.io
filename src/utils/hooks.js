@@ -40,11 +40,6 @@ export function useImageActions() {
   const setDeled = useSetRecoilState(MANAGER_DELED);
   const category = useRecoilValue(MANAGER_CATEGORY);
 
-  const beforeUnloadHandler = (event) => {
-    event.preventDefault();
-    event.returnValue = true;
-  };
-
   const filter = (names = [""]) => {
     const comparator = (item) =>
       category !== item.category || !names.includes(item.name);
@@ -75,7 +70,6 @@ export function useImageActions() {
 
   /** @param {Object[]} list @param {string} list[].name @param {number} list[].size @param {string} list[].thumbnail @param {string} list[].origin */
   const add = async (list) => {
-    window.addEventListener("beforeunload", beforeUnloadHandler);
     // 遠端溝通
     await uploadImages(list);
     // 更新目錄
@@ -90,13 +84,10 @@ export function useImageActions() {
     // 收尾
     await uploadFile(stringToBase64(JSON.stringify(newIndex)), "index.json");
     setAdded(list.length);
-    //
-    window.removeEventListener("beforeunload", beforeUnloadHandler);
   };
 
   /**@param {string[]} names */
   const del = async (names) => {
-    window.addEventListener("beforeunload", beforeUnloadHandler);
     // 遠端溝通
     await deleteImages(names);
     // 更新目錄
@@ -106,8 +97,6 @@ export function useImageActions() {
     // 收尾
     await uploadFile(stringToBase64(JSON.stringify(newIndex)), "index.json");
     setDeled(names.length);
-    //
-    window.removeEventListener("beforeunload", beforeUnloadHandler);
   };
 
   return { add, del };
