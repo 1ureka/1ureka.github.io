@@ -168,10 +168,11 @@ function ManagerContent() {
 //
 // Content
 function LeftComponents() {
-  const headerHeight = useRecoilValue(MANAGER_HEADER_H);
   const theme = useTheme();
-  const backgroundColor = alpha(theme.palette.background.default, 0.85);
+  const match = useMediaQuery("(min-width:1300px)");
 
+  const headerHeight = useRecoilValue(MANAGER_HEADER_H);
+  const backgroundColor = alpha(theme.palette.background.default, 0.85);
   const placeholderSx = {
     height: headerHeight,
     position: "sticky",
@@ -179,19 +180,19 @@ function LeftComponents() {
     backgroundColor,
     zIndex: 1,
   };
-  const containerSx = {
-    minHeight: `calc(100% - ${headerHeight} - ${headerHeight})`,
-  };
-
   const headerPlaceholder = <Box sx={placeholderSx}></Box>;
+
+  const alignItems = match ? "flex-start" : "center";
+  const minHeight = `calc(100% - ${headerHeight} - ${headerHeight})`;
   const managerContent = (
-    <Stack sx={containerSx} justifyContent={"center"}>
+    <Stack sx={{ minHeight }} justifyContent="center" alignItems={alignItems}>
       <ManagerContent />
     </Stack>
   );
 
+  const width = match ? "calc(100% - 530px)" : "100%";
   return (
-    <Box sx={{ width: "calc(100% - 530px)", height: "100%" }}>
+    <Box sx={{ width, height: "100%" }}>
       {headerPlaceholder}
       {managerContent}
     </Box>
@@ -213,6 +214,8 @@ function RightComponents() {
 }
 
 export default function Manager() {
+  const match = useMediaQuery("(min-width:1300px)");
+
   const containerSx = {
     position: "absolute",
     inset: 0,
@@ -226,7 +229,7 @@ export default function Manager() {
     <Stack direction={"row"} sx={containerSx} justifyContent={"space-between"}>
       <Title />
       <LeftComponents />
-      <RightComponents />
+      {match ? <RightComponents /> : ""}
     </Stack>
   );
 
