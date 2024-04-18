@@ -142,6 +142,10 @@ export const ALBUM_SELECTED = atom({
   key: "albemSelected",
   default: 0,
 });
+export const ALBUM_FILTER = atom({
+  key: "albumFilter",
+  default: { brightness: 1, contrast: 1 },
+});
 export const DRAWER_WIDTH = atom({
   key: "drawerWidth",
   default: 0,

@@ -14,8 +14,8 @@ import RemoveRoundedIcon from "@mui/icons-material/RemoveRounded";
 import RestartAltRoundedIcon from "@mui/icons-material/RestartAltRounded";
 
 import { TransitionGroup } from "react-transition-group";
-import { useRecoilValue } from "recoil";
-import { DRAWER_WIDTH } from "../../utils/store";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { ALBUM_FILTER, DRAWER_WIDTH } from "../../utils/store";
 import { ALBUM_ROWS, ALBUM_SELECTED } from "../../utils/store";
 
 import ThemeControl from "../../components/ThemeControl";
@@ -24,7 +24,7 @@ import GlassBox from "../../components/GlassBox";
 import AlbumImage from "./AlbumImage";
 
 //
-// Content
+// Panel
 function ZoomControl({ zoom, onZoomIn, onZoomOut }) {
   return (
     <Stack direction={"row"} alignItems={"center"}>
@@ -72,52 +72,47 @@ function ToolsControl({ onReset }) {
 }
 
 function SettingDialog({ onClose, open }) {
+  const closeButtonSx = { position: "absolute", top: 10, right: 10 };
+  const closeButton = (
+    <Tooltip title={"Close"} placement="top">
+      <IconButton size="small" onClick={onClose} sx={closeButtonSx}>
+        <CloseRoundedIcon />
+      </IconButton>
+    </Tooltip>
+  );
+  const title1 = (
+    <Stack direction={"row"} alignItems={"center"} spacing={0.5}>
+      <ExposureRoundedIcon fontSize="small" sx={{ color: "text.secondary" }} />
+      <Typography>Exposure</Typography>
+    </Stack>
+  );
+  const title2 = (
+    <Stack direction={"row"} alignItems={"center"} spacing={0.5}>
+      <ColorLensRoundedIcon fontSize="small" sx={{ color: "text.secondary" }} />
+      <Typography>Saturation</Typography>
+    </Stack>
+  );
+
+  const sProps = { min: 0.5, max: 1.5, step: 0.1, valueLabelDisplay: "auto" };
+  const slider = (value, handleChange) => (
+    <Slider value={value} marks {...sProps} onChange={handleChange} />
+  );
+  const [filter, setFilter] = useRecoilState(ALBUM_FILTER);
+  const handleBrightness = (_, value) => {
+    setFilter((prev) => ({ ...prev, brightness: value }));
+  };
+  const handleContrast = (_, value) => {
+    setFilter((prev) => ({ ...prev, contrast: value }));
+  };
+
   return (
     <Dialog onClose={onClose} open={open} fullWidth maxWidth={"sm"}>
-      <DialogContent sx={{ p: 2 }}>
-        <Stack
-          direction={"row"}
-          justifyContent={"space-between"}
-          alignItems={"center"}
-        >
-          <Stack direction={"row"} alignItems={"center"} spacing={0.5}>
-            <ExposureRoundedIcon
-              fontSize="small"
-              sx={{ color: "text.secondary" }}
-            />
-            <Typography variant="caption">Exposure</Typography>
-          </Stack>
-          <Tooltip title={"Close"} placement="top">
-            <IconButton size="small" onClick={onClose}>
-              <CloseRoundedIcon />
-            </IconButton>
-          </Tooltip>
-        </Stack>
-        <Slider
-          min={0.5}
-          max={1.5}
-          defaultValue={1}
-          step={0.1}
-          marks
-          valueLabelDisplay="auto"
-        />
-
-        <Stack direction={"row"} alignItems={"center"} spacing={0.5}>
-          <ColorLensRoundedIcon
-            fontSize="small"
-            sx={{ color: "text.secondary" }}
-          />
-          <Typography variant="caption">Saturation</Typography>
-        </Stack>
-
-        <Slider
-          min={0.5}
-          max={1.5}
-          defaultValue={1}
-          step={0.1}
-          marks
-          valueLabelDisplay="auto"
-        />
+      <DialogContent sx={{ p: 3.5 }}>
+        {closeButton}
+        {title1}
+        {slider(filter.brightness, handleBrightness)}
+        {title2}
+        {slider(filter.contrast, handleContrast)}
       </DialogContent>
     </Dialog>
   );
@@ -146,6 +141,8 @@ function BottomPanel(props) {
   );
 }
 
+//
+// Content
 function useContentReset(ref) {
   useEffect(() => {
     const reset = (e) => {
@@ -209,7 +206,7 @@ function Content() {
 }
 
 //
-// page
+// Page
 export default function Album() {
   const [isEntered, setIsEntered] = React.useState(false);
 
@@ -223,6 +220,11 @@ export default function Album() {
     justifyContent: "center",
     alignItems: "center",
   };
+
+  const setFilter = useSetRecoilState(ALBUM_FILTER);
+  useEffect(() => {
+    setFilter({ brightness: 1, contrast: 1 });
+  }, []);
 
   return (
     <TransitionGroup component={null}>
