@@ -94,6 +94,10 @@ export const MANAGER_DELED = atom({
   key: "managerDeleted",
   default: 0,
 });
+export const MANAGER_HEADER_H = atom({
+  key: "managerHeaderH",
+  default: "50px",
+});
 
 //
 //

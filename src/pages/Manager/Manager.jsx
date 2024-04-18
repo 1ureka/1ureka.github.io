@@ -1,8 +1,8 @@
-import { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Grow, Stack, Tooltip, useMediaQuery } from "@mui/material";
-import { Box, Divider, IconButton } from "@mui/material";
+import { Avatar, Box, Divider, IconButton } from "@mui/material";
 import { ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
-import { alpha } from "@mui/material/styles";
+import { alpha, useTheme } from "@mui/material/styles";
 
 import ArrowBackIosNewRoundedIcon from "@mui/icons-material/ArrowBackIosNewRounded";
 
@@ -14,13 +14,45 @@ import VerifyDialog from "./VerifyButton";
 
 import { TransitionGroup } from "react-transition-group";
 import { useNavigateTo } from "../../utils/hooks";
-import { useRecoilState, useSetRecoilState } from "recoil";
-import { MANAGER_CATEGORY } from "../../utils/store";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { MANAGER_CATEGORY, MANAGER_HEADER_H } from "../../utils/store";
 import { TABLE_PAGE, TABLE_SELECTED } from "../../utils/store";
 
 //
 // Element
 function Title() {
+  const ref = useRef(null);
+  const setHeight = useSetRecoilState(MANAGER_HEADER_H);
+
+  useEffect(() => {
+    setHeight(`${ref.current.offsetHeight}px`);
+  }, [ref]);
+
+  const sx = {
+    position: "fixed",
+    left: 0,
+    p: "30px",
+    zIndex: 2,
+  };
+  const AvaterSx = {
+    width: 70,
+    height: 70,
+    translate: "0px -7px",
+    filter:
+      "drop-shadow(2px 2px 1px rgba(0, 0, 0, 0.5)) drop-shadow(4px 4px 1px rgba(0, 0, 0, 0.35))",
+  };
+  return (
+    <Stack spacing={1} direction="row" alignItems="center" sx={sx} ref={ref}>
+      <Avatar src={"/favicon.png"} sx={AvaterSx} />
+      <Typography variant="h5" component="h1" sx={{ fontFamily: "Comfortaa" }}>
+        {"1ureka's CG"}
+      </Typography>
+    </Stack>
+  );
+}
+//
+// Manager
+function ManagerTitle() {
   return (
     <Stack>
       <Typography variant="h5" component={"h1"}>
@@ -33,7 +65,7 @@ function Title() {
   );
 }
 
-function CategoryToggleButton() {
+function ManagerToggles() {
   const [category, setCategory] = useRecoilState(MANAGER_CATEGORY);
   const setPage = useSetRecoilState(TABLE_PAGE);
   const setSelected = useSetRecoilState(TABLE_SELECTED);
@@ -62,22 +94,6 @@ function CategoryToggleButton() {
   );
 }
 
-function Background() {
-  const sx = {
-    zIndex: -1,
-    position: "absolute",
-    inset: 0,
-    backgroundImage: `url("/images/background/project.webp")`,
-    backgroundPosition: "center center",
-    overflow: "hidden",
-    opacity: 0.7,
-  };
-
-  return <Box sx={sx}></Box>;
-}
-
-//
-// Content
 function ManagerHeader({ onAdd }) {
   const navigate = useNavigateTo("/");
   return (
@@ -93,8 +109,7 @@ function ManagerHeader({ onAdd }) {
             <ArrowBackIosNewRoundedIcon />
           </IconButton>
         </Tooltip>
-
-        <Title />
+        <ManagerTitle />
       </Stack>
       <AddButton onAdd={onAdd} />
     </Stack>
@@ -108,13 +123,13 @@ function ManagerFooter() {
       justifyContent={"space-between"}
       alignItems={"center"}
     >
-      <CategoryToggleButton />
+      <ManagerToggles />
       <VerifyDialog />
     </Stack>
   );
 }
 
-function Manager() {
+function ManagerContent() {
   const [openAddDialog, setOpenAddDialog] = useState(false);
   const [openDelDialog, setOpenDelDialog] = useState(false);
 
@@ -133,28 +148,8 @@ function Manager() {
     setOpenDelDialog(false);
   };
 
-  const match = useMediaQuery("(min-width:750px)");
-
-  const containerStyle = (theme) => {
-    const backgroundColor = alpha(theme.palette.background.default, 0.95);
-    const boxShadow = theme.shadows[10];
-
-    return {
-      position: "absolute",
-      py: 15,
-      px: match ? 15 : 0,
-      width: match ? "auto" : "100%",
-      inset: 0,
-      overflow: "auto",
-      scrollbarColor: "gray transparent",
-      justifySelf: "center",
-      boxShadow,
-      backgroundColor,
-    };
-  };
-
   return (
-    <Box sx={containerStyle} maxWidth="lg">
+    <Box maxWidth={"md"}>
       <ManagerHeader onAdd={handleOpenAddDialog} />
       <Divider sx={{ my: 2 }} variant="middle" />
       <EnhancedTable onDelete={handleOpenDelDialog} />
@@ -170,15 +165,74 @@ function Manager() {
   );
 }
 
-export default function Content() {
+//
+// Content
+function LeftComponents() {
+  const headerHeight = useRecoilValue(MANAGER_HEADER_H);
+  const theme = useTheme();
+  const backgroundColor = alpha(theme.palette.background.default, 0.85);
+
+  const placeholderSx = {
+    height: headerHeight,
+    position: "sticky",
+    top: 0,
+    backgroundColor,
+    zIndex: 1,
+  };
+  const containerSx = {
+    minHeight: `calc(100% - ${headerHeight} - ${headerHeight})`,
+  };
+
+  const headerPlaceholder = <Box sx={placeholderSx}></Box>;
+  const managerContent = (
+    <Stack sx={containerSx} justifyContent={"center"}>
+      <ManagerContent />
+    </Stack>
+  );
+
+  return (
+    <Box sx={{ width: "calc(100% - 530px)", height: "100%" }}>
+      {headerPlaceholder}
+      {managerContent}
+    </Box>
+  );
+}
+
+function RightComponents() {
+  const theme = useTheme();
+  const containerSx = {
+    position: "sticky",
+    top: 0,
+    width: "450px",
+    height: "100%",
+    backgroundColor: "gray",
+    boxShadow: theme.shadows[5],
+  };
+
+  return <Box sx={containerSx}></Box>;
+}
+
+export default function Manager() {
+  const containerSx = {
+    position: "absolute",
+    inset: 0,
+    pl: "8.5%",
+    pr: "6%",
+    overflow: "auto",
+    scrollbarGutter: "stable",
+  };
+
+  const content = (
+    <Stack direction={"row"} sx={containerSx} justifyContent={"space-between"}>
+      <Title />
+      <LeftComponents />
+      <RightComponents />
+    </Stack>
+  );
+
   return (
     <TransitionGroup component={null}>
-      <Grow>
-        <Box sx={{ position: "absolute", inset: 0, display: "flex" }}>
-          <Background />
-          <Manager />
-        </Box>
-      </Grow>
+      <Grow>{content}</Grow>
     </TransitionGroup>
   );
 }
