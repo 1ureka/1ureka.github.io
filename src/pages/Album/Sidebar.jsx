@@ -224,7 +224,7 @@ export default function Sidebar({ isEntered }) {
   }, [isEntered, matches, imageWidth, setWidth]);
 
   const [open, setOpen] = React.useState(false);
-  const scrollStyle = { scrollbarColor: "gray transparent" };
+
   return (
     <React.Fragment>
       <GlassBox
@@ -245,14 +245,14 @@ export default function Sidebar({ isEntered }) {
         elevation={0}
         open={open}
         onClose={() => setOpen(false)}
-        sx={{ display: { xs: "block", lg: "none" }, ...scrollStyle }}
+        sx={{ display: { xs: "block", lg: "none" } }}
       >
         <DrawerInner />
       </Drawer>
       <Drawer
         ref={drawerRef}
         variant="permanent"
-        sx={{ display: { xs: "none", lg: "block" }, ...scrollStyle }}
+        sx={{ display: { xs: "none", lg: "block" } }}
         open
       >
         <DrawerInner />

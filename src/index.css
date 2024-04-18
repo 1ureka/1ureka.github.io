@@ -11,3 +11,6 @@
 ::-ms-reveal {
   display: none;
 }
+* {
+  scrollbar-color: gray transparent;
+}

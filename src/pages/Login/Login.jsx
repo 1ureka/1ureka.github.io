@@ -11,6 +11,8 @@ import Background from "./LoginBackground";
 //
 // Elements
 function Title() {
+  const match = useMediaQuery("(min-width:1000px)");
+  const color = match ? "white" : "text.primary";
   return (
     <Stack spacing={1} direction={"row"} alignItems="center">
       <Avatar
@@ -26,7 +28,7 @@ function Title() {
       <Typography
         variant="h5"
         component="h1"
-        sx={{ fontFamily: "Comfortaa", color: "white" }}
+        sx={{ fontFamily: "Comfortaa", color }}
       >
         {"1ureka's CG"}
       </Typography>
@@ -74,38 +76,37 @@ function RightComponents() {
 }
 
 export default function Login() {
-  const matches = useMediaQuery("(min-width:1000px)");
-  const matches2 = useMediaQuery("(min-width:1500px)");
+  const match1 = useMediaQuery("(min-width:1000px)");
+  const match2 = useMediaQuery("(min-width:1500px)");
+
+  const leftContainerSx = {
+    position: "relative",
+    width: match2 ? "70%" : "50%",
+    height: "100%",
+  };
+  const leftContent = (
+    <Box sx={leftContainerSx}>
+      <LeftComponents />
+    </Box>
+  );
+
+  const rightContentSx = {
+    position: "relative",
+    width: match1 ? (match2 ? "30%" : "50%") : "100%",
+    height: "100%",
+  };
+  const rightContent = (
+    <Box sx={rightContentSx}>
+      <RightComponents />
+    </Box>
+  );
 
   return (
     <TransitionGroup component={null}>
       <Grow>
-        <Stack
-          direction={"row"}
-          sx={{ position: "fixed", top: 0, bottom: 0, left: 0, right: 0 }}
-        >
-          {matches ? (
-            <Box
-              sx={{
-                position: "relative",
-                width: matches2 ? "70%" : "50%",
-                height: "100%",
-              }}
-            >
-              <LeftComponents />
-            </Box>
-          ) : (
-            ""
-          )}
-          <Box
-            sx={{
-              position: "relative",
-              width: matches ? (matches2 ? "30%" : "50%") : "100%",
-              height: "100%",
-            }}
-          >
-            <RightComponents />
-          </Box>
+        <Stack direction={"row"} sx={{ position: "fixed", inset: 0 }}>
+          {match1 ? leftContent : ""}
+          {rightContent}
           <Box sx={{ position: "absolute", top: 30, left: 30 }}>
             <Title />
           </Box>
