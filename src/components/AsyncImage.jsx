@@ -23,9 +23,9 @@ function AsyncImage({ src, style, ...props }, ref) {
   }, [src, isWindowFocused]);
 
   const sx = {
-    position: style.position ? style.position : "absolute",
-    width: style.width ? style.width : "100%",
-    height: style.height ? style.height : "100%",
+    position: style?.position ? style.position : "absolute",
+    width: style?.width ? style.width : "100%",
+    height: style?.height ? style.height : "100%",
     ...style,
   };
 
@@ -34,8 +34,8 @@ function AsyncImage({ src, style, ...props }, ref) {
     borderRadius: "5px",
     width: "100%",
     height: "100%",
-    objectFit: style.objectFit ? style.objectFit : "cover",
-    objectPosition: style.objectPosition,
+    objectFit: style?.objectFit ? style.objectFit : "cover",
+    objectPosition: style?.objectPosition,
   };
 
   return (

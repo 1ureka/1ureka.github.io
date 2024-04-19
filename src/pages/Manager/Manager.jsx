@@ -11,6 +11,7 @@ import DialogA from "./DialogA";
 import DialogD from "./DialogD";
 import AddButton from "./AddButton";
 import VerifyDialog from "./VerifyButton";
+import AsyncImage from "../../components/AsyncImage";
 
 import { TransitionGroup } from "react-transition-group";
 import { useNavigateTo } from "../../utils/hooks";
@@ -49,6 +50,17 @@ function Title() {
       </Typography>
     </Stack>
   );
+}
+
+function FillBox({ color }) {
+  const sx = {
+    width: "100%",
+    height: "100%",
+    borderRadius: "5px",
+    backgroundColor: `${color}.main`,
+  };
+
+  return <Box sx={sx}></Box>;
 }
 //
 // Manager
@@ -200,17 +212,45 @@ function LeftComponents() {
 }
 
 function RightComponents() {
+  const heights = [1.5, 1, 2.75, 1.75, 2, 1];
+  const config = heights.map((value) => ({
+    height: `${value * 10}%`,
+    width: "100%",
+    py: 1,
+  }));
+  const elements = [
+    <AsyncImage />,
+    <FillBox color="primary" />,
+    <AsyncImage />,
+    <AsyncImage />,
+    <AsyncImage />,
+    <FillBox color="secondary" />,
+  ];
+
   const theme = useTheme();
   const containerSx = {
     position: "sticky",
     top: 0,
     width: "450px",
     height: "100%",
-    backgroundColor: "gray",
-    boxShadow: theme.shadows[5],
+  };
+  const wrapperSx = {
+    position: "relative",
+    width: "100%",
+    height: "100%",
+    boxShadow: theme.shadows[3],
+    borderRadius: "5px",
   };
 
-  return <Box sx={containerSx}></Box>;
+  return (
+    <Box sx={containerSx}>
+      {config.map((sx, i) => (
+        <Box key={i} sx={sx}>
+          <Box sx={wrapperSx}>{elements[i]}</Box>
+        </Box>
+      ))}
+    </Box>
+  );
 }
 
 export default function Manager() {
