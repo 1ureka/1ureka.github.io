@@ -1,20 +1,16 @@
 import React, { useEffect, useState } from "react";
 
-import { Dialog, DialogContent, Divider, Grow } from "@mui/material";
-import { IconButton, Typography, Slider } from "@mui/material";
+import { IconButton, Typography, Divider, Grow } from "@mui/material";
 import { Tooltip, Box, Stack } from "@mui/material";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
-import ExposureRoundedIcon from "@mui/icons-material/ExposureRounded";
-import ColorLensRoundedIcon from "@mui/icons-material/ColorLensRounded";
 import TuneRoundedIcon from "@mui/icons-material/TuneRounded";
-import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import RemoveRoundedIcon from "@mui/icons-material/RemoveRounded";
 import RestartAltRoundedIcon from "@mui/icons-material/RestartAltRounded";
 
 import { TransitionGroup } from "react-transition-group";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { ALBUM_FILTER, DRAWER_WIDTH } from "../../utils/store";
 import { ALBUM_ROWS, ALBUM_SELECTED } from "../../utils/store";
 
@@ -22,6 +18,7 @@ import ThemeControl from "../../components/ThemeControl";
 import Sidebar from "./Sidebar";
 import GlassBox from "../../components/GlassBox";
 import AlbumImage from "./AlbumImage";
+import Setting from "./Setting";
 
 //
 // Panel
@@ -63,58 +60,11 @@ function ToolsControl({ onReset }) {
         </IconButton>
       </Tooltip>
       <ThemeControl size="small" direction="bottom" placement="top" />
-      <SettingDialog
+      <Setting
         onClose={() => setIsOpen((prevIsOpen) => !prevIsOpen)}
         open={isOpen}
       />
     </Stack>
-  );
-}
-
-function SettingDialog({ onClose, open }) {
-  const closeButtonSx = { position: "absolute", top: 10, right: 10 };
-  const closeButton = (
-    <Tooltip title={"Close"} placement="top">
-      <IconButton size="small" onClick={onClose} sx={closeButtonSx}>
-        <CloseRoundedIcon />
-      </IconButton>
-    </Tooltip>
-  );
-  const title1 = (
-    <Stack direction={"row"} alignItems={"center"} spacing={0.5}>
-      <ExposureRoundedIcon fontSize="small" sx={{ color: "text.secondary" }} />
-      <Typography>Exposure</Typography>
-    </Stack>
-  );
-  const title2 = (
-    <Stack direction={"row"} alignItems={"center"} spacing={0.5}>
-      <ColorLensRoundedIcon fontSize="small" sx={{ color: "text.secondary" }} />
-      <Typography>Saturation</Typography>
-    </Stack>
-  );
-
-  const sProps = { min: 0.5, max: 1.5, step: 0.1, valueLabelDisplay: "auto" };
-  const slider = (value, handleChange) => (
-    <Slider value={value} marks {...sProps} onChange={handleChange} />
-  );
-  const [filter, setFilter] = useRecoilState(ALBUM_FILTER);
-  const handleBrightness = (_, value) => {
-    setFilter((prev) => ({ ...prev, brightness: value }));
-  };
-  const handleContrast = (_, value) => {
-    setFilter((prev) => ({ ...prev, contrast: value }));
-  };
-
-  return (
-    <Dialog onClose={onClose} open={open} fullWidth maxWidth={"sm"}>
-      <DialogContent sx={{ p: 3.5 }}>
-        {closeButton}
-        {title1}
-        {slider(filter.brightness, handleBrightness)}
-        {title2}
-        {slider(filter.contrast, handleContrast)}
-      </DialogContent>
-    </Dialog>
   );
 }
 
@@ -223,7 +173,7 @@ export default function Album() {
 
   const setFilter = useSetRecoilState(ALBUM_FILTER);
   useEffect(() => {
-    setFilter({ brightness: 1, contrast: 1 });
+    setFilter({ brightness: 1, contrast: 1, saturate: 1 });
   }, []);
 
   return (

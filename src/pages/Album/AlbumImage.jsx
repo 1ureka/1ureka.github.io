@@ -1,10 +1,48 @@
 import React, { useEffect, useState } from "react";
 import { Box, CircularProgress, Grow, Skeleton } from "@mui/material";
 import { decode, delay } from "../../utils/utils";
-import { ORIGIN } from "../../utils/store";
-import { useRecoilValueLoadable } from "recoil";
+import { ALBUM_FILTER, ORIGIN } from "../../utils/store";
+import { useRecoilValue, useRecoilValueLoadable } from "recoil";
 import { useWindowFocus } from "../../utils/hooks";
 import { TransitionGroup } from "react-transition-group";
+
+function AlbumImage({ src }) {
+  const imgStyle = {
+    borderRadius: "5px",
+    maxHeight: "100vh",
+  };
+  return (
+    <TransitionGroup component={null}>
+      <Grow timeout={750}>
+        <img src={src} alt={""} style={imgStyle} />
+      </Grow>
+    </TransitionGroup>
+  );
+}
+
+function FallBack({ src }) {
+  const imgStyle = {
+    borderRadius: "5px",
+    maxHeight: "100vh",
+    filter: "blur(10px)",
+  };
+  const containerSx = {
+    height: "100vh",
+    aspectRatio: "16/9",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  };
+  const skeleton = (
+    <Skeleton animation="wave" variant="rounded" width="100%" height="100%" />
+  );
+  return (
+    <Box sx={containerSx}>
+      {src ? <img src={src} alt={""} style={imgStyle} /> : skeleton}
+      <CircularProgress sx={{ position: "absolute" }} />
+    </Box>
+  );
+}
 
 export default React.forwardRef(({ name }, ref) => {
   const dataUrl = useRecoilValueLoadable(ORIGIN(name));
@@ -29,47 +67,14 @@ export default React.forwardRef(({ name }, ref) => {
     };
   }, [isWindowFocused, dataUrl.state, dataUrl.contents]);
 
-  const imgStyle = {
-    borderRadius: "5px",
-    maxHeight: "100vh",
+  const { brightness, contrast, saturate } = useRecoilValue(ALBUM_FILTER);
+  const containerSx = {
+    display: "flex",
+    filter: `brightness(${brightness}) contrast(${contrast}) saturate(${saturate})`,
   };
-
-  const fallBack = {
-    ...imgStyle,
-    filter: "blur(10px)",
-  };
-
   return (
-    <Box sx={{ display: "flex" }} ref={ref}>
-      {state ? (
-        <TransitionGroup component={null}>
-          <Grow timeout={750}>
-            <img src={_src} alt={""} style={imgStyle} />
-          </Grow>
-        </TransitionGroup>
-      ) : (
-        <Box
-          sx={{
-            height: "100vh",
-            aspectRatio: "16/9",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          {_src ? (
-            <img src={_src} alt={""} style={fallBack} />
-          ) : (
-            <Skeleton
-              animation="wave"
-              variant="rounded"
-              width={"100%"}
-              height={"100%"}
-            />
-          )}
-          <CircularProgress sx={{ position: "absolute" }} />
-        </Box>
-      )}
+    <Box sx={containerSx} ref={ref}>
+      {state ? <AlbumImage src={_src} /> : <FallBack src={_src} />}
     </Box>
   );
 });

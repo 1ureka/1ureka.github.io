@@ -144,7 +144,7 @@ export const ALBUM_SELECTED = atom({
 });
 export const ALBUM_FILTER = atom({
   key: "albumFilter",
-  default: { brightness: 1, contrast: 1 },
+  default: { brightness: 1, contrast: 1, saturate: 1 },
 });
 export const DRAWER_WIDTH = atom({
   key: "drawerWidth",

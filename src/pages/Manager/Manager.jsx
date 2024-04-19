@@ -233,6 +233,7 @@ function RightComponents() {
     top: 0,
     width: "450px",
     height: "100%",
+    opacity: 0.9,
   };
   const wrapperSx = {
     position: "relative",
