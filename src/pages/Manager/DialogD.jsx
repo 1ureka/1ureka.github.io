@@ -10,7 +10,7 @@ import HideImageRoundedIcon from "@mui/icons-material/HideImageRounded";
 
 import { useImageActions } from "../../utils/hooks";
 import { useRecoilValue } from "recoil";
-import { MANAGER_DELED, MANAGER_ROWS } from "../../utils/store";
+import { MANAGER_DELED } from "../../utils/store";
 import { TABLE_SELECTED } from "../../utils/store";
 
 //
@@ -94,13 +94,13 @@ function InfoContents({ list }) {
         Preparing to delete the following files
       </Typography>
       <List>
-        {list.map((item, i) => (
-          <React.Fragment key={item.name}>
+        {list.map((name, i) => (
+          <React.Fragment key={name}>
             <ListItem>
               <ListItemIcon>
                 <HideImageRoundedIcon />
               </ListItemIcon>
-              <ListItemText primary={item.name} />
+              <ListItemText primary={name} />
             </ListItem>
             {i + 1 === list.length ? "" : <Divider />}
           </React.Fragment>
@@ -137,22 +137,17 @@ export default function InfoModal({ open, onClose }) {
   const { del: deleteImages } = useImageActions();
   const handleSaveChanges = async () => {
     setLoading(true);
-    await deleteImages(list.map(({ name }) => name));
+    await deleteImages(selected);
     setLoading(false);
     if (onClose) onClose();
     setOpenSnack(true);
   };
 
-  const rows = useRecoilValue(MANAGER_ROWS);
-  const list = selected.map((name) => {
-    return rows.find((item) => item.name === name);
-  });
-
   return (
     <React.Fragment>
       <Dialog onClose={handleClose} open={open} fullWidth>
         <InfoHeader onClose={handleClose} />
-        <InfoContents list={list} />
+        <InfoContents list={selected} />
         <InfoAction onSave={handleSaveChanges} loading={loading} />
       </Dialog>
       <FinishHint open={openSnack} onClose={handleSnackClose} />

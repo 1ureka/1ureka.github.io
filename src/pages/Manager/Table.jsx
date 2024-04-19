@@ -1,6 +1,6 @@
 import * as React from "react";
 import { alpha } from "@mui/material/styles";
-import { Box, Paper, Toolbar, Tooltip } from "@mui/material";
+import { Box, LinearProgress, Paper, Toolbar, Tooltip } from "@mui/material";
 import { Table, TableBody, TableCell } from "@mui/material";
 import { TableContainer, TableHead, TableRow } from "@mui/material";
 import { TablePagination, TableSortLabel } from "@mui/material";
@@ -229,17 +229,24 @@ function VisibleTableRow({ row, index }) {
 }
 
 export default function EnhancedTable({ onDelete }) {
+  const fallback = (
+    <Box sx={{ p: 2, width: "100%" }}>
+      <LinearProgress />
+    </Box>
+  );
   return (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
         <EnhancedTableToolbar onDelete={onDelete} />
-        <TableContainer>
-          <Table sx={{ minWidth: 300 }}>
-            <EnhancedTableHead />
-            <EnhancedTableBody />
-          </Table>
-        </TableContainer>
-        <EnhancedTablePagination />
+        <React.Suspense fallback={fallback}>
+          <TableContainer>
+            <Table sx={{ minWidth: 300 }}>
+              <EnhancedTableHead />
+              <EnhancedTableBody />
+            </Table>
+          </TableContainer>
+          <EnhancedTablePagination />
+        </React.Suspense>
       </Paper>
     </Box>
   );

@@ -98,9 +98,18 @@ export default function LoginForm() {
     sessionStorage.setItem("password", data.get("password"));
 
     setLoading(true);
-    const base64 = await loadFile("index.json");
-    if (base64) {
-      setIndex(JSON.parse(base64ToString(base64)));
+
+    const [scene, props] = await Promise.all([
+      loadFile("images/scene"),
+      loadFile("images/props"),
+    ]);
+    const index = [
+      ...scene?.map(({ name }) => ({ category: "scene", name })),
+      ...props?.map(({ name }) => ({ category: "props", name })),
+    ];
+
+    if (index.length > 0) {
+      setIndex(index);
       sessionStorage.setItem("auth", "1");
       navigate();
     } else {

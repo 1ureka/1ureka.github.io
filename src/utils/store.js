@@ -6,7 +6,7 @@ import { loadFile } from "./utils";
 // Resources
 export const INDEX = atom({
   key: "index",
-  default: [{ category: "", name: "", size: 0 }],
+  default: [{ category: "", name: "" }],
 });
 
 //
@@ -46,10 +46,20 @@ export const MANAGER_CATEGORY = atom({
 });
 export const MANAGER_ROWS = selector({
   key: "managerRows",
-  get: ({ get }) => {
+  get: async ({ get }) => {
     const managerCategory = get(MANAGER_CATEGORY);
-    const index = get(INDEX);
-    return index.filter(({ category }) => category === managerCategory);
+    const index = get(INDEX).filter(
+      ({ category }) => category === managerCategory
+    );
+    const rows = await Promise.all(
+      index.map(async ({ category, name }) => {
+        const data = await loadFile(`images/${category}/${name}/4K`);
+        const KB = data[0].size / 1024;
+        const size = Math.round((KB + Number.EPSILON) * 100) / 100;
+        return { name, size };
+      })
+    );
+    return rows;
   },
 });
 export const TABLE_ROWS_LENGTH = selector({

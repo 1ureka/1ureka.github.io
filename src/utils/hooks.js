@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { delay, deleteFile, uploadFile, stringToBase64 } from "./utils";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { delay, deleteFile, uploadFile, loadFile } from "./utils";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { MANAGER_ADDED, MANAGER_CATEGORY, MANAGER_DELED } from "./store";
 import { INDEX, TABLE_SELECTED } from "./store";
 import { useEffect, useState } from "react";
@@ -34,17 +34,11 @@ export const useNavigateTo = (location, callback) => {
 };
 
 export function useImageActions() {
-  const [index, setIndex] = useRecoilState(INDEX);
+  const setIndex = useSetRecoilState(INDEX);
   const setSelected = useSetRecoilState(TABLE_SELECTED);
   const setAdded = useSetRecoilState(MANAGER_ADDED);
   const setDeled = useSetRecoilState(MANAGER_DELED);
   const category = useRecoilValue(MANAGER_CATEGORY);
-
-  const filter = (names = [""]) => {
-    const comparator = (item) =>
-      category !== item.category || !names.includes(item.name);
-    return index.filter(comparator);
-  };
 
   const uploadImages = async (list) => {
     await Promise.all(
@@ -68,34 +62,34 @@ export function useImageActions() {
     );
   };
 
-  /** @param {Object[]} list @param {string} list[].name @param {number} list[].size @param {string} list[].thumbnail @param {string} list[].origin */
+  const syncIndex = async () => {
+    const [scene, props] = await Promise.all([
+      loadFile("images/scene"),
+      loadFile("images/props"),
+    ]);
+    const index = [
+      ...scene?.map(({ name }) => ({ category: "scene", name })),
+      ...props?.map(({ name }) => ({ category: "props", name })),
+    ];
+    setIndex(index);
+  };
+
+  /** @param {Object[]} list @param {string} list[].name @param {string} list[].thumbnail @param {string} list[].origin */
   const add = async (list) => {
-    // 遠端溝通
     await uploadImages(list);
-    // 更新目錄
-    const stage = list.map(({ name, size }) => ({ category, name, size }));
-    const names = list.map((item) => item.name);
-    const newIndex = [...filter(names), ...stage];
-    setIndex(newIndex);
     setSelected((prev) => {
       const set = new Set([...prev, ...list.map((val) => val.name)]);
       return Array.from(set);
     });
-    // 收尾
-    await uploadFile(stringToBase64(JSON.stringify(newIndex)), "index.json");
+    await syncIndex();
     setAdded(list.length);
   };
 
   /**@param {string[]} names */
   const del = async (names) => {
-    // 遠端溝通
     await deleteImages(names);
-    // 更新目錄
-    const newIndex = filter(names);
     setSelected([]);
-    setIndex(newIndex);
-    // 收尾
-    await uploadFile(stringToBase64(JSON.stringify(newIndex)), "index.json");
+    await syncIndex();
     setDeled(names.length);
   };
 
