@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { CircularProgress, Snackbar } from "@mui/material";
-import { List, ListItem, ListItemIcon } from "@mui/material";
+import { Alert, CircularProgress, IconButton, Stack } from "@mui/material";
+import { List, ListItem, ListItemIcon, Grow } from "@mui/material";
 import { ListItemText, Dialog, DialogTitle } from "@mui/material";
 import { DialogContent, DialogActions } from "@mui/material";
-import { Button, Typography, Divider, IconButton } from "@mui/material";
+import { Typography, Snackbar, Button, Divider } from "@mui/material";
 
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import AddPhotoAlternateRoundedIcon from "@mui/icons-material/AddPhotoAlternateRounded";
@@ -44,6 +44,24 @@ function FinishHint({ open, onClose }) {
         </IconButton>
       }
     />
+  );
+}
+
+function Warning({ open }) {
+  const containerSx = {
+    position: "fixed",
+    top: 20,
+    left: 0,
+    right: 0,
+  };
+  return (
+    <Grow in={open}>
+      <Stack alignItems={"center"} sx={containerSx}>
+        <Alert variant="filled" severity="error">
+          Please do not close this window to prevent data loss.
+        </Alert>
+      </Stack>
+    </Grow>
   );
 }
 
@@ -96,6 +114,7 @@ function InfoAction({ onSave, loading }) {
         Save changes
         {loading && <Progress />}
       </Button>
+      <Warning open={loading} />
     </DialogActions>
   );
 }
