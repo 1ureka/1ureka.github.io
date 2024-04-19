@@ -97,22 +97,20 @@ export default function LoginForm() {
     sessionStorage.setItem("username", data.get("username"));
     sessionStorage.setItem("password", data.get("password"));
 
-    setLoading(true);
-
-    const [scene, props] = await Promise.all([
-      loadFile("images/scene"),
-      loadFile("images/props"),
-    ]);
-    const index = [
-      ...scene?.map(({ name }) => ({ category: "scene", name })),
-      ...props?.map(({ name }) => ({ category: "props", name })),
-    ];
-
-    if (index.length > 0) {
+    try {
+      setLoading(true);
+      const [scene, props] = await Promise.all([
+        loadFile("images/scene"),
+        loadFile("images/props"),
+      ]);
+      const index = [
+        ...scene?.map(({ name }) => ({ category: "scene", name })),
+        ...props?.map(({ name }) => ({ category: "props", name })),
+      ];
       setIndex(index);
       sessionStorage.setItem("auth", "1");
       navigate();
-    } else {
+    } catch (_) {
       sessionStorage.clear();
       setLoading(false);
       setError(true);
