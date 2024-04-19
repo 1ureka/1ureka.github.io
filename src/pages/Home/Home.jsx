@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, Grow } from "@mui/material";
 import { TransitionGroup } from "react-transition-group";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import { HOME_IS_AUTH, HOME_IS_SCROLLING, HOME_PAGE } from "../../utils/store";
+import { useSetRecoilState } from "recoil";
+import { HOME_IS_AUTH } from "../../utils/store";
 
 import Header from "./Header";
 import SectionIntro from "./SectionIntro";
@@ -11,7 +11,7 @@ import { FrontElements, BackElements } from "./SectionScene";
 
 import gsap from "gsap";
 import { Observer } from "gsap/Observer";
-import { styles, useScrollAnimation } from "./useScrollAnimation";
+import { styles, useScrollTo } from "./useScrollTo";
 
 function useAuth() {
   const setIsAuth = useSetRecoilState(HOME_IS_AUTH);
@@ -96,31 +96,27 @@ function ContainerProps() {
   );
 }
 
-function useScrollTrigger() {
-  const isScrolling = useRecoilValue(HOME_IS_SCROLLING);
-  const setHomePage = useSetRecoilState(HOME_PAGE);
-  const observer = useRef(null);
+function useScrollTrigger(entered) {
+  const scrollTo = useScrollTo();
 
   useEffect(() => {
+    if (!entered) return;
     gsap.registerPlugin(Observer);
 
     const wrap = gsap.utils.wrap(0, 3);
 
     const handleDown = () =>
-      setHomePage((prev) => ({
-        current: prev.target,
-        target: wrap(prev.target - 1),
+      scrollTo((current) => ({
+        target: wrap(current - 1),
         direction: -1,
       }));
-
     const handleUp = () =>
-      setHomePage((prev) => ({
-        current: prev.target,
-        target: wrap(prev.target + 1),
+      scrollTo((current) => ({
+        target: wrap(current + 1),
         direction: 1,
       }));
 
-    observer.current = Observer.create({
+    const observer = Observer.create({
       type: "wheel,touch,pointer",
       wheelSpeed: -1,
       onDown: handleDown,
@@ -129,23 +125,16 @@ function useScrollTrigger() {
       preventDefault: true,
     });
 
-    observer.current.disable();
+    scrollTo((current) => ({
+      target: current,
+      direction: 1,
+      isReset: true,
+    }));
 
     return () => {
-      observer.current.kill();
-      observer.current = null;
+      observer?.kill();
     };
-  }, [setHomePage, observer]);
-
-  useEffect(() => {
-    if (!observer.current) return;
-
-    if (isScrolling) {
-      observer.current.disable();
-    } else {
-      observer.current.enable();
-    }
-  }, [isScrolling, observer]);
+  }, [scrollTo, entered]);
 }
 
 export default function Home() {
@@ -153,9 +142,7 @@ export default function Home() {
 
   const [entered, setEntered] = useState(false);
   const handleEntered = () => setEntered(true);
-
-  useScrollAnimation(entered);
-  useScrollTrigger();
+  useScrollTrigger(entered);
 
   return (
     <TransitionGroup component={null}>

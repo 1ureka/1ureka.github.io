@@ -8,15 +8,16 @@ import LoginRoundedIcon from "@mui/icons-material/LoginRounded";
 import MenuOpenRoundedIcon from "@mui/icons-material/MenuOpenRounded";
 import ThemeControl from "../../components/ThemeControl";
 
-import { useRecoilState, useRecoilValue } from "recoil";
-import { HOME_IS_AUTH, HOME_IS_SCROLLING, HOME_PAGE } from "../../utils/store";
+import { useRecoilValue } from "recoil";
+import { HOME_IS_AUTH, HOME_PAGE } from "../../utils/store";
 import { useNavigateTo } from "../../utils/hooks";
+import { useScrollTo } from "./useScrollTo";
 
 const profileImage = "/favicon.png";
 
 function Title({ sx }) {
   const homePage = useRecoilValue(HOME_PAGE);
-  const isTop = homePage.target === 0;
+  const isTop = homePage === 0;
 
   return (
     <Stack spacing={1} direction={"row"} alignItems="center" sx={sx}>
@@ -52,30 +53,25 @@ function Title({ sx }) {
 }
 
 function Navigation() {
-  const list = ["Intro", "Scene", "Props"];
+  const homePage = useRecoilValue(HOME_PAGE);
 
-  const isScrolling = useRecoilValue(HOME_IS_SCROLLING);
-  const [homePage, setHomePage] = useRecoilState(HOME_PAGE);
-
-  const handleChange = (_, val) => {
-    if (isScrolling) return;
-    setHomePage((prev) => {
-      const oldTarget = prev.target;
-      const newTarget = list.indexOf(val);
-      const direction = newTarget - oldTarget > 0 ? 1 : -1;
-      return { current: oldTarget, target: newTarget, direction };
-    });
-  };
-
-  const isTop = homePage.target === 0;
-
+  const isTop = homePage === 0;
   const tabSX = {
     color: isTop ? "white" : "text.primary",
     transition: "background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
     "&:hover": { backgroundColor: "divider" },
   };
 
-  const value = list[homePage.target];
+  const list = ["Intro", "Scene", "Props"];
+  const value = list[homePage];
+  const scrollTo = useScrollTo();
+  const handleChange = (_, val) => {
+    scrollTo((current) => {
+      const target = list.indexOf(val);
+      const direction = target - current > 0 ? 1 : -1;
+      return { target, direction };
+    });
+  };
 
   return (
     <Tabs value={value} onChange={handleChange} sx={{ flexGrow: 1 }}>
@@ -92,7 +88,7 @@ function Tools({ sx }) {
   const navigate2 = useNavigateTo("/login");
 
   const homePage = useRecoilValue(HOME_PAGE);
-  const isTop = homePage.target === 0;
+  const isTop = homePage === 0;
 
   return (
     <Stack sx={{ flexGrow: 0, ...sx }} direction="row" spacing={0.5}>
@@ -119,7 +115,7 @@ export default function Header() {
   const matche2 = useMediaQuery("(min-width:850px)");
 
   const homePage = useRecoilValue(HOME_PAGE);
-  const isTop = homePage.target === 0;
+  const isTop = homePage === 0;
 
   return (
     <AppBar

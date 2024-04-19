@@ -26,7 +26,7 @@ export const IS_INTRO_VISIBLE = atom({
 });
 export const HOME_PAGE = atom({
   key: "homePage",
-  default: { current: -1, target: 0, direction: 1 },
+  default: 0,
 });
 export const HOME_IS_SCROLLING = atom({
   key: "homeIsScrolling",
