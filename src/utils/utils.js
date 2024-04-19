@@ -55,19 +55,20 @@ export async function uploadFile(file, path) {
 /**
  * 加載指定路徑的文件。
  * @param {string} path - 文件的路徑。
- * @returns {Promise<string>} 包含文件內容編碼而成的Base64的 Promise。
+ * @returns {Promise<string | Array>} 包含文件內容編碼而成的Base64的 Promise。
  */
 export async function loadFile(path) {
   try {
     console.log(`準備開始載入${path}`);
     const octokit = new Octokit({ auth: sessionStorage.getItem("password") });
-    const fileContent = await octokit.rest.repos.getContent({
+    const { data } = await octokit.rest.repos.getContent({
       owner: sessionStorage.getItem("username"),
       repo: "1ureka.store",
       path,
     });
     console.log(`載入${path}完成`);
-    return fileContent.data.content;
+    if (data?.type === "file") return data.content;
+    return data;
   } catch (error) {
     console.error(`無法讀取檔案: ${path}`, error);
   }
