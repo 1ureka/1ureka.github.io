@@ -1,12 +1,12 @@
 import { useEffect, useRef } from "react";
 import { useTheme } from "@mui/material/styles";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 import { useRecoilValueLoadable } from "recoil";
 
 import { Box } from "@mui/material";
 import AsyncImage from "../../components/AsyncImage";
 
-import { ALBUM_CATEGORY, INDEX, THUMBNAILS } from "../../utils/store";
+import { ALBUM_ROWS, THUMBNAILS } from "../../utils/store";
 import gsap from "gsap";
 
 function FillBox({ color }) {
@@ -20,19 +20,17 @@ function FillBox({ color }) {
   return <Box sx={sx}></Box>;
 }
 
+function ImageBox({ name }) {
+  const dataUrl = useRecoilValueLoadable(THUMBNAILS(name));
+  return (
+    <AsyncImage src={dataUrl.state === "hasValue" ? dataUrl.contents : ""} />
+  );
+}
+
 function getBoxes() {
-  const setCategory = useSetRecoilState(ALBUM_CATEGORY);
-  setCategory("props");
-
-  const index = useRecoilValue(INDEX);
-  const filtered = index.filter(({ category }) => category === "props");
-  const random = gsap.utils.shuffle(filtered.map((item) => item.name));
+  const rows = useRecoilValue(ALBUM_ROWS);
+  const random = gsap.utils.shuffle(rows.map((item) => item.name));
   const names = random.slice(0, 4);
-
-  const url0 = useRecoilValueLoadable(THUMBNAILS(names[0]));
-  const url1 = useRecoilValueLoadable(THUMBNAILS(names[1]));
-  const url2 = useRecoilValueLoadable(THUMBNAILS(names[2]));
-  const url3 = useRecoilValueLoadable(THUMBNAILS(names[3]));
 
   const heights = [1.5, 1, 2.75, 1.75, 2, 1];
   const config = heights.map((value) => {
@@ -44,11 +42,11 @@ function getBoxes() {
   });
 
   const elements = [
-    <AsyncImage src={url0.state === "hasValue" ? url0.contents : ""} />,
+    <ImageBox name={names[0]} />,
     <FillBox color="primary" />,
-    <AsyncImage src={url1.state === "hasValue" ? url1.contents : ""} />,
-    <AsyncImage src={url2.state === "hasValue" ? url2.contents : ""} />,
-    <AsyncImage src={url3.state === "hasValue" ? url3.contents : ""} />,
+    <ImageBox name={names[1]} />,
+    <ImageBox name={names[2]} />,
+    <ImageBox name={names[3]} />,
     <FillBox color="secondary" />,
   ];
 

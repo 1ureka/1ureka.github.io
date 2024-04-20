@@ -48,7 +48,8 @@ export async function uploadFile(file, path) {
     console.log(origin);
     console.log(`至 ${path}`);
   } catch (err) {
-    console.log("file is not valid json");
+    console.log("上傳");
+    console.log(`至 ${path}`);
   }
 }
 
@@ -59,14 +60,12 @@ export async function uploadFile(file, path) {
  */
 export async function loadFile(path) {
   try {
-    console.log(`準備開始載入${path}`);
     const octokit = new Octokit({ auth: sessionStorage.getItem("password") });
     const { data } = await octokit.rest.repos.getContent({
       owner: sessionStorage.getItem("username"),
       repo: "1ureka.store",
       path,
     });
-    console.log(`載入${path}完成`);
     if (data?.type === "file") return data.content;
     return data;
   } catch (error) {

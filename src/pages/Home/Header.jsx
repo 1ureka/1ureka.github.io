@@ -10,8 +10,8 @@ import LoginRoundedIcon from "@mui/icons-material/LoginRounded";
 import MenuOpenRoundedIcon from "@mui/icons-material/MenuOpenRounded";
 import ThemeControl, { ThemeToggles } from "../../components/ThemeControl";
 
-import { useRecoilValue } from "recoil";
-import { HOME_IS_AUTH, HOME_PAGE } from "../../utils/store";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { ALBUM_CATEGORY, HOME_IS_AUTH, HOME_PAGE } from "../../utils/store";
 import { useNavigateTo } from "../../utils/hooks";
 import { useScrollTo } from "./useScrollTo";
 
@@ -86,10 +86,19 @@ function Navigation() {
 
 function Tools() {
   const isAuth = useRecoilValue(HOME_IS_AUTH);
-  const navigate1 = useNavigateTo("/manager");
-  const navigate2 = useNavigateTo("/login");
-  const match = useMediaQuery("(min-width:850px)");
+  const toManager = useNavigateTo("/manager");
+  const toLogin = useNavigateTo("/login");
+  const setCategory = useSetRecoilState(ALBUM_CATEGORY);
 
+  const navigate1 = () => {
+    setCategory("props");
+    toManager();
+  };
+  const navigate2 = () => {
+    toLogin();
+  };
+
+  const match = useMediaQuery("(min-width:850px)");
   const homePage = useRecoilValue(HOME_PAGE);
   const isTop = homePage === 0;
 
