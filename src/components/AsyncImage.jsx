@@ -9,7 +9,7 @@ function AsyncImage({ src, style, ...props }, ref) {
   const [_src, set_src] = useState(src);
 
   useEffect(() => {
-    if (!isWindowFocused) return;
+    if (!isWindowFocused || !src) return;
     const img = new Image();
     img.src = src;
     (async () => {
