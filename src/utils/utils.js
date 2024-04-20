@@ -59,6 +59,7 @@ export async function uploadFile(content, path) {
       owner: sessionStorage.getItem("username"),
       repo: "1ureka.store",
       path,
+      sha,
       content,
       message: `uplaod ${path} ${Date()}`,
       committer: {

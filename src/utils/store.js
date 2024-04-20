@@ -57,7 +57,7 @@ export const MANAGER_ROWS = selector({
     );
     const rows = await Promise.all(
       index.map(async ({ category, name }) => {
-        const data = await loadFile(`images/${category}/${name}/4K`);
+        const data = await loadFile(`images/${category}/${name}/4K`, true);
         const KB = data[0].size / 1024;
         const size = Math.round((KB + Number.EPSILON) * 100) / 100;
         return { name, size };
