@@ -16,6 +16,10 @@ export const THEME = atom({
   key: "theme",
   default: "dark",
 });
+export const THEME_TOGGLE = atom({
+  key: "themeToggle",
+  default: "Dark",
+});
 
 //
 //
