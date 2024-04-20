@@ -68,8 +68,8 @@ export function useImageActions() {
       loadFile("images/props"),
     ]);
     const index = [
-      ...scene?.map(({ name }) => ({ category: "scene", name })),
-      ...props?.map(({ name }) => ({ category: "props", name })),
+      ...scene.map(({ name }) => ({ category: "scene", name })),
+      ...props.map(({ name }) => ({ category: "props", name })),
     ];
     setIndex(index);
   };

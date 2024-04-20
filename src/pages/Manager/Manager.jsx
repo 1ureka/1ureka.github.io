@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Grow, Stack, Tooltip, useMediaQuery } from "@mui/material";
 import { Avatar, Box, Divider, IconButton } from "@mui/material";
 import { ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
@@ -27,7 +27,7 @@ function Title() {
 
   useEffect(() => {
     setHeight(`${ref.current.offsetHeight}px`);
-  }, [ref]);
+  }, [ref, setHeight]);
 
   const sx = {
     position: "fixed",
