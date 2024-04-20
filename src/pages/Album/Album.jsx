@@ -174,7 +174,7 @@ export default function Album() {
   const setFilter = useSetRecoilState(ALBUM_FILTER);
   useEffect(() => {
     setFilter({ brightness: 1, contrast: 1, saturate: 1 });
-  }, []);
+  }, [setFilter]);
 
   return (
     <TransitionGroup component={null}>

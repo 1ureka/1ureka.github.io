@@ -10,7 +10,7 @@ import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 import { useSetRecoilState } from "recoil";
 import { INDEX } from "../../utils/store";
 import { useNavigateTo } from "../../utils/hooks";
-import { base64ToString, loadFile } from "../../utils/utils";
+import { loadFile } from "../../utils/utils";
 
 function UsernameInput({ error }) {
   return (
@@ -104,8 +104,8 @@ export default function LoginForm() {
         loadFile("images/props"),
       ]);
       const index = [
-        ...scene?.map(({ name }) => ({ category: "scene", name })),
-        ...props?.map(({ name }) => ({ category: "props", name })),
+        ...scene.map(({ name }) => ({ category: "scene", name })),
+        ...props.map(({ name }) => ({ category: "props", name })),
       ];
       setIndex(index);
       sessionStorage.setItem("auth", "1");

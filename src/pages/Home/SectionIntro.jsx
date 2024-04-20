@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Checkbox, Grow, Radio, RadioGroup } from "@mui/material";
-import { Box, Grid, Stack, Paper, IconButton } from "@mui/material";
+import { Grid, Stack, Paper, IconButton } from "@mui/material";
 import { Chip, Tooltip, Typography } from "@mui/material";
 import { Dialog, DialogContent, FormControl } from "@mui/material";
 import { FormLabel, FormControlLabel } from "@mui/material";
@@ -17,8 +17,6 @@ import gsap from "gsap";
 import { darkTheme } from "../../utils/theme";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { IS_INTRO_VISIBLE } from "../../utils/store";
-
-const bg = "https://fakeimg.pl/1920x1080/?text=こんにちは&font=noto";
 
 //
 // Elements
