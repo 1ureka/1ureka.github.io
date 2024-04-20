@@ -2,7 +2,7 @@ import { Button, CircularProgress, Dialog, Skeleton } from "@mui/material";
 import { DialogActions, DialogContent, DialogTitle } from "@mui/material";
 import { Typography } from "@mui/material";
 import ImageSearchRoundedIcon from "@mui/icons-material/ImageSearchRounded";
-import { checkValid } from "../../utils/utils";
+import { runWorkflow } from "../../utils/utils";
 import { useState } from "react";
 
 function Progress() {
@@ -27,7 +27,7 @@ export default function VerifyDialog() {
   const handleClick = async () => {
     setOpen(true);
     setLoading(true);
-    const result = await checkValid();
+    const result = await runWorkflow("validator");
     setResult(result);
     setLoading(false);
   };
@@ -58,9 +58,9 @@ export default function VerifyDialog() {
               <Skeleton animation="wave" />
             </>
           ) : (
-            result.notifications.map((message, i) => (
-              <Typography key={i}>{message}</Typography>
-            ))
+            <Typography sx={{ whiteSpace: "pre-wrap" }}>
+              {JSON.stringify(result, null, 2)}
+            </Typography>
           )}
         </DialogContent>
 

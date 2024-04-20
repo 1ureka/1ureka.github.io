@@ -86,10 +86,10 @@ export async function deleteFile(path) {
 }
 
 /**
- * 檢查有效性並返回通知及時間戳。
- * @returns {Promise<{ notifications: string[], timeStamp: number }>} 返回一個包含通知和時間戳的 Promise 對象。
+ * 執行指定後端程式碼並返回輸出。
+ * @param {string} program  - 執行的程式名稱
  */
-export async function checkValid() {
+export async function runWorkflow(program) {
   const octokit = new Octokit({ auth: sessionStorage.getItem("password") });
   const startTimeStamp = Date.now();
   console.log("按下按鈕，開始執行程式。當前時間戳：", startTimeStamp);
@@ -99,7 +99,7 @@ export async function checkValid() {
     {
       owner: sessionStorage.getItem("username"),
       repo: "1ureka.store",
-      workflow_id: "validator.yml",
+      workflow_id: `${program}.yml`,
       ref: "main",
       headers: {
         "X-GitHub-Api-Version": "2022-11-28",
@@ -107,29 +107,29 @@ export async function checkValid() {
     }
   );
 
-  const fetchValid = async () => {
+  const fetchResult = async () => {
     await delay(2500);
 
-    const {
-      data: { content },
-    } = await octokit.request("GET /repos/{owner}/{repo}/contents/{path}", {
-      owner: sessionStorage.getItem("username"),
-      repo: "1ureka.store",
-      path: "valid.json",
-      headers: {
-        "X-GitHub-Api-Version": "2022-11-28",
-        "If-None-Match": "",
-      },
-    });
+    const { data } = await octokit.request(
+      "GET /repos/{owner}/{repo}/contents/{path}",
+      {
+        owner: sessionStorage.getItem("username"),
+        repo: "1ureka.store",
+        path: `output.json`,
+        headers: {
+          "X-GitHub-Api-Version": "2022-11-28",
+          "If-None-Match": "",
+        },
+      }
+    );
 
-    let data = JSON.parse(base64ToString(content));
-    console.log(data.timeStamp, startTimeStamp);
+    const { timeStamp, result } = JSON.parse(base64ToString(data.content));
+    if (timeStamp <= startTimeStamp) return await fetchResult();
 
-    if (!(data.timeStamp > startTimeStamp)) data = await fetchValid();
-    return data;
+    return result;
   };
 
-  const data = await fetchValid();
+  const data = await fetchResult();
   console.log("輪巡完畢");
   return data;
 }
