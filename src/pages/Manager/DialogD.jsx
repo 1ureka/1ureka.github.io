@@ -9,8 +9,8 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import HideImageRoundedIcon from "@mui/icons-material/HideImageRounded";
 
 import { useImageActions } from "../../utils/hooks";
-import { useRecoilValue } from "recoil";
-import { MANAGER_DELED } from "../../utils/store";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { MANAGER_DELED, TABLE_PAGE } from "../../utils/store";
 import { TABLE_SELECTED } from "../../utils/store";
 
 //
@@ -134,9 +134,11 @@ export default function InfoModal({ open, onClose }) {
   };
 
   const selected = useRecoilValue(TABLE_SELECTED);
+  const setPage = useSetRecoilState(TABLE_PAGE);
   const { del: deleteImages } = useImageActions();
   const handleSaveChanges = async () => {
     setLoading(true);
+    setPage(0);
     await deleteImages(selected);
     setLoading(false);
     if (onClose) onClose();

@@ -34,22 +34,40 @@ export const getSystemTheme = () => {
 
 /**
  * 上傳具有指定編碼的文件至指定路徑。
- * @param {string} file - 文件內容的 Base64 編碼。
+ * @param {string} content - 文件內容的 Base64 編碼。
  * @param {string} path - 欲上傳的路徑。
  * @returns {Promise<void>} 當上傳完成時解析的 Promise。
  */
-export async function uploadFile(file, path) {
-  // const message = `uplaod ${path} ${Date()}`;
-  // const detail = { file, path, message };
-  await delay(2000);
+export async function uploadFile(content, path) {
+  const octokit = new Octokit({ auth: sessionStorage.getItem("password") });
+  let sha;
+
   try {
-    const origin = JSON.parse(base64ToString(file));
-    console.log("上傳");
-    console.log(origin);
-    console.log(`至 ${path}`);
-  } catch (err) {
-    console.log("上傳");
-    console.log(`至 ${path}`);
+    const request = "GET /repos/{owner}/{repo}/contents/{path}";
+    const file = await octokit.request(request, {
+      owner: sessionStorage.getItem("username"),
+      repo: "1ureka.store",
+      path,
+    });
+    sha = file?.data?.sha;
+  } catch (error) {
+    sha = null;
+  }
+
+  try {
+    await octokit.request("PUT /repos/{owner}/{repo}/contents/{path}", {
+      owner: sessionStorage.getItem("username"),
+      repo: "1ureka.store",
+      path,
+      content,
+      message: `uplaod ${path} ${Date()}`,
+      committer: {
+        name: "Octokit",
+        email: "Octokit@github.com",
+      },
+    });
+  } catch (error) {
+    console.error(`無法上傳檔案: ${path}`, error);
   }
 }
 
@@ -58,13 +76,15 @@ export async function uploadFile(file, path) {
  * @param {string} path - 文件的路徑。
  * @returns {Promise<string | Array>} 包含文件內容編碼而成的Base64的 Promise。
  */
-export async function loadFile(path) {
+export async function loadFile(path, avoidCache = false) {
   try {
     const octokit = new Octokit({ auth: sessionStorage.getItem("password") });
-    const { data } = await octokit.rest.repos.getContent({
+    const request = "GET /repos/{owner}/{repo}/contents/{path}";
+    const { data } = await octokit.request(request, {
       owner: sessionStorage.getItem("username"),
       repo: "1ureka.store",
       path,
+      headers: avoidCache ? { "If-None-Match": "" } : null,
     });
     if (data?.type === "file") return data.content;
     return data;
@@ -79,10 +99,32 @@ export async function loadFile(path) {
  * @returns {Promise<void>} 當刪除完成時解析的 Promise。
  */
 export async function deleteFile(path) {
-  // const message = `delete ${path} ${Date()}`;
-  // const detail = { path, message };
-  console.log(`刪除 ${path} 中`);
-  await delay(2000);
+  const octokit = new Octokit({ auth: sessionStorage.getItem("password") });
+
+  try {
+    const request = "GET /repos/{owner}/{repo}/contents/{path}";
+    const file = await octokit.request(request, {
+      owner: sessionStorage.getItem("username"),
+      repo: "1ureka.store",
+      path,
+    });
+
+    const sha = file?.data?.sha;
+
+    await octokit.request("DELETE /repos/{owner}/{repo}/contents/{path}", {
+      owner: sessionStorage.getItem("username"),
+      repo: "1ureka.store",
+      path,
+      sha,
+      message: `delete ${path} ${Date()}`,
+      committer: {
+        name: "Octokit",
+        email: "Octokit@github.com",
+      },
+    });
+  } catch (error) {
+    console.error(`無法刪除檔案: ${path}`, error);
+  }
 }
 
 /**

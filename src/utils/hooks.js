@@ -64,8 +64,8 @@ export function useImageActions() {
 
   const syncIndex = async () => {
     const [scene, props] = await Promise.all([
-      loadFile("images/scene"),
-      loadFile("images/props"),
+      loadFile("images/scene", true),
+      loadFile("images/props", true),
     ]);
     const index = [
       ...scene.map(({ name }) => ({ category: "scene", name })),
