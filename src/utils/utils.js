@@ -61,7 +61,7 @@ export async function uploadFile(content, path) {
       path,
       sha,
       content,
-      message: `uplaod ${path} ${Date()}`,
+      message: `uplaod ${path}`,
       committer: {
         name: "Octokit",
         email: "Octokit@github.com",
@@ -117,7 +117,7 @@ export async function deleteFile(path) {
       repo: "1ureka.store",
       path,
       sha,
-      message: `delete ${path} ${Date()}`,
+      message: `delete ${path}`,
       committer: {
         name: "Octokit",
         email: "Octokit@github.com",
@@ -142,8 +142,9 @@ export async function runWorkflow(program) {
     {
       owner: sessionStorage.getItem("username"),
       repo: "1ureka.store",
-      workflow_id: `${program}.yml`,
+      workflow_id: "backend_workflow.yml",
       ref: "main",
+      inputs: { program },
       headers: {
         "X-GitHub-Api-Version": "2022-11-28",
       },
@@ -151,7 +152,7 @@ export async function runWorkflow(program) {
   );
 
   const fetchResult = async () => {
-    await delay(2500);
+    await delay(1000);
 
     const { data } = await octokit.request(
       "GET /repos/{owner}/{repo}/contents/{path}",

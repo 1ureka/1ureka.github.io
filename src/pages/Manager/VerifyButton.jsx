@@ -27,7 +27,7 @@ export default function VerifyDialog() {
   const handleClick = async () => {
     setOpen(true);
     setLoading(true);
-    const result = await runWorkflow("validator");
+    const result = await runWorkflow("valid");
     setResult(result);
     setLoading(false);
   };
