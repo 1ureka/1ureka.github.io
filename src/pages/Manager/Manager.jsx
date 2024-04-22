@@ -151,7 +151,7 @@ function ManagerContent() {
   };
 
   return (
-    <Box maxWidth={"md"}>
+    <Box maxWidth={"md"} sx={{ py: 1.5 }}>
       <ManagerHeader onAdd={handleOpenAddDialog} />
       <Divider sx={{ my: 2 }} variant="middle" />
       <EnhancedTable onDelete={handleOpenDelDialog} />
@@ -185,7 +185,7 @@ function LeftComponents() {
   const headerPlaceholder = <Box sx={placeholderSx}></Box>;
 
   const alignItems = match ? "flex-start" : "center";
-  const minHeight = `calc(100% - ${headerHeight} - ${headerHeight})`;
+  const minHeight = `calc(100vh - (${headerHeight} * 1.5))`;
   const managerContent = (
     <Stack sx={{ minHeight }} justifyContent="center" alignItems={alignItems}>
       <ManagerContent />
@@ -194,7 +194,7 @@ function LeftComponents() {
 
   const width = match ? "calc(100% - 530px)" : "100%";
   return (
-    <Box sx={{ width, height: "100%" }}>
+    <Box sx={{ width, minHeight: "100%", height: "fit-content" }}>
       {headerPlaceholder}
       {managerContent}
     </Box>
