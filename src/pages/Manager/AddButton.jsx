@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { Stack, Backdrop, Typography, Snackbar } from "@mui/material";
 import { Button, IconButton, CircularProgress } from "@mui/material";
+import { Tooltip, useMediaQuery } from "@mui/material";
 
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import AddToPhotosRoundedIcon from "@mui/icons-material/AddToPhotosRounded";
 
 import ThemeControl from "../../components/ThemeControl";
 import { compressImage } from "../../utils/utils";
@@ -63,7 +65,7 @@ export default function AddButton({ onAdd }) {
   const [isProcess, setIsProcess] = useState(false);
   const [openAlert, setOpenAlert] = useState(false);
   const [alert, setAlert] = useState("");
-  const [task, setTask] = useState("Compressing ?");
+  const [task, setTask] = useState("");
 
   const handleAdd = async () => {
     setOpenAlert(false);
@@ -98,16 +100,28 @@ export default function AddButton({ onAdd }) {
     if (reason !== "clickaway") setOpenAlert(false);
   };
 
+  const match = useMediaQuery("(min-width:900px)");
+  const button = (
+    <Button
+      variant="contained"
+      endIcon={<AddRoundedIcon />}
+      onClick={handleAdd}
+    >
+      Add Image
+    </Button>
+  );
+  const mobilButton = (
+    <Tooltip title="Add Image">
+      <IconButton color="primary">
+        <AddToPhotosRoundedIcon />
+      </IconButton>
+    </Tooltip>
+  );
+
   return (
     <>
       <Stack direction={"row"} alignItems={"center"} spacing={2}>
-        <Button
-          variant="contained"
-          endIcon={<AddRoundedIcon />}
-          onClick={handleAdd}
-        >
-          Add Image
-        </Button>
+        {match ? button : mobilButton}
         <ThemeControl />
       </Stack>
 

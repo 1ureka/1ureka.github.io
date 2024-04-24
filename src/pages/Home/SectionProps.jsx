@@ -8,7 +8,7 @@ import gsap from "gsap";
 
 import { useNavigateTo } from "../../utils/hooks";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { ALBUM_CATEGORY, ALBUM_SELECTED } from "../../utils/store";
+import { ALBUM_CATEGORY, ALBUM_SELECTED, THEME } from "../../utils/store";
 import { HOME_IS_AUTH } from "../../utils/store";
 
 const status1 = "/images/clip/status1.webp";
@@ -174,14 +174,20 @@ function Images() {
     { c: 3, r: 2, e: <AsyncImage ref={ref2} src={prop2} style={styleL} /> },
   ];
 
+  const theme = useRecoilValue(THEME);
+  const filter =
+    theme === "dark"
+      ? "drop-shadow(0px 0px 10px black)"
+      : `drop-shadow(0px 0px 6px rgb(0 0 0 / 0.5))`;
+
   return (
     <ImageList
       sx={{
         minWidth: matche2 ? "2100px" : "1400px",
         position: "absolute",
-        filter: "drop-shadow(0px 0px 10px black)",
         overflow: "visible",
         pt: 10,
+        filter,
       }}
       variant="quilted"
       cols={14}

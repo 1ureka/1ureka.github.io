@@ -9,7 +9,7 @@ import AsyncImage from "../../components/AsyncImage";
 import gsap from "gsap";
 import { useNavigateTo } from "../../utils/hooks";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { ALBUM_CATEGORY, ALBUM_SELECTED } from "../../utils/store";
+import { ALBUM_CATEGORY, ALBUM_SELECTED, THEME } from "../../utils/store";
 import { HOME_IS_AUTH } from "../../utils/store";
 
 //
@@ -100,14 +100,20 @@ function FillBox({ sx }) {
 function ClipBox({ sx, src }) {
   const matche = useMediaQuery("(min-width:1200px)");
 
+  const theme = useRecoilValue(THEME);
+  const filter =
+    theme === "dark"
+      ? "drop-shadow(0px 0px 10px black)"
+      : "drop-shadow(0px 0px 6px rgb(0 0 0 / 0.5))";
+
   const style = {
     position: "absolute",
     width: "300px",
     height: "500px",
     display: matche ? "flex" : "none",
     pointerEvents: "none",
-    filter: "drop-shadow(0px 0px 10px black)",
     objectFit: "contain",
+    filter,
     ...sx,
   };
 

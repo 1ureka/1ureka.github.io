@@ -29,11 +29,16 @@ function Title() {
     setHeight(`${ref.current.offsetHeight}px`);
   }, [ref, setHeight]);
 
+  const theme = useTheme();
+  const backgroundColor = alpha(theme.palette.background.default, 0.85);
+
   const sx = {
     position: "fixed",
     left: 0,
+    right: 0,
     p: "30px",
     zIndex: 2,
+    backgroundColor,
   };
   const AvaterSx = {
     width: 70,
@@ -170,16 +175,13 @@ function ManagerContent() {
 //
 // Content
 function LeftComponents() {
-  const theme = useTheme();
   const match = useMediaQuery("(min-width:1300px)");
 
   const headerHeight = useRecoilValue(MANAGER_HEADER_H);
-  const backgroundColor = alpha(theme.palette.background.default, 0.85);
   const placeholderSx = {
     height: headerHeight,
     position: "sticky",
     top: 0,
-    backgroundColor,
     zIndex: 1,
   };
   const headerPlaceholder = <Box sx={placeholderSx}></Box>;
@@ -209,6 +211,7 @@ function RightComponents() {
     height: "100%",
     opacity: 0.9,
     overflow: "hidden",
+    zIndex: 3,
   };
 
   return (
