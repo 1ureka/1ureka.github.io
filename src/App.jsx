@@ -8,6 +8,8 @@ import { AnimatePresence } from "framer-motion";
 import { THEME } from "./utils/store";
 import { delay } from "./utils/utils";
 import Sidebar from "./components/sidebar/Sidebar";
+
+import Cover from "./page/cover/Cover";
 import Books from "./page/books/Books";
 
 const isAuth = async () => {
@@ -28,7 +30,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: "",
+        element: <Cover />,
       },
       {
         path: "books",
