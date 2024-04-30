@@ -44,15 +44,13 @@ const router = createBrowserRouter([
   },
 ]);
 
-let prevP, key;
 function AnimatedOutlet() {
   const outlet = useOutlet();
   const { pathname } = useLocation();
 
-  if (prevP !== pathname) {
-    key = pathname + Date.now();
-    prevP = pathname;
-  }
+  const key = React.useMemo(() => {
+    return pathname + Date.now();
+  }, [pathname]);
 
   return (
     <AnimatePresence mode="wait" initial={true}>
