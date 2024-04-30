@@ -4,8 +4,8 @@ import { Box, Divider, Stack, Typography } from "@mui/material";
 import { motion } from "framer-motion";
 
 import { BOOKS_TAB } from "../../utils/store";
-import ContentTabs from "../../components/tabs/Tabs";
-import Layout from "../../components/layout/Layout";
+import Tabs from "../../components/generic/Tabs";
+import Layout from "../../components/generic/Layout";
 
 const MotionStack = motion(Stack);
 
@@ -98,11 +98,7 @@ export default function Books() {
 
   return (
     <Layout>
-      <ContentTabs
-        labels={labels}
-        value={tab}
-        onChange={(tab) => setTab(tab)}
-      />
+      <Tabs labels={labels} value={tab} onChange={(tab) => setTab(tab)} />
       <Content />
     </Layout>
   );

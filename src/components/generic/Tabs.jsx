@@ -52,7 +52,7 @@ function StyledTab({ ...props }) {
   return <Tab {...props} sx={sx} />;
 }
 
-export default function ContentTabs({ labels, value, onChange }) {
+export default function StyledTabBar({ labels, value, onChange }) {
   return (
     <StyledTabs value={value} onChange={(_, val) => onChange(val)}>
       {labels.map((label) => (
