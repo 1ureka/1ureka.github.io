@@ -6,7 +6,7 @@ import { redirect, useLocation, useOutlet } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 
 import { THEME } from "./utils/store";
-import { delay } from "./utils/utils";
+import { decode, delay } from "./utils/utils";
 import Sidebar from "./components/sidebar/Sidebar";
 
 import Cover from "./page/cover/Cover";
@@ -24,6 +24,13 @@ const authLoader = async () => {
   return null;
 };
 
+const coverLoader = async () => {
+  const image = new Image();
+  image.src = "./PJ28-2 とびら-1.webp";
+  await decode(image);
+  return true;
+};
+
 const router = createBrowserRouter([
   {
     element: <Root />,
@@ -31,6 +38,7 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Cover />,
+        loader: coverLoader,
       },
       {
         path: "books",
