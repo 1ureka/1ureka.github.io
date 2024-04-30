@@ -22,6 +22,14 @@ export const THEME = selector({
     return theme;
   },
 });
+export const AUTH = atom({
+  key: "auth",
+  default: sessionStorage.getItem("auth"),
+});
+export const HINTS = atom({
+  key: "hints",
+  default: [],
+});
 
 //
 //

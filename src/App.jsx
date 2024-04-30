@@ -1,27 +1,27 @@
 import * as React from "react";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { Stack, CssBaseline, ThemeProvider } from "@mui/material";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { redirect, useLocation, useOutlet } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 
-import { THEME } from "./utils/store";
+import { HINTS, THEME } from "./utils/store";
 import { decode, delay } from "./utils/utils";
-import Sidebar from "./components/sidebar/Sidebar";
 
+import Sidebar from "./components/sidebar/Sidebar";
 import Cover from "./page/cover/Cover";
 import Books from "./page/books/Books";
+import Snackbars from "./components/generic/Snackbars";
 
 const isAuth = async () => {
   await delay(10);
-  return true;
-  // return sessionStorage.getItem("auth");
+  return sessionStorage.getItem("auth");
 };
 
 const authLoader = async () => {
   const auth = await isAuth();
-  if (!auth) return redirect("/");
-  return null;
+  if (auth) return null;
+  return redirect(`/?fail${Date.now()}`);
 };
 
 const coverLoader = async () => {
@@ -54,9 +54,25 @@ const router = createBrowserRouter([
   },
 ]);
 
+function useAuthHint() {
+  const firstMountTime = React.useRef(Date.now());
+  const setMessageQuene = useSetRecoilState(HINTS);
+  const { search } = useLocation();
+
+  React.useEffect(() => {
+    if (Math.abs(Date.now() - firstMountTime.current) <= 1000) return;
+    if (search.startsWith("?fail"))
+      setMessageQuene((prev) => [
+        ...prev,
+        { message: "Unlock To Explore", key: Date.now() },
+      ]);
+  }, [search, setMessageQuene]);
+}
+
 function AnimatedOutlet() {
   const outlet = useOutlet();
   const { pathname } = useLocation();
+  useAuthHint();
 
   const key = React.useMemo(() => {
     return pathname + Date.now();
@@ -82,6 +98,7 @@ function Root() {
     <Stack direction={"row"} sx={containerSx}>
       <Sidebar />
       <AnimatedOutlet />
+      <Snackbars />
     </Stack>
   );
 }

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { LOGIN_OPEN } from "../../utils/store";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { Box, Stack, ThemeProvider, Tooltip } from "@mui/material";
 import { Radio, RadioGroup, Avatar, Button, Checkbox } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -12,9 +12,10 @@ import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
 import MapRoundedIcon from "@mui/icons-material/MapRounded";
 import LockRoundedIcon from "@mui/icons-material/LockRounded";
 
-import Layout from "../../components/layout/Layout";
 import { darkTheme, lightTheme } from "../../utils/theme";
-import { useSetRecoilState } from "recoil";
+import { AUTH, LOGIN_OPEN } from "../../utils/store";
+import Layout from "../../components/generic/Layout";
+import Login from "../../components/login/Login";
 
 const MotionStack = motion(Stack);
 
@@ -59,7 +60,7 @@ function Radios() {
 }
 
 function MainButton() {
-  const isAuth = true;
+  const isAuth = useRecoilValue(AUTH);
 
   const variants = {
     initial: { opacity: 0, y: 70, transition: { duration: 0 } },
@@ -223,6 +224,7 @@ export default function Cover() {
       <ThemeProvider theme={darkTheme}>
         <Background />
         <Content />
+        <Login />
       </ThemeProvider>
     </Layout>
   );
