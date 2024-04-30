@@ -13,22 +13,17 @@ import Cover from "./page/cover/Cover";
 import Books from "./page/books/Books";
 import Snackbars from "./components/generic/Snackbars";
 
-const isAuth = async () => {
-  await delay(10);
-  return sessionStorage.getItem("auth");
-};
-
-const authLoader = async () => {
-  const auth = await isAuth();
-  if (auth) return null;
-  return redirect(`/?fail${Date.now()}`);
-};
-
 const coverLoader = async () => {
   const image = new Image();
   image.src = "./PJ28-2 とびら-1.webp";
   await decode(image);
   return true;
+};
+
+const authLoader = async () => {
+  await delay(10);
+  if (sessionStorage.getItem("auth")) return null;
+  return redirect(`/?fail${Date.now()}`);
 };
 
 const router = createBrowserRouter([
@@ -54,25 +49,20 @@ const router = createBrowserRouter([
   },
 ]);
 
-function useAuthHint() {
-  const firstMountTime = React.useRef(Date.now());
-  const setMessageQuene = useSetRecoilState(HINTS);
-  const { search } = useLocation();
-
-  React.useEffect(() => {
-    if (Math.abs(Date.now() - firstMountTime.current) <= 1000) return;
-    if (search.startsWith("?fail"))
-      setMessageQuene((prev) => [
-        ...prev,
-        { message: "Unlock To Explore", key: Date.now() },
-      ]);
-  }, [search, setMessageQuene]);
-}
-
-function AnimatedOutlet() {
+function Outlet() {
   const outlet = useOutlet();
-  const { pathname } = useLocation();
-  useAuthHint();
+  const { pathname, search } = useLocation();
+
+  const firstTime = React.useRef(Date.now());
+  const setMessageQuene = useSetRecoilState(HINTS);
+  React.useEffect(() => {
+    if (Math.abs(Date.now() - firstTime.current) <= 500) return;
+
+    if (search.startsWith("?fail")) {
+      const item = { message: "Unlock To Explore", key: Date.now() };
+      setMessageQuene((prev) => [...prev, item]);
+    }
+  }, [search, setMessageQuene]);
 
   const key = React.useMemo(() => {
     return pathname + Date.now();
@@ -97,7 +87,7 @@ function Root() {
   return (
     <Stack direction={"row"} sx={containerSx}>
       <Sidebar />
-      <AnimatedOutlet />
+      <Outlet />
       <Snackbars />
     </Stack>
   );

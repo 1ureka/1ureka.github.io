@@ -6,7 +6,7 @@ import LockRoundedIcon from "@mui/icons-material/LockRounded";
 
 import { LOGIN_OPEN, THEME } from "../../utils/store";
 import { darkTheme } from "../../utils/theme";
-import LoginForm from "./LoginForm";
+import LoginForm from "./Form";
 
 const MotionPaper = motion(Paper);
 const MotionStack = motion(Stack);
