@@ -1,14 +1,34 @@
 import * as React from "react";
 import { Box, Checkbox, Stack, ThemeProvider, Tooltip } from "@mui/material";
 import { Radio, RadioGroup, Avatar } from "@mui/material";
+import { motion } from "framer-motion";
 
 import PauseRoundedIcon from "@mui/icons-material/PauseRounded";
 import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
+import MapRoundedIcon from "@mui/icons-material/MapRounded";
+import LockRoundedIcon from "@mui/icons-material/LockRounded";
 
 import Layout from "../../components/layout/Layout";
 import { darkTheme, lightTheme } from "../../utils/theme";
+
+const MotionStack = motion(Stack);
+const MotionBox = motion(Box);
+
+const itemVariants = {
+  initial: { opacity: 0, x: 70, transition: { duration: 0 } },
+  exit: { opacity: 0, x: 70, transition: { duration: 0 } },
+  animate: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      type: "spring",
+      stiffness: 200,
+      damping: 15,
+    },
+  },
+};
 
 function Background() {
   const imgStyle = {
@@ -57,8 +77,9 @@ function Radios() {
   );
 }
 
-// change according auth
-function MainButton(params) {}
+function MainButton() {
+  return <MotionBox></MotionBox>;
+}
 
 function Control() {
   const [isPaused, setIsPaused] = React.useState(false);
@@ -100,20 +121,24 @@ function Control() {
 
 function ContentLayout({ align, children }) {
   return (
-    <Stack
+    <MotionStack
+      variants={itemVariants}
       direction="row"
       justifyContent="flex-end"
       alignItems={align}
       sx={{ height: "calc(100% /3)" }}
     >
       {children}
-    </Stack>
+    </MotionStack>
   );
 }
 
 function Content() {
+  const transition = { staggerChildren: 0.05, delayChildren: 0.15 };
+  const variants = { animate: { transition } };
+
   return (
-    <Stack sx={{ height: "100%", zIndex: 1 }}>
+    <MotionStack variants={variants} sx={{ height: "100%", zIndex: 1 }}>
       <ContentLayout align="flex-start">
         <Title />
       </ContentLayout>
@@ -123,7 +148,7 @@ function Content() {
       <ContentLayout align="flex-end">
         <Control />
       </ContentLayout>
-    </Stack>
+    </MotionStack>
   );
 }
 
