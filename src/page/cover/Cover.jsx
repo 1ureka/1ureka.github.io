@@ -1,6 +1,8 @@
 import * as React from "react";
-import { Box, Checkbox, Stack, ThemeProvider, Tooltip } from "@mui/material";
-import { Radio, RadioGroup, Avatar } from "@mui/material";
+import { LOGIN_OPEN } from "../../utils/store";
+import { Box, Stack, ThemeProvider, Tooltip } from "@mui/material";
+import { Radio, RadioGroup, Avatar, Button, Checkbox } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
 import PauseRoundedIcon from "@mui/icons-material/PauseRounded";
@@ -12,9 +14,9 @@ import LockRoundedIcon from "@mui/icons-material/LockRounded";
 
 import Layout from "../../components/layout/Layout";
 import { darkTheme, lightTheme } from "../../utils/theme";
+import { useSetRecoilState } from "recoil";
 
 const MotionStack = motion(Stack);
-const MotionBox = motion(Box);
 
 const itemVariants = {
   initial: { opacity: 0, x: 70, transition: { duration: 0 } },
@@ -29,27 +31,6 @@ const itemVariants = {
     },
   },
 };
-
-function Background() {
-  const imgStyle = {
-    position: "absolute",
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
-    scale: "1.05",
-  };
-
-  const gradientSx = {
-    ...imgStyle,
-    background: "radial-gradient(transparent, transparent, rgb(0 0 0 / 0.55))",
-  };
-  return (
-    <Box sx={{ position: "absolute", inset: 0 }}>
-      <img src="./PJ28-2 とびら-1.webp" style={imgStyle} alt="" />
-      <Box sx={gradientSx} />
-    </Box>
-  );
-}
 
 function Title() {
   return (
@@ -78,7 +59,57 @@ function Radios() {
 }
 
 function MainButton() {
-  return <MotionBox></MotionBox>;
+  const isAuth = true;
+
+  const variants = {
+    initial: { opacity: 0, y: 70, transition: { duration: 0 } },
+    exit: { opacity: 0, y: 70, transition: { duration: 0 } },
+    animate: { opacity: 1, y: 0 },
+  };
+
+  const containerSx = {
+    position: "absolute",
+    alignSelf: "flex-start",
+    bottom: darkTheme.spacing(3),
+  };
+
+  const containerProps = {
+    variants: variants,
+    sx: containerSx,
+    whileHover: { scale: 1.05 },
+    whileTap: { scale: 0.95 },
+  };
+
+  const startIcon = isAuth ? (
+    <MapRoundedIcon style={{ fontSize: 30 }} />
+  ) : (
+    <LockRoundedIcon style={{ fontSize: 30 }} />
+  );
+
+  const setOpen = useSetRecoilState(LOGIN_OPEN);
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    if (isAuth) {
+      navigate("/books");
+    } else {
+      setOpen(true);
+    }
+  };
+
+  const buttonProps = {
+    variant: "outlined",
+    size: "large",
+    sx: { ...darkTheme.typography.h5 },
+    startIcon,
+    onClick: handleClick,
+  };
+
+  return (
+    <MotionStack {...containerProps}>
+      <Button {...buttonProps}>{isAuth ? "Explore" : "Unlock"}</Button>
+    </MotionStack>
+  );
 }
 
 function Control() {
@@ -119,6 +150,29 @@ function Control() {
   );
 }
 
+//
+// Layout
+function Background() {
+  const imgStyle = {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+    scale: "1.05",
+  };
+
+  const gradientSx = {
+    ...imgStyle,
+    background: "radial-gradient(transparent, transparent, rgb(0 0 0 / 0.55))",
+  };
+  return (
+    <Box sx={{ position: "absolute", inset: 0 }}>
+      <img src="./PJ28-2 とびら-1.webp" style={imgStyle} alt="" />
+      <Box sx={gradientSx} />
+    </Box>
+  );
+}
+
 function ContentLayout({ align, children }) {
   return (
     <MotionStack
@@ -134,7 +188,7 @@ function ContentLayout({ align, children }) {
 }
 
 function Content() {
-  const transition = { staggerChildren: 0.05, delayChildren: 0.15 };
+  const transition = { staggerChildren: 0.1, delayChildren: 0.2 };
   const variants = { animate: { transition } };
 
   return (
@@ -148,6 +202,7 @@ function Content() {
       <ContentLayout align="flex-end">
         <Control />
       </ContentLayout>
+      <MainButton />
     </MotionStack>
   );
 }
