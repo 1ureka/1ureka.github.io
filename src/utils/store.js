@@ -39,12 +39,65 @@ export const SIDEBAR_SETTING_OPEN = atom({
 //
 // Tabs
 export const BOOKS_TAB = atom({
-  key: "bookTab",
+  key: "booksTab",
   default: "scene",
+});
+export const Tools_TAB = atom({
+  key: "toolsTab",
+  default: "manager",
 });
 
 //
-// BackUp
+//
+// Cover
+export const LOGIN_OPEN = atom({
+  key: "loginOpen",
+  default: false,
+});
+
+//
+//
+// Books
+export const BOOKS_SELECTED = atom({
+  key: "booksSelected",
+  default: 0,
+});
+export const BOOKS_FILTER = atom({
+  key: "booksFilter",
+  default: { brightness: 1, contrast: 1, saturate: 1 },
+});
+export const BOOKS_ROWS = selector({
+  key: "booksRows",
+  get: ({ get }) => {
+    const bookCategory = get(BOOKS_TAB);
+    const index = get(INDEX);
+    return index.filter(({ category }) => category === bookCategory);
+  },
+});
+export const THUMBNAILS = selectorFamily({
+  key: "thumbnails",
+  get:
+    (name) =>
+    async ({ get }) => {
+      const category = get(BOOKS_ROWS);
+      const base64 = await loadFile(
+        `images/${category}/${name}/1K/${name}.webp`
+      );
+      return `data:image/webp;base64,${base64.replace(/\n/g, "")}`;
+    },
+});
+export const ORIGIN = selectorFamily({
+  key: "origin",
+  get:
+    (name) =>
+    async ({ get }) => {
+      const category = get(BOOKS_ROWS);
+      const base64 = await loadFile(
+        `images/${category}/${name}/4K/${name}.webp`
+      );
+      return `data:image/webp;base64,${base64.replace(/\n/g, "")}`;
+    },
+});
 
 //
 //
@@ -71,6 +124,18 @@ export const MANAGER_ROWS = selector({
     return rows;
   },
 });
+export const MANAGER_ADDED = atom({
+  key: "managerAdded",
+  default: 0,
+});
+export const MANAGER_DELED = atom({
+  key: "managerDeleted",
+  default: 0,
+});
+
+//
+//
+// Table
 export const TABLE_ROWS_LENGTH = selector({
   key: "tableRowsLength",
   get: ({ get }) => {
@@ -104,60 +169,4 @@ export const TABLE_PAGE = atom({
 export const TABLE_PAGE_ROWS = atom({
   key: "tableRowsPerPage",
   default: 5,
-});
-export const MANAGER_ADDED = atom({
-  key: "managerAdded",
-  default: 0,
-});
-export const MANAGER_DELED = atom({
-  key: "managerDeleted",
-  default: 0,
-});
-
-//
-//
-//Album
-export const ALBUM_CATEGORY = atom({
-  key: "albumCategory",
-  default: "",
-});
-export const ALBUM_ROWS = selector({
-  key: "albumRows",
-  get: ({ get }) => {
-    const albumCategory = get(ALBUM_CATEGORY);
-    const index = get(INDEX);
-    return index.filter(({ category }) => category === albumCategory);
-  },
-});
-export const THUMBNAILS = selectorFamily({
-  key: "thumbnails",
-  get:
-    (name) =>
-    async ({ get }) => {
-      const category = get(ALBUM_CATEGORY);
-      const base64 = await loadFile(
-        `images/${category}/${name}/1K/${name}.webp`
-      );
-      return `data:image/webp;base64,${base64.replace(/\n/g, "")}`;
-    },
-});
-export const ORIGIN = selectorFamily({
-  key: "origin",
-  get:
-    (name) =>
-    async ({ get }) => {
-      const category = get(ALBUM_CATEGORY);
-      const base64 = await loadFile(
-        `images/${category}/${name}/4K/${name}.webp`
-      );
-      return `data:image/webp;base64,${base64.replace(/\n/g, "")}`;
-    },
-});
-export const ALBUM_SELECTED = atom({
-  key: "albemSelected",
-  default: 0,
-});
-export const ALBUM_FILTER = atom({
-  key: "albumFilter",
-  default: { brightness: 1, contrast: 1, saturate: 1 },
 });
