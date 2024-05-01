@@ -8,9 +8,11 @@ import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import FilterHdrRoundedIcon from "@mui/icons-material/FilterHdrRounded";
 import BookmarkRoundedIcon from "@mui/icons-material/BookmarkRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import LockRoundedIcon from "@mui/icons-material/LockRounded";
 
 import { darkTheme } from "../../utils/theme";
-import { SIDEBAR_OPEN, SIDEBAR_SETTING_OPEN } from "../../utils/store";
+import { SIDEBAR_IS_AUTH, SIDEBAR_OPEN } from "../../utils/store";
+import { SIDEBAR_SETTING_OPEN } from "../../utils/store";
 import { useNavigate } from "react-router-dom";
 
 const MotionStack = motion(Stack);
@@ -23,14 +25,17 @@ const itemVariants = {
 };
 
 function StyledIconButton({ children, ...props }) {
+  const isAuth = useRecoilValue(SIDEBAR_IS_AUTH);
+
   const sx = {
     outline: "1px solid gray",
     "&:hover": { outline: "1px solid #fff" },
     transition: "all 0.2s",
     ...props.sx,
   };
+
   return (
-    <IconButton {...props} sx={sx}>
+    <IconButton {...props} sx={sx} disabled={!isAuth}>
       {children}
     </IconButton>
   );
@@ -56,6 +61,7 @@ function SidebarSmallButton({ icon, title, onClick }) {
 
 function SidebarMenuButton() {
   const [open, setOpen] = useRecoilState(SIDEBAR_OPEN);
+  const isAuth = useRecoilValue(SIDEBAR_IS_AUTH);
 
   const transition = { type: "spring", stiffness: 300, damping: 20 };
   const variants = {
@@ -82,8 +88,10 @@ function SidebarMenuButton() {
     >
       {open ? (
         <CloseRoundedIcon fontSize="medium" />
-      ) : (
+      ) : isAuth ? (
         <MenuRoundedIcon fontSize="medium" />
+      ) : (
+        <LockRoundedIcon fontSize="medium" />
       )}
     </MotionIconButton>
   );

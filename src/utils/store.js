@@ -22,18 +22,14 @@ export const THEME = selector({
     return theme;
   },
 });
-export const AUTH = atom({
-  key: "auth",
-  default: sessionStorage.getItem("auth"),
-});
-export const HINTS = atom({
-  key: "hints",
-  default: [],
-});
 
 //
 //
 // Sidebar
+export const SIDEBAR_IS_AUTH = atom({
+  key: "sidebarIsAuth",
+  default: false,
+});
 export const SIDEBAR_OPEN = atom({
   key: "sidebarOpen",
   default: false,
@@ -53,14 +49,6 @@ export const BOOKS_TAB = atom({
 export const Tools_TAB = atom({
   key: "toolsTab",
   default: "manager",
-});
-
-//
-//
-// Cover
-export const LOGIN_OPEN = atom({
-  key: "loginOpen",
-  default: false,
 });
 
 //

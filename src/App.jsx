@@ -1,17 +1,17 @@
 import * as React from "react";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 import { Stack, CssBaseline, ThemeProvider } from "@mui/material";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import { redirect, useLocation, useOutlet } from "react-router-dom";
+import { useBeforeUnload, useLocation, useOutlet } from "react-router-dom";
+import { redirect } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 
-import { HINTS, THEME } from "./utils/store";
+import { THEME } from "./utils/store";
 import { decode, delay } from "./utils/utils";
 
 import Sidebar from "./components/sidebar/Sidebar";
 import Cover from "./page/cover/Cover";
 import Books from "./page/books/Books";
-import Snackbars from "./components/generic/Snackbars";
 
 const coverLoader = async () => {
   const image = new Image();
@@ -23,7 +23,7 @@ const coverLoader = async () => {
 const authLoader = async () => {
   await delay(10);
   if (sessionStorage.getItem("auth")) return null;
-  return redirect(`/?fail${Date.now()}`);
+  return redirect(`/`);
 };
 
 const router = createBrowserRouter([
@@ -51,18 +51,7 @@ const router = createBrowserRouter([
 
 function Outlet() {
   const outlet = useOutlet();
-  const { pathname, search } = useLocation();
-
-  const firstTime = React.useRef(Date.now());
-  const setMessageQuene = useSetRecoilState(HINTS);
-  React.useEffect(() => {
-    if (Math.abs(Date.now() - firstTime.current) <= 500) return;
-
-    if (search.startsWith("?fail")) {
-      const item = { message: "Unlock To Explore", key: Date.now() };
-      setMessageQuene((prev) => [...prev, item]);
-    }
-  }, [search, setMessageQuene]);
+  const { pathname } = useLocation();
 
   const key = React.useMemo(() => {
     return pathname + Date.now();
@@ -88,13 +77,18 @@ function Root() {
     <Stack direction={"row"} sx={containerSx}>
       <Sidebar />
       <Outlet />
-      <Snackbars />
     </Stack>
   );
 }
 
 export default function App() {
   const theme = useRecoilValue(THEME);
+
+  const handleBeforeUnload = React.useCallback(() => {
+    sessionStorage.clear();
+  }, []);
+
+  useBeforeUnload(handleBeforeUnload);
 
   return (
     <ThemeProvider theme={theme}>

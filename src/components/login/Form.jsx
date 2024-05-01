@@ -3,10 +3,10 @@ import { motion } from "framer-motion";
 import { useSetRecoilState } from "recoil";
 import { Box, FormControlLabel, Checkbox, Divider } from "@mui/material";
 
-import { AUTH, HINTS, INDEX, LOGIN_OPEN } from "../../utils/store";
+import { INDEX, SIDEBAR_IS_AUTH, SIDEBAR_OPEN } from "../../utils/store";
 import { PasswordInput, UsernameInput } from "./Inputs";
 import { GuestButton, SubmitButton } from "./Buttons";
-import { loadFile } from "../../utils/utils";
+import { delay, loadFile } from "../../utils/utils";
 
 function MotionBox({ children }) {
   const AnimatedBox = motion(Box);
@@ -30,14 +30,15 @@ function MotionBox({ children }) {
 
 function useHandleSubmit(setLoading, setError) {
   const setIndex = useSetRecoilState(INDEX);
-  const setAuth = useSetRecoilState(AUTH);
-  const setOpen = useSetRecoilState(LOGIN_OPEN);
-  const setMessageQuene = useSetRecoilState(HINTS);
+  const setAuth = useSetRecoilState(SIDEBAR_IS_AUTH);
+  const setOpen = useSetRecoilState(SIDEBAR_OPEN);
 
   const loadData = async () => {
+    setLoading(true);
     const [scene, props] = await Promise.all([
       loadFile("images/scene"),
       loadFile("images/props"),
+      delay(1500),
     ]);
     const index = [
       ...scene.map(({ name }) => ({ category: "scene", name })),
@@ -49,18 +50,12 @@ function useHandleSubmit(setLoading, setError) {
   const success = () => {
     sessionStorage.setItem("auth", "1");
     setAuth(true);
-    setMessageQuene((prev) => [
-      ...prev,
-      { message: "The key unlocked. Welcome!", key: Date.now() },
-    ]);
+    setOpen(false);
   };
   const fail = () => {
     sessionStorage.clear();
     setError(true);
-    setMessageQuene((prev) => [
-      ...prev,
-      { message: "Key didn't match. Please try again.", key: Date.now() },
-    ]);
+    setLoading(false);
   };
 
   return async (e) => {
@@ -68,16 +63,12 @@ function useHandleSubmit(setLoading, setError) {
     const data = new FormData(e.currentTarget);
     sessionStorage.setItem("username", data.get("username"));
     sessionStorage.setItem("password", data.get("password"));
-
-    setLoading(true);
     try {
       await loadData();
       success();
-      setOpen(false);
     } catch (_) {
       fail();
     }
-    setLoading(false);
   };
 }
 

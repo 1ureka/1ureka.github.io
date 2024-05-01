@@ -5,9 +5,9 @@ import { ButtonBase, Paper, Stack, Typography } from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";
 
 import { darkTheme } from "../../utils/theme";
-import { SIDEBAR_OPEN } from "../../utils/store";
-
+import { SIDEBAR_IS_AUTH, SIDEBAR_OPEN } from "../../utils/store";
 import { Setting } from "./Setting";
+import Login from "../login/Login";
 
 const MotionPaper = motion(Paper);
 const MotionStack = motion(Stack);
@@ -123,6 +123,25 @@ function SidebarNav() {
   );
 }
 
+function SidebarContent() {
+  const isAuth = useRecoilValue(SIDEBAR_IS_AUTH);
+
+  const containerSx = {
+    alignItems: "flex-start",
+    justifyContent: "space-between",
+    height: "100%",
+  };
+
+  return isAuth ? (
+    <Stack sx={containerSx}>
+      <SidebarNav />
+      <Setting />
+    </Stack>
+  ) : (
+    <Login />
+  );
+}
+
 export default function SidebarRight() {
   const open = useRecoilValue(SIDEBAR_OPEN);
 
@@ -162,14 +181,7 @@ export default function SidebarRight() {
           exit="initial"
           sx={containerSx}
         >
-          <Stack
-            alignItems="flex-start"
-            justifyContent="space-between"
-            sx={{ height: "100%" }}
-          >
-            <SidebarNav />
-            <Setting />
-          </Stack>
+          <SidebarContent />
         </MotionPaper>
       )}
     </AnimatePresence>

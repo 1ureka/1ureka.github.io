@@ -1,21 +1,15 @@
 import * as React from "react";
-import { useRecoilValue, useSetRecoilState } from "recoil";
 import { Box, Stack, ThemeProvider, Tooltip } from "@mui/material";
-import { Radio, RadioGroup, Avatar, Button, Checkbox } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { Radio, RadioGroup, Avatar, Checkbox } from "@mui/material";
 import { motion } from "framer-motion";
 
 import PauseRoundedIcon from "@mui/icons-material/PauseRounded";
 import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
-import MapRoundedIcon from "@mui/icons-material/MapRounded";
-import LockRoundedIcon from "@mui/icons-material/LockRounded";
 
 import { darkTheme, lightTheme } from "../../utils/theme";
-import { AUTH, LOGIN_OPEN } from "../../utils/store";
 import Layout from "../../components/generic/Layout";
-import Login from "../../components/login/Login";
 
 const MotionStack = motion(Stack);
 
@@ -56,60 +50,6 @@ function Radios() {
         ))}
       </RadioGroup>
     </Tooltip>
-  );
-}
-
-function MainButton() {
-  const isAuth = useRecoilValue(AUTH);
-
-  const variants = {
-    initial: { opacity: 0, y: 70, transition: { duration: 0 } },
-    exit: { opacity: 0, y: 70, transition: { duration: 0 } },
-    animate: { opacity: 1, y: 0 },
-  };
-
-  const containerSx = {
-    position: "absolute",
-    alignSelf: "flex-start",
-    bottom: darkTheme.spacing(3),
-  };
-
-  const containerProps = {
-    variants: variants,
-    sx: containerSx,
-    whileHover: { scale: 1.05 },
-    whileTap: { scale: 0.95 },
-  };
-
-  const startIcon = isAuth ? (
-    <MapRoundedIcon style={{ fontSize: 30 }} />
-  ) : (
-    <LockRoundedIcon style={{ fontSize: 30 }} />
-  );
-
-  const setOpen = useSetRecoilState(LOGIN_OPEN);
-  const navigate = useNavigate();
-
-  const handleClick = () => {
-    if (isAuth) {
-      navigate("/books");
-    } else {
-      setOpen(true);
-    }
-  };
-
-  const buttonProps = {
-    variant: "outlined",
-    size: "large",
-    sx: { ...darkTheme.typography.h5 },
-    startIcon,
-    onClick: handleClick,
-  };
-
-  return (
-    <MotionStack {...containerProps}>
-      <Button {...buttonProps}>{isAuth ? "Explore" : "Unlock"}</Button>
-    </MotionStack>
   );
 }
 
@@ -203,7 +143,6 @@ function Content() {
       <ContentLayout align="flex-end">
         <Control />
       </ContentLayout>
-      <MainButton />
     </MotionStack>
   );
 }
@@ -224,7 +163,6 @@ export default function Cover() {
       <ThemeProvider theme={darkTheme}>
         <Background />
         <Content />
-        <Login />
       </ThemeProvider>
     </Layout>
   );
