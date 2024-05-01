@@ -29,18 +29,16 @@ const itemVariants = {
 
 function Title() {
   return (
-    <Stack direction="row" alignItems="center" sx={{ p: 2 }}>
-      <ThemeProvider theme={lightTheme}>
-        <Avatar sx={{ width: 80, height: 80 }} />
-      </ThemeProvider>
-    </Stack>
+    <ThemeProvider theme={lightTheme}>
+      <Avatar sx={{ width: 65, height: 65 }} />
+    </ThemeProvider>
   );
 }
 
 function Radios() {
   const [val, setVal] = React.useState(0);
 
-  const sizeSx = { "& .MuiSvgIcon-root": { fontSize: 22 } };
+  const sizeSx = { "& .MuiSvgIcon-root": { fontSize: 20 } };
 
   return (
     <Tooltip title="Change Cover" placement="left">
@@ -75,7 +73,7 @@ function Control() {
           icon={<PauseRoundedIcon />}
           checkedIcon={<PlayArrowRoundedIcon />}
           onChange={handleAnimation}
-          size="small"
+          sx={{ "& .MuiSvgIcon-root": { fontSize: 22 } }}
         />
       </Tooltip>
       <Tooltip title={!isVisible ? "Show UI" : "Hide UI"} placement="left">
@@ -83,7 +81,7 @@ function Control() {
           icon={<VisibilityOffRoundedIcon />}
           checkedIcon={<VisibilityRoundedIcon />}
           onChange={handleVisible}
-          size="small"
+          sx={{ "& .MuiSvgIcon-root": { fontSize: 22 } }}
           checked={!isVisible}
         />
       </Tooltip>
