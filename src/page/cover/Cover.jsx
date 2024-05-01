@@ -146,6 +146,16 @@ function Content() {
 }
 
 export default function Cover() {
+  const animate = {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: "spring",
+      stiffness: 110,
+      damping: 15,
+    },
+  };
+
   const exit = {
     opacity: 0,
     scale: 1.5,
@@ -157,7 +167,7 @@ export default function Cover() {
   };
 
   return (
-    <Layout exit={exit}>
+    <Layout animate={animate} exit={exit}>
       <ThemeProvider theme={darkTheme}>
         <Background />
         <Content />

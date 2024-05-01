@@ -9,8 +9,6 @@ import { GuestButton, SubmitButton } from "./Buttons";
 import { delay, loadFile } from "../../utils/utils";
 
 function MotionBox({ children }) {
-  const AnimatedBox = motion(Box);
-
   const variants = {
     initial: { opacity: 0, y: 70, transition: { duration: 0 } },
     exit: { opacity: 0, y: 70, transition: { duration: 0 } },
@@ -25,7 +23,7 @@ function MotionBox({ children }) {
     },
   };
 
-  return <AnimatedBox variants={variants}>{children}</AnimatedBox>;
+  return <motion.div variants={variants}>{children}</motion.div>;
 }
 
 function useHandleSubmit(setLoading, setError) {
@@ -38,7 +36,7 @@ function useHandleSubmit(setLoading, setError) {
     const [scene, props] = await Promise.all([
       loadFile("images/scene"),
       loadFile("images/props"),
-      delay(1500),
+      delay(500),
     ]);
     const index = [
       ...scene.map(({ name }) => ({ category: "scene", name })),

@@ -24,12 +24,13 @@ const variants = {
     transition: {
       type: "spring",
       bounce: 0,
-      duration: 0.3,
+      duration: 0.5,
     },
   },
 };
 
-export default function Layout({ children, exit }) {
+export default function Layout({ children, animate, exit }) {
+  const _animate = animate ? animate : variants.animate;
   const _exit = exit ? exit : variants.exit;
 
   const containerSx = {
@@ -42,7 +43,7 @@ export default function Layout({ children, exit }) {
 
   return (
     <MotionStack
-      variants={{ ...variants, exit: _exit }}
+      variants={{ ...variants, exit: _exit, animate: _animate }}
       initial="initial"
       animate="animate"
       exit="exit"
