@@ -12,6 +12,7 @@ import { decode, delay } from "./utils/utils";
 import Sidebar from "./components/sidebar/Sidebar";
 import Cover from "./page/cover/Cover";
 import Books from "./page/books/Books";
+import Tools from "./page/tool/Tools";
 
 const coverLoader = async () => {
   const image = new Image();
@@ -42,7 +43,7 @@ const router = createBrowserRouter([
       },
       {
         path: "tools",
-        element: "",
+        element: <Tools />,
         loader: authLoader,
       },
     ],

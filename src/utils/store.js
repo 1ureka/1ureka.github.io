@@ -46,7 +46,7 @@ export const BOOKS_TAB = atom({
   key: "booksTab",
   default: "scene",
 });
-export const Tools_TAB = atom({
+export const TOOLS_TAB = atom({
   key: "toolsTab",
   default: "manager",
 });
