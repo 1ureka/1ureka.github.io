@@ -1,12 +1,13 @@
 import * as React from "react";
 import { useRecoilValue } from "recoil";
 import { AnimatePresence, motion } from "framer-motion";
-import { ButtonBase, Paper, Stack, Typography } from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";
+import { ButtonBase, Divider, Paper, Stack, Typography } from "@mui/material";
+import GitHubIcon from "@mui/icons-material/GitHub";
+import YouTubeIcon from "@mui/icons-material/YouTube";
 
 import { darkTheme } from "../../utils/theme";
 import { SIDEBAR_IS_AUTH, SIDEBAR_OPEN } from "../../utils/store";
-import { Setting } from "./Setting";
 import Login from "../login/Login";
 
 const MotionPaper = motion(Paper);
@@ -123,6 +124,48 @@ function SidebarNav() {
   );
 }
 
+function SidebarSocialLink({ title, info, icon }) {
+  const subSx = { color: "text.secondary", fontSize: "0.65rem" };
+  const titleSx = {
+    color: "text.secondary",
+    "&:hover": { color: "text.primary", textDecoration: "underline" },
+    cursor: "pointer",
+  };
+  return (
+    <Stack spacing={1}>
+      <Typography variant="caption" sx={subSx}>
+        {title}
+      </Typography>
+      <Stack direction={"row"} spacing={2}>
+        {icon}
+        <Typography sx={titleSx}>{info}</Typography>
+      </Stack>
+    </Stack>
+  );
+}
+
+function SidebarSocial() {
+  return (
+    <MotionStack variants={itemVariants} spacing={2.5}>
+      <Stack direction="row" spacing={6.5}>
+        <SidebarSocialLink title="SOURCE" info="GitHub" icon={<GitHubIcon />} />
+        <SidebarSocialLink
+          title="WATCH"
+          info="Youtube"
+          icon={<YouTubeIcon />}
+        />
+      </Stack>
+      <Divider flexItem />
+      <Typography
+        variant="caption"
+        sx={{ color: "text.secondary", fontSize: "0.65rem" }}
+      >
+        Copyright © 1ureka. All rights reserved.
+      </Typography>
+    </MotionStack>
+  );
+}
+
 function SidebarContent() {
   const isAuth = useRecoilValue(SIDEBAR_IS_AUTH);
 
@@ -135,7 +178,7 @@ function SidebarContent() {
   return isAuth ? (
     <Stack sx={containerSx}>
       <SidebarNav />
-      <Setting />
+      <SidebarSocial />
     </Stack>
   ) : (
     <Login />
@@ -145,16 +188,24 @@ function SidebarContent() {
 export default function SidebarRight() {
   const open = useRecoilValue(SIDEBAR_OPEN);
 
-  const transition = {
-    type: "spring",
-    stiffness: 200,
-    damping: 20,
-  };
   const variants = {
-    initial: { scaleX: 0, transition },
+    initial: {
+      scaleX: 0,
+      transition: {
+        type: "spring",
+        bounce: 0,
+        duration: 0.5,
+      },
+    },
     animate: {
       scaleX: 1,
-      transition: { ...transition, staggerChildren: 0.05, delayChildren: 0.15 },
+      transition: {
+        type: "spring",
+        stiffness: 200,
+        damping: 20,
+        staggerChildren: 0.05,
+        delayChildren: 0.15,
+      },
     },
   };
 
