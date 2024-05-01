@@ -13,20 +13,6 @@ import Layout from "../../components/generic/Layout";
 
 const MotionStack = motion(Stack);
 
-const itemVariants = {
-  initial: { opacity: 0, x: 70, transition: { duration: 0 } },
-  exit: { opacity: 0, x: 70, transition: { duration: 0 } },
-  animate: {
-    opacity: 1,
-    x: 0,
-    transition: {
-      type: "spring",
-      stiffness: 200,
-      damping: 15,
-    },
-  },
-};
-
 function Title() {
   return (
     <ThemeProvider theme={lightTheme}>
@@ -112,13 +98,26 @@ function Background() {
   );
 }
 
-function ContentLayout({ align, children }) {
+function ContentLayout({ justify, children }) {
+  const itemVariants = {
+    initial: { opacity: 0, x: 70, transition: { duration: 0 } },
+    exit: { opacity: 0, x: 70, transition: { duration: 0 } },
+    animate: {
+      opacity: 1,
+      x: 0,
+      transition: {
+        type: "spring",
+        stiffness: 200,
+        damping: 15,
+      },
+    },
+  };
+
   return (
     <MotionStack
       variants={itemVariants}
-      direction="row"
-      justifyContent="flex-end"
-      alignItems={align}
+      justifyContent={justify}
+      alignItems="flex-end"
       sx={{ height: "calc(100% /3)" }}
     >
       {children}
@@ -130,15 +129,24 @@ function Content() {
   const transition = { staggerChildren: 0.1, delayChildren: 0.2 };
   const variants = { animate: { transition } };
 
+  const containerSx = {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    p: 2,
+    height: "100%",
+    zIndex: 1,
+  };
+
   return (
-    <MotionStack variants={variants} sx={{ height: "100%", zIndex: 1 }}>
-      <ContentLayout align="flex-start">
+    <MotionStack variants={variants} sx={containerSx}>
+      <ContentLayout justify="flex-start">
         <Title />
       </ContentLayout>
-      <ContentLayout align="center">
+      <ContentLayout justify="center">
         <Radios />
       </ContentLayout>
-      <ContentLayout align="flex-end">
+      <ContentLayout justify="flex-end">
         <Control />
       </ContentLayout>
     </MotionStack>
