@@ -166,6 +166,26 @@ function SidebarSocial() {
   );
 }
 
+function SidebarDecal() {
+  const sx = {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    p: 1,
+    pointerEvents: "none",
+  };
+
+  return (
+    <MotionStack variants={itemVariants} sx={sx}>
+      <img
+        src="./decal2.png"
+        alt=""
+        style={{ width: "150px", scale: "-1 -1", opacity: 0.2 }}
+      />
+    </MotionStack>
+  );
+}
+
 function SidebarContent() {
   const isAuth = useRecoilValue(SIDEBAR_IS_AUTH);
 
@@ -177,6 +197,7 @@ function SidebarContent() {
 
   return isAuth ? (
     <Stack sx={containerSx}>
+      <SidebarDecal />
       <SidebarNav />
       <SidebarSocial />
     </Stack>
