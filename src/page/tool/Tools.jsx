@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { TOOLS_TAB } from "../../utils/store";
 import Tabs from "../../components/generic/Tabs";
 import Layout from "../../components/generic/Layout";
+import Manager from "./Manager";
 
 const MotionStack = motion(Stack);
 
@@ -66,6 +67,14 @@ function Content() {
     borderRadius: "0 50px 5px 5px",
   });
 
+  const contentSx = {
+    flexGrow: 1,
+    p: 3,
+    height: "1px",
+    overflowY: "auto",
+    scrollbarGutter: "stable",
+  };
+
   const transition = { staggerChildren: 0.05, delayChildren: 0.15 };
   const variants = { animate: { transition } };
 
@@ -77,7 +86,9 @@ function Content() {
         <ContentIntroTypo info={intro[tab]?.info} />
       </Stack>
       <Divider flexItem variant="middle" />
-      <Box sx={{ flexGrow: 1 }}></Box>
+      <Box sx={contentSx}>
+        <Manager />
+      </Box>
     </MotionStack>
   );
 }
