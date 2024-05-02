@@ -8,8 +8,8 @@ import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
 
-import { darkTheme, lightTheme } from "../../utils/theme";
-import Layout from "../../components/generic/Layout";
+import { darkTheme, lightTheme } from "../utils/theme";
+import Layout from "./Layout";
 
 const MotionStack = motion(Stack);
 

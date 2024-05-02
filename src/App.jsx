@@ -10,9 +10,9 @@ import { THEME } from "./utils/store";
 import { decode, delay } from "./utils/utils";
 
 import Sidebar from "./components/sidebar/Sidebar";
-import Cover from "./page/cover/Page";
-import Books from "./page/books/Page";
-import Tools from "./page/tool/Page";
+import Cover from "./page/Cover";
+import Books from "./page/Books";
+import Tools from "./page/Tools";
 
 const coverLoader = async () => {
   const image = new Image();

@@ -3,10 +3,10 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { Box, Divider, Stack, Typography } from "@mui/material";
 import { motion } from "framer-motion";
 
-import { BOOKS_ROWS, BOOKS_TAB } from "../../utils/store";
-import Tabs from "../../components/generic/Tabs";
-import Layout from "../../components/generic/Layout";
-import Books from "./Books";
+import { BOOKS_ROWS, BOOKS_TAB } from "../utils/store";
+import Tabs from "./Tabs";
+import Layout from "./Layout";
+import Books from "../components/books/Books";
 
 const MotionStack = motion(Stack);
 

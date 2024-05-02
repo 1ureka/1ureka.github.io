@@ -3,11 +3,11 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { Box, Divider, Stack, Typography } from "@mui/material";
 import { motion } from "framer-motion";
 
-import { TOOLS_TAB } from "../../utils/store";
-import Tabs from "../../components/generic/Tabs";
-import Layout from "../../components/generic/Layout";
-import Manager from "./Manager";
-import Tools from "./Tools";
+import { TOOLS_TAB } from "../utils/store";
+import Tabs from "./Tabs";
+import Layout from "./Layout";
+import Manager from "../components/manager/Manager";
+import Tools from "../components/tools/Tools";
 
 const MotionStack = motion(Stack);
 
