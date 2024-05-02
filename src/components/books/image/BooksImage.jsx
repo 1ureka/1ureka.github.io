@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Box, Skeleton } from "@mui/material";
-import { decode } from "../../utils/utils";
-import { THUMBNAILS } from "../../utils/store";
+import { decode } from "../../../utils/utils";
+import { THUMBNAILS } from "../../../utils/store";
 import { useRecoilValueLoadable } from "recoil";
 
 function useDecoding(category, name) {
@@ -36,7 +36,7 @@ function useDecoding(category, name) {
   return [src, state];
 }
 
-export default function AsyncImage({ category, name }) {
+export default function BooksImage({ category, name }) {
   const [src, state] = useDecoding(category, name);
 
   const size = { width: "100%", height: "100%" };
