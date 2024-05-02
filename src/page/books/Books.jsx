@@ -4,6 +4,7 @@ import { Box, ButtonBase, Skeleton, Stack } from "@mui/material";
 import { motion } from "framer-motion";
 
 import { BOOKS_ROWS, THEME } from "../../utils/store";
+import AsyncImage from "../../components/generic/AsyncImage";
 
 const MotionStack = motion(Stack);
 
@@ -20,16 +21,6 @@ const itemVariants = {
     },
   },
 };
-
-function FakeImg() {
-  return (
-    <Skeleton
-      variant="rounded"
-      sx={{ width: "100%", height: "100%" }}
-      animation="wave"
-    />
-  );
-}
 
 function Reflect({ hover, x, clipPath }) {
   const theme = useRecoilValue(THEME);
@@ -58,8 +49,13 @@ function Reflect({ hover, x, clipPath }) {
   );
 }
 
-function Image() {
+function Image({ category, name }) {
   const [hover, setHover] = React.useState(false);
+  const buttonSx = { width: "100%", aspectRatio: "16/9" };
+  const handleClick = (e) => {
+    console.log(e);
+  };
+
   return (
     <MotionStack
       variants={itemVariants}
@@ -69,8 +65,8 @@ function Image() {
       onMouseLeave={() => setHover(false)}
       sx={{ position: "relative", overflow: "hidden" }}
     >
-      <ButtonBase sx={{ width: "100%", aspectRatio: "16/9" }}>
-        <FakeImg />
+      <ButtonBase sx={buttonSx} onClick={handleClick}>
+        <AsyncImage category={category} name={name} />
       </ButtonBase>
       <Reflect
         hover={hover}
@@ -102,8 +98,8 @@ export default function Books() {
 
   return (
     <Grid>
-      {rows.map(({ name }) => (
-        <Image key={name} />
+      {rows.map(({ category, name }) => (
+        <Image key={name} category={category} name={name} />
       ))}
     </Grid>
   );
