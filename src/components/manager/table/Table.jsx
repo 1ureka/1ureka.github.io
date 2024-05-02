@@ -5,10 +5,12 @@ import { LinearProgress, Paper, Checkbox, Stack } from "@mui/material";
 import { Table, TableBody, TableCell } from "@mui/material";
 import { TableContainer, TableRow } from "@mui/material";
 
-import { MANAGER_ROWS, TABLE_ROWS_LENGTH } from "../../utils/store";
-import { TABLE_ORDER, TABLE_ORDER_BY } from "../../utils/store";
-import { TABLE_PAGE, TABLE_PAGE_ROWS, TABLE_SELECTED } from "../../utils/store";
-import { lightTheme } from "../../utils/theme";
+import { MANAGER_ROWS, TABLE_ROWS_LENGTH } from "../../../utils/store";
+import { TABLE_ORDER, TABLE_ORDER_BY } from "../../../utils/store";
+import { TABLE_PAGE, TABLE_PAGE_ROWS } from "../../../utils/store";
+import { TABLE_SELECTED } from "../../../utils/store";
+import { lightTheme } from "../../../utils/theme";
+
 import { EnhancedTableHead, EnhancedTableToolbar } from "./Head";
 import { EnhancedTablePagination } from "./Pagination";
 

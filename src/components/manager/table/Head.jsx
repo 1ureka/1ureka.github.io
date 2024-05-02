@@ -6,9 +6,9 @@ import { Typography, Checkbox, IconButton } from "@mui/material";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
-import { MANAGER_ROWS, TABLE_ROWS_LENGTH } from "../../utils/store";
-import { TABLE_ORDER, TABLE_ORDER_BY } from "../../utils/store";
-import { TABLE_SELECTED, TABLE_SELECTED_LENGTH } from "../../utils/store";
+import { MANAGER_ROWS, TABLE_ROWS_LENGTH } from "../../../utils/store";
+import { TABLE_ORDER, TABLE_ORDER_BY } from "../../../utils/store";
+import { TABLE_SELECTED, TABLE_SELECTED_LENGTH } from "../../../utils/store";
 
 const headCells = [
   {

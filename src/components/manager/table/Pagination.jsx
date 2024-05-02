@@ -2,8 +2,8 @@ import * as React from "react";
 import { TablePagination } from "@mui/material";
 
 import { useRecoilState, useRecoilValue } from "recoil";
-import { TABLE_ROWS_LENGTH } from "../../utils/store";
-import { TABLE_PAGE, TABLE_PAGE_ROWS } from "../../utils/store";
+import { TABLE_ROWS_LENGTH } from "../../../utils/store";
+import { TABLE_PAGE, TABLE_PAGE_ROWS } from "../../../utils/store";
 
 export function EnhancedTablePagination() {
   const fullLength = useRecoilValue(TABLE_ROWS_LENGTH);

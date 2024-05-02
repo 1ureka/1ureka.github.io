@@ -6,9 +6,9 @@ import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 import AddToPhotosRoundedIcon from "@mui/icons-material/AddToPhotosRounded";
 import ImageSearchRoundedIcon from "@mui/icons-material/ImageSearchRounded";
 
-import Table from "../../components/table/Table";
 import { MANAGER_CATEGORY } from "../../utils/store";
 import { TABLE_PAGE, TABLE_SELECTED } from "../../utils/store";
+import Table from "./table/Table";
 
 const MotionStack = motion(Stack);
 
