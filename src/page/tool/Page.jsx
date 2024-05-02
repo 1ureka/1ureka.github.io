@@ -71,8 +71,6 @@ function Content() {
     flexGrow: 1,
     p: 3,
     height: "1px",
-    overflowY: "auto",
-    scrollbarGutter: "stable",
   };
 
   const transition = { staggerChildren: 0.05, delayChildren: 0.15 };

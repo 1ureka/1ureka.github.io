@@ -36,7 +36,12 @@ function Decal({ sx }) {
       variants={itemVariants}
       sx={{ position: "absolute", p: 3, ...sx }}
     >
-      <img src="./decal.png" alt="" style={{ width: 140, opacity: 0.1 }} />
+      <img
+        src="./decal.png"
+        alt=""
+        style={{ width: 140, opacity: 0.1 }}
+        decoding="async"
+      />
     </MotionStack>
   );
 }
