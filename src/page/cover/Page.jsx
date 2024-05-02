@@ -153,7 +153,7 @@ function Content() {
   );
 }
 
-export default function Cover() {
+export default function Page() {
   const animate = {
     opacity: 1,
     y: 0,

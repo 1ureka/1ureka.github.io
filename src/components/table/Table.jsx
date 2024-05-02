@@ -135,7 +135,7 @@ export default function EnhancedTable({ onDelete }) {
     </MotionStack>
   );
   return (
-    <Paper sx={containerSx} elevation={2}>
+    <Paper sx={containerSx} elevation={1}>
       <EnhancedTableToolbar onDelete={onDelete} />
       <React.Suspense fallback={fallback}>
         <TableContainer>
