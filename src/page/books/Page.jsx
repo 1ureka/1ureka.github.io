@@ -13,13 +13,11 @@ const MotionStack = motion(Stack);
 const intro = {
   scene: {
     project: "PJ27, PJ28",
-    includes: "15 Images",
     info: `Reimagining classic scenes from anime and games with a realistic
       touch, along with original works inspired by Japan’s countryside.`,
   },
   props: {
     project: "PJ26",
-    includes: "30 Images",
     info: `It includes a variety of models, from small screws to buildings, 
       to meet outdoor scene requirements. It provides pre-packaged objects
       based on instances.`,
@@ -95,7 +93,7 @@ function Content() {
       <Box sx={{ height: 55 }}></Box>
       <Stack direction="row" alignItems="flex-end" width="100%" gap={1}>
         <ContentIntroBox title={"PROJECTS:"} info={intro[tab]?.project} />
-        <ContentIntroBox title={"INCLUDES:"} info={intro[tab]?.includes} />
+        <ContentIntroBox title={"INCLUDES:"} info={`${rows.length} Images`} />
         <ContentIntroTypo info={intro[tab]?.info} />
       </Stack>
       <Divider flexItem variant="middle" />

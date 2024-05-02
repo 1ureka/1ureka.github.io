@@ -3,7 +3,6 @@ import { Box, Skeleton } from "@mui/material";
 import { decode } from "../../utils/utils";
 import { THUMBNAILS } from "../../utils/store";
 import { useRecoilValueLoadable } from "recoil";
-import { motion } from "framer-motion";
 
 function useDecoding(category, name) {
   const dataUrl = useRecoilValueLoadable(
