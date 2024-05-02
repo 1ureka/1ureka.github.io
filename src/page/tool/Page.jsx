@@ -7,6 +7,7 @@ import { TOOLS_TAB } from "../../utils/store";
 import Tabs from "../../components/generic/Tabs";
 import Layout from "../../components/generic/Layout";
 import Manager from "./Manager";
+import Tools from "./Tools";
 
 const MotionStack = motion(Stack);
 
@@ -84,9 +85,7 @@ function Content() {
         <ContentIntroTypo info={intro[tab]?.info} />
       </Stack>
       <Divider flexItem variant="middle" />
-      <Box sx={contentSx}>
-        <Manager />
-      </Box>
+      <Box sx={contentSx}>{tab === "manager" ? <Manager /> : <Tools />}</Box>
     </MotionStack>
   );
 }
