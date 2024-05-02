@@ -10,9 +10,9 @@ import BookmarkRoundedIcon from "@mui/icons-material/BookmarkRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import LockRoundedIcon from "@mui/icons-material/LockRounded";
 
-import { darkTheme } from "../../utils/theme";
-import { SIDEBAR_IS_AUTH, SIDEBAR_OPEN } from "../../utils/store";
-import { SIDEBAR_SETTING_OPEN } from "../../utils/store";
+import { darkTheme } from "../../../utils/theme";
+import { SIDEBAR_IS_AUTH, SIDEBAR_OPEN } from "../../../utils/store";
+import { SIDEBAR_SETTING_OPEN } from "../../../utils/store";
 import { useNavigate } from "react-router-dom";
 
 const MotionStack = motion(Stack);

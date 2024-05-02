@@ -4,8 +4,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Divider, Paper, Stack, Typography } from "@mui/material";
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 
-import { darkTheme } from "../../utils/theme";
-import { MODE, SIDEBAR_SETTING_OPEN } from "../../utils/store";
+import { darkTheme } from "../../../utils/theme";
+import { MODE, SIDEBAR_SETTING_OPEN } from "../../../utils/store";
 
 const MotionPaper = motion(Paper);
 const MotionStack = motion(Stack);
@@ -53,7 +53,7 @@ function ThemeControl() {
   );
 }
 
-export function Setting() {
+function Setting() {
   const variants = {
     initial: {
       opacity: 0,

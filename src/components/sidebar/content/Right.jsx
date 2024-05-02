@@ -6,8 +6,8 @@ import { ButtonBase, Divider, Paper, Stack, Typography } from "@mui/material";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 
-import { darkTheme } from "../../utils/theme";
-import { SIDEBAR_IS_AUTH, SIDEBAR_OPEN } from "../../utils/store";
+import { darkTheme } from "../../../utils/theme";
+import { SIDEBAR_IS_AUTH, SIDEBAR_OPEN } from "../../../utils/store";
 import Login from "../login/Login";
 
 const MotionPaper = motion(Paper);

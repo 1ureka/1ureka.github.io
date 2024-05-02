@@ -5,9 +5,9 @@ import { Backdrop, Paper, ThemeProvider } from "@mui/material";
 import { darkTheme } from "../../utils/theme";
 import { SIDEBAR_OPEN } from "../../utils/store";
 
-import SidebarLeft from "./Left";
-import SidebarRight from "./Right";
-import { SettingPanel } from "./Setting";
+import SidebarLeft from "./content/Left";
+import SidebarRight from "./content/Right";
+import { SettingPanel } from "./content/Setting";
 
 export default function Sidebar() {
   const [open, setOpen] = useRecoilState(SIDEBAR_OPEN);

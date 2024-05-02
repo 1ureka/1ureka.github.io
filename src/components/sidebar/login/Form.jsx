@@ -3,10 +3,10 @@ import { motion } from "framer-motion";
 import { useSetRecoilState } from "recoil";
 import { Box, FormControlLabel, Checkbox, Divider } from "@mui/material";
 
-import { INDEX, SIDEBAR_IS_AUTH, SIDEBAR_OPEN } from "../../utils/store";
+import { INDEX, SIDEBAR_IS_AUTH, SIDEBAR_OPEN } from "../../../utils/store";
 import { PasswordInput, UsernameInput } from "./Inputs";
 import { GuestButton, SubmitButton } from "./Buttons";
-import { delay, loadFile } from "../../utils/utils";
+import { delay, loadFile } from "../../../utils/utils";
 
 function MotionBox({ children }) {
   const variants = {
