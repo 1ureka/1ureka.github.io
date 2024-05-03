@@ -1,7 +1,4 @@
-import { Stack } from "@mui/material";
-import { motion } from "framer-motion";
-
-const MotionStack = motion(Stack);
+import { MotionStack } from "../components/Motion";
 
 const variants = {
   initial: {

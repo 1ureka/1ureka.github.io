@@ -1,7 +1,6 @@
 import * as React from "react";
 import { Box, Stack, ThemeProvider, Tooltip } from "@mui/material";
 import { Radio, RadioGroup, Avatar, Checkbox } from "@mui/material";
-import { motion } from "framer-motion";
 
 import PauseRoundedIcon from "@mui/icons-material/PauseRounded";
 import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
@@ -9,9 +8,8 @@ import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
 
 import { darkTheme, lightTheme } from "../utils/theme";
+import { MotionStack, coverItemVar } from "../components/Motion";
 import Layout from "./Layout";
-
-const MotionStack = motion(Stack);
 
 function Title() {
   return (
@@ -99,23 +97,9 @@ function Background() {
 }
 
 function ContentLayout({ justify, children }) {
-  const itemVariants = {
-    initial: { opacity: 0, x: 70, transition: { duration: 0 } },
-    exit: { opacity: 0, x: 70, transition: { duration: 0 } },
-    animate: {
-      opacity: 1,
-      x: 0,
-      transition: {
-        type: "spring",
-        stiffness: 200,
-        damping: 15,
-      },
-    },
-  };
-
   return (
     <MotionStack
-      variants={itemVariants}
+      variants={coverItemVar}
       justifyContent={justify}
       alignItems="flex-end"
       sx={{ height: "calc(100% /3)" }}

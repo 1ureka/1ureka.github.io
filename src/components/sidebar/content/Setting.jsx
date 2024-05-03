@@ -1,14 +1,12 @@
 import * as React from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { AnimatePresence, motion } from "framer-motion";
-import { Divider, Paper, Stack, Typography } from "@mui/material";
+import { AnimatePresence } from "framer-motion";
+import { Divider, Typography } from "@mui/material";
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 
 import { darkTheme } from "../../../utils/theme";
 import { MODE, SIDEBAR_SETTING_OPEN } from "../../../utils/store";
-
-const MotionPaper = motion(Paper);
-const MotionStack = motion(Stack);
+import { MotionPaper, MotionStack } from "../../Motion";
 
 function Title({ title }) {
   return (
@@ -53,7 +51,7 @@ function ThemeControl() {
   );
 }
 
-function Setting() {
+function Content() {
   const variants = {
     initial: {
       opacity: 0,
@@ -81,7 +79,7 @@ function Setting() {
   );
 }
 
-export function SettingPanel() {
+export default function Setting() {
   const open = useRecoilValue(SIDEBAR_SETTING_OPEN);
 
   const variants = {
@@ -129,7 +127,7 @@ export function SettingPanel() {
           exit="initial"
           sx={containerSx}
         >
-          <Setting />
+          <Content />
         </MotionPaper>
       )}
     </AnimatePresence>

@@ -1,9 +1,8 @@
 import * as React from "react";
-import { motion } from "framer-motion";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { LinearProgress, Paper, Checkbox, Stack } from "@mui/material";
-import { Table, TableBody, TableCell } from "@mui/material";
-import { TableContainer, TableRow } from "@mui/material";
+import { LinearProgress, Paper, Checkbox } from "@mui/material";
+import { Table, TableCell, TableRow } from "@mui/material";
+import { TableContainer } from "@mui/material";
 
 import { MANAGER_ROWS, TABLE_ROWS_LENGTH } from "../../../utils/store";
 import { TABLE_ORDER, TABLE_ORDER_BY } from "../../../utils/store";
@@ -13,24 +12,7 @@ import { lightTheme } from "../../../utils/theme";
 
 import { EnhancedTableHead, EnhancedTableToolbar } from "./Head";
 import { EnhancedTablePagination } from "./Pagination";
-
-const MotionStack = motion(Stack);
-const MotionBody = motion(TableBody);
-const MotionRow = motion(TableRow);
-
-const itemVariants = {
-  initial: { opacity: 0, x: -30, transition: { duration: 0 } },
-  exit: { opacity: 0, x: -30, transition: { duration: 0 } },
-  animate: {
-    opacity: 1,
-    x: 0,
-    transition: {
-      type: "spring",
-      stiffness: 200,
-      damping: 15,
-    },
-  },
-};
+import { MotionBody, MotionRow, MotionStack, tableItemVar } from "../../Motion";
 
 function comparator(order, orderBy) {
   const sortOrder = order === "desc" ? 1 : -1;
@@ -105,7 +87,7 @@ function VisibleTableRow({ row, index }) {
 
   return (
     <MotionRow
-      variants={itemVariants}
+      variants={tableItemVar}
       hover
       onClick={() => handleClick(row.name)}
       tabIndex={-1}
@@ -132,7 +114,7 @@ export default function EnhancedTable({ onDelete }) {
     border: `2px solid ${lightTheme.palette.divider}`,
   };
   const fallback = (
-    <MotionStack variants={itemVariants} sx={{ p: 2, width: "100%" }}>
+    <MotionStack variants={tableItemVar} sx={{ p: 2, width: "100%" }}>
       <LinearProgress />
     </MotionStack>
   );

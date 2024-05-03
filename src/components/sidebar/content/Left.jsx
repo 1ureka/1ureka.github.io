@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import { Box, Divider, IconButton, Stack, Typography } from "@mui/material";
 
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
@@ -13,10 +13,7 @@ import LockRoundedIcon from "@mui/icons-material/LockRounded";
 import { darkTheme } from "../../../utils/theme";
 import { SIDEBAR_IS_AUTH, SIDEBAR_OPEN } from "../../../utils/store";
 import { SIDEBAR_SETTING_OPEN } from "../../../utils/store";
-import { useNavigate } from "react-router-dom";
-
-const MotionStack = motion(Stack);
-const MotionIconButton = motion(IconButton);
+import { MotionIconButton, MotionStack } from "../../Motion";
 
 const transition = { type: "spring", stiffness: 150, damping: 20 };
 const itemVariants = {

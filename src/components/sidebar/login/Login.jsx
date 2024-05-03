@@ -1,9 +1,7 @@
 import { Avatar, Box, Stack, Typography } from "@mui/material";
-import { motion } from "framer-motion";
 import LockRoundedIcon from "@mui/icons-material/LockRounded";
+import { MotionStack } from "../../Motion";
 import LoginForm from "./Form";
-
-const MotionStack = motion(Stack);
 
 const itemVariants = {
   initial: { opacity: 0, y: 70, transition: { duration: 0 } },

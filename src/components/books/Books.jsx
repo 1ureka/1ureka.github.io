@@ -1,26 +1,10 @@
 import * as React from "react";
 import { useRecoilValue } from "recoil";
-import { Box, ButtonBase, Stack } from "@mui/material";
-import { motion } from "framer-motion";
+import { Box, ButtonBase } from "@mui/material";
 
 import { BOOKS_ROWS, THEME } from "../../utils/store";
+import { MotionStack, booksItemVar } from "../Motion";
 import BooksImage from "./image/BooksImage";
-
-const MotionStack = motion(Stack);
-
-const itemVariants = {
-  initial: { opacity: 0, y: 70, transition: { duration: 0 } },
-  exit: { opacity: 0, y: 70, transition: { duration: 0 } },
-  animate: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      type: "spring",
-      stiffness: 200,
-      damping: 15,
-    },
-  },
-};
 
 function Reflect({ hover, x, clipPath }) {
   const theme = useRecoilValue(THEME);
@@ -58,7 +42,7 @@ function Image({ category, name }) {
 
   return (
     <MotionStack
-      variants={itemVariants}
+      variants={booksItemVar}
       whileTap={{ scale: 0.97 }}
       whileHover={{ scale: 1.02, filter: "brightness(1.05)", rotate: 2 }}
       onMouseEnter={() => setHover(true)}

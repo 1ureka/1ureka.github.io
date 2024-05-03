@@ -1,14 +1,12 @@
 import * as React from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { Box, Divider, Stack, Typography } from "@mui/material";
-import { motion } from "framer-motion";
 
 import { BOOKS_ROWS, BOOKS_TAB } from "../utils/store";
+import { MotionStack, booksItemVar } from "../components/Motion";
 import Tabs from "./Tabs";
 import Layout from "./Layout";
 import Books from "../components/books/Books";
-
-const MotionStack = motion(Stack);
 
 const intro = {
   scene: {
@@ -24,26 +22,12 @@ const intro = {
   },
 };
 
-const itemVariants = {
-  initial: { opacity: 0, y: 70, transition: { duration: 0 } },
-  exit: { opacity: 0, y: 70, transition: { duration: 0 } },
-  animate: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      type: "spring",
-      stiffness: 200,
-      damping: 15,
-    },
-  },
-};
-
 function ContentIntroBox({ title, info }) {
   const fontSize = "0.65rem";
   const containerSx = { p: 3, alignItems: "flex-start" };
 
   return (
-    <MotionStack variants={itemVariants} sx={containerSx} gap={0.5}>
+    <MotionStack variants={booksItemVar} sx={containerSx} gap={0.5}>
       <Typography variant="caption" sx={{ color: "text.secondary", fontSize }}>
         {title}
       </Typography>
@@ -57,7 +41,7 @@ function ContentIntroBox({ title, info }) {
 function ContentIntroTypo({ info }) {
   const sx = { flexGrow: 1, p: 3 };
   return (
-    <MotionStack variants={itemVariants} alignItems="center" sx={sx}>
+    <MotionStack variants={booksItemVar} alignItems="center" sx={sx}>
       <Typography variant="caption" sx={{ color: "text.secondary" }}>
         {info}
       </Typography>

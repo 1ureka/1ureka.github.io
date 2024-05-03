@@ -2,17 +2,14 @@ import * as React from "react";
 import { useRecoilValue } from "recoil";
 import { AnimatePresence, motion } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
-import { ButtonBase, Divider, Paper, Stack, Typography } from "@mui/material";
+import { ButtonBase, Divider, Stack, Typography } from "@mui/material";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 
 import { darkTheme } from "../../../utils/theme";
 import { SIDEBAR_IS_AUTH, SIDEBAR_OPEN } from "../../../utils/store";
+import { MotionButtonBase, MotionPaper, MotionStack } from "../../Motion";
 import Login from "../login/Login";
-
-const MotionPaper = motion(Paper);
-const MotionStack = motion(Stack);
-const MotionButtonBase = motion(ButtonBase);
 
 const itemVariants = {
   initial: {

@@ -7,7 +7,7 @@ import { SIDEBAR_OPEN } from "../../utils/store";
 
 import SidebarLeft from "./content/Left";
 import SidebarRight from "./content/Right";
-import { SettingPanel } from "./content/Setting";
+import Setting from "./content/Setting";
 
 export default function Sidebar() {
   const [open, setOpen] = useRecoilState(SIDEBAR_OPEN);
@@ -29,7 +29,7 @@ export default function Sidebar() {
         sx={{ zIndex: darkTheme.zIndex.drawer, backdropFilter: "blur(5px)" }}
       ></Backdrop>
       <Paper sx={containerSx}>
-        <SettingPanel />
+        <Setting />
         <SidebarLeft />
         <SidebarRight />
       </Paper>

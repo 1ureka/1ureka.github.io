@@ -1,5 +1,4 @@
 import * as React from "react";
-import { motion } from "framer-motion";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { Button, Stack, Typography } from "@mui/material";
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
@@ -8,33 +7,8 @@ import ImageSearchRoundedIcon from "@mui/icons-material/ImageSearchRounded";
 
 import { MANAGER_CATEGORY } from "../../utils/store";
 import { TABLE_PAGE, TABLE_SELECTED } from "../../utils/store";
+import { MotionStack, managerItemVar } from "../Motion";
 import Table from "./table/Table";
-
-const MotionStack = motion(Stack);
-
-const variants = {
-  initial: {
-    opacity: 0,
-    y: 100,
-    transition: { duration: 0 },
-  },
-  animate: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      type: "spring",
-      stiffness: 150,
-      damping: 15,
-      staggerChildren: 0.05,
-      delayChildren: 0.15,
-    },
-  },
-  exit: {
-    opacity: 0,
-    y: 50,
-    transition: { duration: 0 },
-  },
-};
 
 function ManagerTitle({ title }) {
   return (
@@ -99,11 +73,11 @@ function ManagerVerButton() {
 function ManagerOperation() {
   return (
     <>
-      <MotionStack variants={variants} gap={1}>
+      <MotionStack variants={managerItemVar} gap={1}>
         <ManagerTitle title="CATEGORY:" />
         <ManagerToggles />
       </MotionStack>
-      <MotionStack variants={variants} gap={1} alignItems="flex-start">
+      <MotionStack variants={managerItemVar} gap={1} alignItems="flex-start">
         <ManagerTitle title="OPERATION:" />
         <ManagerAddButton />
         <ManagerVerButton />
@@ -122,7 +96,7 @@ function Decal({ sx, scale }) {
   };
 
   return (
-    <MotionStack variants={variants} sx={containerSx}>
+    <MotionStack variants={managerItemVar} sx={containerSx}>
       <img
         src="./decal3.png"
         alt=""
@@ -143,7 +117,7 @@ export default function Manager() {
         <Decal sx={{ left: 0 }} scale="1" />
         <Decal sx={{ right: 0 }} scale="-1 1" />
         <MotionStack
-          variants={variants}
+          variants={managerItemVar}
           sx={{ px: 4, py: 3, mr: 5 }}
           justifyContent={"flex-start"}
           alignItems={"flex-start"}
@@ -152,7 +126,7 @@ export default function Manager() {
           <ManagerOperation />
         </MotionStack>
         <MotionStack
-          variants={variants}
+          variants={managerItemVar}
           sx={{
             flexGrow: 1,
             px: "10%",

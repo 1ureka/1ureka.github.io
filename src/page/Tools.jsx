@@ -1,15 +1,13 @@
 import * as React from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { Box, Divider, Stack, Typography } from "@mui/material";
-import { motion } from "framer-motion";
 
 import { TOOLS_TAB } from "../utils/store";
+import { MotionStack, toolsItemVar } from "../components/Motion";
 import Tabs from "./Tabs";
 import Layout from "./Layout";
 import Manager from "../components/manager/Manager";
 import Tools from "../components/tools/Tools";
-
-const MotionStack = motion(Stack);
 
 const intro = {
   manager: {
@@ -26,23 +24,9 @@ const intro = {
   },
 };
 
-const itemVariants = {
-  initial: { opacity: 0, y: 70, transition: { duration: 0 } },
-  exit: { opacity: 0, y: 70, transition: { duration: 0 } },
-  animate: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      type: "spring",
-      stiffness: 200,
-      damping: 15,
-    },
-  },
-};
-
 function ContentTitle({ title }) {
   return (
-    <MotionStack variants={itemVariants} sx={{ p: 3 }}>
+    <MotionStack variants={toolsItemVar} sx={{ p: 3 }}>
       <Typography>{title}</Typography>
     </MotionStack>
   );
@@ -51,7 +35,7 @@ function ContentTitle({ title }) {
 function ContentIntroTypo({ info }) {
   const sx = { flexGrow: 1, p: 3, alignItems: "center" };
   return (
-    <MotionStack variants={itemVariants} sx={sx}>
+    <MotionStack variants={toolsItemVar} sx={sx}>
       <Typography variant="caption" sx={{ color: "text.secondary" }}>
         {info}
       </Typography>

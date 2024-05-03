@@ -1,33 +1,14 @@
 import * as React from "react";
-import { motion } from "framer-motion";
 import { useRecoilValue } from "recoil";
 import { Button, Divider, Paper, Stack, Typography } from "@mui/material";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
 import { THEME } from "../../utils/store";
-
-const MotionPaper = motion(Paper);
-const MotionStack = motion(Stack);
-
-const itemVariants = {
-  initial: { opacity: 0, y: 70, transition: { duration: 0 } },
-  exit: { opacity: 0, y: 70, transition: { duration: 0 } },
-  animate: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      type: "spring",
-      stiffness: 200,
-      damping: 15,
-      staggerChildren: 0.05,
-      delayChildren: 0.15,
-    },
-  },
-};
+import { MotionPaper, MotionStack, toolsItemVar } from "../Motion";
 
 function ConvertTitle() {
   return (
-    <MotionStack variants={itemVariants}>
+    <MotionStack variants={toolsItemVar}>
       <Typography variant="h6" sx={{ mx: 2 }} color="primary">
         Image Conversion
       </Typography>
@@ -74,7 +55,7 @@ function ConvertSelect() {
 function ConvertOperation() {
   return (
     <MotionStack
-      variants={itemVariants}
+      variants={toolsItemVar}
       direction="row"
       justifyContent={"space-between"}
       width={"100%"}
@@ -96,7 +77,7 @@ function ConvertContent() {
   return (
     <>
       <MotionStack
-        variants={itemVariants}
+        variants={toolsItemVar}
         sx={{
           width: "100%",
           aspectRatio: "1/1",
@@ -113,7 +94,7 @@ function ConvertContent() {
 
 function Convert() {
   return (
-    <MotionPaper variants={itemVariants} sx={{ p: 3 }} elevation={3}>
+    <MotionPaper variants={toolsItemVar} sx={{ p: 3 }} elevation={3}>
       <Stack alignItems="center" gap={2}>
         <ConvertTitle />
         <Divider flexItem />
