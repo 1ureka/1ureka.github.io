@@ -8,9 +8,8 @@ import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
 
 import { darkTheme, lightTheme } from "../utils/theme";
-import { MotionStack } from "../components/Motion";
+import { MotionPage, MotionStack } from "../components/Motion";
 import { coverItemVar, orchestrationVar } from "../components/Motion";
-import Layout from "./Layout";
 
 function Title() {
   return (
@@ -159,11 +158,11 @@ export default function Page() {
   };
 
   return (
-    <Layout animate={animate} exit={exit}>
+    <MotionPage animate={animate} exit={exit}>
       <ThemeProvider theme={darkTheme}>
         <Background />
         <Content />
       </ThemeProvider>
-    </Layout>
+    </MotionPage>
   );
 }

@@ -1,15 +1,13 @@
 import * as React from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { Box, Divider, Stack, Typography } from "@mui/material";
+import { useRecoilValue } from "recoil";
+import { Typography } from "@mui/material";
 
 import { TOOLS_TAB } from "../utils/store";
-import { MotionStack } from "../components/Motion";
-import { orchestrationVar, toolsItemVar } from "../components/Motion";
+import { MotionStack, toolsItemVar } from "../components/Motion";
 
-import Tabs from "./Tabs";
-import Layout from "./Layout";
 import Manager from "../components/manager/Manager";
 import Tools from "../components/tools/Tools";
+import Layout from "./Layout";
 
 const intro = {
   manager: {
@@ -26,7 +24,7 @@ const intro = {
   },
 };
 
-function ContentTitle({ title }) {
+function Title({ title }) {
   return (
     <MotionStack variants={toolsItemVar} sx={{ p: 3 }}>
       <Typography>{title}</Typography>
@@ -34,7 +32,7 @@ function ContentTitle({ title }) {
   );
 }
 
-function ContentIntroTypo({ info }) {
+function Intro({ info }) {
   const sx = { flexGrow: 1, p: 3, alignItems: "center" };
   return (
     <MotionStack variants={toolsItemVar} sx={sx}>
@@ -45,44 +43,30 @@ function ContentIntroTypo({ info }) {
   );
 }
 
-function Content() {
-  const containerSx = (theme) => ({
-    backgroundColor: theme.palette.custom.content,
-    flexGrow: 1,
-    borderRadius: "0 50px 5px 5px",
-  });
-
-  const contentSx = {
-    flexGrow: 1,
-    p: 3,
-    height: "1px",
-  };
-
-  const containerVar = orchestrationVar({ delay: 0.15, stagger: 0.05 });
+function Header() {
   const tab = useRecoilValue(TOOLS_TAB);
   const { title, info } = intro[tab];
-
   return (
-    <MotionStack sx={containerSx} variants={containerVar} key={title}>
-      <Box sx={{ height: 55 }}></Box>
-      <Stack direction="row" alignItems="flex-end" width="100%" gap={1}>
-        <ContentTitle title={title} />
-        <ContentIntroTypo info={info} />
-      </Stack>
-      <Divider flexItem variant="middle" />
-      <Box sx={contentSx}>{tab === "manager" ? <Manager /> : <Tools />}</Box>
-    </MotionStack>
+    <>
+      <Title title={title} />
+      <Intro info={info} />
+    </>
   );
 }
 
-export default function Page() {
-  const labels = ["Manager", "Tools"];
-  const [tab, setTab] = useRecoilState(TOOLS_TAB);
+function Content() {
+  const tab = useRecoilValue(TOOLS_TAB);
+  return tab === "manager" ? <Manager /> : <Tools />;
+}
 
+export default function Page() {
   return (
-    <Layout>
-      <Tabs labels={labels} value={tab} onChange={(tab) => setTab(tab)} />
-      <Content />
-    </Layout>
+    <Layout
+      tabState={TOOLS_TAB}
+      tabs={["Manager", "Tools"]}
+      header={<Header />}
+      content={<Content />}
+      scroll={false}
+    />
   );
 }
