@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { List, ListItem, ListItemIcon, IconButton } from "@mui/material";
 import { ListItemText, Dialog, DialogTitle } from "@mui/material";
 import { DialogContent, DialogActions } from "@mui/material";
@@ -7,9 +7,11 @@ import { Typography, Button, Divider } from "@mui/material";
 
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import AddPhotoAlternateRoundedIcon from "@mui/icons-material/AddPhotoAlternateRounded";
+import HideImageRoundedIcon from "@mui/icons-material/HideImageRounded";
 
-import { useImageActions } from "../../utils/hooks";
-import { MANAGER_ADDED, MANAGER_DELED } from "../../utils/store";
+import { useImageActions } from "../../../utils/hooks";
+import { MANAGER_ADDED, MANAGER_DELED } from "../../../utils/store";
+import { TABLE_PAGE, TABLE_SELECTED } from "../../../utils/store";
 import { FinishHint, Progress, Warning } from "./Elements";
 
 function InfoHeader({ title, onClose }) {
@@ -31,18 +33,16 @@ function InfoHeader({ title, onClose }) {
   );
 }
 
-function InfoContents({ info, list }) {
+function InfoContents({ info, list, icon }) {
   return (
     <DialogContent dividers>
       <Typography gutterBottom>{info}</Typography>
       <List>
         {list.map((item, i) => (
-          <React.Fragment key={item.name}>
+          <React.Fragment key={item.name || item}>
             <ListItem>
-              <ListItemIcon>
-                <AddPhotoAlternateRoundedIcon />
-              </ListItemIcon>
-              <ListItemText primary={item.name} />
+              <ListItemIcon>{icon}</ListItemIcon>
+              <ListItemText primary={item.name || item} />
             </ListItem>
             {i + 1 === list.length ? "" : <Divider />}
           </React.Fragment>
@@ -64,7 +64,7 @@ function InfoAction({ onSave, loading }) {
   );
 }
 
-function DialogTemplate({ open, onClose, title, info, list, onSave, hint }) {
+function Template({ open, onClose, title, info, list, onSave, hint, icon }) {
   const [loading, setLoading] = useState(false);
   const handleClose = () => {
     if (onClose && !loading) onClose();
@@ -79,7 +79,7 @@ function DialogTemplate({ open, onClose, title, info, list, onSave, hint }) {
     setLoading(true);
     await onSave();
     setLoading(false);
-    handleClose();
+    onClose();
     setOpenSnack(true);
   };
 
@@ -87,7 +87,7 @@ function DialogTemplate({ open, onClose, title, info, list, onSave, hint }) {
     <React.Fragment>
       <Dialog onClose={handleClose} open={open} fullWidth>
         <InfoHeader title={title} onClose={handleClose} />
-        <InfoContents info={info} list={list} />
+        <InfoContents info={info} list={list} icon={icon} />
         <InfoAction onSave={handleSaveChanges} loading={loading} />
       </Dialog>
       <FinishHint open={openSnack} onClose={handleSnackClose} message={hint} />
@@ -104,7 +104,7 @@ export function DialogAdd({ open, onClose, list }) {
   const num = useRecoilValue(MANAGER_ADDED);
 
   return (
-    <DialogTemplate
+    <Template
       open={open}
       onClose={onClose}
       title="Adding Files"
@@ -112,6 +112,7 @@ export function DialogAdd({ open, onClose, list }) {
       list={list}
       onSave={actionHandler}
       hint={`${num} Files Added`}
+      icon={<AddPhotoAlternateRoundedIcon />}
     />
   );
 }
@@ -128,7 +129,7 @@ export function DialogDel({ open, onClose }) {
   const num = useRecoilValue(MANAGER_DELED);
 
   return (
-    <DialogTemplate
+    <Template
       open={open}
       onClose={onClose}
       title="Deleting Files"
@@ -136,6 +137,7 @@ export function DialogDel({ open, onClose }) {
       list={selected}
       onSave={actionHandler}
       hint={`${num} Files Deleted`}
+      icon={<HideImageRoundedIcon />}
     />
   );
 }

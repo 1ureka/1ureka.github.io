@@ -10,6 +10,7 @@ import { MotionStack, managerItemVar } from "../Motion";
 import Table from "./table/Table";
 import AddButton from "./button/AddButton";
 import VerifyButton from "./button/VerifyButton";
+import { DialogDel } from "./dialog/Dialog";
 
 function Title({ title }) {
   return (
@@ -58,7 +59,7 @@ function Operation() {
       </MotionStack>
       <MotionStack variants={managerItemVar} gap={1} alignItems="flex-start">
         <Title title="OPERATION:" />
-        <AddButton onProcessComplete={(list) => console.log(list)} />
+        <AddButton />
         <VerifyButton />
       </MotionStack>
     </>
@@ -105,6 +106,8 @@ export default function Manager() {
     overflowY: "auto",
   };
 
+  const [open, setOpen] = React.useState(false);
+
   return (
     <Stack direction="row" sx={containerSx}>
       <Decal sx={{ left: 0 }} scale="1" />
@@ -113,7 +116,8 @@ export default function Manager() {
         <Operation />
       </MotionStack>
       <MotionStack variants={managerItemVar} sx={rightSx}>
-        <Table />
+        <Table onDelete={() => setOpen(true)} />
+        <DialogDel open={open} onClose={() => setOpen(false)} />
       </MotionStack>
     </Stack>
   );

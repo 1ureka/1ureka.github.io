@@ -20,8 +20,9 @@ export function Progress() {
 export function FinishHint({ open, onClose, message }) {
   return (
     <Snackbar
-      open={open}
       autoHideDuration={5000}
+      anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      open={open}
       onClose={onClose}
       message={message}
       action={

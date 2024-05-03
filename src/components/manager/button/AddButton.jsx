@@ -6,6 +6,7 @@ import AddToPhotosRoundedIcon from "@mui/icons-material/AddToPhotosRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
 import { compressImage } from "../../../utils/utils";
+import { DialogAdd } from "../dialog/Dialog";
 
 //
 // utils
@@ -86,9 +87,10 @@ function Hint({ open, alert, onClose }) {
   );
 }
 
-export default function AddButton({ onProcessComplete }) {
+export default function AddButton() {
   const [task, setTask] = useState("");
   const [alert, setAlert] = useState("");
+  const [list, setList] = useState([]);
 
   const handleAdd = async () => {
     setAlert("");
@@ -113,7 +115,7 @@ export default function AddButton({ onProcessComplete }) {
     setTask("Compressing files...");
     const list = await processImages(files);
     setTask("");
-    onProcessComplete(list);
+    setList(list);
   };
 
   return (
@@ -121,6 +123,11 @@ export default function AddButton({ onProcessComplete }) {
       <Action onClick={handleAdd} />
       <Progress open={!!task} task={task} />
       <Hint open={!!alert} alert={alert} onClose={() => setAlert("")} />
+      <DialogAdd
+        open={list.length > 0}
+        onClose={() => setList([])}
+        list={list}
+      />
     </>
   );
 }
