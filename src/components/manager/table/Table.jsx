@@ -12,7 +12,8 @@ import { lightTheme } from "../../../utils/theme";
 
 import { EnhancedTableHead, EnhancedTableToolbar } from "./Head";
 import { EnhancedTablePagination } from "./Pagination";
-import { MotionBody, MotionRow, MotionStack, tableItemVar } from "../../Motion";
+import { MotionBody, MotionRow, MotionStack } from "../../Motion";
+import { orchestrationVar, tableItemVar } from "../../Motion";
 
 function comparator(order, orderBy) {
   const sortOrder = order === "desc" ? 1 : -1;
@@ -47,20 +48,18 @@ function EnhancedTableBody() {
         .slice(page * pageRows, page * pageRows + pageRows),
     [rows, order, orderBy, page, pageRows]
   );
-
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * pageRows - rowsLength) : 0;
 
-  const nameRows = visibleRows.map(({ name }) => name).join("");
+  const variants = orchestrationVar({
+    delay: 0.15,
+    stagger: 0.5 / visibleRows.length,
+  });
 
-  const transition = {
-    staggerChildren: 0.5 / visibleRows.length,
-    delaydelayChildren: 0.15,
-  };
-  const variants = { animate: { transition } };
+  const key = visibleRows.map(({ name }) => name).join("");
 
   return (
-    <MotionBody variants={variants} key={nameRows}>
+    <MotionBody variants={variants} key={key}>
       {visibleRows.map((row, index) => (
         <VisibleTableRow key={row.name} row={row} index={index} />
       ))}

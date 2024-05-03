@@ -8,7 +8,8 @@ import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
 
 import { darkTheme, lightTheme } from "../utils/theme";
-import { MotionStack, coverItemVar } from "../components/Motion";
+import { MotionStack } from "../components/Motion";
+import { coverItemVar, orchestrationVar } from "../components/Motion";
 import Layout from "./Layout";
 
 function Title() {
@@ -110,8 +111,7 @@ function ContentLayout({ justify, children }) {
 }
 
 function Content() {
-  const transition = { staggerChildren: 0.1, delayChildren: 0.2 };
-  const variants = { animate: { transition } };
+  const containerVar = orchestrationVar({ delay: 0.2, stagger: 0.1 });
 
   const containerSx = {
     position: "absolute",
@@ -123,7 +123,7 @@ function Content() {
   };
 
   return (
-    <MotionStack variants={variants} sx={containerSx}>
+    <MotionStack variants={containerVar} sx={containerSx}>
       <ContentLayout justify="flex-start">
         <Title />
       </ContentLayout>

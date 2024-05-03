@@ -3,7 +3,9 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { Box, Divider, Stack, Typography } from "@mui/material";
 
 import { TOOLS_TAB } from "../utils/store";
-import { MotionStack, toolsItemVar } from "../components/Motion";
+import { MotionStack } from "../components/Motion";
+import { orchestrationVar, toolsItemVar } from "../components/Motion";
+
 import Tabs from "./Tabs";
 import Layout from "./Layout";
 import Manager from "../components/manager/Manager";
@@ -44,8 +46,6 @@ function ContentIntroTypo({ info }) {
 }
 
 function Content() {
-  const tab = useRecoilValue(TOOLS_TAB);
-
   const containerSx = (theme) => ({
     backgroundColor: theme.palette.custom.content,
     flexGrow: 1,
@@ -58,15 +58,16 @@ function Content() {
     height: "1px",
   };
 
-  const transition = { staggerChildren: 0.05, delayChildren: 0.15 };
-  const variants = { animate: { transition } };
+  const containerVar = orchestrationVar({ delay: 0.15, stagger: 0.05 });
+  const tab = useRecoilValue(TOOLS_TAB);
+  const { title, info } = intro[tab];
 
   return (
-    <MotionStack sx={containerSx} variants={variants} key={intro[tab]?.title}>
+    <MotionStack sx={containerSx} variants={containerVar} key={title}>
       <Box sx={{ height: 55 }}></Box>
       <Stack direction="row" alignItems="flex-end" width="100%" gap={1}>
-        <ContentTitle title={intro[tab]?.title} />
-        <ContentIntroTypo info={intro[tab]?.info} />
+        <ContentTitle title={title} />
+        <ContentIntroTypo info={info} />
       </Stack>
       <Divider flexItem variant="middle" />
       <Box sx={contentSx}>{tab === "manager" ? <Manager /> : <Tools />}</Box>
