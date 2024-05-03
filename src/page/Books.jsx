@@ -7,7 +7,7 @@ import { MotionStack } from "../components/Motion";
 import { booksItemVar, orchestrationVar } from "../components/Motion";
 
 import Books from "../components/books/Books";
-import Layout from "./Layout";
+import Layout from "../components/Layout";
 
 const intro = {
   scene: {

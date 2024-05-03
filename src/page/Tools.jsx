@@ -7,7 +7,7 @@ import { MotionStack, toolsItemVar } from "../components/Motion";
 
 import Manager from "../components/manager/Manager";
 import Tools from "../components/tools/Tools";
-import Layout from "./Layout";
+import Layout from "../components/Layout";
 
 const intro = {
   manager: {
