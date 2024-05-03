@@ -1,16 +1,17 @@
 import * as React from "react";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { Button, Stack, Typography } from "@mui/material";
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
-import AddToPhotosRoundedIcon from "@mui/icons-material/AddToPhotosRounded";
-import ImageSearchRoundedIcon from "@mui/icons-material/ImageSearchRounded";
+import { Stack, Typography } from "@mui/material";
 
 import { MANAGER_CATEGORY } from "../../utils/store";
 import { TABLE_PAGE, TABLE_SELECTED } from "../../utils/store";
 import { MotionStack, managerItemVar } from "../Motion";
-import Table from "./table/Table";
 
-function ManagerTitle({ title }) {
+import Table from "./table/Table";
+import AddButton from "./button/AddButton";
+import VerifyButton from "./button/VerifyButton";
+
+function Title({ title }) {
   return (
     <Typography variant="caption" sx={{ color: "text.secondary" }}>
       {title}
@@ -18,7 +19,7 @@ function ManagerTitle({ title }) {
   );
 }
 
-function ManagerToggles() {
+function Toggles() {
   const [category, setCategory] = useRecoilState(MANAGER_CATEGORY);
   const setPage = useSetRecoilState(TABLE_PAGE);
   const setSelected = useSetRecoilState(TABLE_SELECTED);
@@ -48,39 +49,17 @@ function ManagerToggles() {
   );
 }
 
-function ManagerAddButton() {
-  return (
-    <Button
-      startIcon={<AddToPhotosRoundedIcon fontSize="small" />}
-      sx={(theme) => theme.typography.caption}
-    >
-      Add Image
-    </Button>
-  );
-}
-
-function ManagerVerButton() {
-  return (
-    <Button
-      startIcon={<ImageSearchRoundedIcon fontSize="small" />}
-      sx={(theme) => theme.typography.caption}
-    >
-      Verify Integrity
-    </Button>
-  );
-}
-
-function ManagerOperation() {
+function Operation() {
   return (
     <>
       <MotionStack variants={managerItemVar} gap={1}>
-        <ManagerTitle title="CATEGORY:" />
-        <ManagerToggles />
+        <Title title="CATEGORY:" />
+        <Toggles />
       </MotionStack>
       <MotionStack variants={managerItemVar} gap={1} alignItems="flex-start">
-        <ManagerTitle title="OPERATION:" />
-        <ManagerAddButton />
-        <ManagerVerButton />
+        <Title title="OPERATION:" />
+        <AddButton onProcessComplete={(list) => console.log(list)} />
+        <VerifyButton />
       </MotionStack>
     </>
   );
@@ -108,36 +87,34 @@ function Decal({ sx, scale }) {
 }
 
 export default function Manager() {
+  const containerSx = { position: "relative", width: "100%", height: "100%" };
+
+  const leftSx = {
+    px: 4,
+    py: 3,
+    mr: 5,
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+  };
+
+  const rightSx = {
+    flexGrow: 1,
+    px: "10%",
+    py: 3.5,
+    height: "100%",
+    overflowY: "auto",
+  };
+
   return (
-    <>
-      <Stack
-        direction="row"
-        sx={{ position: "relative", width: "100%", height: "100%" }}
-      >
-        <Decal sx={{ left: 0 }} scale="1" />
-        <Decal sx={{ right: 0 }} scale="-1 1" />
-        <MotionStack
-          variants={managerItemVar}
-          sx={{ px: 4, py: 3, mr: 5 }}
-          justifyContent={"flex-start"}
-          alignItems={"flex-start"}
-          gap={8}
-        >
-          <ManagerOperation />
-        </MotionStack>
-        <MotionStack
-          variants={managerItemVar}
-          sx={{
-            flexGrow: 1,
-            px: "10%",
-            py: 3.5,
-            height: "100%",
-            overflowY: "auto",
-          }}
-        >
-          <Table />
-        </MotionStack>
-      </Stack>
-    </>
+    <Stack direction="row" sx={containerSx}>
+      <Decal sx={{ left: 0 }} scale="1" />
+      <Decal sx={{ right: 0 }} scale="-1 1" />
+      <MotionStack variants={managerItemVar} sx={leftSx} gap={8}>
+        <Operation />
+      </MotionStack>
+      <MotionStack variants={managerItemVar} sx={rightSx}>
+        <Table />
+      </MotionStack>
+    </Stack>
   );
 }

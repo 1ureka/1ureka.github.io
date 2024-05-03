@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Stack, Backdrop, Typography, Snackbar } from "@mui/material";
 import { Button, IconButton, CircularProgress } from "@mui/material";
+
 import AddToPhotosRoundedIcon from "@mui/icons-material/AddToPhotosRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+
 import { compressImage } from "../../../utils/utils";
 
 //
@@ -38,13 +40,58 @@ const processImages = async (files) => {
   );
 };
 
+//
+// Cmponents
+function Action({ onClick }) {
+  return (
+    <Button
+      startIcon={<AddToPhotosRoundedIcon fontSize="small" />}
+      sx={(theme) => theme.typography.caption}
+      onClick={onClick}
+    >
+      Add Image
+    </Button>
+  );
+}
+
+function Progress({ open, task }) {
+  return (
+    <Backdrop open={open} sx={{ zIndex: (theme) => theme.zIndex.drawer + 2 }}>
+      <Stack alignItems={"center"} spacing={2}>
+        <CircularProgress color="primary" disableShrink />
+        <Typography variant="body2" color="text.secondary">
+          {task}
+        </Typography>
+      </Stack>
+    </Backdrop>
+  );
+}
+
+function Hint({ open, alert, onClose }) {
+  return (
+    <Snackbar
+      autoHideDuration={3500}
+      anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      open={open}
+      message={alert}
+      action={
+        <IconButton size="small" onClick={onClose} color="inherit">
+          <CloseRoundedIcon fontSize="small" />
+        </IconButton>
+      }
+      onClose={(_, reason) => {
+        if (reason !== "clickaway") onClose();
+      }}
+    />
+  );
+}
+
 export default function AddButton({ onProcessComplete }) {
-  const [process, setProcess] = useState(false);
   const [task, setTask] = useState("");
   const [alert, setAlert] = useState("");
+
   const handleAdd = async () => {
     setAlert("");
-    setProcess(true);
     setTask("Selecting files...");
 
     const input = createInput();
@@ -54,54 +101,26 @@ export default function AddButton({ onProcessComplete }) {
     const files = Array.from(fileList);
     if (files.length === 0) {
       setAlert("No file selected");
-      setProcess(false);
+      setTask("");
       return;
     }
     if (!files.every((file) => file.type.match("image.*"))) {
       setAlert("Please select only image files");
-      setProcess(false);
+      setTask("");
       return;
     }
 
     setTask("Compressing files...");
     const list = await processImages(files);
-    setProcess(false);
+    setTask("");
     onProcessComplete(list);
   };
 
   return (
     <>
-      <Button
-        startIcon={<AddToPhotosRoundedIcon fontSize="small" />}
-        sx={(theme) => theme.typography.caption}
-        onClick={handleAdd}
-      >
-        Add Image
-      </Button>
-
-      <Backdrop
-        open={process}
-        sx={{ zIndex: (theme) => theme.zIndex.drawer + 2 }}
-      >
-        <Stack alignItems={"center"} spacing={2}>
-          <CircularProgress color="primary" disableShrink />
-          <Typography variant="body2">{task}</Typography>
-        </Stack>
-      </Backdrop>
-
-      <Snackbar
-        autoHideDuration={3000}
-        open={!!alert}
-        message={alert}
-        action={
-          <IconButton size="small" onClick={onClose} color="inherit">
-            <CloseRoundedIcon fontSize="small" />
-          </IconButton>
-        }
-        onClose={(_, reason) => {
-          if (reason !== "clickaway") setAlert("");
-        }}
-      />
+      <Action onClick={handleAdd} />
+      <Progress open={!!task} task={task} />
+      <Hint open={!!alert} alert={alert} onClose={() => setAlert("")} />
     </>
   );
 }
