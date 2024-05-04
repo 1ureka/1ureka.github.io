@@ -6,7 +6,6 @@ import { BOOKS_ROWS, BOOKS_SELECTED, THEME } from "../../utils/store";
 import { delay } from "../../utils/utils";
 import { MotionStack, booksItemVar } from "../Motion";
 import BooksImage from "./image/BooksImage";
-import Carousels from "./carousels/Carousels";
 
 function Reflect({ hover, x, clipPath }) {
   const theme = useRecoilValue(THEME);
@@ -95,7 +94,6 @@ export default function Books() {
       {rows.map(({ category, name }) => (
         <Image key={name} category={category} name={name} />
       ))}
-      <Carousels />
     </Grid>
   );
 }

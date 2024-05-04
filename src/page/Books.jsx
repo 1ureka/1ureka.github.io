@@ -8,6 +8,7 @@ import { booksItemVar, orchestrationVar } from "../components/Motion";
 
 import Books from "../components/books/Books";
 import Layout from "../components/Layout";
+import Carousels from "../components/books/Carousels";
 
 const intro = {
   scene: {
@@ -81,12 +82,15 @@ function Content() {
 
 export default function Page() {
   return (
-    <Layout
-      tabState={BOOKS_TAB}
-      tabs={["Scene", "Props"]}
-      header={<Header />}
-      content={<Content />}
-      scroll={true}
-    />
+    <>
+      <Layout
+        tabState={BOOKS_TAB}
+        tabs={["Scene", "Props"]}
+        header={<Header />}
+        content={<Content />}
+        scroll={true}
+      />
+      <Carousels />
+    </>
   );
 }
