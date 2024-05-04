@@ -111,6 +111,7 @@ export default function EnhancedTable({ onDelete }) {
   const containerSx = {
     borderRadius: "10px",
     border: `2px solid ${lightTheme.palette.divider}`,
+    scale: "0.9",
   };
   const fallback = (
     <MotionStack variants={tableItemVar} sx={{ p: 2, width: "100%" }}>
