@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { AnimatePresence } from "framer-motion";
-import { Divider, Typography } from "@mui/material";
+import { Divider, Stack, Typography } from "@mui/material";
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 
 import { darkTheme } from "../../../utils/theme";
@@ -25,30 +25,65 @@ function SubTitle({ title }) {
   );
 }
 
-function ThemeControl() {
-  const settings = ["Light", "Dark", "System"];
+function Toggles({ options, value, onChange }) {
   const buttonSx = { py: 1, fontSize: "0.65rem", flexGrow: 1 };
-
-  const [mode, setMode] = useRecoilState(MODE);
   const handleChange = (_, mode) => {
-    if (mode) setMode(mode);
+    if (mode) onChange(mode);
   };
 
   return (
     <ToggleButtonGroup
       color="primary"
-      value={mode}
+      value={value}
       exclusive
       onChange={handleChange}
       sx={{ width: "100%" }}
     >
-      {settings.map((val) => (
+      {options.map((val) => (
         <ToggleButton key={val} value={val} sx={buttonSx}>
           {val}
         </ToggleButton>
       ))}
     </ToggleButtonGroup>
   );
+}
+
+function ThemeControl() {
+  const options = ["Light", "Dark", "System"];
+  const [mode, setMode] = useRecoilState(MODE);
+  return (
+    <Toggles
+      options={options}
+      value={mode}
+      onChange={(mode) => setMode(mode)}
+    />
+  );
+}
+
+function WindowControl() {
+  const isFullscreen = () =>
+    window.matchMedia("(display-mode: fullscreen)").matches ||
+    window.document.fullscreenElement;
+
+  const options = ["Yes", "No"];
+  const [mode, setMode] = React.useState(isFullscreen() ? "Yes" : "No");
+
+  const handleChange = (mode) => {
+    console.log(mode);
+    console.log(document.fullscreenElement);
+    setMode(mode);
+    mode === "Yes"
+      ? document.documentElement.requestFullscreen()
+      : document.exitFullscreen();
+  };
+
+  React.useEffect(() => {
+    const handleResize = () => setMode(isFullscreen() ? "Yes" : "No");
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  return <Toggles options={options} value={mode} onChange={handleChange} />;
 }
 
 function Content() {
@@ -63,19 +98,35 @@ function Content() {
       y: 0,
       transition: {
         type: "spring",
-        stiffness: 160,
+        stiffness: 200,
         damping: 18,
       },
     },
   };
 
   return (
-    <MotionStack sx={{ width: "100%" }} gap={2} variants={variants}>
-      <Divider flexItem />
-      <Title title="Settings" />
-      <SubTitle title="MODE" />
-      <ThemeControl />
-    </MotionStack>
+    <Stack
+      sx={{ width: "100%", alignItems: "flex-start" }}
+      gap={2.5}
+      variants={variants}
+    >
+      <MotionStack
+        variants={variants}
+        sx={{ width: "100%", alignItems: "center" }}
+        gap={1.5}
+      >
+        <Divider flexItem />
+        <Title title="Settings" />
+      </MotionStack>
+      <MotionStack variants={variants} sx={{ width: "100%" }}>
+        <SubTitle title="MODE" />
+        <ThemeControl />
+      </MotionStack>
+      <MotionStack variants={variants} sx={{ width: "100%" }}>
+        <SubTitle title="FULLSCREEN" />
+        <WindowControl />
+      </MotionStack>
+    </Stack>
   );
 }
 
@@ -84,7 +135,7 @@ export default function Setting() {
 
   const variants = {
     initial: {
-      scale: 0,
+      scaleX: 0,
       opacity: 0,
       transition: {
         type: "spring",
@@ -93,7 +144,7 @@ export default function Setting() {
       },
     },
     animate: {
-      scale: 1,
+      scaleX: 1,
       opacity: 1,
       transition: {
         type: "spring",
@@ -111,7 +162,7 @@ export default function Setting() {
     bottom: -10,
     left: "100%",
     p: 5,
-    transformOrigin: "bottom left",
+    transformOrigin: "left",
     borderRadius: "0 20px 0 0",
     border: `solid ${borderColor}`,
     borderWidth: "1px 1px 0px 1px",
