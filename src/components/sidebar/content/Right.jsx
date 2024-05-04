@@ -175,7 +175,7 @@ function SidebarDecal() {
   return (
     <MotionStack variants={itemVariants} sx={sx}>
       <img
-        src="./decal2.png"
+        src="./decal2.webp"
         alt=""
         style={{ width: "150px", scale: "-1 -1", opacity: 0.2 }}
         decoding="async"

@@ -35,7 +35,7 @@ function Decal({ sx }) {
       sx={{ position: "absolute", p: 3, ...sx }}
     >
       <img
-        src="./decal.png"
+        src="./decal.webp"
         alt=""
         style={{ width: 140, opacity: 0.1 }}
         decoding="async"

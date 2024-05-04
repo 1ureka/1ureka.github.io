@@ -78,7 +78,7 @@ function Decal({ sx, scale }) {
   return (
     <MotionStack variants={managerItemVar} sx={containerSx}>
       <img
-        src="./decal3.png"
+        src="./decal3.webp"
         alt=""
         style={{ width: "150px", scale, opacity: 0.2 }}
         decoding="async"
