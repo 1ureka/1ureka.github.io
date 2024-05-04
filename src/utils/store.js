@@ -56,7 +56,7 @@ export const TOOLS_TAB = atom({
 // Books
 export const BOOKS_SELECTED = atom({
   key: "booksSelected",
-  default: 0,
+  default: -1,
 });
 export const BOOKS_FILTER = atom({
   key: "booksFilter",

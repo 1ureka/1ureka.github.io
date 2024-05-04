@@ -1,10 +1,12 @@
 import * as React from "react";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { Box, ButtonBase } from "@mui/material";
 
-import { BOOKS_ROWS, THEME } from "../../utils/store";
+import { BOOKS_ROWS, BOOKS_SELECTED, THEME } from "../../utils/store";
+import { delay } from "../../utils/utils";
 import { MotionStack, booksItemVar } from "../Motion";
 import BooksImage from "./image/BooksImage";
+import Carousels from "./carousels/Carousels";
 
 function Reflect({ hover, x, clipPath }) {
   const theme = useRecoilValue(THEME);
@@ -36,8 +38,11 @@ function Reflect({ hover, x, clipPath }) {
 function Image({ category, name }) {
   const [hover, setHover] = React.useState(false);
   const buttonSx = { width: "100%", aspectRatio: "16/9" };
-  const handleClick = (e) => {
-    console.log(e);
+
+  const setSelected = useSetRecoilState(BOOKS_SELECTED);
+  const handleClick = async (e) => {
+    await delay(200);
+    setSelected(0);
   };
 
   return (
@@ -79,12 +84,18 @@ function Grid({ children }) {
 
 export default function Books() {
   const rows = useRecoilValue(BOOKS_ROWS);
+  const setSelected = useSetRecoilState(BOOKS_SELECTED);
+
+  React.useEffect(() => {
+    return () => setSelected(-1);
+  }, []);
 
   return (
     <Grid>
       {rows.map(({ category, name }) => (
         <Image key={name} category={category} name={name} />
       ))}
+      <Carousels />
     </Grid>
   );
 }

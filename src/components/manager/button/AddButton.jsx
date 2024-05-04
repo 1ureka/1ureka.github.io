@@ -57,7 +57,13 @@ function Action({ onClick }) {
 
 function Progress({ open, task }) {
   return (
-    <Backdrop open={open} sx={{ zIndex: (theme) => theme.zIndex.drawer + 2 }}>
+    <Backdrop
+      open={open}
+      sx={{
+        zIndex: (theme) => theme.zIndex.drawer + 2,
+        bgcolor: "custom.backdrop",
+      }}
+    >
       <Stack alignItems={"center"} spacing={2}>
         <CircularProgress color="primary" disableShrink />
         <Typography variant="body2" color="text.secondary">
