@@ -15,7 +15,9 @@ export default function CarouselsImage() {
         alignItems: "center",
       }}
     >
-      <motion.div style={{ maxWidth: "75%", maxHeight: "77.5%" }}>
+      <motion.div
+        style={{ maxWidth: "75%", maxHeight: "77.5%", overflow: "hidden" }}
+      >
         <motion.img
           style={{
             maxWidth: "100%",

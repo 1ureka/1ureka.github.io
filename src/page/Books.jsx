@@ -82,15 +82,14 @@ function Content() {
 
 export default function Page() {
   return (
-    <>
-      <Layout
-        tabState={BOOKS_TAB}
-        tabs={["Scene", "Props"]}
-        header={<Header />}
-        content={<Content />}
-        scroll={true}
-      />
+    <Layout
+      tabState={BOOKS_TAB}
+      tabs={["Scene", "Props"]}
+      header={<Header />}
+      content={<Content />}
+      scroll={true}
+    >
       <Carousels />
-    </>
+    </Layout>
   );
 }

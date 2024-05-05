@@ -13,7 +13,7 @@ export const darkTheme = createTheme({
       background: "#121212",
       content: "rgba(255, 255, 255, 0.05)",
       unSelected: "rgba(0, 0, 0, 0.25)",
-      backdrop: "rgba(0, 0, 0, 0.85)",
+      backdrop: "#121212d8",
     },
   },
   shape: {

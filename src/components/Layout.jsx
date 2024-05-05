@@ -65,7 +65,9 @@ function StyledTabBar({ labels, value, onChange }) {
   );
 }
 
-export default function Layout({ tabState, tabs, header, content, scroll }) {
+export default function Layout(props) {
+  const { tabState, tabs, header, content, scroll, children } = props;
+
   const containerSx = (theme) => ({
     backgroundColor: theme.palette.custom.content,
     flexGrow: 1,
@@ -95,6 +97,7 @@ export default function Layout({ tabState, tabs, header, content, scroll }) {
         <Divider flexItem variant="middle" />
         <Box sx={contentSx}>{content}</Box>
       </MotionStack>
+      {children && children}
     </MotionPage>
   );
 }
