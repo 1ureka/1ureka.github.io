@@ -127,6 +127,7 @@ function SidebarSettingButton() {
 
 function SidebarSpacer() {
   const typoSx = {
+    fontWeight: "800",
     rotate: "180deg",
     writingMode: "vertical-rl",
     letterSpacing: "0.3rem",

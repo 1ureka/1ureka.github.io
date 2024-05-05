@@ -30,33 +30,34 @@ function Name() {
 }
 
 function SlideIndicator() {
+  const wordSx = {
+    color: "text.secondary",
+    fontFamily: `"Major Mono Display"`,
+    lineHeight: "normal",
+  };
+  const bigWord = (word) => (
+    <Typography variant="h2" component="span" sx={wordSx}>
+      {word}
+    </Typography>
+  );
+  const smallWord = (word) => (
+    <Typography variant="h5" component="span" sx={wordSx}>
+      {word}
+    </Typography>
+  );
+
   return (
     <MotionStack
       direction="row"
       alignItems="flex-end"
       sx={{ position: "absolute", left: "2%", bottom }}
     >
-      <Typography
-        variant="h2"
-        component="span"
-        sx={{ color: "text.secondary" }}
-      >
-        0
-      </Typography>
-      <Typography
-        variant="h2"
-        component="span"
-        sx={{ color: "text.secondary" }}
-      >
-        0
-      </Typography>
-      <Typography
-        variant="h2"
-        component="span"
-        sx={{ color: "text.secondary" }}
-      >
-        1
-      </Typography>
+      {bigWord(0)}
+      {bigWord(0)}
+      {bigWord(1)}
+      {bigWord("/")}
+      {smallWord(3)}
+      {smallWord(4)}
     </MotionStack>
   );
 }
