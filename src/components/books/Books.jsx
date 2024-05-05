@@ -34,14 +34,14 @@ function Reflect({ hover, x, clipPath }) {
   );
 }
 
-function Image({ category, name }) {
+function Image({ category, name, index }) {
   const [hover, setHover] = React.useState(false);
   const buttonSx = { width: "100%", aspectRatio: "16/9" };
 
   const setSelected = useSetRecoilState(BOOKS_SELECTED);
-  const handleClick = async (e) => {
+  const handleClick = async () => {
     await delay(200);
-    setSelected(0);
+    setSelected(index);
   };
 
   return (
@@ -91,8 +91,8 @@ export default function Books() {
 
   return (
     <Grid>
-      {rows.map(({ category, name }) => (
-        <Image key={name} category={category} name={name} />
+      {rows.map(({ category, name }, i) => (
+        <Image key={name} category={category} name={name} index={i} />
       ))}
     </Grid>
   );

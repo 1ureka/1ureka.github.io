@@ -25,7 +25,7 @@ export default function Slides() {
         right: "1%",
         top: 0,
         width: "12.5%",
-        translate: "0 calc(50vh + (-100% / 15) * 0)",
+        translate: `0 calc(50vh + (-100% / ${rows.length}) * ${selected})`,
       }}
     >
       {rows.map(({ category, name }, i) => (
