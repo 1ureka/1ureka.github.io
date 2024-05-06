@@ -1,5 +1,9 @@
-import { Typography } from "@mui/material";
+import * as React from "react";
+import { Stack, Typography } from "@mui/material";
+import { useSpring, useTransform } from "framer-motion";
 import { MotionStack } from "../../Motion";
+import { useRecoilValue } from "recoil";
+import { BOOKS_ROWS, BOOKS_SELECTED } from "../../../utils/store";
 
 const bottom = "3%";
 
@@ -14,6 +18,9 @@ function Hint() {
 }
 
 function Name() {
+  const rows = useRecoilValue(BOOKS_ROWS);
+  const selected = useRecoilValue(BOOKS_SELECTED);
+  const { name } = rows[selected];
   return (
     <MotionStack
       sx={{
@@ -24,40 +31,79 @@ function Name() {
         bottom,
       }}
     >
-      <Typography>Image Name 01</Typography>
+      <Typography>{name}</Typography>
     </MotionStack>
   );
 }
 
-function SlideIndicator() {
+function Word({ type, sx, children }) {
   const wordSx = {
     color: "text.secondary",
     fontFamily: `"Major Mono Display"`,
     lineHeight: "normal",
+    ...sx,
   };
-  const bigWord = (word) => (
-    <Typography variant="h2" component="span" sx={wordSx}>
-      {word}
-    </Typography>
-  );
-  const smallWord = (word) => (
-    <Typography variant="h5" component="span" sx={wordSx}>
-      {word}
-    </Typography>
-  );
 
+  const wordVariant = type === "big" ? "h2" : "h5";
+
+  return (
+    <Typography variant={wordVariant} component="span" sx={wordSx}>
+      {children}
+    </Typography>
+  );
+}
+
+function Number({ type, index }) {
+  const wordSx = {
+    position: index !== 0 && "absolute",
+    top: index !== 0 && `${index * 100}%`,
+  };
+
+  return (
+    <Word type={type} sx={wordSx}>
+      {index}
+    </Word>
+  );
+}
+
+function Numbers({ type, current }) {
+  const spring = useSpring(0, { stiffness: 120, damping: 25 });
+  const y = useTransform(spring, (latest) => `${latest}%`);
+
+  React.useEffect(() => {
+    spring.set(-current * 100);
+  }, [current]);
+
+  return (
+    <Stack sx={{ position: "relative", overflow: "hidden" }}>
+      <MotionStack style={{ y }}>
+        {Array(10)
+          .fill()
+          .map((_, i) => (
+            <Number key={i} type={type} index={i} />
+          ))}
+      </MotionStack>
+    </Stack>
+  );
+}
+
+function SlideIndicator() {
+  const rows = useRecoilValue(BOOKS_ROWS);
+  const selected = useRecoilValue(BOOKS_SELECTED) + 1;
+  const current = selected.toString().padStart(3, "0").split("");
+  const total = rows.length.toString().padStart(2, "0").split("");
   return (
     <MotionStack
       direction="row"
       alignItems="flex-end"
       sx={{ position: "absolute", left: "2%", bottom }}
     >
-      {bigWord(0)}
-      {bigWord(0)}
-      {bigWord(1)}
-      {bigWord("/")}
-      {smallWord(3)}
-      {smallWord(4)}
+      <Numbers type="big" current={current[0]} />
+      <Numbers type="big" current={current[1]} />
+      <Numbers type="big" current={current[2]} />
+      <Word type="big">{"/"}</Word>
+      <Numbers type="small" current={total[0]} />
+      <Numbers type="small" current={total[1]} />
     </MotionStack>
   );
 }

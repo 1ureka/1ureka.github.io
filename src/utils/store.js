@@ -54,6 +54,10 @@ export const TOOLS_TAB = atom({
 //
 //
 // Books
+export const BOOKS_OPEN = atom({
+  key: "booksOpen",
+  default: false,
+});
 export const BOOKS_SELECTED = atom({
   key: "booksSelected",
   default: -1,

@@ -1,9 +1,9 @@
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { motion } from "framer-motion";
-import { BOOKS_SELECTED, THEME } from "../../../utils/store";
+import { BOOKS_OPEN, THEME } from "../../../utils/store";
 
 export default function Backdrop({ children }) {
-  const setSelected = useSetRecoilState(BOOKS_SELECTED);
+  const setOpen = useSetRecoilState(BOOKS_OPEN);
   const theme = useRecoilValue(THEME);
   return (
     <motion.div
@@ -40,7 +40,7 @@ export default function Backdrop({ children }) {
         position: "absolute",
         inset: 0,
       }}
-      onClick={() => setSelected(-1)}
+      onClick={() => setOpen(false)}
     >
       {children}
     </motion.div>

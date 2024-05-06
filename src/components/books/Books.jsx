@@ -2,7 +2,8 @@ import * as React from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { Box, ButtonBase } from "@mui/material";
 
-import { BOOKS_ROWS, BOOKS_SELECTED, THEME } from "../../utils/store";
+import { BOOKS_OPEN, BOOKS_ROWS, BOOKS_SELECTED } from "../../utils/store";
+import { THEME } from "../../utils/store";
 import { delay } from "../../utils/utils";
 import { MotionStack, booksItemVar } from "../Motion";
 import BooksImage from "./image/BooksImage";
@@ -39,9 +40,11 @@ function Image({ category, name, index }) {
   const buttonSx = { width: "100%", aspectRatio: "16/9" };
 
   const setSelected = useSetRecoilState(BOOKS_SELECTED);
+  const setOpen = useSetRecoilState(BOOKS_OPEN);
   const handleClick = async () => {
     await delay(200);
     setSelected(index);
+    setOpen(true);
   };
 
   return (
@@ -83,10 +86,10 @@ function Grid({ children }) {
 
 export default function Books() {
   const rows = useRecoilValue(BOOKS_ROWS);
-  const setSelected = useSetRecoilState(BOOKS_SELECTED);
+  const setOpen = useSetRecoilState(BOOKS_OPEN);
 
   React.useEffect(() => {
-    return () => setSelected(-1);
+    return () => setOpen(false);
   }, []);
 
   return (

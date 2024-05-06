@@ -2,7 +2,6 @@ import { useRecoilValue } from "recoil";
 import { MotionStack } from "../../Motion";
 import { BOOKS_ROWS, BOOKS_SELECTED } from "../../../utils/store";
 import SlidesImage from "../image/SlidesImage";
-import { Stack } from "@mui/material";
 
 function Item({ category, name, selected }) {
   const sx = {
