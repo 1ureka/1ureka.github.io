@@ -1,10 +1,10 @@
 import * as React from "react";
+import { useRecoilValue } from "recoil";
 import { Stack, Typography } from "@mui/material";
 import { useSpring, useTransform } from "framer-motion";
-import { MotionStack } from "../../Motion";
-import { useRecoilValue } from "recoil";
-import { BOOKS_ROWS, BOOKS_SELECTED } from "../../../utils/store";
 
+import { BOOKS_ROWS, BOOKS_SELECTED } from "../../../utils/store";
+import { MotionStack } from "../../Motion";
 const bottom = "3%";
 
 function Hint() {

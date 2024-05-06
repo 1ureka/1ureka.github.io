@@ -1,12 +1,12 @@
 import * as React from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { Box, ButtonBase } from "@mui/material";
+import { Box, ButtonBase, Skeleton } from "@mui/material";
 
 import { BOOKS_OPEN, BOOKS_ROWS, BOOKS_SELECTED } from "../../utils/store";
 import { THEME } from "../../utils/store";
 import { delay } from "../../utils/utils";
+import { useImageLoad } from "../../utils/hooks";
 import { MotionStack, booksItemVar } from "../Motion";
-import BooksImage from "./image/BooksImage";
 
 function Reflect({ hover, x, clipPath }) {
   const theme = useRecoilValue(THEME);
@@ -35,7 +35,29 @@ function Reflect({ hover, x, clipPath }) {
   );
 }
 
-function Image({ category, name, index }) {
+function Image({ category, name }) {
+  const [src, state] = useImageLoad(category, name, "1K");
+
+  const size = { width: "100%", height: "100%" };
+  const imageSX = {
+    borderRadius: "5px",
+    objectFit: "cover",
+    opacity: 0.95,
+    ...size,
+  };
+
+  return (
+    <Box sx={size}>
+      {state ? (
+        <img src={src} alt={`Thumbnail of ${name}`} style={imageSX} />
+      ) : (
+        <Skeleton animation="wave" variant="rounded" sx={size} />
+      )}
+    </Box>
+  );
+}
+
+function Button({ category, name, index }) {
   const [hover, setHover] = React.useState(false);
   const buttonSx = { width: "100%", aspectRatio: "16/9" };
 
@@ -57,7 +79,7 @@ function Image({ category, name, index }) {
       sx={{ position: "relative", overflow: "hidden" }}
     >
       <ButtonBase sx={buttonSx} onClick={handleClick}>
-        <BooksImage category={category} name={name} />
+        <Image category={category} name={name} />
       </ButtonBase>
       <Reflect
         hover={hover}
@@ -95,7 +117,7 @@ export default function Books() {
   return (
     <Grid>
       {rows.map(({ category, name }, i) => (
-        <Image key={name} category={category} name={name} index={i} />
+        <Button key={name} category={category} name={name} index={i} />
       ))}
     </Grid>
   );

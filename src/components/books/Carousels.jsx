@@ -3,9 +3,9 @@ import { AnimatePresence } from "framer-motion";
 
 import { BOOKS_OPEN } from "../../utils/store";
 import Backdrop from "./carousels/Backdrop";
-import CarouselsImage from "./image/CarouselsImage";
 import Info from "./carousels/Info";
 import Slides from "./carousels/Slides";
+import Image from "./carousels/Image";
 
 export default function Carousels() {
   const open = useRecoilValue(BOOKS_OPEN);
@@ -13,7 +13,7 @@ export default function Carousels() {
     <AnimatePresence>
       {open && (
         <Backdrop>
-          <CarouselsImage />
+          <Image />
           <Slides />
           <Info />
         </Backdrop>

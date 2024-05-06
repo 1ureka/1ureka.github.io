@@ -1,27 +1,10 @@
-import { deleteFile, uploadFile, loadFile } from "./utils";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import { MANAGER_ADDED, MANAGER_CATEGORY, MANAGER_DELED } from "./store";
-import { INDEX, TABLE_SELECTED } from "./store";
 import { useEffect, useState } from "react";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilValueLoadable } from "recoil";
 
-export const useWindowFocus = () => {
-  const [isWindowFocused, setWindowFocused] = useState(true);
-
-  useEffect(() => {
-    const onFocus = () => setWindowFocused(true);
-    const onBlur = () => setWindowFocused(false);
-
-    window.addEventListener("focus", onFocus);
-    window.addEventListener("blur", onBlur);
-
-    return () => {
-      window.removeEventListener("focus", onFocus);
-      window.removeEventListener("blur", onBlur);
-    };
-  }, []);
-
-  return isWindowFocused;
-};
+import { MANAGER_ADDED, MANAGER_CATEGORY, MANAGER_DELED } from "./store";
+import { INDEX, TABLE_SELECTED, IMAGES } from "./store";
+import { deleteFile, uploadFile, loadFile } from "./utils";
 
 export function useImageActions() {
   const setIndex = useSetRecoilState(INDEX);
@@ -84,4 +67,23 @@ export function useImageActions() {
   };
 
   return { add, del };
+}
+
+export function useImageLoad(category, name, size) {
+  const [state, setState] = useState(false);
+  const [src, setSrc] = useState("");
+  const dataUrl = useRecoilValueLoadable(
+    IMAGES([category, name, size].join("/"))
+  );
+
+  useEffect(() => {
+    if (dataUrl.state === "hasValue") {
+      setSrc(dataUrl.contents);
+      setState(true);
+    } else {
+      setState(false);
+    }
+  }, [dataUrl.state, dataUrl.contents]);
+
+  return [src, state];
 }

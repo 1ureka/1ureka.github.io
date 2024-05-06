@@ -1,9 +1,11 @@
 import * as React from "react";
 import { useRecoilValue } from "recoil";
-import { useSpring, useTransform } from "framer-motion";
+import { useSpring, useTransform, motion } from "framer-motion";
+import { Skeleton } from "@mui/material";
+
 import { BOOKS_ROWS, BOOKS_SELECTED } from "../../../utils/store";
+import { useImageLoad } from "../../../utils/hooks";
 import { MotionStack } from "../../Motion";
-import SlidesImage from "../image/SlidesImage";
 
 const containerVar = {
   initial: {
@@ -21,6 +23,38 @@ const containerVar = {
     transition: { type: "spring", bounce: 0, duration: 1 },
   },
 };
+
+function SlidesImage({ category, name, selected }) {
+  const [src, state] = useImageLoad(category, name, "1K");
+
+  const size = { width: "100%", height: "auto", aspectRatio: "16/9" };
+  const imageSX = {
+    borderRadius: "5px",
+    objectFit: "cover",
+    ...size,
+  };
+  const containerSx = {
+    position: "relative",
+    translate: "0 -50%",
+    transformOrigin: "right",
+  };
+
+  const variants = {
+    selected: { opacity: 1, scale: 0.9 },
+    unSelected: { opacity: 0.85, scale: 0.65 },
+  };
+  const animate = selected ? "selected" : "unSelected";
+
+  return (
+    <motion.div variants={variants} animate={animate} style={containerSx}>
+      {state ? (
+        <img src={src} alt={`Thumbnail of ${name}`} style={imageSX} />
+      ) : (
+        <Skeleton animation="wave" variant="rounded" sx={size} />
+      )}
+    </motion.div>
+  );
+}
 
 export default function Slides() {
   const rows = useRecoilValue(BOOKS_ROWS);

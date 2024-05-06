@@ -74,26 +74,14 @@ export const BOOKS_ROWS = selector({
     return index.filter(({ category }) => category === bookCategory);
   },
 });
-export const THUMBNAILS = selectorFamily({
+export const IMAGES = selectorFamily({
   key: "thumbnails",
   get: (info) => async () => {
-    const [category, name] = info.split("/");
-    const url = `images/${category}/${name}/1K/${name}.webp`;
+    const [category, name, size] = info.split("/");
+    const url = `images/${category}/${name}/${size}/${name}.webp`;
     const base64 = await loadFile(url);
     return `data:image/webp;base64,${base64.replace(/\n/g, "")}`;
   },
-});
-export const ORIGIN = selectorFamily({
-  key: "origin",
-  get:
-    (name) =>
-    async ({ get }) => {
-      const category = get(BOOKS_TAB);
-      const base64 = await loadFile(
-        `images/${category}/${name}/4K/${name}.webp`
-      );
-      return `data:image/webp;base64,${base64.replace(/\n/g, "")}`;
-    },
 });
 
 //
