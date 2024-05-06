@@ -67,7 +67,7 @@ function Number({ type, index }) {
 }
 
 function Numbers({ type, current }) {
-  const spring = useSpring(0, { stiffness: 120, damping: 25 });
+  const spring = useSpring(0, { stiffness: 37, damping: 8, mass: 0.3 });
   const y = useTransform(spring, (latest) => `${latest}%`);
 
   React.useEffect(() => {

@@ -1,7 +1,22 @@
 import { Stack } from "@mui/material";
 import { motion } from "framer-motion";
 
-const containerVar = {};
+const containerVar = {
+  initial: {
+    opacity: 0,
+    scale: 1.1,
+  },
+  animate: {
+    opacity: 1,
+    scale: 1,
+    transition: { type: "spring", bounce: 0, duration: 1 },
+  },
+  exit: {
+    opacity: 0,
+    scale: 1.1,
+    transition: { type: "spring", bounce: 0, duration: 1 },
+  },
+};
 
 const imageVar = {}; // 需要考慮AnimationPresence的情況
 
@@ -16,6 +31,7 @@ export default function CarouselsImage() {
       }}
     >
       <motion.div
+        variants={containerVar}
         style={{ maxWidth: "75%", maxHeight: "77.5%", overflow: "hidden" }}
       >
         <motion.img
