@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { useRecoilValueLoadable } from "recoil";
 
 import { MANAGER_ADDED, MANAGER_CATEGORY, MANAGER_DELED } from "./store";
 import { INDEX, TABLE_SELECTED, IMAGES } from "./store";
-import { deleteFile, uploadFile, loadFile } from "./utils";
+import { deleteFile, uploadFile, loadFile, decode, delay } from "./utils";
 
 export function useImageActions() {
   const setIndex = useSetRecoilState(INDEX);
@@ -83,6 +83,37 @@ export function useImageLoad(category, name, size) {
     } else {
       setState(false);
     }
+  }, [dataUrl.state, dataUrl.contents]);
+
+  return [src, state];
+}
+
+export function useImageDecode(category, name, size) {
+  const [state, setState] = useState(false);
+  const [src, setSrc] = useState("");
+  const timeStamp = useRef(false);
+  const dataUrl = useRecoilValueLoadable(
+    IMAGES([category, name, size].join("/"))
+  );
+
+  const decoding = (url, createAt) => {
+    const img = new Image();
+    img.src = url;
+
+    (async () => {
+      await delay(250);
+      await decode(img);
+      if (createAt !== timeStamp.current) return;
+      setSrc(url);
+      setState(true);
+    })();
+  };
+
+  useEffect(() => {
+    timeStamp.current = Date.now();
+    setState(false);
+    if (dataUrl.state === "hasValue")
+      decoding(dataUrl.contents, timeStamp.current);
   }, [dataUrl.state, dataUrl.contents]);
 
   return [src, state];
