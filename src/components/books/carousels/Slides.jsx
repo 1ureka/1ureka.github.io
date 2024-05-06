@@ -22,16 +22,6 @@ const containerVar = {
   },
 };
 
-function Item({ category, name, selected }) {
-  const sx = {
-    opacity: selected ? 1 : 0.85,
-    scale: selected ? "0.9" : "0.65",
-    translate: "0 -50%",
-    transformOrigin: "right",
-  };
-  return <SlidesImage category={category} name={name} sx={sx} />;
-}
-
 export default function Slides() {
   const rows = useRecoilValue(BOOKS_ROWS);
   const selected = useRecoilValue(BOOKS_SELECTED);
@@ -53,7 +43,7 @@ export default function Slides() {
       sx={{ position: "absolute", right: "1%", top: 0, width: "12.5%" }}
     >
       {rows.map(({ category, name }, i) => (
-        <Item
+        <SlidesImage
           key={name}
           category={category}
           name={name}
