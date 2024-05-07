@@ -9,7 +9,7 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import AddPhotoAlternateRoundedIcon from "@mui/icons-material/AddPhotoAlternateRounded";
 import HideImageRoundedIcon from "@mui/icons-material/HideImageRounded";
 
-import { useImageActions } from "../../../utils/hooks";
+import { useImageAdd, useImageDelete } from "../../../utils/hooks";
 import { MANAGER_ADDED, MANAGER_DELED } from "../../../utils/store";
 import { TABLE_PAGE, TABLE_SELECTED } from "../../../utils/store";
 import { FinishHint, Progress, Warning } from "./Elements";
@@ -96,7 +96,7 @@ function Template({ open, onClose, title, info, list, onSave, hint, icon }) {
 }
 
 export function DialogAdd({ open, onClose, list }) {
-  const { add: addImages } = useImageActions();
+  const addImages = useImageAdd();
   const actionHandler = async () => {
     await addImages(list);
   };
@@ -120,7 +120,7 @@ export function DialogAdd({ open, onClose, list }) {
 export function DialogDel({ open, onClose }) {
   const selected = useRecoilValue(TABLE_SELECTED);
   const setPage = useSetRecoilState(TABLE_PAGE);
-  const { del: deleteImages } = useImageActions();
+  const deleteImages = useImageDelete();
   const actionHandler = async () => {
     setPage(0);
     await deleteImages(selected);

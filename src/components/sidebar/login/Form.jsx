@@ -3,10 +3,10 @@ import { motion } from "framer-motion";
 import { useSetRecoilState } from "recoil";
 import { Box, FormControlLabel, Checkbox, Divider } from "@mui/material";
 
-import { INDEX, SIDEBAR_IS_AUTH, SIDEBAR_OPEN } from "../../../utils/store";
+import { SIDEBAR_IS_AUTH, SIDEBAR_OPEN } from "../../../utils/store";
 import { PasswordInput, UsernameInput } from "./Inputs";
 import { GuestButton, SubmitButton } from "./Buttons";
-import { delay, loadFile } from "../../../utils/utils";
+import { useSyncIndex } from "../../../utils/hooks";
 
 function MotionBox({ children }) {
   const variants = {
@@ -27,23 +27,9 @@ function MotionBox({ children }) {
 }
 
 function useHandleSubmit(setLoading, setError) {
-  const setIndex = useSetRecoilState(INDEX);
   const setAuth = useSetRecoilState(SIDEBAR_IS_AUTH);
   const setOpen = useSetRecoilState(SIDEBAR_OPEN);
-
-  const loadData = async () => {
-    setLoading(true);
-    const [scene, props] = await Promise.all([
-      loadFile("images/scene"),
-      loadFile("images/props"),
-      delay(500),
-    ]);
-    const index = [
-      ...scene.map(({ name }) => ({ category: "scene", name })),
-      ...props.map(({ name }) => ({ category: "props", name })),
-    ];
-    setIndex(index);
-  };
+  const syncIndex = useSyncIndex();
 
   const success = () => {
     sessionStorage.setItem("auth", "1");
@@ -62,7 +48,8 @@ function useHandleSubmit(setLoading, setError) {
     sessionStorage.setItem("username", data.get("username"));
     sessionStorage.setItem("password", data.get("password"));
     try {
-      await loadData();
+      setLoading(true);
+      await syncIndex();
       success();
     } catch (_) {
       fail();
