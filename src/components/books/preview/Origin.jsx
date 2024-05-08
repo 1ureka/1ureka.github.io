@@ -1,70 +1,43 @@
 import * as React from "react";
 import { useRecoilValue } from "recoil";
-import { Portal } from "@mui/material";
-import { AnimatePresence, motion } from "framer-motion";
-import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+import { motion } from "framer-motion";
+import { Stack, Typography } from "@mui/material";
+import ZoomInRoundedIcon from "@mui/icons-material/ZoomInRounded";
 
 import { BOOKS_ROWS, BOOKS_SELECTED } from "../../../utils/store";
 import { useImageDecode } from "../../../utils/hooks";
-import Container from "./Container";
+import { MotionStack } from "../../Motion";
+import Fullscreen from "./Fullscreen";
 
-function FullscreenImage({ src, name }) {
-  const [cursor, setCursor] = React.useState("grab");
+function HoverHint({ open }) {
+  const sx = {
+    position: "absolute",
+    inset: 0,
+    p: 3,
+    justifyContent: "flex-start",
+    alignItems: "center",
+    filter: "drop-shadow(0 0 10px black)",
+  };
 
-  return (
-    <TransformWrapper
-      initialPositionX={(window.innerWidth - 1920) / 2}
-      initialPositionY={(window.innerHeight - 1080) / 2}
-      minScale={0.5}
-      initialScale={0.5}
-      onPanning={() => setCursor("grabbing")}
-      onPanningStop={() => setCursor("grab")}
-    >
-      <TransformComponent
-        wrapperStyle={{
-          position: "absolute",
-          maxWidth: "100%",
-          maxHeight: "100%",
-        }}
-        contentStyle={{ cursor }}
-      >
-        <motion.img src={src} alt={name} exit={{ opacity: 0 }}></motion.img>
-      </TransformComponent>
-    </TransformWrapper>
-  );
-}
-
-function Fullscreen({ src, name, open, onClose }) {
-  const [style, setStyle] = React.useState(null);
-  React.useEffect(() => {
-    if (open) {
-      setStyle({
-        width: "100%",
-        height: "100%",
-        maxWidth: "100%",
-        maxHeight: "100%",
-      });
-    } else {
-      setStyle({});
-    }
-  }, [open]);
-
-  const handleContextMenu = (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-    onClose();
+  const variants = {
+    show: { transition: { delayChildren: 0.1, staggerChildren: 0.05 } },
+  };
+  const itemVar = {
+    show: { opacity: 1, y: 0 },
+    hide: { opacity: 0, y: 50 },
   };
 
   return (
-    <Portal>
-      <AnimatePresence mode="wait">
-        {open && (
-          <Container style={style} onContextMenu={handleContextMenu}>
-            <FullscreenImage src={src} name={name} />
-          </Container>
-        )}
-      </AnimatePresence>
-    </Portal>
+    <MotionStack sx={sx} variants={variants} animate={open ? "show" : "hide"}>
+      <Stack direction="row" alignItems="center" color={"#fff"}>
+        <MotionStack variants={itemVar}>
+          <ZoomInRoundedIcon fontSize="large" sx={{ mr: 1 }} />
+        </MotionStack>
+        <MotionStack variants={itemVar}>
+          <Typography>Click to Zoom</Typography>
+        </MotionStack>
+      </Stack>
+    </MotionStack>
   );
 }
 
@@ -84,15 +57,10 @@ export default function Origin() {
   const { category, name } = useSelected();
   const [src, state] = useImageDecode(category, name, "4K");
 
+  const [hover, setHover] = React.useState(false);
   const [fullscreen, setFullscreen] = React.useState(false);
-  const handleClick = () => state && setFullscreen(true);
 
-  const containerSx = {
-    position: "absolute",
-    width: "100%",
-    height: "100%",
-    cursor: "pointer",
-  };
+  const containerSx = { position: "absolute", width: "100%", height: "100%" };
 
   const variants = {
     show: {
@@ -112,9 +80,12 @@ export default function Origin() {
       variants={variants}
       animate={state ? "show" : "hide"}
       style={containerSx}
-      onClick={handleClick}
+      onClick={() => state && setFullscreen(true)}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
     >
       <OriginImage src={src} name={name} />
+      <HoverHint open={hover} />
       <Fullscreen
         src={src}
         name={name}
