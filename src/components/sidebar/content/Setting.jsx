@@ -69,8 +69,6 @@ function WindowControl() {
   const [mode, setMode] = React.useState(isFullscreen() ? "Yes" : "No");
 
   const handleChange = (mode) => {
-    console.log(mode);
-    console.log(document.fullscreenElement);
     setMode(mode);
     mode === "Yes"
       ? document.documentElement.requestFullscreen()
