@@ -1,19 +1,57 @@
 import * as React from "react";
+import { useSpring, useTransform } from "framer-motion";
 import { useRecoilValue } from "recoil";
 import { Stack, Typography } from "@mui/material";
-import { useSpring, useTransform } from "framer-motion";
+import PhotoRoundedIcon from "@mui/icons-material/PhotoRounded";
 
 import { BOOKS_ROWS, BOOKS_SELECTED } from "../../../utils/store";
 import { MotionStack } from "../../Motion";
-const bottom = "3%";
+import { LeftClickIcon, RightClickIcon } from "./SvgIcons";
 
-function Hint() {
+const bottom = "3%";
+const top = "3%";
+const left = "2%";
+
+function MouseHint() {
+  const flexProps = { direction: "row", alignItems: "ceter" };
+
+  const containerSx = {
+    position: "absolute",
+    left,
+    top,
+    color: "text.secondary",
+  };
+  const typoSx = {
+    fontSize: "0.65rem",
+    color: "inherit",
+  };
+
   return (
-    <MotionStack sx={{ position: "absolute", right: "10%", bottom }}>
+    <Stack {...flexProps} sx={containerSx} gap={3.5}>
+      <Stack {...flexProps} gap={1}>
+        <RightClickIcon />
+        <Typography variant="caption" sx={typoSx}>
+          exit
+        </Typography>
+      </Stack>
+      <Stack {...flexProps} gap={1}>
+        <LeftClickIcon />
+        <PhotoRoundedIcon fontSize="small" />
+        <Typography variant="caption" sx={typoSx}>
+          fullscreen
+        </Typography>
+      </Stack>
+    </Stack>
+  );
+}
+
+function ScrollHint() {
+  return (
+    <Stack sx={{ position: "absolute", right: "10%", bottom }}>
       <Typography variant="caption" sx={{ color: "text.secondary" }}>
         SCROLL TO DISCOVER MORE
       </Typography>
-    </MotionStack>
+    </Stack>
   );
 }
 
@@ -22,7 +60,7 @@ function Name() {
   const selected = useRecoilValue(BOOKS_SELECTED);
   const { name } = rows[selected];
   return (
-    <MotionStack
+    <Stack
       sx={{
         position: "fixed",
         left: 0,
@@ -32,7 +70,7 @@ function Name() {
       }}
     >
       <Typography>{name}</Typography>
-    </MotionStack>
+    </Stack>
   );
 }
 
@@ -93,10 +131,10 @@ function SlideIndicator() {
   const current = selected.toString().padStart(3, "0").split("");
   const total = rows.length.toString().padStart(2, "0").split("");
   return (
-    <MotionStack
+    <Stack
       direction="row"
       alignItems="flex-end"
-      sx={{ position: "absolute", left: "2%", bottom }}
+      sx={{ position: "absolute", left, bottom }}
     >
       <Numbers type="big" current={current[0]} />
       <Numbers type="big" current={current[1]} />
@@ -104,14 +142,15 @@ function SlideIndicator() {
       <Word type="big">{"/"}</Word>
       <Numbers type="small" current={total[0]} />
       <Numbers type="small" current={total[1]} />
-    </MotionStack>
+    </Stack>
   );
 }
 
 export default function Info() {
   return (
     <>
-      <Hint />
+      <MouseHint />
+      <ScrollHint />
       <Name />
       <SlideIndicator />
     </>
