@@ -31,10 +31,12 @@ function HoverHint({ open }) {
     <MotionStack sx={sx} variants={variants} animate={open ? "show" : "hide"}>
       <Stack direction="row" alignItems="center" color={"#fff"}>
         <MotionStack variants={itemVar}>
-          <ZoomInRoundedIcon fontSize="large" sx={{ mr: 1 }} />
+          <ZoomInRoundedIcon sx={{ mr: 1 }} />
         </MotionStack>
         <MotionStack variants={itemVar}>
-          <Typography>Click to Zoom</Typography>
+          <Typography variant="caption" sx={{ fontSize: "0.65rem" }}>
+            Click to Zoom
+          </Typography>
         </MotionStack>
       </Stack>
     </MotionStack>
