@@ -3,29 +3,30 @@ import { createTheme } from "@mui/material";
 export const darkTheme = createTheme({
   palette: {
     mode: "dark",
-    appBar: "rgba(0, 0, 0, 0.5)",
-    appBarHide: "rgba(0, 0, 0, 0)",
-    bgFilterUpper: "rgba(0, 0, 0, 0.85)",
-    bgFilterLower: "rgba(0, 0, 0, 0.85)",
     primary: {
       main: "#e783ad",
     },
     secondary: {
       main: "#83e7bd",
     },
+    custom: {
+      background: "#121212",
+      content: "rgba(255, 255, 255, 0.05)",
+      unSelected: "rgba(0, 0, 0, 0.25)",
+      backdrop: "#121212d8",
+    },
   },
   shape: {
-    borderRadius: 7,
+    borderRadius: 5,
+  },
+  typography: {
+    fontFamily: "Comfortaa",
   },
 });
 
 export const lightTheme = createTheme({
   palette: {
     mode: "light",
-    appBar: "rgba(255, 255, 255, 0.52)",
-    appBarHide: "rgba(0, 0, 0, 0)",
-    bgFilterUpper: "rgba(255, 255, 255, 0.85)",
-    bgFilterLower: "rgba(0, 0, 0, 0.85)",
     primary: {
       main: "#e783ad",
       contrastText: "#fff",
@@ -34,8 +35,17 @@ export const lightTheme = createTheme({
       main: "#83e7bd",
       contrastText: "#fff",
     },
+    custom: {
+      background: "rgba(0, 0, 0, 0.12)",
+      content: "#ffffff",
+      unSelected: "#bdbdbd",
+      backdrop: "rgba(255, 255, 255, 0.85)",
+    },
   },
   shape: {
-    borderRadius: 7,
+    borderRadius: 5,
+  },
+  typography: {
+    fontFamily: "Comfortaa",
   },
 });

@@ -1,66 +1,13 @@
-import { useNavigate } from "react-router-dom";
-import { delay, deleteFile, uploadFile, loadFile } from "./utils";
+import { useEffect, useRef, useState } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilValueLoadable } from "recoil";
+
 import { MANAGER_ADDED, MANAGER_CATEGORY, MANAGER_DELED } from "./store";
-import { INDEX, TABLE_SELECTED } from "./store";
-import { useEffect, useState } from "react";
+import { INDEX, TABLE_SELECTED, IMAGES } from "./store";
+import { deleteFile, uploadFile, loadFile, decode, delay } from "./utils";
 
-export const useWindowFocus = () => {
-  const [isWindowFocused, setWindowFocused] = useState(true);
-
-  useEffect(() => {
-    const onFocus = () => setWindowFocused(true);
-    const onBlur = () => setWindowFocused(false);
-
-    window.addEventListener("focus", onFocus);
-    window.addEventListener("blur", onBlur);
-
-    return () => {
-      window.removeEventListener("focus", onFocus);
-      window.removeEventListener("blur", onBlur);
-    };
-  }, []);
-
-  return isWindowFocused;
-};
-
-export const useNavigateTo = (location, callback) => {
-  const navigate = useNavigate();
-  return async () => {
-    await delay(300);
-    navigate(location);
-    if (callback) callback();
-  };
-};
-
-export function useImageActions() {
+export function useSyncIndex() {
   const setIndex = useSetRecoilState(INDEX);
-  const setSelected = useSetRecoilState(TABLE_SELECTED);
-  const setAdded = useSetRecoilState(MANAGER_ADDED);
-  const setDeled = useSetRecoilState(MANAGER_DELED);
-  const category = useRecoilValue(MANAGER_CATEGORY);
-
-  const uploadImages = async (list) => {
-    await Promise.all(
-      list.map(({ name: n, thumbnail: t, origin: o }) =>
-        Promise.all([
-          uploadFile(t.split(",")[1], `images/${category}/${n}/1K/${n}.webp`),
-          uploadFile(o.split(",")[1], `images/${category}/${n}/4K/${n}.webp`),
-        ])
-      )
-    );
-  };
-
-  const deleteImages = async (names = [""]) => {
-    await Promise.all(
-      names.map((n) =>
-        Promise.all([
-          deleteFile(`images/${category}/${n}/1K/${n}.webp`),
-          deleteFile(`images/${category}/${n}/4K/${n}.webp`),
-        ])
-      )
-    );
-  };
 
   const syncIndex = async () => {
     const [scene, props] = await Promise.all([
@@ -74,8 +21,28 @@ export function useImageActions() {
     setIndex(index);
   };
 
+  return syncIndex;
+}
+
+export function useImageAdd() {
+  const syncIndex = useSyncIndex();
+  const setSelected = useSetRecoilState(TABLE_SELECTED);
+  const setAdded = useSetRecoilState(MANAGER_ADDED);
+  const category = useRecoilValue(MANAGER_CATEGORY);
+
+  const uploadImages = async (list) => {
+    await Promise.all(
+      list.map(({ name: n, thumbnail: t, origin: o }) =>
+        Promise.all([
+          uploadFile(t.split(",")[1], `images/${category}/${n}/1K/${n}.webp`),
+          uploadFile(o.split(",")[1], `images/${category}/${n}/4K/${n}.webp`),
+        ])
+      )
+    );
+  };
+
   /** @param {Object[]} list @param {string} list[].name @param {string} list[].thumbnail @param {string} list[].origin */
-  const add = async (list) => {
+  return async (list) => {
     await uploadImages(list);
     setSelected((prev) => {
       const set = new Set([...prev, ...list.map((val) => val.name)]);
@@ -84,14 +51,80 @@ export function useImageActions() {
     await syncIndex();
     setAdded(list.length);
   };
+}
+
+export function useImageDelete() {
+  const syncIndex = useSyncIndex();
+  const setSelected = useSetRecoilState(TABLE_SELECTED);
+  const setDeled = useSetRecoilState(MANAGER_DELED);
+  const category = useRecoilValue(MANAGER_CATEGORY);
+
+  const deleteImages = async (names = [""]) => {
+    await Promise.all(
+      names.map((n) =>
+        Promise.all([
+          deleteFile(`images/${category}/${n}/1K/${n}.webp`),
+          deleteFile(`images/${category}/${n}/4K/${n}.webp`),
+        ])
+      )
+    );
+  };
 
   /**@param {string[]} names */
-  const del = async (names) => {
+  return async (names) => {
     await deleteImages(names);
     setSelected([]);
     await syncIndex();
     setDeled(names.length);
   };
+}
 
-  return { add, del };
+export function useImageLoad(category, name, size) {
+  const [state, setState] = useState(false);
+  const [src, setSrc] = useState("");
+  const dataUrl = useRecoilValueLoadable(
+    IMAGES([category, name, size].join("/"))
+  );
+
+  useEffect(() => {
+    if (dataUrl.state === "hasValue") {
+      setSrc(dataUrl.contents);
+      setState(true);
+    } else {
+      setState(false);
+    }
+  }, [dataUrl.state, dataUrl.contents]);
+
+  return [src, state];
+}
+
+export function useImageDecode(category, name, size) {
+  const [state, setState] = useState(false);
+  const [src, setSrc] = useState("");
+  const timeStamp = useRef(false);
+  const dataUrl = useRecoilValueLoadable(
+    IMAGES([category, name, size].join("/"))
+  );
+
+  const decoding = (url, createAt) => {
+    const img = new Image();
+    img.src = url;
+
+    (async () => {
+      await delay(250);
+      await decode(img);
+      if (createAt !== timeStamp.current) return;
+      setSrc(url);
+      setState(true);
+    })();
+  };
+
+  useEffect(() => {
+    timeStamp.current = Date.now();
+    setState(false);
+    if (dataUrl.state === "hasValue")
+      decoding(dataUrl.contents, timeStamp.current);
+  }, [dataUrl.state, dataUrl.contents]);
+
+  return [src, state];
 }

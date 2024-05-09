@@ -1,55 +1,88 @@
-import { CssBaseline, ThemeProvider } from "@mui/material";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import { redirect, useBeforeUnload } from "react-router-dom";
-import { useRecoilValue } from "recoil";
 import * as React from "react";
+import { useRecoilValue } from "recoil";
+import { Stack, CssBaseline, ThemeProvider } from "@mui/material";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { useBeforeUnload, useLocation, useOutlet } from "react-router-dom";
+import { redirect } from "react-router-dom";
+import { AnimatePresence } from "framer-motion";
 
-import Home from "./pages/Home/Home";
-import Album from "./pages/Album/Album";
-import Login from "./pages/Login/Login";
-import Manager from "./pages/Manager/Manager";
-import NotFound from "./pages/NotFound/NotFound";
-
-import { darkTheme, lightTheme } from "./utils/theme";
 import { THEME } from "./utils/store";
-import { delay } from "./utils/utils";
+import { decode, delay } from "./utils/utils";
 
-const isAuth = async () => {
-  await delay(10);
-  return sessionStorage.getItem("auth");
+import Sidebar from "./components/sidebar/Sidebar";
+import Cover from "./page/Cover";
+import Books from "./page/Books";
+import Tools from "./page/Tools";
+
+const coverLoader = async () => {
+  const image = new Image();
+  image.src = "./PJ28-2 とびら-1.webp";
+  await decode(image);
+  return true;
 };
 
 const authLoader = async () => {
-  const auth = await isAuth();
-  if (!auth) return redirect("/login");
-  return null;
+  await delay(10);
+  if (sessionStorage.getItem("auth")) return null;
+  return redirect(`/`);
 };
 
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: <Home />,
-    errorElement: <NotFound />,
-  },
-  {
-    path: "/album",
-    element: <Album />,
-    loader: authLoader,
-  },
-  {
-    path: "/manager",
-    element: <Manager />,
-    loader: authLoader,
-  },
-  {
-    path: "/login",
-    element: <Login />,
+    element: <Root />,
+    children: [
+      {
+        index: true,
+        element: <Cover />,
+        loader: coverLoader,
+      },
+      {
+        path: "books",
+        element: <Books />,
+        loader: authLoader,
+      },
+      {
+        path: "tools",
+        element: <Tools />,
+        loader: authLoader,
+      },
+    ],
   },
 ]);
 
-export default function App() {
-  console.log("render App");
+function Outlet() {
+  const outlet = useOutlet();
+  const { pathname } = useLocation();
 
+  const key = React.useMemo(() => {
+    return pathname + Date.now();
+  }, [pathname]);
+
+  return (
+    <AnimatePresence mode="wait" initial={true}>
+      {outlet && React.cloneElement(outlet, { key })}
+    </AnimatePresence>
+  );
+}
+
+function Root() {
+  const theme = useRecoilValue(THEME);
+
+  const containerSx = {
+    position: "absolute",
+    inset: 0,
+    backgroundColor: theme.palette.custom.background,
+  };
+
+  return (
+    <Stack direction={"row"} sx={containerSx}>
+      <Sidebar />
+      <Outlet />
+    </Stack>
+  );
+}
+
+export default function App() {
   const theme = useRecoilValue(THEME);
 
   const handleBeforeUnload = React.useCallback(() => {
@@ -59,7 +92,7 @@ export default function App() {
   useBeforeUnload(handleBeforeUnload);
 
   return (
-    <ThemeProvider theme={theme === "dark" ? darkTheme : lightTheme}>
+    <ThemeProvider theme={theme}>
       <CssBaseline />
       <RouterProvider router={router} />
     </ThemeProvider>
