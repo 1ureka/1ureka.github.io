@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Portal } from "@mui/material";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { MotionStack } from "../../Motion";
 
@@ -43,7 +43,7 @@ function FullscreenImage({ src, name, dimension }) {
         wrapperStyle={{ width: "100%", height: "100%", overflow: "visible" }}
         contentStyle={{ cursor }}
       >
-        <motion.img src={src} alt={name}></motion.img>
+        <img src={src} alt={name}></img>
       </TransformComponent>
     </TransformWrapper>
   );

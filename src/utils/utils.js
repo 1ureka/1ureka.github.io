@@ -226,7 +226,7 @@ export async function decode(image, attempt = 0) {
  * @param {File} file - 要壓縮的圖片檔案。
  * @param {number} width - 壓縮後圖片的寬度。
  * @param {number} height - 壓縮後圖片的高度。
- * @returns {Promise<{dataUrl:string, size:number}>} 返回dataUrl與大小(mb)。
+ * @returns {Promise<{dataUrl:string}>} 返回dataUrl與大小(mb)。
  */
 export async function compressImage(file, width, height) {
   let quality = 1.0;
@@ -255,8 +255,5 @@ export async function compressImage(file, width, height) {
     reader.readAsDataURL(blob);
   });
 
-  const KB = blob.size / 1024;
-  const size = Math.round((KB + Number.EPSILON) * 100) / 100;
-
-  return { dataUrl, size };
+  return { dataUrl };
 }
