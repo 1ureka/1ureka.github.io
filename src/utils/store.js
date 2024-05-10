@@ -155,3 +155,15 @@ export const TABLE_PAGE_ROWS = atom({
   key: "tableRowsPerPage",
   default: 5,
 });
+
+//
+//
+// Tools
+export const CONVERT_SIZE = atom({
+  key: "convertSize",
+  default: "1",
+});
+export const CONVERT_TYPE = atom({
+  key: "convertType",
+  default: "webp",
+});

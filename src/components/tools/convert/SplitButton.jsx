@@ -1,11 +1,24 @@
 import * as React from "react";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { Grow, Paper, Popper, ClickAwayListener } from "@mui/material";
 import { Button, ButtonGroup, MenuItem, MenuList } from "@mui/material";
 import ArrowDropDownRoundedIcon from "@mui/icons-material/ArrowDropDownRounded";
+import { CONVERT_SIZE, CONVERT_TYPE } from "../../../utils/store";
 
-const options = ["To webp", "To jpg", "To png"];
+function Menu({ onClose, TransitionProps, placement }) {
+  const [type, setType] = useRecoilState(CONVERT_TYPE);
 
-function Menu({ selected, onSelect, onClose, TransitionProps, placement }) {
+  const options = [
+    { label: "To webp", type: "webp" },
+    { label: "To jpg", type: "jpg" },
+    { label: "To png", type: "png" },
+  ];
+
+  const handleClick = (i) => () => {
+    setType(options[i].type);
+    onClose();
+  };
+
   const anchorPos = {
     transformOrigin: placement === "bottom" ? "center top" : "center bottom",
   };
@@ -17,12 +30,12 @@ function Menu({ selected, onSelect, onClose, TransitionProps, placement }) {
           <MenuList autoFocusItem>
             {options.map((option, i) => (
               <MenuItem
-                key={option}
-                selected={i === selected}
-                onClick={() => onSelect(i)}
+                key={option.label}
+                selected={type === option.type}
+                onClick={handleClick(i)}
                 sx={(theme) => theme.typography.caption}
               >
-                {option}
+                {option.label}
               </MenuItem>
             ))}
           </MenuList>
@@ -33,23 +46,25 @@ function Menu({ selected, onSelect, onClose, TransitionProps, placement }) {
 }
 
 export default function SplitButton() {
-  const [selectedIndex, setSelectedIndex] = React.useState(0);
+  const type = useRecoilValue(CONVERT_TYPE);
+  const size = useRecoilValue(CONVERT_SIZE);
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
 
   const handleClick = () => {
-    console.info(`You clicked ${options[selectedIndex]}`);
-  };
-  const handleMenuItemClick = (i) => {
-    setSelectedIndex(i);
-    setOpen(false);
+    console.info(`Convert To ${type} with Size ${size}`);
   };
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
   };
   const handleClose = (e) => {
-    if (anchorRef.current?.contains(e.target)) return;
-    setOpen(false);
+    if (!anchorRef.current) {
+      return;
+    } else if (!e) {
+      setOpen(false);
+    } else if (!anchorRef.current.contains(e.target)) {
+      setOpen(false);
+    }
   };
 
   return (
@@ -59,7 +74,7 @@ export default function SplitButton() {
           onClick={handleClick}
           sx={(theme) => ({ ...theme.typography.caption, flex: 1 })}
         >
-          {options[selectedIndex]}
+          {`To ${type}`}
         </Button>
         <Button onClick={handleToggle} size="small">
           <ArrowDropDownRoundedIcon fontSize="small" />
@@ -73,8 +88,6 @@ export default function SplitButton() {
       >
         {({ TransitionProps, placement }) => (
           <Menu
-            selected={selectedIndex}
-            onSelect={handleMenuItemClick}
             onClose={handleClose}
             TransitionProps={TransitionProps}
             placement={placement}

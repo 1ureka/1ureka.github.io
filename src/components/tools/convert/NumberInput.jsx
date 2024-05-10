@@ -1,12 +1,16 @@
-import * as React from "react";
 import { FormControl } from "@mui/material";
 import { InputAdornment, InputLabel, OutlinedInput } from "@mui/material";
+import { useRecoilState } from "recoil";
+import { CONVERT_SIZE } from "../../../utils/store";
 
 export default function NumberInput() {
-  const [val, setVal] = React.useState("1");
+  const [val, setVal] = useRecoilState(CONVERT_SIZE);
 
-  const handleChange = (e) => {
-    if (e.target.value) setVal(e.target.value);
+  const handleChange = ({ target }) => {
+    const { value } = target;
+    const parsedValue = parseFloat(value);
+    if (!value || parsedValue < 0.1 || parsedValue > 1.5) return;
+    setVal(parsedValue);
   };
 
   return (
