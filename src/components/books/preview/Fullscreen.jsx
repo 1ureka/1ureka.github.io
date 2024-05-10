@@ -2,27 +2,33 @@ import * as React from "react";
 import { Portal } from "@mui/material";
 import { AnimatePresence, motion } from "framer-motion";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+import { MotionStack } from "../../Motion";
 
-import Container from "./Container";
-
-function FullscreenImage({ src, name }) {
-  const [cursor, setCursor] = React.useState("grab");
-
+function calcDimension() {
   const aspectRatio = 16 / 9;
   const minWidth = window.innerHeight * aspectRatio;
-  let w, h;
+  let w, h, initScale;
 
   if (window.innerWidth >= minWidth) {
     w = window.innerWidth;
     h = w / aspectRatio;
+    initScale = (window.innerHeight * 0.775) / h;
   } else {
     h = window.innerHeight;
     w = h * aspectRatio;
+    initScale = (window.innerWidth * 0.75) / w;
   }
 
   const scale = w / 3840;
   const x = (window.innerWidth - w) / 2;
   const y = (window.innerHeight - h) / 2;
+
+  return { x, y, scale, initScale };
+}
+
+function FullscreenImage({ src, name, dimension }) {
+  const [cursor, setCursor] = React.useState("grab");
+  const { x, y, scale } = dimension;
 
   return (
     <TransformWrapper
@@ -34,33 +40,17 @@ function FullscreenImage({ src, name }) {
       onPanningStop={() => setCursor("grab")}
     >
       <TransformComponent
-        wrapperStyle={{
-          position: "absolute",
-          maxWidth: "100%",
-          maxHeight: "100%",
-        }}
+        wrapperStyle={{ width: "100%", height: "100%", overflow: "visible" }}
         contentStyle={{ cursor }}
       >
-        <motion.img src={src} alt={name} exit={{ opacity: 0 }}></motion.img>
+        <motion.img src={src} alt={name}></motion.img>
       </TransformComponent>
     </TransformWrapper>
   );
 }
 
 export default function Fullscreen({ src, name, open, onClose }) {
-  const [style, setStyle] = React.useState({});
-  React.useEffect(() => {
-    if (open) {
-      setStyle({
-        width: "100%",
-        height: "100%",
-        maxWidth: "100%",
-        maxHeight: "100%",
-      });
-    } else {
-      setStyle({});
-    }
-  }, [open]);
+  const dimension = calcDimension();
 
   const handleContextMenu = (e) => {
     e.stopPropagation();
@@ -68,13 +58,27 @@ export default function Fullscreen({ src, name, open, onClose }) {
     onClose();
   };
 
+  const sx = {
+    position: "fixed",
+    inset: 0,
+    justifyContent: "center",
+    alignItems: "center",
+  };
+
   return (
     <Portal>
-      <AnimatePresence mode="wait">
+      <AnimatePresence>
         {open && (
-          <Container style={style} onContextMenu={handleContextMenu}>
-            <FullscreenImage src={src} name={name} />
-          </Container>
+          <MotionStack
+            onContextMenu={handleContextMenu}
+            initial={{ scale: dimension.initScale }}
+            animate={{ scale: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ type: "spring", bounce: 0 }}
+            sx={sx}
+          >
+            <FullscreenImage src={src} name={name} dimension={dimension} />
+          </MotionStack>
         )}
       </AnimatePresence>
     </Portal>
