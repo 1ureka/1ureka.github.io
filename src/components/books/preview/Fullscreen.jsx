@@ -8,12 +8,28 @@ import Container from "./Container";
 function FullscreenImage({ src, name }) {
   const [cursor, setCursor] = React.useState("grab");
 
+  const aspectRatio = 16 / 9;
+  const minWidth = window.innerHeight * aspectRatio;
+  let w, h;
+
+  if (window.innerWidth >= minWidth) {
+    w = window.innerWidth;
+    h = w / aspectRatio;
+  } else {
+    h = window.innerHeight;
+    w = h * aspectRatio;
+  }
+
+  const scale = w / 3840;
+  const x = (window.innerWidth - w) / 2;
+  const y = (window.innerHeight - h) / 2;
+
   return (
     <TransformWrapper
-      initialPositionX={(window.innerWidth - 1920) / 2}
-      initialPositionY={(window.innerHeight - 1080) / 2}
-      minScale={0.5}
-      initialScale={0.5}
+      initialPositionX={x}
+      initialPositionY={y}
+      minScale={scale}
+      initialScale={scale}
       onPanning={() => setCursor("grabbing")}
       onPanningStop={() => setCursor("grab")}
     >
@@ -32,7 +48,7 @@ function FullscreenImage({ src, name }) {
 }
 
 export default function Fullscreen({ src, name, open, onClose }) {
-  const [style, setStyle] = React.useState(null);
+  const [style, setStyle] = React.useState({});
   React.useEffect(() => {
     if (open) {
       setStyle({
