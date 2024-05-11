@@ -275,9 +275,8 @@ export async function compressImage(file, type = "webp", size = 1) {
   const { width, height } = await blobGetDimensions(file);
 
   let quality = 1.0;
-  let retryCount = 0;
 
-  while (file.size > 1024 * 1024 && retryCount < 8) {
+  while (quality === 1.0 || file.size > 1024 * 1024) {
     file = await new Promise((resolve) => {
       new Compressor(file, {
         width: width * size,
@@ -288,8 +287,7 @@ export async function compressImage(file, type = "webp", size = 1) {
         success: resolve,
       });
     });
-    quality -= 0.1 * (retryCount + 1);
-    retryCount++;
+    quality *= 0.9;
   }
 
   const dataUrl = await blobGetDataUrl(file);
