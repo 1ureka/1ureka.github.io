@@ -1,9 +1,9 @@
 import * as React from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 
 import { CONVERT_INPUT, THEME } from "../../../utils/store";
 import { MotionButtonBase, toolsItemVar } from "../../Motion";
-import { Stack, alpha, styled } from "@mui/material";
+import { Stack, Typography, alpha, styled } from "@mui/material";
 
 function Svg() {
   const theme = useRecoilValue(THEME);
@@ -64,12 +64,36 @@ function useDropArea(onDrop) {
   };
 }
 
+function Content() {
+  const input = useRecoilValue(CONVERT_INPUT);
+
+  return (
+    <Stack
+      justifyContent={"center"}
+      alignItems={"center"}
+      sx={{ width: "100%", height: "100%", pointerEvents: "none" }}
+    >
+      <Svg />
+      <Typography
+        variant="caption"
+        sx={{ position: "absolute", bottom: "3%" }}
+      >{`Files selected: ${input.length}`}</Typography>
+    </Stack>
+  );
+}
+
 export default function InputArea() {
-  const [input, setInput] = useRecoilState(CONVERT_INPUT);
-  const handleChange = ({ target }) =>
-    setInput((prev) => [...prev, ...Array.from(target.files)]);
-  const handleDrop = (fileList) =>
-    setInput((prev) => [...prev, ...Array.from(fileList)]);
+  const setInput = useSetRecoilState(CONVERT_INPUT);
+  const handleChange = ({ target }) => {
+    const files = Array.from(target.files);
+    const imageFiles = files.filter((file) => file.type.startsWith("image/"));
+    setInput((prev) => [...prev, ...imageFiles]);
+  };
+  const handleDrop = (fileList) => {
+    const files = Array.from(fileList);
+    const imageFiles = files.filter((file) => file.type.startsWith("image/"));
+    setInput((prev) => [...prev, ...imageFiles]);
+  };
   const { dragHover, DragProps } = useDropArea(handleDrop);
 
   const theme = useRecoilValue(THEME);
@@ -91,13 +115,7 @@ export default function InputArea() {
         bgcolor,
       }}
     >
-      <Stack
-        justifyContent={"center"}
-        alignItems={"center"}
-        sx={{ width: "100%", height: "100%", pointerEvents: "none" }}
-      >
-        <Svg />
-      </Stack>
+      <Content />
       <VisuallyHiddenInput
         type="file"
         onChange={handleChange}
