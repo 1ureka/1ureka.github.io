@@ -161,7 +161,7 @@ export const TABLE_PAGE_ROWS = atom({
 // Tools
 export const CONVERT_SIZE = atom({
   key: "convertSize",
-  default: "1",
+  default: 1,
 });
 export const CONVERT_TYPE = atom({
   key: "convertType",

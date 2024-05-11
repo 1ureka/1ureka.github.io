@@ -3,7 +3,9 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { Grow, Paper, Popper, ClickAwayListener } from "@mui/material";
 import { Button, ButtonGroup, MenuItem, MenuList } from "@mui/material";
 import ArrowDropDownRoundedIcon from "@mui/icons-material/ArrowDropDownRounded";
+
 import { CONVERT_SIZE, CONVERT_TYPE } from "../../../utils/store";
+import { CONVERT_INPUT } from "../../../utils/store";
 
 function Menu({ onClose, TransitionProps, placement }) {
   const [type, setType] = useRecoilState(CONVERT_TYPE);
@@ -46,13 +48,15 @@ function Menu({ onClose, TransitionProps, placement }) {
 }
 
 export default function SplitButton() {
+  const [input, setInput] = useRecoilState(CONVERT_INPUT);
   const type = useRecoilValue(CONVERT_TYPE);
   const size = useRecoilValue(CONVERT_SIZE);
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
 
   const handleClick = () => {
-    console.info(`Convert To ${type} with Size ${size}`);
+    console.info(input, type, size);
+    setInput([]);
   };
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
