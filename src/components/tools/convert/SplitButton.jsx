@@ -10,7 +10,7 @@ function Menu({ onClose, TransitionProps, placement }) {
 
   const options = [
     { label: "To webp", type: "webp" },
-    { label: "To jpg", type: "jpg" },
+    { label: "To jpg", type: "jpeg" },
     { label: "To png", type: "png" },
   ];
 

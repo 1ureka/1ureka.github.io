@@ -167,3 +167,7 @@ export const CONVERT_TYPE = atom({
   key: "convertType",
   default: "webp",
 });
+export const CONVERT_INPUT = atom({
+  key: "convertInput",
+  default: [],
+});

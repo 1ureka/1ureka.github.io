@@ -1,11 +1,10 @@
 import * as React from "react";
-import { useRecoilValue } from "recoil";
 import { Divider, Stack, Typography } from "@mui/material";
 
-import { THEME } from "../../../utils/store";
 import { MotionPaper, MotionStack, toolsItemVar } from "../../Motion";
 import SplitButton from "./SplitButton";
 import NumberInput from "./NumberInput";
+import InputArea from "./InputArea";
 
 function Title() {
   return (
@@ -29,24 +28,6 @@ function Operation() {
       <NumberInput />
       <SplitButton />
     </MotionStack>
-  );
-}
-
-function InputArea() {
-  const theme = useRecoilValue(THEME);
-
-  return (
-    <MotionStack
-      variants={toolsItemVar}
-      sx={{
-        width: "100%",
-        aspectRatio: "1/1",
-        borderRadius: "10px",
-        border: "3px dotted gray",
-        bgcolor: theme.palette.divider,
-        cursor: "pointer",
-      }}
-    ></MotionStack>
   );
 }
 
