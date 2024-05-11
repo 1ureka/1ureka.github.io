@@ -171,3 +171,7 @@ export const CONVERT_INPUT = atom({
   key: "convertInput",
   default: [],
 });
+export const CONVERT_PROCESSING = atom({
+  key: "convertProcessing",
+  default: false,
+});
