@@ -222,38 +222,76 @@ export async function decode(image, attempt = 0) {
 }
 
 /**
- * 壓縮圖片並返回 base64 編碼的數據 URL。
- * @param {File} file - 要壓縮的圖片檔案。
- * @param {number} width - 壓縮後圖片的寬度。
- * @param {number} height - 壓縮後圖片的高度。
- * @returns {Promise<{dataUrl:string}>} 返回dataUrl與大小(mb)。
+ * 獲取 Blob 或 File 的高度和寬度。
+ * @param {Blob | File} blob - 要獲取尺寸的 Blob 或 File 對象。
+ * @returns {Promise<{ width: number, height: number }>} 包含 width 和 height 的 Promise。
  */
-export async function compressImage(file, width, height) {
+export function blobGetDimensions(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = function () {
+        const width = this.width;
+        const height = this.height;
+        resolve({ width, height });
+      };
+      img.onerror = function () {
+        reject(new Error("Failed to load image."));
+      };
+      img.src = e.target.result;
+    };
+
+    reader.onerror = () => {
+      reject(new Error("Failed to read blob."));
+    };
+
+    reader.readAsDataURL(blob);
+  });
+}
+
+/**
+ * 獲取 Blob 或 File 的dataUrl。
+ * @param {Blob | File} blob - 要獲取dataUrl的 Blob 或 File 對象。
+ * @returns {Promise<String>} 包含 dataUrl 的 Promise。
+ */
+export function blobGetDataUrl(blob) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (e) => resolve(e.target.result);
+    reader.readAsDataURL(blob);
+  });
+}
+
+/**
+ * 壓縮圖片並返回 base64 編碼的數據 URL。
+ * @param {Blob | File} file - 要壓縮的圖片檔案。
+ * @param {string} [type="webp"] - 壓縮後的圖片類型，默認為 "webp"。
+ * @param {number} [size=1] - 壓縮比例，默認為 1。
+ * @returns {Promise<{dataUrl:string}>} 返回dataUrl。
+ */
+export async function compressImage(file, type = "webp", size = 1) {
+  const { width, height } = await blobGetDimensions(file);
+
   let quality = 1.0;
   let retryCount = 0;
-  let blob = { size: 1024 * 1024 * 2 };
 
-  while (blob.size > 1024 * 1024 && retryCount < 8) {
-    console.log(`第${retryCount + 1}次壓縮圖片中`);
-    quality -= 0.1 * (retryCount + 1); // Adjust quality based on retry count
-    blob = await new Promise((resolve) => {
+  while (file.size > 1024 * 1024 && retryCount < 8) {
+    file = await new Promise((resolve) => {
       new Compressor(file, {
-        width,
-        height,
-        mimeType: "image/webp",
+        width: width * size,
+        height: height * size,
+        mimeType: `image/${type}`,
         convertSize: Infinity,
         quality,
         success: resolve,
       });
     });
+    quality -= 0.1 * (retryCount + 1);
     retryCount++;
   }
 
-  const dataUrl = await new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.onload = (e) => resolve(e.target.result);
-    reader.readAsDataURL(blob);
-  });
-
+  const dataUrl = await blobGetDataUrl(file);
   return { dataUrl };
 }
