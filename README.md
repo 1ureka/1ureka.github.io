@@ -6,10 +6,10 @@ This website acts as both a platform to display 3D CG portfolios and my personal
 
 #### Design and Appearance
 
-- **Responsive Design**: Ensures optimal viewing experience across devices.
-- **Theme Support**: Users can seamlessly switch between system theme and manual selection of light/dark mode.
-- **Material Design**: Incorporates Material Design principles for a sleek and intuitive user interface.
-- **SPA**: Implements React Router for seamless navigation between different pages, ensuring smooth transitions and a cohesive user experience.
+- **Story Book**: The entire website is conceived as a storybook, where different pages represent different chapters, each chapter further divided into numerous bookmarks.
+- **Cover**: Upon opening this book, the cover showcases animated highlights from the portfolio. On the left side, there's a menu mimicking a book's sidebar, allowing for login and navigation.
+- **Books**: Featuring a picture wall of portfolios from various categories, each opening into carousels upon selection. Users can switch between images by scrolling or interact further by zooming, panning, and pinching gestures.
+- **Tools**: Divided into two bookmarks, Manager for handling portfolio images including addition, deletion, and integrity verification, and Tools for utilities related to images or 3D tools used during development.
 
 #### Image Processing
 
@@ -18,9 +18,9 @@ This website acts as both a platform to display 3D CG portfolios and my personal
 
 #### User Experience
 
-- **Visitor Mode**: Allows visitors to browse the landing page, divided into distinct sections with custom scroll transitions and unique animated designs.
-- **Admin Mode**: Upon logging in, users access the administrator mode. Here, they can explore two different themed portfolios and perform file management tasks such as addition, deletion, and integrity verification.
-- **Interactive Gallery**: Within portfolios, users can interact with images through zooming, panning, and pinching gestures, as well as adjusting parameters like exposure and saturation.
+- **Theme Support**: Users can seamlessly switch between system theme and manual selection of light/dark mode.
+- **Material Design**: Incorporates Material Design principles for a sleek and intuitive user interface.
+- **SPA**: Implements React Router for seamless navigation between different pages, ensuring smooth transitions and a cohesive user experience.
 
 ## Technologies Used
 
@@ -31,7 +31,7 @@ This website acts as both a platform to display 3D CG portfolios and my personal
 - **Material-UI**: Providing UI components.
 - **Material Icons**: Application icon set.
 - **Octokit**: GitHub API integration.
-- **GSAP (GreenSock Animation Platform)**: Used for animation effects.
+- **Framer Motion**: Used for animation effects.
 - **React Zoom Pan Pinch**: Handling interactive image functionalities.
 
 ## Installation
