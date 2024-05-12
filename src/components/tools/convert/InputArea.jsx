@@ -1,9 +1,9 @@
 import * as React from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
+import { alpha, styled, Badge } from "@mui/material";
 
 import { CONVERT_INPUT, THEME } from "../../../utils/store";
 import { MotionButtonBase, toolsItemVar } from "../../Motion";
-import { Stack, Typography, alpha, styled } from "@mui/material";
 
 function Svg() {
   const theme = useRecoilValue(THEME);
@@ -67,18 +67,19 @@ function useDropArea(onDrop) {
 function Content() {
   const input = useRecoilValue(CONVERT_INPUT);
 
+  const badgeSx = {
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    height: "100%",
+    pointerEvents: "none",
+    "& .MuiBadge-badge": { fontFamily: "Roboto" },
+  };
+
   return (
-    <Stack
-      justifyContent={"center"}
-      alignItems={"center"}
-      sx={{ width: "100%", height: "100%", pointerEvents: "none" }}
-    >
+    <Badge badgeContent={input.length} color="primary" sx={badgeSx}>
       <Svg />
-      <Typography
-        variant="caption"
-        sx={{ position: "absolute", bottom: "3%" }}
-      >{`Files selected: ${input.length}`}</Typography>
-    </Stack>
+    </Badge>
   );
 }
 
