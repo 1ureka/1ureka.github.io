@@ -265,18 +265,20 @@ export function blobGetDataUrl(blob) {
 }
 
 /**
- * 壓縮圖片並返回 base64 編碼的數據 URL。
- * @param {Blob | File} file - 要壓縮的圖片檔案。
- * @param {string} [type="webp"] - 壓縮後的圖片類型，默認為 "webp"。
- * @param {number} [size=1] - 壓縮比例，默認為 1。
- * @returns {Promise<{dataUrl:string}>} 返回dataUrl。
+ * 壓縮圖片並返回以 base64 編碼的數據 URL。
+ * @param {Blob | File} file - 欲壓縮的圖片檔案。
+ * @param {string} [type="webp"] - 壓縮後的圖片類型，預設為 "webp"。
+ * @param {number} [size=1] - 壓縮比例，預設為 1。
+ * @param {number} [maxSize] - 最大檔案大小限制，預設為 1 MB。
+ * @returns {Promise<{dataUrl:string}>} 回傳包含 dataUrl 的 Promise 物件。
  */
-export async function compressImage(file, type = "webp", size = 1) {
+export async function compressImage(file, type = "webp", size = 1, maxSize) {
   const { width, height } = await blobGetDimensions(file);
 
   let quality = 1.0;
 
-  while (quality === 1.0 || file.size > 1024 * 1024) {
+  while (quality === 1.0 || file.size > (maxSize || 1024 * 1024)) {
+    console.log(quality);
     file = await new Promise((resolve) => {
       new Compressor(file, {
         width: width * size,
@@ -287,7 +289,12 @@ export async function compressImage(file, type = "webp", size = 1) {
         success: resolve,
       });
     });
+
     quality *= 0.9;
+    if (quality < 0.05) {
+      console.warn(`無法壓縮到指定大小以下，最終大小：${file.size}`);
+      break;
+    }
   }
 
   const dataUrl = await blobGetDataUrl(file);

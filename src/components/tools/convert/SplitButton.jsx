@@ -89,7 +89,7 @@ function useAction() {
     /** @type {string[]} */
     const names = input.map((file) => file.name);
     const results = await Promise.all(
-      input.map((file) => compressImage(file, type, size))
+      input.map((file) => compressImage(file, type, size, Infinity))
     );
 
     setInput([]);
