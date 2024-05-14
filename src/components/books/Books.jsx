@@ -112,7 +112,7 @@ export default function Books() {
 
   React.useEffect(() => {
     return () => setOpen(false);
-  }, []);
+  }, [setOpen]);
 
   return (
     <Grid>

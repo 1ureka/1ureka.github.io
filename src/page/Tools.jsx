@@ -1,7 +1,5 @@
-import * as React from "react";
 import { useRecoilValue } from "recoil";
 import { Typography } from "@mui/material";
-
 import { TOOLS_TAB } from "../utils/store";
 import { MotionStack, toolsItemVar } from "../components/Motion";
 

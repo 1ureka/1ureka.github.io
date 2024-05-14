@@ -1,8 +1,7 @@
-import * as React from "react";
 import { useRecoilValue } from "recoil";
 import { AnimatePresence, motion } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
-import { ButtonBase, Divider, Stack, Typography } from "@mui/material";
+import { Divider, Stack, Typography } from "@mui/material";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 
@@ -38,14 +37,8 @@ function SidebarNavTitle({ title }) {
   };
 
   const variants = {
-    selected: {
-      originX: [0],
-      scaleX: 1,
-    },
-    unselected: {
-      originX: [1],
-      scaleX: 0,
-    },
+    selected: { originX: [0], scaleX: 1 },
+    unselected: { originX: [1], scaleX: 0 },
   };
 
   return (

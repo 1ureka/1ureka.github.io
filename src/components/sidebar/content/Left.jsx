@@ -1,4 +1,3 @@
-import * as React from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { useNavigate } from "react-router-dom";
 import { Box, Divider, IconButton, Stack, Typography } from "@mui/material";
@@ -140,7 +139,7 @@ function SidebarSpacer() {
       <Stack alignItems="center" sx={{ flexGrow: 1 }}>
         <Divider orientation="vertical" sx={{ flexGrow: 1, height: "auto" }} />
         <Typography variant="caption" sx={typoSx}>
-          1ureka's CG
+          {"1ureka's CG"}
         </Typography>
         <Divider orientation="vertical" sx={{ flexGrow: 1, height: "auto" }} />
       </Stack>

@@ -1,4 +1,3 @@
-import * as React from "react";
 import { Divider, Stack, Typography } from "@mui/material";
 
 import { MotionPaper, MotionStack, toolsItemVar } from "../../Motion";

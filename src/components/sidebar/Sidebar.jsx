@@ -1,4 +1,3 @@
-import * as React from "react";
 import { useRecoilState } from "recoil";
 import { Backdrop, Paper, ThemeProvider } from "@mui/material";
 

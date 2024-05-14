@@ -1,4 +1,3 @@
-import * as React from "react";
 import { Box, Divider, Stack, Tab, Tabs } from "@mui/material";
 import { MotionPage, MotionStack } from "./Motion";
 import { orchestrationVar } from "./Motion";
