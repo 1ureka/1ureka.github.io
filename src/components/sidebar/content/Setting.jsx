@@ -7,6 +7,7 @@ import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { darkTheme } from "../../../utils/theme";
 import { MODE, SIDEBAR_SETTING_OPEN } from "../../../utils/store";
 import { MotionPaper, MotionStack } from "../../Motion";
+import { sidebarRightVar, sidebarRightItemVar } from "../../Motion";
 
 function Title({ title }) {
   return (
@@ -85,42 +86,21 @@ function WindowControl() {
 }
 
 function Content() {
-  const variants = {
-    initial: {
-      opacity: 0,
-      y: 60,
-      transition: { duration: 0 },
-    },
-    animate: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        type: "spring",
-        stiffness: 200,
-        damping: 18,
-      },
-    },
-  };
-
   return (
-    <Stack
-      sx={{ width: "100%", alignItems: "flex-start" }}
-      gap={2.5}
-      variants={variants}
-    >
+    <Stack sx={{ width: "100%", alignItems: "flex-start" }} gap={2.5}>
       <MotionStack
-        variants={variants}
+        variants={sidebarRightItemVar}
         sx={{ width: "100%", alignItems: "center" }}
         gap={1.5}
       >
         <Divider flexItem />
         <Title title="Settings" />
       </MotionStack>
-      <MotionStack variants={variants} sx={{ width: "100%" }}>
+      <MotionStack variants={sidebarRightItemVar} sx={{ width: "100%" }}>
         <SubTitle title="MODE" />
         <ThemeControl />
       </MotionStack>
-      <MotionStack variants={variants} sx={{ width: "100%" }}>
+      <MotionStack variants={sidebarRightItemVar} sx={{ width: "100%" }}>
         <SubTitle title="FULLSCREEN" />
         <WindowControl />
       </MotionStack>
@@ -130,30 +110,6 @@ function Content() {
 
 export default function Setting() {
   const open = useRecoilValue(SIDEBAR_SETTING_OPEN);
-
-  const variants = {
-    initial: {
-      scaleX: 0,
-      opacity: 0,
-      transition: {
-        type: "spring",
-        bounce: 0,
-        duration: 0.7,
-      },
-    },
-    animate: {
-      scaleX: 1,
-      opacity: 1,
-      transition: {
-        type: "spring",
-        bounce: 0,
-        duration: 0.7,
-        delayChildren: 0.2,
-        staggerChildren: 0.05,
-      },
-    },
-  };
-
   const borderColor = darkTheme.palette.divider;
   const containerSx = {
     position: "absolute",
@@ -170,7 +126,7 @@ export default function Setting() {
     <AnimatePresence>
       {open && (
         <MotionPaper
-          variants={variants}
+          variants={sidebarRightVar}
           initial="initial"
           animate="animate"
           exit="initial"

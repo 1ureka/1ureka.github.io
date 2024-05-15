@@ -8,24 +8,8 @@ import YouTubeIcon from "@mui/icons-material/YouTube";
 import { darkTheme } from "../../../utils/theme";
 import { SIDEBAR_IS_AUTH, SIDEBAR_OPEN } from "../../../utils/store";
 import { MotionButtonBase, MotionPaper, MotionStack } from "../../Motion";
+import { sidebarRightVar, sidebarRightItemVar } from "../../Motion";
 import Login from "../login/Login";
-
-const itemVariants = {
-  initial: {
-    opacity: 0,
-    y: 60,
-    transition: { duration: 0 },
-  },
-  animate: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      type: "spring",
-      stiffness: 160,
-      damping: 18,
-    },
-  },
-};
 
 function SidebarNavTitle({ title }) {
   const lineSx = {
@@ -65,7 +49,7 @@ function SidebarNavButton({ title, info, onClick, selected }) {
   );
 
   return (
-    <MotionStack variants={itemVariants}>
+    <MotionStack variants={sidebarRightItemVar}>
       <MotionButtonBase
         variants={{ hover: { x: 10 } }}
         animate={selected ? "selected" : "unselected"}
@@ -135,24 +119,28 @@ function SidebarSocialLink({ title, info, icon }) {
 }
 
 function SidebarSocial() {
+  const variants = sidebarRightItemVar;
   return (
-    <MotionStack variants={itemVariants} spacing={2.5}>
-      <Stack direction="row" spacing={6.5}>
+    <Stack spacing={2.5}>
+      <MotionStack variants={variants} direction="row" spacing={6.5}>
         <SidebarSocialLink title="SOURCE" info="GitHub" icon={<GitHubIcon />} />
         <SidebarSocialLink
           title="WATCH"
           info="Youtube"
           icon={<YouTubeIcon />}
         />
-      </Stack>
-      <Divider flexItem />
-      <Typography
-        variant="caption"
-        sx={{ color: "text.secondary", fontSize: "0.65rem" }}
-      >
-        Copyright © 1ureka. All rights reserved.
-      </Typography>
-    </MotionStack>
+      </MotionStack>
+
+      <MotionStack variants={variants} spacing={2.5}>
+        <Divider flexItem />
+        <Typography
+          variant="caption"
+          sx={{ color: "text.secondary", fontSize: "0.65rem" }}
+        >
+          Copyright © 1ureka. All rights reserved.
+        </Typography>
+      </MotionStack>
+    </Stack>
   );
 }
 
@@ -166,7 +154,7 @@ function SidebarDecal() {
   };
 
   return (
-    <MotionStack variants={itemVariants} sx={sx}>
+    <MotionStack variants={sidebarRightItemVar} sx={sx}>
       <img
         src="./decal2.webp"
         alt=""
@@ -199,28 +187,6 @@ function SidebarContent() {
 
 export default function SidebarRight() {
   const open = useRecoilValue(SIDEBAR_OPEN);
-
-  const variants = {
-    initial: {
-      scaleX: 0,
-      transition: {
-        type: "spring",
-        bounce: 0,
-        duration: 0.5,
-      },
-    },
-    animate: {
-      scaleX: 1,
-      transition: {
-        type: "spring",
-        stiffness: 200,
-        damping: 20,
-        staggerChildren: 0.05,
-        delayChildren: 0.15,
-      },
-    },
-  };
-
   const borderColor = darkTheme.palette.divider;
   const containerSx = {
     height: "100%",
@@ -238,7 +204,7 @@ export default function SidebarRight() {
     <AnimatePresence>
       {open && (
         <MotionPaper
-          variants={variants}
+          variants={sidebarRightVar}
           initial="initial"
           animate="animate"
           exit="initial"

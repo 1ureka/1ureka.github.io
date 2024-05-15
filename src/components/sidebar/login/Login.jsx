@@ -1,25 +1,11 @@
 import { Avatar, Box, Stack, Typography } from "@mui/material";
 import LockRoundedIcon from "@mui/icons-material/LockRounded";
-import { MotionStack } from "../../Motion";
+import { MotionStack, sidebarRightItemVar } from "../../Motion";
 import LoginForm from "./Form";
-
-const itemVariants = {
-  initial: { opacity: 0, y: 70, transition: { duration: 0 } },
-  exit: { opacity: 0, y: 70, transition: { duration: 0 } },
-  animate: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      type: "spring",
-      stiffness: 160,
-      damping: 18,
-    },
-  },
-};
 
 function Title() {
   return (
-    <MotionStack variants={itemVariants} alignItems={"center"}>
+    <MotionStack variants={sidebarRightItemVar} alignItems={"center"}>
       <Avatar sx={{ m: 1, bgcolor: "primary.main" }}>
         <LockRoundedIcon />
       </Avatar>
@@ -31,7 +17,7 @@ function Title() {
 function Decal({ sx }) {
   return (
     <MotionStack
-      variants={itemVariants}
+      variants={sidebarRightItemVar}
       sx={{ position: "absolute", p: 3, ...sx }}
     >
       <img

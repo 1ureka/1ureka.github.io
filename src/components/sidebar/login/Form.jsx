@@ -7,23 +7,10 @@ import { SIDEBAR_IS_AUTH, SIDEBAR_OPEN } from "../../../utils/store";
 import { PasswordInput, UsernameInput } from "./Inputs";
 import { GuestButton, SubmitButton } from "./Buttons";
 import { useSyncIndex } from "../../../utils/hooks";
+import { sidebarRightItemVar } from "../../Motion";
 
 function MotionBox({ children }) {
-  const variants = {
-    initial: { opacity: 0, y: 70, transition: { duration: 0 } },
-    exit: { opacity: 0, y: 70, transition: { duration: 0 } },
-    animate: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        type: "spring",
-        stiffness: 160,
-        damping: 18,
-      },
-    },
-  };
-
-  return <motion.div variants={variants}>{children}</motion.div>;
+  return <motion.div variants={sidebarRightItemVar}>{children}</motion.div>;
 }
 
 function useHandleSubmit(setLoading, setError) {

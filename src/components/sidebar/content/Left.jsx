@@ -13,12 +13,7 @@ import { darkTheme } from "../../../utils/theme";
 import { SIDEBAR_IS_AUTH, SIDEBAR_OPEN } from "../../../utils/store";
 import { SIDEBAR_SETTING_OPEN } from "../../../utils/store";
 import { MotionIconButton, MotionStack } from "../../Motion";
-
-const transition = { type: "spring", stiffness: 150, damping: 20 };
-const itemVariants = {
-  open: { opacity: 0, x: -60, height: 0, transition },
-  close: { opacity: 1, x: 0, height: "auto", transition },
-};
+import { sidebarLeftVar, sidebarLeftItemVar } from "../../Motion";
 
 function StyledIconButton({ children, ...props }) {
   const isAuth = useRecoilValue(SIDEBAR_IS_AUTH);
@@ -40,7 +35,7 @@ function StyledIconButton({ children, ...props }) {
 function SidebarSmallButton({ icon, title, onClick }) {
   return (
     <MotionStack
-      variants={itemVariants}
+      variants={sidebarLeftItemVar}
       sx={{ alignItems: "center", gap: 0.5 }}
     >
       <StyledIconButton size="small" onClick={onClick}>
@@ -111,7 +106,7 @@ function SidebarSettingButton() {
   };
 
   return (
-    <MotionStack variants={itemVariants} alignItems="center">
+    <MotionStack variants={sidebarLeftItemVar} alignItems="center">
       <MotionIconButton
         variants={variants}
         animate={open ? "open" : "close"}
@@ -151,15 +146,12 @@ function SidebarSpacer() {
 export default function SidebarLeft() {
   const open = useRecoilValue(SIDEBAR_OPEN);
   const navigate = useNavigate();
-
   const containerSx = { height: "100%", alignItems: "center" };
-  const transition = { staggerChildren: 0.1 };
-  const variants = { open: { transition }, close: { transition } };
 
   return (
     <MotionStack
       animate={open ? "open" : "close"}
-      variants={variants}
+      variants={sidebarLeftVar}
       sx={containerSx}
       gap={2.5}
     >
