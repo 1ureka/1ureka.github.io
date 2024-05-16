@@ -1,12 +1,13 @@
 import * as React from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { Box, ButtonBase, Skeleton } from "@mui/material";
+import { Badge, Box, ButtonBase, Skeleton } from "@mui/material";
+import { LayoutGroup } from "framer-motion";
 
 import { BOOKS_OPEN, BOOKS_ROWS, BOOKS_SELECTED } from "../../utils/store";
-import { THEME } from "../../utils/store";
+import { BOOKS_FOLD, BOOKS_TAB, THEME } from "../../utils/store";
 import { delay } from "../../utils/utils";
 import { useImageLoad } from "../../utils/hooks";
-import { MotionStack, booksItemVar } from "../Motion";
+import { MotionStack, booksItemVar, orchestrationVar } from "../Motion";
 
 function Reflect({ hover, x, clipPath }) {
   const theme = useRecoilValue(THEME);
@@ -57,30 +58,27 @@ function Image({ category, name }) {
   );
 }
 
-function Button({ category, name, index }) {
+function GridItem({ category, name, onClick, amount }) {
   const [hover, setHover] = React.useState(false);
-  const buttonSx = { width: "100%", aspectRatio: "16/9" };
-
-  const setSelected = useSetRecoilState(BOOKS_SELECTED);
-  const setOpen = useSetRecoilState(BOOKS_OPEN);
-  const handleClick = async () => {
-    await delay(200);
-    setSelected(index);
-    setOpen(true);
-  };
-
   return (
     <MotionStack
+      layout
       variants={booksItemVar}
       whileTap={{ scale: 0.97 }}
       whileHover={{ scale: 1.02, filter: "brightness(1.05)", rotate: 2 }}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
-      sx={{ position: "relative", overflow: "hidden" }}
+      sx={{ position: "relative", overflow: "visible" }}
     >
-      <ButtonBase sx={buttonSx} onClick={handleClick}>
-        <Image category={category} name={name} />
-      </ButtonBase>
+      <Badge
+        sx={{ width: "100%", aspectRatio: "16/9" }}
+        badgeContent={amount}
+        color="primary"
+      >
+        <ButtonBase sx={{ width: "100%", height: "100%" }} onClick={onClick}>
+          <Image category={category} name={name} />
+        </ButtonBase>
+      </Badge>
       <Reflect
         hover={hover}
         x={-30}
@@ -106,19 +104,86 @@ function Grid({ children }) {
   return <Box sx={containerSx}>{children}</Box>;
 }
 
-export default function Books() {
+function useGroup(isGrouping) {
   const rows = useRecoilValue(BOOKS_ROWS);
+
+  const groups = {};
+  rows.forEach((item, i) => {
+    const matches = item.name.match(`^(.+)-\\d+`);
+    const groupName = matches ? matches[1] : item.name;
+    if (!groups[groupName]) groups[groupName] = [];
+    groups[groupName].push({ ...item, i });
+  });
+
+  const length = isGrouping ? Object.keys(groups).length : rows.length;
+  const variants = orchestrationVar({
+    delay: 0,
+    stagger: 0.3 / length,
+  });
+
+  return { groups, variants };
+}
+
+function useBookActions() {
+  const [group, setGroup] = React.useState("");
   const setOpen = useSetRecoilState(BOOKS_OPEN);
+  const setSelected = useSetRecoilState(BOOKS_SELECTED);
 
   React.useEffect(() => {
     return () => setOpen(false);
   }, [setOpen]);
 
+  const handleGroupClick = (group) => async () => {
+    await delay(200);
+    setGroup(group);
+  };
+
+  const handleImageClick = (index) => async () => {
+    await delay(200);
+    setSelected(index);
+    setOpen(true);
+  };
+
+  return { group, handleGroupClick, handleImageClick };
+}
+
+export default function Books() {
+  const tab = useRecoilValue(BOOKS_TAB);
+  const isFold = useRecoilValue(BOOKS_FOLD);
+  const isGrouping = tab === "props" && isFold;
+
+  const { groups, variants } = useGroup(isGrouping);
+  const { group, handleGroupClick, handleImageClick } = useBookActions();
+
+  const items = Object.entries(groups).map(([groupName, groupItems]) => {
+    if (groupItems.length === 1 || groupName === group || !isGrouping)
+      return groupItems.map(({ category, name, i }) => (
+        <GridItem
+          key={name}
+          category={category}
+          name={name}
+          onClick={handleImageClick(i)}
+          amount={0}
+        />
+      ));
+
+    const { category, name } = groupItems[0];
+    return (
+      <GridItem
+        key={name}
+        category={category}
+        name={name}
+        onClick={handleGroupClick(groupName)}
+        amount={groupItems.length}
+      />
+    );
+  });
+
   return (
-    <Grid>
-      {rows.map(({ category, name }, i) => (
-        <Button key={name} category={category} name={name} index={i} />
-      ))}
-    </Grid>
+    <MotionStack variants={variants}>
+      <Grid>
+        <LayoutGroup>{items}</LayoutGroup>
+      </Grid>
+    </MotionStack>
   );
 }

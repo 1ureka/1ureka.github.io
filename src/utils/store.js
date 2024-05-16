@@ -74,6 +74,10 @@ export const BOOKS_ROWS = selector({
     return index.filter(({ category }) => category === bookCategory);
   },
 });
+export const BOOKS_FOLD = atom({
+  key: "booksFold",
+  default: true,
+});
 export const IMAGES = selectorFamily({
   key: "thumbnails",
   get: (info) => async () => {

@@ -65,27 +65,13 @@ function Header() {
   );
 }
 
-function Content() {
-  const rows = useRecoilValue(BOOKS_ROWS);
-  const contentVar = orchestrationVar({
-    delay: 0,
-    stagger: 0.3 / rows.length,
-  });
-
-  return (
-    <MotionStack variants={contentVar}>
-      <Books />
-    </MotionStack>
-  );
-}
-
 export default function Page() {
   return (
     <Layout
       tabState={BOOKS_TAB}
       tabs={["Scene", "Props"]}
       header={<Header />}
-      content={<Content />}
+      content={<Books />}
       scroll={true}
     >
       <Carousels />

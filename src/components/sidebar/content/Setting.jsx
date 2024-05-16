@@ -5,7 +5,7 @@ import { Divider, Stack, Typography } from "@mui/material";
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 
 import { darkTheme } from "../../../utils/theme";
-import { MODE, SIDEBAR_SETTING_OPEN } from "../../../utils/store";
+import { BOOKS_FOLD, MODE, SIDEBAR_SETTING_OPEN } from "../../../utils/store";
 import { MotionPaper, MotionStack } from "../../Motion";
 import { sidebarRightVar, sidebarRightItemVar } from "../../Motion";
 
@@ -61,28 +61,16 @@ function ThemeControl() {
   );
 }
 
-function WindowControl() {
-  const isFullscreen = () =>
-    window.matchMedia("(display-mode: fullscreen)").matches ||
-    window.document.fullscreenElement;
-
-  const options = ["Yes", "No"];
-  const [mode, setMode] = React.useState(isFullscreen() ? "Yes" : "No");
+function BooksDisplayControl() {
+  const options = ["Fold", "Expand"];
+  const [mode, setMode] = useRecoilState(BOOKS_FOLD);
+  const value = mode ? "Fold" : "Expand";
 
   const handleChange = (mode) => {
-    setMode(mode);
-    mode === "Yes"
-      ? document.documentElement.requestFullscreen()
-      : document.exitFullscreen();
+    setMode(mode === "Fold");
   };
 
-  React.useEffect(() => {
-    const handleResize = () => setMode(isFullscreen() ? "Yes" : "No");
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  return <Toggles options={options} value={mode} onChange={handleChange} />;
+  return <Toggles options={options} value={value} onChange={handleChange} />;
 }
 
 function Content() {
@@ -101,8 +89,8 @@ function Content() {
         <ThemeControl />
       </MotionStack>
       <MotionStack variants={sidebarRightItemVar} sx={{ width: "100%" }}>
-        <SubTitle title="FULLSCREEN" />
-        <WindowControl />
+        <SubTitle title="BOOKS DISPLAY" />
+        <BooksDisplayControl />
       </MotionStack>
     </Stack>
   );
