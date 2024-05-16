@@ -3,7 +3,7 @@ import { Typography } from "@mui/material";
 
 import { BOOKS_ROWS, BOOKS_TAB } from "../utils/store";
 import { MotionStack } from "../components/Motion";
-import { booksItemVar, orchestrationVar } from "../components/Motion";
+import { booksItemVar } from "../components/Motion";
 
 import Books from "../components/books/Books";
 import Layout from "../components/Layout";

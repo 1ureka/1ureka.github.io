@@ -1,4 +1,3 @@
-import * as React from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { AnimatePresence } from "framer-motion";
 import { Divider, Stack, Typography } from "@mui/material";
