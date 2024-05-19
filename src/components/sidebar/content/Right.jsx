@@ -98,7 +98,7 @@ function SidebarNav() {
   );
 }
 
-function SidebarSocialLink({ title, info, icon }) {
+function SidebarSocialLink({ title, info, icon, url }) {
   const subSx = { color: "text.secondary", fontSize: "0.65rem" };
   const titleSx = {
     color: "text.secondary",
@@ -112,7 +112,9 @@ function SidebarSocialLink({ title, info, icon }) {
       </Typography>
       <Stack direction={"row"} spacing={2}>
         {icon}
-        <Typography sx={titleSx}>{info}</Typography>
+        <Typography sx={titleSx} onClick={() => window.open(url)}>
+          {info}
+        </Typography>
       </Stack>
     </Stack>
   );
@@ -123,11 +125,17 @@ function SidebarSocial() {
   return (
     <Stack spacing={2.5}>
       <MotionStack variants={variants} direction="row" spacing={6.5}>
-        <SidebarSocialLink title="SOURCE" info="GitHub" icon={<GitHubIcon />} />
+        <SidebarSocialLink
+          title="SOURCE"
+          info="GitHub"
+          icon={<GitHubIcon />}
+          url={"https://github.com/1ureka/1ureka.github.io"}
+        />
         <SidebarSocialLink
           title="WATCH"
           info="Youtube"
           icon={<YouTubeIcon />}
+          url={"https://www.youtube.com/@1ureka-"}
         />
       </MotionStack>
 
