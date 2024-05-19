@@ -101,6 +101,7 @@ export default function Manager() {
   const rightSx = {
     flexGrow: 1,
     px: "7.5%",
+    pt: 3,
     height: "100%",
     overflowY: "auto",
   };
