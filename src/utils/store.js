@@ -25,7 +25,7 @@ export const THEME = selector({
 
 //
 //
-// Sidebar
+// Sidebar, Tabs
 export const SIDEBAR_IS_AUTH = atom({
   key: "sidebarIsAuth",
   default: false,
@@ -38,10 +38,6 @@ export const SIDEBAR_SETTING_OPEN = atom({
   key: "sidebarSettingOpen",
   default: false,
 });
-
-//
-//
-// Tabs
 export const BOOKS_TAB = atom({
   key: "booksTab",
   default: "scene",
@@ -121,10 +117,6 @@ export const MANAGER_DELED = atom({
   key: "managerDeleted",
   default: 0,
 });
-
-//
-//
-// Table
 export const TABLE_ROWS_LENGTH = selector({
   key: "tableRowsLength",
   get: ({ get }) => {
@@ -162,20 +154,20 @@ export const TABLE_PAGE_ROWS = atom({
 
 //
 //
-// Tools
-export const CONVERT_SIZE = atom({
-  key: "convertSize",
-  default: 1,
-});
-export const CONVERT_TYPE = atom({
-  key: "convertType",
-  default: "webp",
-});
-export const CONVERT_INPUT = atom({
-  key: "convertInput",
+// Editor
+export const EDITOR_INPUT = atom({
+  key: "editorInput",
   default: [],
 });
-export const CONVERT_PROCESSING = atom({
-  key: "convertProcessing",
+export const EDITOR_PROCESSING = atom({
+  key: "editorProcessing",
   default: false,
+});
+export const EDITOR_FILTER = atom({
+  key: "editorFilter",
+  default: { saturate: 1, contrast: 1, exposure: 1 },
+});
+export const EDITOR_OUTPUT_SETTING = atom({
+  key: "editorOutputSetting",
+  default: { maxSize: 1, scale: 1, type: "image/webp" },
 });
