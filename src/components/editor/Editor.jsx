@@ -1,13 +1,15 @@
 import { Stack } from "@mui/material";
 
-import Param from "./Param";
 import Preview from "./Preview";
-import InputArea from "./InputArea";
+import InputArea from "./action/InputArea";
+import Filter from "./param/Filter";
+import Output from "./param/Output";
 
 function Left() {
   return (
     <Stack sx={{ width: "25%", height: "100%", py: 3, px: 4 }} gap={6}>
-      <Param />
+      <Filter />
+      <Output />
     </Stack>
   );
 }

@@ -2,8 +2,8 @@ import * as React from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { alpha, styled, Badge } from "@mui/material";
 
-import { EDITOR_INPUT, THEME } from "../../utils/store";
-import { MotionButtonBase, toolsItemVar } from "../Motion";
+import { EDITOR_INPUT, THEME } from "../../../utils/store";
+import { MotionButtonBase, toolsItemVar } from "../../Motion";
 
 function Svg() {
   const theme = useRecoilValue(THEME);
