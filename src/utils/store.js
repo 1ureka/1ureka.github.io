@@ -155,10 +155,6 @@ export const TABLE_PAGE_ROWS = atom({
 //
 //
 // Editor
-export const EDITOR_INPUT = atom({
-  key: "editorInput",
-  default: [],
-});
 export const EDITOR_PROCESSING = atom({
   key: "editorProcessing",
   default: false,
@@ -170,4 +166,27 @@ export const EDITOR_FILTER = atom({
 export const EDITOR_OUTPUT_SETTING = atom({
   key: "editorOutputSetting",
   default: { maxSize: 1, scale: 1, type: "image/webp" },
+});
+export const EDITOR_DISPLAY = atom({
+  key: "editorDisplay",
+  default: "",
+});
+export const EDITOR_INPUT = atom({
+  key: "editorInput",
+  default: [],
+});
+export const EDITOR_INPUT_NAMES = selector({
+  key: "editorInputNames",
+  get: ({ get }) => {
+    const input = get(EDITOR_INPUT);
+    return input.map((file) => file.name);
+  },
+});
+export const EDITOR_ORDER = atom({
+  key: "editorOrder",
+  default: "asc",
+});
+export const EDITOR_SELECTED = atom({
+  key: "editorSelected",
+  default: [],
 });

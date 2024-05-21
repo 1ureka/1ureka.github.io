@@ -1,9 +1,10 @@
 import { MotionStack, orchestrationVar, toolsItemVar } from "../Motion";
 
 import Preview from "./Preview";
-import InputArea from "./action/InputArea";
 import Filter from "./param/Filter";
 import Output from "./param/Output";
+import InputArea from "./action/InputArea";
+import EnhancedTable from "./table/Table";
 
 function Left() {
   return (
@@ -34,8 +35,10 @@ function Right() {
     <MotionStack
       variants={toolsItemVar}
       sx={{ width: "25%", height: "100%", py: 3, px: 4 }}
+      gap={3}
     >
       <InputArea />
+      <EnhancedTable />
     </MotionStack>
   );
 }
