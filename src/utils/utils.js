@@ -258,23 +258,45 @@ export async function blobGetDimensions(blob) {
 }
 
 /**
+ * 創建包含飽和度、對比度和曝光度的 CSS 濾鏡字串。
+ * @param {Object} options - 濾鏡選項。
+ * @param {number} options.saturate - 飽和度。
+ * @param {number} options.contrast - 對比度。
+ * @param {number} options.exposure - 曝光度。
+ * @returns {string} 返回 CSS 濾鏡字串。
+ */
+export function createFilter({ saturate, contrast, exposure }) {
+  const filters = [
+    saturate !== 1 ? `saturate(${saturate})` : "",
+    contrast !== 1 ? `contrast(${contrast})` : "",
+    exposure !== 1 ? `brightness(${exposure})` : "",
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .trim();
+
+  return filters;
+}
+
+/**
  * 壓縮圖片並返回以 base64 編碼的數據 URL。
  * @param {Blob | File} file - 欲壓縮的圖片檔案。
- * @param {string} [type="webp"] - 壓縮後的圖片類型，預設為 "webp"。
- * @param {number} [size=1] - 壓縮比例，預設為 1。
- * @param {number} [maxSize] - 最大檔案大小限制，預設為 1 MB。
- * @returns {Promise<{dataUrl:string}>} 回傳包含 dataUrl 的 Promise 物件。
+ * @param {Object} options - 壓縮選項。
+ * @param {string} [options.type="webp"] - 壓縮後的圖片格式，預設為 "webp"。
+ * @param {number} [options.scale=1] - 圖片縮放比例，預設為 1。
+ * @param {number} [options.maxSize=1048576] - 壓縮後的最大文件大小（以字節為單位），預設為 1024 * 1024 (1MB)。
+ * @returns {Promise<string>} 回傳包含 dataUrl 的 Promise 物件。
  */
-export async function compressImage(file, type = "webp", size = 1, maxSize) {
+export async function compressImage(file, options) {
+  const { type = "webp", scale = 1, maxSize = 1024 * 1024 } = options;
   const { width, height } = await blobGetDimensions(file);
 
   let quality = 1.0;
-
-  while (quality === 1.0 || file.size > (maxSize || 1024 * 1024)) {
+  while (quality === 1.0 || file.size > maxSize) {
     file = await new Promise((resolve) => {
       new Compressor(file, {
-        width: width * size,
-        height: height * size,
+        width: width * scale,
+        height: height * scale,
         mimeType: `image/${type}`,
         convertSize: Infinity,
         quality,
@@ -291,6 +313,36 @@ export async function compressImage(file, type = "webp", size = 1, maxSize) {
     }
   }
 
-  const dataUrl = await blobGetDataUrl(file);
-  return { dataUrl };
+  return await blobGetDataUrl(file);
+}
+
+/**
+ * 應用濾鏡並壓縮圖片，返回以 base64 編碼的數據 URL。
+ * @param {Blob | File} file - 欲處理的圖片檔案。
+ * @param {Object} options - 濾鏡及壓縮選項。
+ * @param {string} [options.type="webp"] - 壓縮後的圖片格式，預設為 "webp"。
+ * @param {number} [options.scale=1] - 圖片縮放比例，預設為 1。
+ * @param {number} [options.maxSize=1048576] - 壓縮後的最大文件大小（以字節為單位），預設為 1024 * 1024 (1MB)。
+ * @param {number} [options.saturate=1] - 飽和度，預設為 1。
+ * @param {number} [options.contrast=1] - 對比度，預設為 1。
+ * @param {number} [options.exposure=1] - 曝光度，預設為 1。
+ * @returns {Promise<string>} 回傳包含 dataUrl 的 Promise 物件。
+ */
+export async function applyImageFilters(file, options) {
+  const { saturate = 1, contrast = 1, exposure = 1 } = options;
+  const filterOpt = { saturate, contrast, exposure };
+  const filters = createFilter(filterOpt);
+
+  file = await new Promise((resolve) => {
+    new Compressor(file, {
+      mimeType: `image/png`,
+      convertSize: Infinity,
+      success: resolve,
+      beforeDraw(context, _) {
+        context.filter = filters;
+      },
+    });
+  });
+
+  return await compressImage(file, options);
 }

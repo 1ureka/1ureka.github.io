@@ -1,11 +1,12 @@
 import * as React from "react";
-import { Box, CircularProgress, Typography } from "@mui/material";
+import { Box, CircularProgress, Stack, Typography } from "@mui/material";
 import { useRecoilValue } from "recoil";
 import { motion, useMotionTemplate, useMotionValue } from "framer-motion";
 
-import { EDITOR_DISPLAY, EDITOR_INPUT, THEME } from "../../utils/store";
+import { EDITOR_DISPLAY, EDITOR_FILTER, EDITOR_INPUT } from "../../utils/store";
+import { EDITOR_OUTPUT_SETTING, THEME } from "../../utils/store";
 import { MotionStack, toolsItemVar } from "../Motion";
-import { blobGetDataUrl } from "../../utils/utils";
+import { blobGetDataUrl, compressImage, createFilter } from "../../utils/utils";
 
 const margin = "32px";
 
@@ -97,6 +98,56 @@ function Slider({ constraintsRef, x, cursor }) {
   );
 }
 
+function useProcessImage() {
+  const { maxSize, ...outputOpt } = useRecoilValue(EDITOR_OUTPUT_SETTING);
+  const options = { maxSize: maxSize * 1024 * 1024, ...outputOpt };
+
+  const fileName = useRecoilValue(EDITOR_DISPLAY);
+  const files = useRecoilValue(EDITOR_INPUT);
+  const file = files.find((file) => file.name === fileName);
+
+  const [isProcess, setIsProcess] = React.useState(true);
+  const [result, setResult] = React.useState(null);
+  React.useEffect(() => {
+    if (file)
+      (async () => {
+        const dataUrl = await compressImage(file, options);
+        setResult(dataUrl);
+        setIsProcess(false);
+      })();
+    return setIsProcess(true);
+  }, [file, options]);
+
+  const filterOpt = useRecoilValue(EDITOR_FILTER);
+  const filter = createFilter(filterOpt);
+
+  return { result, isProcess, filter };
+}
+
+function Result({ clipPath }) {
+  const fileName = useRecoilValue(EDITOR_DISPLAY);
+  const { result, isProcess, filter } = useProcessImage();
+
+  if (!result) return null;
+
+  return (
+    <motion.img
+      key={fileName}
+      variants={toolsItemVar}
+      src={result}
+      alt={fileName}
+      style={{
+        position: "absolute",
+        width: "100%",
+        height: "100%",
+        objectFit: "contain",
+        filter,
+        clipPath,
+      }}
+    />
+  );
+}
+
 export default function Preview() {
   const theme = useRecoilValue(THEME);
   const color = theme.palette.divider;
@@ -105,7 +156,8 @@ export default function Preview() {
   const constraintsRef = React.useRef(null);
   const cursor = useMotionValue("pointer");
   const x = useMotionValue(-3);
-  const clipPath = useMotionTemplate`inset(0 calc(50% - ${x}px - 3px) 0 0)`;
+  const clipPathL = useMotionTemplate`inset(0 calc(50% - ${x}px - 3px) 0 0)`;
+  const clipPathR = useMotionTemplate`inset(0 0 0 calc(50% + ${x}px + 3px))`;
 
   return (
     <MotionStack
@@ -122,7 +174,10 @@ export default function Preview() {
       }}
     >
       <Name />
-      <Origin clipPath={clipPath} />
+      <Stack sx={{ position: "relative", width: "100%", height: "100%" }}>
+        <Origin clipPath={clipPathL} />
+        <Result clipPath={clipPathR} />
+      </Stack>
       <Slider x={x} cursor={cursor} constraintsRef={constraintsRef} />
     </MotionStack>
   );

@@ -33,8 +33,8 @@ const getInput = async (input) => {
 const processImages = async (files) => {
   return await Promise.all(
     files.map(async (file) => {
-      const { dataUrl: origin } = await compressImage(file, "webp", 1);
-      const { dataUrl: thumbnail } = await compressImage(file, "webp", 0.125);
+      const origin = await compressImage(file);
+      const thumbnail = await compressImage(file, { scale: 0.125 });
       const name = file.name.replace(/\.[^.]+$/, "");
       return { name, origin, thumbnail };
     })
