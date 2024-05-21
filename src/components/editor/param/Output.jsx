@@ -117,9 +117,9 @@ export default function Output() {
         <SubTitle title={"file type"} />
         <OutputSelect
           options={[
-            { name: "webp", val: "image/webp" },
-            { name: "jpg", val: "image/jpeg" },
-            { name: "png", val: "image/png" },
+            { name: "webp", val: "webp" },
+            { name: "jpg", val: "jpeg" },
+            { name: "png", val: "png" },
           ]}
           value={type}
           onChange={handleType}

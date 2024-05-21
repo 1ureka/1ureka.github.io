@@ -165,7 +165,7 @@ export const EDITOR_FILTER = atom({
 });
 export const EDITOR_OUTPUT_SETTING = atom({
   key: "editorOutputSetting",
-  default: { maxSize: 1, scale: 1, type: "image/webp" },
+  default: { maxSize: 999, scale: 1, type: "webp" },
 });
 export const EDITOR_DISPLAY = atom({
   key: "editorDisplay",

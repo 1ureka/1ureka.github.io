@@ -222,36 +222,6 @@ export async function decode(image, attempt = 0) {
 }
 
 /**
- * 獲取 Blob 或 File 的高度和寬度。
- * @param {Blob | File} blob - 要獲取尺寸的 Blob 或 File 對象。
- * @returns {Promise<{ width: number, height: number }>} 包含 width 和 height 的 Promise。
- */
-export function blobGetDimensions(blob) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-
-    reader.onload = (e) => {
-      const img = new Image();
-      img.onload = function () {
-        const width = this.width;
-        const height = this.height;
-        resolve({ width, height });
-      };
-      img.onerror = function () {
-        reject(new Error("Failed to load image."));
-      };
-      img.src = e.target.result;
-    };
-
-    reader.onerror = () => {
-      reject(new Error("Failed to read blob."));
-    };
-
-    reader.readAsDataURL(blob);
-  });
-}
-
-/**
  * 獲取 Blob 或 File 的dataUrl。
  * @param {Blob | File} blob - 要獲取dataUrl的 Blob 或 File 對象。
  * @returns {Promise<String>} 包含 dataUrl 的 Promise。
@@ -262,6 +232,29 @@ export function blobGetDataUrl(blob) {
     reader.onload = (e) => resolve(e.target.result);
     reader.readAsDataURL(blob);
   });
+}
+
+/**
+ * 獲取 Blob 或 File 的高度和寬度。
+ * @param {Blob | File} blob - 要獲取尺寸的 Blob 或 File 對象。
+ * @returns {Promise<{ width: number, height: number }>} 包含 width 和 height 的 Promise。
+ */
+export async function blobGetDimensions(blob) {
+  try {
+    const dataUrl = await blobGetDataUrl(blob);
+    return await new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = function () {
+        resolve({ width: this.width, height: this.height });
+      };
+      img.onerror = function () {
+        reject(new Error("Failed to load image."));
+      };
+      img.src = dataUrl;
+    });
+  } catch {
+    throw new Error("Failed to read blob.");
+  }
 }
 
 /**
@@ -278,7 +271,6 @@ export async function compressImage(file, type = "webp", size = 1, maxSize) {
   let quality = 1.0;
 
   while (quality === 1.0 || file.size > (maxSize || 1024 * 1024)) {
-    console.log(quality);
     file = await new Promise((resolve) => {
       new Compressor(file, {
         width: width * size,
@@ -289,6 +281,8 @@ export async function compressImage(file, type = "webp", size = 1, maxSize) {
         success: resolve,
       });
     });
+
+    if (type === "png") break;
 
     quality *= 0.9;
     if (quality < 0.05) {
