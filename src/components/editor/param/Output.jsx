@@ -6,6 +6,7 @@ import ArrowDropDownRoundedIcon from "@mui/icons-material/ArrowDropDownRounded";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { EDITOR_OUTPUT_SETTING, THEME } from "../../../utils/store";
 import { SubTitle, Title } from "./Typo";
+import { MotionStack, toolsItemVar } from "../../Motion";
 
 const inputSx = {
   "& .MuiInputBase-input": {
@@ -21,15 +22,17 @@ function OutputInput({ end, inputProps, value, onChange }) {
   );
 
   return (
-    <OutlinedInput
-      endAdornment={endAdornment}
-      size="small"
-      type="number"
-      inputProps={inputProps}
-      value={value}
-      onChange={onChange}
-      sx={inputSx}
-    />
+    <MotionStack variants={toolsItemVar}>
+      <OutlinedInput
+        endAdornment={endAdornment}
+        size="small"
+        type="number"
+        inputProps={inputProps}
+        value={value}
+        onChange={onChange}
+        sx={inputSx}
+      />
+    </MotionStack>
   );
 }
 
@@ -39,20 +42,22 @@ function OutputSelect({ options, value, onChange }) {
   const icon = ArrowDropDownRoundedIcon;
 
   return (
-    <TextField
-      size="small"
-      select
-      value={value}
-      onChange={onChange}
-      InputProps={{ sx: inputSx }}
-      SelectProps={{ IconComponent: icon }}
-    >
-      {options.map(({ name, val }) => (
-        <MenuItem key={name} value={val} sx={fontSx}>
-          {name}
-        </MenuItem>
-      ))}
-    </TextField>
+    <MotionStack variants={toolsItemVar}>
+      <TextField
+        size="small"
+        select
+        value={value}
+        onChange={onChange}
+        InputProps={{ sx: inputSx }}
+        SelectProps={{ IconComponent: icon }}
+      >
+        {options.map(({ name, val }) => (
+          <MenuItem key={name} value={val} sx={fontSx}>
+            {name}
+          </MenuItem>
+        ))}
+      </TextField>
+    </MotionStack>
   );
 }
 

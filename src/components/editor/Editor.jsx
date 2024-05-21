@@ -1,4 +1,4 @@
-import { Stack } from "@mui/material";
+import { MotionStack, orchestrationVar, toolsItemVar } from "../Motion";
 
 import Preview from "./Preview";
 import InputArea from "./action/InputArea";
@@ -7,35 +7,47 @@ import Output from "./param/Output";
 
 function Left() {
   return (
-    <Stack sx={{ width: "25%", height: "100%", py: 3, px: 4 }} gap={6}>
+    <MotionStack
+      variants={toolsItemVar}
+      sx={{ width: "25%", height: "100%", py: 3, px: 4 }}
+      gap={6}
+    >
       <Filter />
       <Output />
-    </Stack>
+    </MotionStack>
   );
 }
 
 function Mid() {
   return (
-    <Stack sx={{ width: "50%", height: "100%", p: 3 }}>
+    <MotionStack
+      variants={toolsItemVar}
+      sx={{ width: "50%", height: "100%", p: 3 }}
+    >
       <Preview />
-    </Stack>
+    </MotionStack>
   );
 }
 
 function Right() {
   return (
-    <Stack sx={{ width: "25%", height: "100%", py: 3, px: 4 }}>
+    <MotionStack
+      variants={toolsItemVar}
+      sx={{ width: "25%", height: "100%", py: 3, px: 4 }}
+    >
       <InputArea />
-    </Stack>
+    </MotionStack>
   );
 }
 
 export default function Editor() {
+  const variants = orchestrationVar({ delay: 0, stagger: 0.15 });
+
   return (
-    <Stack direction="row" sx={{ height: "100%" }}>
+    <MotionStack direction="row" variants={variants} sx={{ height: "100%" }}>
       <Left />
       <Mid />
       <Right />
-    </Stack>
+    </MotionStack>
   );
 }

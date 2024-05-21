@@ -1,13 +1,20 @@
 import { Typography } from "@mui/material";
+import { MotionStack, toolsItemVar } from "../../Motion";
 
 export function Title({ title, sx }) {
   return (
-    <Typography variant="caption" sx={{ color: "text.secondary", ...sx }}>
-      {title}
-    </Typography>
+    <MotionStack variants={toolsItemVar}>
+      <Typography variant="caption" sx={{ color: "text.secondary", ...sx }}>
+        {title}
+      </Typography>
+    </MotionStack>
   );
 }
 
 export function SubTitle({ title }) {
-  return <Typography variant="caption">{title}</Typography>;
+  return (
+    <MotionStack variants={toolsItemVar}>
+      <Typography variant="caption">{title}</Typography>
+    </MotionStack>
+  );
 }

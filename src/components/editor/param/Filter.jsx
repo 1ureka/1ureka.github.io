@@ -1,7 +1,8 @@
-import { Stack, Slider } from "@mui/material";
+import { Slider, Stack } from "@mui/material";
 import { useRecoilState } from "recoil";
 import { EDITOR_FILTER } from "../../../utils/store";
 import { SubTitle, Title } from "./Typo";
+import { MotionStack, toolsItemVar } from "../../Motion";
 
 function FilterSlider({ value, onChange }) {
   const sliderProps = {
@@ -12,7 +13,11 @@ function FilterSlider({ value, onChange }) {
     size: "small",
   };
 
-  return <Slider value={value} marks {...sliderProps} onChange={onChange} />;
+  return (
+    <MotionStack variants={toolsItemVar} sx={{ width: "100%" }}>
+      <Slider value={value} marks {...sliderProps} onChange={onChange} />
+    </MotionStack>
+  );
 }
 
 export default function Filter() {

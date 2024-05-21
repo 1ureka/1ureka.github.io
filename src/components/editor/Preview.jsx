@@ -1,6 +1,7 @@
-import { Stack, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import { useRecoilValue } from "recoil";
 import { THEME } from "../../utils/store";
+import { MotionStack, toolsItemVar } from "../Motion";
 
 function Name() {
   const sx = { position: "absolute", top: "8px", left: "8px", zIndex: 1 };
@@ -17,8 +18,11 @@ export default function Preview() {
   const border = `2px dashed ${color}`;
 
   return (
-    <Stack sx={{ position: "relative", width: "100%", height: "100%", border }}>
+    <MotionStack
+      variants={toolsItemVar}
+      sx={{ position: "relative", width: "100%", height: "100%", border }}
+    >
       <Name />
-    </Stack>
+    </MotionStack>
   );
 }
