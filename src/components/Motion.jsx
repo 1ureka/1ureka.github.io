@@ -135,6 +135,30 @@ export const booksItemVar = {
   },
 };
 
+export const toolsItemVar = {
+  initial: {
+    opacity: 0,
+    y: 70,
+    transition: { duration: 0 },
+  },
+  animate: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: "spring",
+      stiffness: 200,
+      damping: 15,
+      staggerChildren: 0.05,
+      delayChildren: 0.15,
+    },
+  },
+  exit: {
+    opacity: 0,
+    y: 70,
+    transition: { duration: 0 },
+  },
+};
+
 export const managerItemVar = {
   initial: {
     opacity: 0,
@@ -148,7 +172,7 @@ export const managerItemVar = {
       type: "spring",
       stiffness: 150,
       damping: 15,
-      staggerChildren: 0.05,
+      staggerChildren: 0.15,
       delayChildren: 0.15,
     },
   },
@@ -173,30 +197,6 @@ export const tableItemVar = {
   exit: {
     opacity: 0,
     x: -30,
-    transition: { duration: 0 },
-  },
-};
-
-export const toolsItemVar = {
-  initial: {
-    opacity: 0,
-    y: 70,
-    transition: { duration: 0 },
-  },
-  animate: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      type: "spring",
-      stiffness: 200,
-      damping: 15,
-      staggerChildren: 0.05,
-      delayChildren: 0.15,
-    },
-  },
-  exit: {
-    opacity: 0,
-    y: 70,
     transition: { duration: 0 },
   },
 };

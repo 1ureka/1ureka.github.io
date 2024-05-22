@@ -5,7 +5,7 @@ import { Button, IconButton, CircularProgress } from "@mui/material";
 import AddToPhotosRoundedIcon from "@mui/icons-material/AddToPhotosRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
-import { compressImage } from "../../../utils/utils";
+import { blobGetDataUrl, compressImage } from "../../../utils/utils";
 import { DialogAdd } from "../dialog/Dialog";
 
 //
@@ -33,8 +33,10 @@ const getInput = async (input) => {
 const processImages = async (files) => {
   return await Promise.all(
     files.map(async (file) => {
-      const { dataUrl: origin } = await compressImage(file, "webp", 1);
-      const { dataUrl: thumbnail } = await compressImage(file, "webp", 0.125);
+      const blobO = await compressImage(file);
+      const blobT = await compressImage(file, { scale: 0.125 });
+      const origin = await blobGetDataUrl(blobO);
+      const thumbnail = await blobGetDataUrl(blobT);
       const name = file.name.replace(/\.[^.]+$/, "");
       return { name, origin, thumbnail };
     })

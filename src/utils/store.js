@@ -25,7 +25,7 @@ export const THEME = selector({
 
 //
 //
-// Sidebar
+// Sidebar, Tabs
 export const SIDEBAR_IS_AUTH = atom({
   key: "sidebarIsAuth",
   default: false,
@@ -38,10 +38,6 @@ export const SIDEBAR_SETTING_OPEN = atom({
   key: "sidebarSettingOpen",
   default: false,
 });
-
-//
-//
-// Tabs
 export const BOOKS_TAB = atom({
   key: "booksTab",
   default: "scene",
@@ -121,10 +117,6 @@ export const MANAGER_DELED = atom({
   key: "managerDeleted",
   default: 0,
 });
-
-//
-//
-// Table
 export const TABLE_ROWS_LENGTH = selector({
   key: "tableRowsLength",
   get: ({ get }) => {
@@ -162,20 +154,47 @@ export const TABLE_PAGE_ROWS = atom({
 
 //
 //
-// Tools
-export const CONVERT_SIZE = atom({
-  key: "convertSize",
-  default: 1,
+// Editor
+export const EDITOR_PROCESSING = atom({
+  key: "editorProcessing",
+  default: false,
 });
-export const CONVERT_TYPE = atom({
-  key: "convertType",
-  default: "webp",
+export const EDITOR_FILTER = atom({
+  key: "editorFilter",
+  default: { saturate: 1, contrast: 1, exposure: 1 },
 });
-export const CONVERT_INPUT = atom({
-  key: "convertInput",
+export const EDITOR_OUTPUT_SETTING = atom({
+  key: "editorOutputSetting",
+  default: { maxSize: 999, scale: 1, type: "webp" },
+});
+export const EDITOR_INPUT = atom({
+  key: "editorInput",
   default: [],
 });
-export const CONVERT_PROCESSING = atom({
-  key: "convertProcessing",
-  default: false,
+export const EDITOR_INPUT_NAMES = selector({
+  key: "editorInputNames",
+  get: ({ get }) => {
+    const input = get(EDITOR_INPUT);
+    return input.map((file) => file.name);
+  },
+});
+export const EDITOR_DISPLAY = atom({
+  key: "editorDisplay",
+  default: "",
+});
+export const EDITOR_DISPLAY_FILE = selector({
+  key: "editorDisplayFile",
+  get: ({ get }) => {
+    const name = get(EDITOR_DISPLAY);
+    const files = get(EDITOR_INPUT);
+    return files.find((file) => file.name === name);
+  },
+});
+export const EDITOR_ORDER = atom({
+  key: "editorOrder",
+  default: "asc",
+});
+export const EDITOR_SELECTED = atom({
+  key: "editorSelected",
+  default: [],
 });

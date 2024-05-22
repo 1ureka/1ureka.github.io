@@ -4,7 +4,7 @@ import { TOOLS_TAB } from "../utils/store";
 import { MotionStack, toolsItemVar } from "../components/Motion";
 
 import Manager from "../components/manager/Manager";
-import Tools from "../components/tools/Tools";
+import Editor from "../components/editor/Editor";
 import Layout from "../components/Layout";
 
 const intro = {
@@ -14,11 +14,10 @@ const intro = {
     manage the images in your album with ease, 
     facilitating effortless addition, updating, and deletion of images.`,
   },
-  tools: {
-    title: "Tools",
-    info: `Dive into a toolkit featuring image conversion, compression, 
-    and 3D utilities like height map to normal map conversion, 
-    continually expanding with new features.`,
+  editor: {
+    title: "Image Editor",
+    info: `A toolkit featuring image conversion, compression, 
+    and filtering. It supports batch processing and includes before-and-after comparison.`,
   },
 };
 
@@ -54,14 +53,23 @@ function Header() {
 
 function Content() {
   const tab = useRecoilValue(TOOLS_TAB);
-  return tab === "manager" ? <Manager /> : <Tools />;
+  switch (tab) {
+    case "manager":
+      return <Manager />;
+    case "editor":
+      return <Editor />;
+    case "toNormal":
+      return null; // todo
+    default:
+      return null;
+  }
 }
 
 export default function Page() {
   return (
     <Layout
       tabState={TOOLS_TAB}
-      tabs={["Manager", "Tools"]}
+      tabs={["Manager", "Editor"]}
       header={<Header />}
       content={<Content />}
       scroll={false}
