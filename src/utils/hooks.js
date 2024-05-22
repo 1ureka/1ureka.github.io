@@ -4,8 +4,11 @@ import { useRecoilValueLoadable } from "recoil";
 
 import { MANAGER_ADDED, MANAGER_CATEGORY, MANAGER_DELED } from "./store";
 import { INDEX, TABLE_SELECTED, IMAGES } from "./store";
-import { deleteFile, uploadFile, loadFile, decode, delay } from "./utils";
+import { deleteFile, uploadFile, loadFile } from "./utils";
+import { decode, delay, blobGetDataUrl } from "./utils";
 
+//
+// communicate
 export function useSyncIndex() {
   const setIndex = useSetRecoilState(INDEX);
 
@@ -77,6 +80,57 @@ export function useImageDelete() {
     await syncIndex();
     setDeled(names.length);
   };
+}
+
+//
+// image loading and decoding
+export function useBlob(blob) {
+  const [state, setState] = useState(false);
+  const [src, setSrc] = useState("");
+
+  useEffect(() => {
+    if (!blob) return;
+
+    (async () => {
+      const url = await blobGetDataUrl(blob);
+      setSrc(url);
+      setState(true);
+    })();
+
+    return () => {
+      setSrc(null);
+      setState(false);
+    };
+  }, [blob]);
+
+  return [src, state];
+}
+
+export function useDecode(src) {
+  const [state, setState] = useState(false);
+  const [_src, setSrc] = useState("");
+  const timeStamp = useRef(null);
+
+  const decoding = (url, createAt) => {
+    const img = new Image();
+    img.src = url;
+
+    (async () => {
+      await delay(250);
+      await decode(img);
+      if (createAt !== timeStamp.current) return;
+      setSrc(url);
+      setState(true);
+    })();
+  };
+
+  useEffect(() => {
+    timeStamp.current = Date.now();
+    setState(false);
+    if (src) decoding(src, timeStamp.current);
+  }, [src]);
+
+  return [_src, state];
 }
 
 export function useImageLoad(category, name, size) {

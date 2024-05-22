@@ -167,10 +167,6 @@ export const EDITOR_OUTPUT_SETTING = atom({
   key: "editorOutputSetting",
   default: { maxSize: 999, scale: 1, type: "webp" },
 });
-export const EDITOR_DISPLAY = atom({
-  key: "editorDisplay",
-  default: "",
-});
 export const EDITOR_INPUT = atom({
   key: "editorInput",
   default: [],
@@ -180,6 +176,18 @@ export const EDITOR_INPUT_NAMES = selector({
   get: ({ get }) => {
     const input = get(EDITOR_INPUT);
     return input.map((file) => file.name);
+  },
+});
+export const EDITOR_DISPLAY = atom({
+  key: "editorDisplay",
+  default: "",
+});
+export const EDITOR_DISPLAY_FILE = selector({
+  key: "editorDisplayFile",
+  get: ({ get }) => {
+    const name = get(EDITOR_DISPLAY);
+    const files = get(EDITOR_INPUT);
+    return files.find((file) => file.name === name);
   },
 });
 export const EDITOR_ORDER = atom({
