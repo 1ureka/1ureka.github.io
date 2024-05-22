@@ -1,10 +1,11 @@
-import { TableCell, Button, Stack } from "@mui/material";
+import { TableCell, Stack } from "@mui/material";
 import { TableHead, TableRow, TableSortLabel } from "@mui/material";
 import { Typography, Checkbox } from "@mui/material";
 
 import { useRecoilState, useRecoilValue } from "recoil";
 import { EDITOR_INPUT_NAMES, EDITOR_SELECTED } from "../../../utils/store";
 import { EDITOR_ORDER } from "../../../utils/store";
+import Action from "../action/Action";
 
 export function EnhancedTableToolbar() {
   const selected = useRecoilValue(EDITOR_SELECTED);
@@ -15,13 +16,7 @@ export function EnhancedTableToolbar() {
       <Typography sx={{ flex: "1" }} variant="caption" component="div">
         {numSelected} selected
       </Typography>
-      <Button
-        disabled={numSelected === 0}
-        sx={(theme) => theme.typography.caption}
-        variant="contained"
-      >
-        Convert
-      </Button>
+      <Action />
     </Stack>
   );
 }
