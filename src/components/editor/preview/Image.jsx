@@ -4,7 +4,8 @@ import { useRecoilValue } from "recoil";
 import { motion } from "framer-motion";
 
 import { toolsItemVar } from "../../Motion";
-import { createFilter, compressImage, delay } from "../../../utils/utils";
+import { createFilter, compressImage } from "../../../utils/utils";
+import { delay, blobGetDataUrl } from "../../../utils/utils";
 import { EDITOR_DISPLAY_FILE, EDITOR_DISPLAY } from "../../../utils/store";
 import { EDITOR_FILTER, EDITOR_OUTPUT_SETTING } from "../../../utils/store";
 import { useBlob, useDecode } from "../../../utils/hooks";
@@ -21,12 +22,15 @@ function useProcessImage(file) {
   const processing = async (file, options, createAt) => {
     await delay(500);
     if (createAt !== timeStamp.current) return;
+
     const { maxSize, ...restOptions } = options;
-    const url = await compressImage(file, {
+    const blob = await compressImage(file, {
       maxSize: maxSize * 1024 * 1024,
       ...restOptions,
     });
-    setSrc(url);
+
+    const dataUrl = await blobGetDataUrl(blob);
+    setSrc(dataUrl);
     setState(true);
   };
 
@@ -80,7 +84,6 @@ function useResultImage(file) {
 }
 
 export default function Image({ clipPathL, clipPathR }) {
-  console.log("render");
   const name = useRecoilValue(EDITOR_DISPLAY);
   const file = useRecoilValue(EDITOR_DISPLAY_FILE);
   const [originSrc, originState] = useOriginImage(file);

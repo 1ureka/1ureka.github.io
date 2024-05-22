@@ -279,22 +279,25 @@ export function createFilter({ saturate, contrast, exposure }) {
 }
 
 /**
- * 壓縮圖片並返回以 base64 編碼的數據 URL。
+ * 壓縮圖片並返回 Blob。
  * @param {Blob | File} file - 欲壓縮的圖片檔案。
  * @param {Object} options - 壓縮選項。
  * @param {string} [options.type="webp"] - 壓縮後的圖片格式，預設為 "webp"。
  * @param {number} [options.scale=1] - 圖片縮放比例，預設為 1。
  * @param {number} [options.maxSize=1048576] - 壓縮後的最大文件大小（以字節為單位），預設為 1024 * 1024 (1MB)。
- * @returns {Promise<string>} 回傳包含 dataUrl 的 Promise 物件。
+ * @returns {Promise<Blob>} 回傳包含 Blob 的 Promise 物件。
  */
 export async function compressImage(file, options) {
+  let blob = new Blob([file], { type: file.type });
+
+  options = options || {};
   const { type = "webp", scale = 1, maxSize = 1024 * 1024 } = options;
-  const { width, height } = await blobGetDimensions(file);
+  const { width, height } = await blobGetDimensions(blob);
 
   let quality = 1.0;
-  while (quality === 1.0 || file.size > maxSize) {
-    file = await new Promise((resolve) => {
-      new Compressor(file, {
+  while (quality === 1.0 || blob.size > maxSize) {
+    blob = await new Promise((resolve) => {
+      new Compressor(blob, {
         width: width * scale,
         height: height * scale,
         mimeType: `image/${type}`,
@@ -308,33 +311,32 @@ export async function compressImage(file, options) {
 
     quality *= 0.9;
     if (quality < 0.05) {
-      console.warn(`無法壓縮到指定大小以下，最終大小：${file.size}`);
+      console.warn(`無法壓縮到指定大小以下，最終大小：${blob.size}`);
       break;
     }
   }
 
-  return await blobGetDataUrl(file);
+  return blob;
 }
 
 /**
- * 應用濾鏡並壓縮圖片，返回以 base64 編碼的數據 URL。
+ * 應用濾鏡，返回 Blob。
  * @param {Blob | File} file - 欲處理的圖片檔案。
- * @param {Object} options - 濾鏡及壓縮選項。
- * @param {string} [options.type="webp"] - 壓縮後的圖片格式，預設為 "webp"。
- * @param {number} [options.scale=1] - 圖片縮放比例，預設為 1。
- * @param {number} [options.maxSize=1048576] - 壓縮後的最大文件大小（以字節為單位），預設為 1024 * 1024 (1MB)。
+ * @param {Object} options - 濾鏡選項。
  * @param {number} [options.saturate=1] - 飽和度，預設為 1。
  * @param {number} [options.contrast=1] - 對比度，預設為 1。
  * @param {number} [options.exposure=1] - 曝光度，預設為 1。
- * @returns {Promise<string>} 回傳包含 dataUrl 的 Promise 物件。
+ * @returns {Promise<Blob>} 回傳包含 Blob 的 Promise 物件。
  */
-export async function applyImageFilters(file, options) {
-  const { saturate = 1, contrast = 1, exposure = 1 } = options;
-  const filterOpt = { saturate, contrast, exposure };
-  const filters = createFilter(filterOpt);
+export async function filterImage(file, options) {
+  let blob = new Blob([file], { type: file.type });
 
-  file = await new Promise((resolve) => {
-    new Compressor(file, {
+  options = options || {};
+  const { saturate = 1, contrast = 1, exposure = 1 } = options;
+  const filters = createFilter({ saturate, contrast, exposure });
+
+  blob = await new Promise((resolve) => {
+    new Compressor(blob, {
       mimeType: `image/png`,
       convertSize: Infinity,
       success: resolve,
@@ -344,5 +346,5 @@ export async function applyImageFilters(file, options) {
     });
   });
 
-  return await compressImage(file, options);
+  return blob;
 }
