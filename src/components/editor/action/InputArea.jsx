@@ -2,7 +2,9 @@ import * as React from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { alpha, styled, Badge } from "@mui/material";
 
-import { EDITOR_INPUT, THEME } from "../../../utils/store";
+import { EDITOR_DISPLAY } from "../../../utils/store";
+import { EDITOR_INPUT, EDITOR_INPUT_NAMES } from "../../../utils/store";
+import { EDITOR_SELECTED, THEME } from "../../../utils/store";
 import { MotionButtonBase, toolsItemVar } from "../../Motion";
 
 function Svg() {
@@ -39,6 +41,25 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 });
 
+function Content() {
+  const input = useRecoilValue(EDITOR_INPUT);
+
+  const badgeSx = {
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    height: "100%",
+    pointerEvents: "none",
+    "& .MuiBadge-badge": { fontFamily: "Roboto" },
+  };
+
+  return (
+    <Badge badgeContent={input.length} color="primary" sx={badgeSx}>
+      <Svg />
+    </Badge>
+  );
+}
+
 function useDropArea(onDrop) {
   const [dragHover, setDragHover] = React.useState(false);
 
@@ -64,57 +85,62 @@ function useDropArea(onDrop) {
   };
 }
 
-function Content() {
-  const input = useRecoilValue(EDITOR_INPUT);
+function useHandleInput() {
+  const setInput = useSetRecoilState(EDITOR_INPUT);
+  const setSelect = useSetRecoilState(EDITOR_SELECTED);
+  const setDisplay = useSetRecoilState(EDITOR_DISPLAY);
+  const inputNames = useRecoilValue(EDITOR_INPUT_NAMES);
 
-  const badgeSx = {
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-    height: "100%",
-    pointerEvents: "none",
-    "& .MuiBadge-badge": { fontFamily: "Roboto" },
+  const handleInput = (fileList) => {
+    const files = Array.from(fileList);
+    const imageFiles = files.filter((file) => file.type.startsWith("image/"));
+
+    const newFiles = imageFiles.map((file) => {
+      if (!inputNames.includes(file.name)) return file;
+
+      const dotIndex = file.name.lastIndexOf(".");
+      const name = file.name.slice(0, dotIndex);
+      const extension = file.name.slice(dotIndex + 1);
+      const adjustedName = `${name} (copy).${extension}`;
+
+      return new File([file], adjustedName, { type: file.type });
+    });
+
+    const newSelected = newFiles.map((file) => file.name);
+
+    setInput((prev) => [...prev, ...newFiles]);
+    setSelect((prev) => [...prev, ...newSelected]);
+    setDisplay(newSelected[newSelected.length - 1]);
   };
 
-  return (
-    <Badge badgeContent={input.length} color="primary" sx={badgeSx}>
-      <Svg />
-    </Badge>
-  );
+  return handleInput;
 }
 
 export default function InputArea() {
-  const setInput = useSetRecoilState(EDITOR_INPUT);
-  const handleChange = ({ target }) => {
-    const files = Array.from(target.files);
-    const imageFiles = files.filter((file) => file.type.startsWith("image/"));
-    setInput((prev) => [...prev, ...imageFiles]);
-  };
-  const handleDrop = (fileList) => {
-    const files = Array.from(fileList);
-    const imageFiles = files.filter((file) => file.type.startsWith("image/"));
-    setInput((prev) => [...prev, ...imageFiles]);
-  };
-  const { dragHover, DragProps } = useDropArea(handleDrop);
+  const handleInput = useHandleInput();
+  const { dragHover, DragProps } = useDropArea(handleInput);
+  const handleChange = (e) => handleInput(e.target.files);
 
   const theme = useRecoilValue(THEME);
   const bgcolor = dragHover
     ? alpha(theme.palette.primary.main, 0.25)
     : theme.palette.divider;
 
+  const sx = {
+    position: "relative",
+    width: "100%",
+    aspectRatio: "1/0.5",
+    borderRadius: "10px",
+    border: `3px dashed ${bgcolor}`,
+    bgcolor,
+  };
+
   return (
     <MotionButtonBase
+      sx={sx}
       component="label"
       variants={toolsItemVar}
       {...DragProps}
-      sx={{
-        position: "relative",
-        width: "100%",
-        aspectRatio: "1/0.5",
-        borderRadius: "10px",
-        border: `3px dashed ${bgcolor}`,
-        bgcolor,
-      }}
     >
       <Content />
       <VisuallyHiddenInput
