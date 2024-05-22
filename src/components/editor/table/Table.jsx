@@ -51,13 +51,13 @@ function CellName({ name }) {
 
   return (
     <TableCell
-      component="th"
-      scope="row"
       padding="none"
       align="center"
       sx={(theme) => ({
         ...theme.typography.caption,
         color: isDisplay && theme.palette.primary.main,
+        overflow: "hidden",
+        textOverflow: "ellipsis",
       })}
     >
       {name}
@@ -139,7 +139,7 @@ export default function EnhancedTable() {
     <MotionPaper variants={toolsItemVar} sx={containerSx} elevation={1}>
       <Stack sx={{ height: "100%" }}>
         <TableContainer sx={{ overflowX: "hidden", flex: "1" }}>
-          <Table>
+          <Table sx={{ tableLayout: "fixed" }}>
             <EnhancedTableHead />
             <TableBody />
           </Table>
