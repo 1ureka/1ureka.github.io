@@ -83,13 +83,13 @@ export default function Output() {
     const { value } = target;
     const parsedValue = parseFloat(value);
     if (!value || parsedValue < 1 || parsedValue > 999) return;
-    setOutput((prev) => ({ ...prev, maxSize: value }));
+    setOutput((prev) => ({ ...prev, maxSize: parsedValue }));
   };
   const handleScale = ({ target }) => {
     const { value } = target;
     const parsedValue = parseFloat(value);
     if (!value || parsedValue < 0.1 || parsedValue > 1.5) return;
-    setOutput((prev) => ({ ...prev, scale: value }));
+    setOutput((prev) => ({ ...prev, scale: parsedValue }));
   };
   const handleType = ({ target }) => {
     if (!target.value) return;
