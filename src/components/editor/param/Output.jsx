@@ -4,7 +4,7 @@ import { MenuItem, TextField } from "@mui/material";
 
 import ArrowDropDownRoundedIcon from "@mui/icons-material/ArrowDropDownRounded";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { EDITOR_OUTPUT_SETTING, THEME } from "../../../utils/store";
+import { EDITOR_OUTPUT, THEME } from "../../../utils/store";
 import { SubTitle, Title } from "./Typo";
 import { MotionStack, toolsItemVar } from "../../Motion";
 
@@ -75,9 +75,7 @@ function OutputGrid({ children }) {
 }
 
 export default function Output() {
-  const [{ maxSize, scale, type }, setOutput] = useRecoilState(
-    EDITOR_OUTPUT_SETTING
-  );
+  const [{ maxSize, scale, type }, setOutput] = useRecoilState(EDITOR_OUTPUT);
 
   const handleMaxSize = ({ target }) => {
     const { value } = target;

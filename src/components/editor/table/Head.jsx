@@ -3,13 +3,12 @@ import { TableHead, TableRow, TableSortLabel } from "@mui/material";
 import { Typography, Checkbox } from "@mui/material";
 
 import { useRecoilState, useRecoilValue } from "recoil";
-import { EDITOR_INPUT_NAMES, EDITOR_SELECTED } from "../../../utils/store";
-import { EDITOR_ORDER } from "../../../utils/store";
+import { EDITOR_INPUT, EDITOR_ORDER } from "../../../utils/store";
 import Action from "../action/Action";
 
 export function EnhancedTableToolbar() {
-  const selected = useRecoilValue(EDITOR_SELECTED);
-  const numSelected = selected.length;
+  const input = useRecoilValue(EDITOR_INPUT);
+  const numSelected = input.filter((item) => item.selected).length;
 
   return (
     <Stack direction="row" sx={{ alignItems: "center", pl: 2, pr: 1, py: 1 }}>
@@ -40,15 +39,18 @@ function EnhancedTableSortLable({ label }) {
 }
 
 export function EnhancedTableHead() {
-  const [selected, setSelected] = useRecoilState(EDITOR_SELECTED);
-  const names = useRecoilValue(EDITOR_INPUT_NAMES);
+  const [input, setInput] = useRecoilState(EDITOR_INPUT);
+
   const handleSelectAllClick = (e) => {
-    setSelected(() => (e.target.checked ? [...names] : []));
+    setInput((prev) => {
+      const isChecked = e.target.checked;
+      return prev.map((item) => ({ ...item, selected: isChecked }));
+    });
   };
 
   const order = useRecoilValue(EDITOR_ORDER);
-  const lengthS = selected.length;
-  const lengthA = names.length;
+  const lengthS = input.filter((item) => item.selected).length;
+  const lengthA = input.length;
 
   return (
     <TableHead>
