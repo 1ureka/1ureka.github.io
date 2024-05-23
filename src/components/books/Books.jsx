@@ -1,12 +1,11 @@
 import * as React from "react";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 import { Badge, Box, ButtonBase, Skeleton } from "@mui/material";
 import { LayoutGroup } from "framer-motion";
 
-import { BOOKS_OPEN, BOOKS_ROWS, BOOKS_SELECTED } from "../../utils/store";
 import { BOOKS_FOLD, BOOKS_TAB, THEME } from "../../utils/store";
-import { delay } from "../../utils/utils";
-import { useImageLoad } from "../../utils/hooks";
+import { useBooksGroups, useBooksImageLoad } from "../../utils/hooks";
+import { useBooksGroupClick, useBooksImageClick } from "../../utils/hooks";
 import { MotionStack, booksItemVar, orchestrationVar } from "../Motion";
 
 function Reflect({ hover, x, clipPath }) {
@@ -37,7 +36,7 @@ function Reflect({ hover, x, clipPath }) {
 }
 
 function Image({ category, name }) {
-  const [src, state] = useImageLoad(category, name, "1K");
+  const [src, state] = useBooksImageLoad(category, name, "1K");
 
   const size = { width: "100%", height: "100%" };
   const imageSX = {
@@ -104,65 +103,26 @@ function Grid({ children }) {
   return <Box sx={containerSx}>{children}</Box>;
 }
 
-function useGroup(isGrouping) {
-  const rows = useRecoilValue(BOOKS_ROWS);
-
-  const groups = {};
-  rows.forEach((item, i) => {
-    const matches = item.name.match(`^(.+)-\\d+`);
-    const groupName = matches ? matches[1] : item.name;
-    if (!groups[groupName]) groups[groupName] = [];
-    groups[groupName].push({ ...item, i });
-  });
-
-  const length = isGrouping ? Object.keys(groups).length : rows.length;
-  const variants = orchestrationVar({
-    delay: 0,
-    stagger: 0.3 / length,
-  });
-
-  return { groups, variants };
-}
-
-function useBookActions() {
-  const [group, setGroup] = React.useState("");
-  const setOpen = useSetRecoilState(BOOKS_OPEN);
-  const setSelected = useSetRecoilState(BOOKS_SELECTED);
-
-  React.useEffect(() => {
-    return () => setOpen(false);
-  }, [setOpen]);
-
-  const handleGroupClick = (group) => async () => {
-    await delay(200);
-    setGroup(group);
-  };
-
-  const handleImageClick = (index) => async () => {
-    await delay(200);
-    setSelected(index);
-    setOpen(true);
-  };
-
-  return { group, handleGroupClick, handleImageClick };
-}
-
 export default function Books() {
   const tab = useRecoilValue(BOOKS_TAB);
   const isFold = useRecoilValue(BOOKS_FOLD);
-  const isGrouping = tab === "props" && isFold;
+  const isGroup = tab === "props" && isFold;
 
-  const { groups, variants } = useGroup(isGrouping);
-  const { group, handleGroupClick, handleImageClick } = useBookActions();
+  const { rows, groups } = useBooksGroups();
+  const length = isGroup ? Object.keys(groups).length : rows.length;
+  const variants = orchestrationVar({ delay: 0, stagger: 0.3 / length });
+
+  const { group, createHandlerG } = useBooksGroupClick();
+  const { createHandlerI } = useBooksImageClick();
 
   const items = Object.entries(groups).map(([groupName, groupItems]) => {
-    if (groupItems.length === 1 || groupName === group || !isGrouping)
+    if (groupItems.length === 1 || groupName === group || !isGroup)
       return groupItems.map(({ category, name, i }) => (
         <GridItem
           key={name}
           category={category}
           name={name}
-          onClick={handleImageClick(i)}
+          onClick={createHandlerI(i)}
           amount={0}
         />
       ));
@@ -173,7 +133,7 @@ export default function Books() {
         key={name}
         category={category}
         name={name}
-        onClick={handleGroupClick(groupName)}
+        onClick={createHandlerG(groupName)}
         amount={groupItems.length}
       />
     );

@@ -1,50 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Stack, Backdrop, Typography, Snackbar } from "@mui/material";
 import { Button, IconButton, CircularProgress } from "@mui/material";
-
 import AddToPhotosRoundedIcon from "@mui/icons-material/AddToPhotosRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
-import { blobGetDataUrl, compressImage } from "../../../utils/utils";
 import { DialogAdd } from "../dialog/Dialog";
+import { useManagerSelect } from "../../../utils/hooks";
 
-//
-// utils
-const createInput = () => {
-  const input = document.createElement("input");
-  input.type = "file";
-  input.accept = "image/*";
-  input.multiple = true;
-  input.style.display = "none";
-  return input;
-};
-
-/** @returns {Promise<FileList | null>} */
-const getInput = async (input) => {
-  return await new Promise((resolve) => {
-    input.addEventListener("cancel", () => resolve([]));
-    input.addEventListener("change", () => resolve(input.files));
-    document.body.appendChild(input);
-    input.click();
-  });
-};
-
-/** @param {File[]} files*/
-const processImages = async (files) => {
-  return await Promise.all(
-    files.map(async (file) => {
-      const blobO = await compressImage(file);
-      const blobT = await compressImage(file, { scale: 0.125 });
-      const origin = await blobGetDataUrl(blobO);
-      const thumbnail = await blobGetDataUrl(blobT);
-      const name = file.name.replace(/\.[^.]+$/, "");
-      return { name, origin, thumbnail };
-    })
-  );
-};
-
-//
-// Cmponents
 function Action({ onClick }) {
   return (
     <Button
@@ -57,7 +19,7 @@ function Action({ onClick }) {
   );
 }
 
-function Progress({ open, task }) {
+function Task({ open, info }) {
   return (
     <Backdrop
       open={open}
@@ -69,20 +31,20 @@ function Progress({ open, task }) {
       <Stack alignItems={"center"} spacing={2}>
         <CircularProgress color="primary" disableShrink />
         <Typography variant="body2" color="text.secondary">
-          {task}
+          {info}
         </Typography>
       </Stack>
     </Backdrop>
   );
 }
 
-function Hint({ open, alert, onClose }) {
+function Hint({ open, info, onClose }) {
   return (
     <Snackbar
       autoHideDuration={3500}
       anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       open={open}
-      message={alert}
+      message={info}
       action={
         <IconButton size="small" onClick={onClose} color="inherit">
           <CloseRoundedIcon fontSize="small" />
@@ -96,46 +58,20 @@ function Hint({ open, alert, onClose }) {
 }
 
 export default function AddButton() {
-  const [task, setTask] = useState("");
-  const [alert, setAlert] = useState("");
-  const [list, setList] = useState([]);
+  const { action, task, hint, list } = useManagerSelect();
 
-  const handleAdd = async () => {
-    setAlert("");
-    setTask("Selecting files...");
+  const [openH, setOpenH] = useState(false);
+  useEffect(() => setOpenH(!!hint), [hint]);
 
-    const input = createInput();
-    const fileList = await getInput(input);
-    input.remove();
-
-    const files = Array.from(fileList);
-    if (files.length === 0) {
-      setAlert("No file selected");
-      setTask("");
-      return;
-    }
-    if (!files.every((file) => file.type.match("image.*"))) {
-      setAlert("Please select only image files");
-      setTask("");
-      return;
-    }
-
-    setTask("Compressing files...");
-    const list = await processImages(files);
-    setTask("");
-    setList(list);
-  };
+  const [openD, setOpenD] = useState(false);
+  useEffect(() => setOpenD(list.length > 0), [list]);
 
   return (
     <>
-      <Action onClick={handleAdd} />
-      <Progress open={!!task} task={task} />
-      <Hint open={!!alert} alert={alert} onClose={() => setAlert("")} />
-      <DialogAdd
-        open={list.length > 0}
-        onClose={() => setList([])}
-        list={list}
-      />
+      <Action onClick={action} />
+      <Task open={!!task} info={task} />
+      <Hint open={openH} info={hint} onClose={() => setOpenH(false)} />
+      <DialogAdd open={openD} onClose={() => setOpenD(false)} list={list} />
     </>
   );
 }
