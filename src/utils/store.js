@@ -163,38 +163,16 @@ export const EDITOR_FILTER = atom({
   key: "editorFilter",
   default: { saturate: 1, contrast: 1, exposure: 1 },
 });
-export const EDITOR_OUTPUT_SETTING = atom({
-  key: "editorOutputSetting",
+export const EDITOR_OUTPUT = atom({
+  key: "editorOutput",
   default: { maxSize: 999, scale: 1, type: "webp" },
 });
+/** @type {import('recoil').RecoilState<{selected: Boolean, display: Boolean, file: File}[]>} */
 export const EDITOR_INPUT = atom({
   key: "editorInput",
   default: [],
 });
-export const EDITOR_INPUT_NAMES = selector({
-  key: "editorInputNames",
-  get: ({ get }) => {
-    const input = get(EDITOR_INPUT);
-    return input.map((file) => file.name);
-  },
-});
-export const EDITOR_DISPLAY = atom({
-  key: "editorDisplay",
-  default: "",
-});
-export const EDITOR_DISPLAY_FILE = selector({
-  key: "editorDisplayFile",
-  get: ({ get }) => {
-    const name = get(EDITOR_DISPLAY);
-    const files = get(EDITOR_INPUT);
-    return files.find((file) => file.name === name);
-  },
-});
 export const EDITOR_ORDER = atom({
   key: "editorOrder",
   default: "asc",
-});
-export const EDITOR_SELECTED = atom({
-  key: "editorSelected",
-  default: [],
 });

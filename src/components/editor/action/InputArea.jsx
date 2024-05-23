@@ -1,10 +1,8 @@
 import * as React from "react";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { alpha, styled, Badge } from "@mui/material";
 
-import { EDITOR_DISPLAY } from "../../../utils/store";
-import { EDITOR_INPUT, EDITOR_INPUT_NAMES } from "../../../utils/store";
-import { EDITOR_SELECTED, THEME } from "../../../utils/store";
+import { EDITOR_INPUT, THEME } from "../../../utils/store";
 import { MotionButtonBase, toolsItemVar } from "../../Motion";
 
 function Svg() {
@@ -61,7 +59,7 @@ function Content() {
 }
 
 function useDropArea(onDrop) {
-  const [dragHover, setDragHover] = React.useState(false);
+  const [dragOver, setDragOver] = React.useState(false);
 
   const handleDragOver = (e) => {
     e.preventDefault();
@@ -70,26 +68,32 @@ function useDropArea(onDrop) {
 
   const handleDrop = (e) => {
     e.preventDefault();
-    setDragHover(false);
+    setDragOver(false);
     onDrop(e.dataTransfer.files);
   };
 
-  return {
-    dragHover,
-    DragProps: {
-      onDragEnter: () => setDragHover(true),
-      onDragLeave: () => setDragHover(false),
+  return [
+    dragOver,
+    {
+      onDragEnter: () => setDragOver(true),
+      onDragLeave: () => setDragOver(false),
       onDrop: handleDrop,
       onDragOver: handleDragOver,
     },
-  };
+  ];
 }
 
+// useEditorInput?
 function useHandleInput() {
-  const setInput = useSetRecoilState(EDITOR_INPUT);
-  const setSelect = useSetRecoilState(EDITOR_SELECTED);
-  const setDisplay = useSetRecoilState(EDITOR_DISPLAY);
-  const inputNames = useRecoilValue(EDITOR_INPUT_NAMES);
+  const [input, setInput] = useRecoilState(EDITOR_INPUT);
+  const inputNames = input.map((item) => item.file.name);
+
+  const copyName = (fileName) => {
+    const dotIndex = fileName.lastIndexOf(".");
+    const name = fileName.slice(0, dotIndex);
+    const extension = fileName.slice(dotIndex + 1);
+    return `${name} (copy).${extension}`;
+  };
 
   const handleInput = (fileList) => {
     const files = Array.from(fileList);
@@ -97,20 +101,20 @@ function useHandleInput() {
 
     const newFiles = imageFiles.map((file) => {
       if (!inputNames.includes(file.name)) return file;
-
-      const dotIndex = file.name.lastIndexOf(".");
-      const name = file.name.slice(0, dotIndex);
-      const extension = file.name.slice(dotIndex + 1);
-      const adjustedName = `${name} (copy).${extension}`;
-
-      return new File([file], adjustedName, { type: file.type });
+      return new File([file], copyName(file.name), { type: file.type });
     });
 
-    const newSelected = newFiles.map((file) => file.name);
+    const newInput = newFiles.map((file, i) => ({
+      selected: true,
+      display: i + 1 === newFiles.length,
+      file,
+    }));
 
-    setInput((prev) => [...prev, ...newFiles]);
-    setSelect((prev) => [...prev, ...newSelected]);
-    setDisplay(newSelected[newSelected.length - 1]);
+    if (newInput.length > 0)
+      setInput((prev) => {
+        const prevInput = prev.map((item) => ({ ...item, display: false }));
+        return [...prevInput, ...newInput];
+      });
   };
 
   return handleInput;
@@ -118,11 +122,11 @@ function useHandleInput() {
 
 export default function InputArea() {
   const handleInput = useHandleInput();
-  const { dragHover, DragProps } = useDropArea(handleInput);
+  const [dragOver, DragProps] = useDropArea(handleInput);
   const handleChange = (e) => handleInput(e.target.files);
 
   const theme = useRecoilValue(THEME);
-  const bgcolor = dragHover
+  const bgcolor = dragOver
     ? alpha(theme.palette.primary.main, 0.25)
     : theme.palette.divider;
 
