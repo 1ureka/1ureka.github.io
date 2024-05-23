@@ -6,14 +6,15 @@ import { motion } from "framer-motion";
 import { toolsItemVar } from "../../Motion";
 import { createFilter, compressImage } from "../../../utils/utils";
 import { delay, blobGetDataUrl } from "../../../utils/utils";
-import { EDITOR_DISPLAY_FILE, EDITOR_DISPLAY } from "../../../utils/store";
-import { EDITOR_FILTER, EDITOR_OUTPUT_SETTING } from "../../../utils/store";
+import { EDITOR_INPUT } from "../../../utils/store";
+import { EDITOR_FILTER, EDITOR_OUTPUT } from "../../../utils/store";
 import { useBlob, useDecode } from "../../../utils/hooks";
 
 const imageSize = { width: "100%", height: "100%", objectFit: "contain" };
 
+// useEditorPreview?
 function useProcessImage(file) {
-  const options = useRecoilValue(EDITOR_OUTPUT_SETTING);
+  const options = useRecoilValue(EDITOR_OUTPUT);
 
   const [state, setState] = React.useState(false);
   const [src, setSrc] = React.useState(null);
@@ -43,30 +44,24 @@ function useProcessImage(file) {
   return [src, state];
 }
 
-function Origin({ clipPath, name, src, state }) {
+function Origin({ clipPath, src, state }) {
   const style = { ...imageSize, clipPath };
 
   return (
     state && (
-      <motion.img variants={toolsItemVar} src={src} alt={name} style={style} />
+      <motion.img variants={toolsItemVar} src={src} alt={""} style={style} />
     )
   );
 }
 
-function Result({ clipPath, name, src, state }) {
+function Result({ clipPath, src, state }) {
   const filterOpt = useRecoilValue(EDITOR_FILTER);
   const filter = createFilter(filterOpt);
   const style = { ...imageSize, position: "absolute", filter, clipPath };
 
   return (
     state && (
-      <motion.img
-        key={name}
-        variants={toolsItemVar}
-        src={src}
-        alt={name}
-        style={style}
-      />
+      <motion.img variants={toolsItemVar} src={src} alt={""} style={style} />
     )
   );
 }
@@ -84,8 +79,9 @@ function useResultImage(file) {
 }
 
 export default function Image({ clipPathL, clipPathR }) {
-  const name = useRecoilValue(EDITOR_DISPLAY);
-  const file = useRecoilValue(EDITOR_DISPLAY_FILE);
+  const input = useRecoilValue(EDITOR_INPUT);
+  const file = input.find((item) => item.display)?.file;
+
   const [originSrc, originState] = useOriginImage(file);
   const [resultSrc, resultState] = useResultImage(file);
   const state = originState && resultState;
@@ -93,20 +89,10 @@ export default function Image({ clipPathL, clipPathR }) {
   return (
     <>
       <Stack sx={{ position: "relative", width: "100%", height: "100%" }}>
-        <Origin
-          clipPath={clipPathL}
-          src={originSrc}
-          state={originState}
-          name={name}
-        />
-        <Result
-          clipPath={clipPathR}
-          src={resultSrc}
-          state={resultState}
-          name={name}
-        />
+        <Origin clipPath={clipPathL} src={originSrc} state={originState} />
+        <Result clipPath={clipPathR} src={resultSrc} state={resultState} />
       </Stack>
-      {name && !state && (
+      {file && !state && (
         <LinearProgress
           sx={{ position: "absolute", bottom: 0, width: "100%" }}
         />

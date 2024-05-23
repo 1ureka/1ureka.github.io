@@ -2,14 +2,13 @@ import * as React from "react";
 import { Button, CircularProgress } from "@mui/material";
 import { useRecoilState, useRecoilValue } from "recoil";
 
-import { EDITOR_DISPLAY, EDITOR_FILTER } from "../../../utils/store";
-import { EDITOR_OUTPUT_SETTING } from "../../../utils/store";
-import { EDITOR_SELECTED, EDITOR_INPUT } from "../../../utils/store";
+import { EDITOR_FILTER, EDITOR_OUTPUT } from "../../../utils/store";
+import { EDITOR_INPUT } from "../../../utils/store";
 import { compressImage, filterImage } from "../../../utils/utils";
 import { blobGetDataUrl } from "../../../utils/utils";
 
 function useOptions() {
-  const outputOptions = useRecoilValue(EDITOR_OUTPUT_SETTING);
+  const outputOptions = useRecoilValue(EDITOR_OUTPUT);
   const filterOptions = useRecoilValue(EDITOR_FILTER);
   const options = { ...outputOptions, ...filterOptions };
   options.maxSize *= 1024 * 1024;
@@ -17,17 +16,16 @@ function useOptions() {
   return options;
 }
 
-function processImages({ input, selected, options }) {
+function processImages({ selected, options }) {
   return Promise.all(
-    selected.map(async (name) => {
-      const file = input.find((file) => file.name === name);
+    selected.map(async ({ file }) => {
       const filtered = await filterImage(file, options);
       const blob = await compressImage(filtered, options);
       const dataUrl = await blobGetDataUrl(blob);
 
       return {
         dataUrl,
-        name: name.slice(0, name.lastIndexOf(".")),
+        name: file.name.slice(0, file.name.lastIndexOf(".")),
       };
     })
   );
@@ -42,10 +40,10 @@ function downloadImages(results) {
   });
 }
 
+// useEditorOutput?
 function useAction() {
   const [input, setInput] = useRecoilState(EDITOR_INPUT);
-  const [selected, setSelected] = useRecoilState(EDITOR_SELECTED);
-  const [display, setDisplay] = useRecoilState(EDITOR_DISPLAY);
+  const selected = input.filter((item) => item.selected);
 
   const [loading, setLoading] = React.useState(false);
   const disabled = selected.length === 0 || loading;
@@ -53,12 +51,8 @@ function useAction() {
 
   const action = async () => {
     setLoading(true);
-    const results = await processImages({ input, selected, options });
-
-    const isSelected = (name) => selected.includes(name);
-    if (isSelected(display)) setDisplay("");
-    setInput((prev) => prev.filter((file) => !isSelected(file.name)));
-    setSelected([]);
+    const results = await processImages({ selected, options });
+    setInput((prev) => prev.filter((item) => !item.selected));
 
     downloadImages(results);
     setLoading(false);
