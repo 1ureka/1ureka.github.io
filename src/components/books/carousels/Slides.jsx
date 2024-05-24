@@ -4,7 +4,7 @@ import { useSpring, useTransform, motion } from "framer-motion";
 import { Skeleton } from "@mui/material";
 
 import { BOOKS_ROWS, BOOKS_SELECTED } from "../../../utils/store";
-import { useImageLoad } from "../../../utils/hooks";
+import { useBooksImageLoad } from "../../../utils/hooks";
 import { MotionStack } from "../../Motion";
 
 const containerVar = {
@@ -25,7 +25,7 @@ const containerVar = {
 };
 
 function SlidesImage({ category, name, selected }) {
-  const [src, state] = useImageLoad(category, name, "1K");
+  const [src, state] = useBooksImageLoad(category, name, "1K");
 
   const size = { width: "100%", height: "auto", aspectRatio: "16/9" };
   const imageSX = {

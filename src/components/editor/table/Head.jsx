@@ -1,22 +1,37 @@
-import { TableCell, Stack } from "@mui/material";
+import { TableCell, Stack, CircularProgress } from "@mui/material";
 import { TableHead, TableRow, TableSortLabel } from "@mui/material";
-import { Typography, Checkbox } from "@mui/material";
+import { Typography, Checkbox, Button } from "@mui/material";
 
 import { useRecoilState, useRecoilValue } from "recoil";
-import { EDITOR_INPUT_NAMES, EDITOR_SELECTED } from "../../../utils/store";
-import { EDITOR_ORDER } from "../../../utils/store";
-import Action from "../action/Action";
+import { EDITOR_INPUT, EDITOR_ORDER } from "../../../utils/store";
+import { useEditorOutput } from "../../../utils/hooks";
+
+function ConvertButton() {
+  const { action, loading, disabled } = useEditorOutput();
+
+  return (
+    <Button
+      disabled={disabled}
+      sx={(theme) => theme.typography.caption}
+      variant="contained"
+      onClick={action}
+    >
+      Convert
+      {loading && <CircularProgress size={30} sx={{ position: "absolute" }} />}
+    </Button>
+  );
+}
 
 export function EnhancedTableToolbar() {
-  const selected = useRecoilValue(EDITOR_SELECTED);
-  const numSelected = selected.length;
+  const input = useRecoilValue(EDITOR_INPUT);
+  const numSelected = input.filter((item) => item.selected).length;
 
   return (
     <Stack direction="row" sx={{ alignItems: "center", pl: 2, pr: 1, py: 1 }}>
       <Typography sx={{ flex: "1" }} variant="caption" component="div">
         {numSelected} selected
       </Typography>
-      <Action />
+      <ConvertButton />
     </Stack>
   );
 }
@@ -40,15 +55,18 @@ function EnhancedTableSortLable({ label }) {
 }
 
 export function EnhancedTableHead() {
-  const [selected, setSelected] = useRecoilState(EDITOR_SELECTED);
-  const names = useRecoilValue(EDITOR_INPUT_NAMES);
+  const [input, setInput] = useRecoilState(EDITOR_INPUT);
+
   const handleSelectAllClick = (e) => {
-    setSelected(() => (e.target.checked ? [...names] : []));
+    setInput((prev) => {
+      const isChecked = e.target.checked;
+      return prev.map((item) => ({ ...item, selected: isChecked }));
+    });
   };
 
   const order = useRecoilValue(EDITOR_ORDER);
-  const lengthS = selected.length;
-  const lengthA = names.length;
+  const lengthS = input.filter((item) => item.selected).length;
+  const lengthA = input.length;
 
   return (
     <TableHead>

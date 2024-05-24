@@ -4,51 +4,32 @@ import { Table, TableCell, TableContainer } from "@mui/material";
 import { Checkbox, Stack } from "@mui/material";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 
-import { EDITOR_INPUT_NAMES, EDITOR_SELECTED } from "../../../utils/store";
-import { EDITOR_DISPLAY, EDITOR_ORDER } from "../../../utils/store";
+import { EDITOR_INPUT, EDITOR_ORDER } from "../../../utils/store";
 import { lightTheme } from "../../../utils/theme";
 
 import { EnhancedTableHead, EnhancedTableToolbar } from "./Head";
 import { MotionBody, MotionPaper, MotionRow, toolsItemVar } from "../../Motion";
 import { orchestrationVar, tableItemVar } from "../../Motion";
 
-function comparator(order) {
-  const sortOrder = order === "desc" ? 1 : -1;
-  return (a, b) => {
-    if (b < a) return -1 * sortOrder;
-    if (b > a) return 1 * sortOrder;
-    return 0;
-  };
-}
-
-function CellSelectBox({ name }) {
-  const [selected, setSelected] = useRecoilState(EDITOR_SELECTED);
-
-  const isSelected = selected.indexOf(name) !== -1;
-  const selectThis = (prev) => [...prev, name];
-  const deselectThis = (prev) => prev.filter((item) => item !== name);
-
-  const handleSelect = (e) => {
+function CellSelectBox({ checked, onClick }) {
+  const handleClick = (e) => {
     e.stopPropagation();
-    setSelected((prev) => (isSelected ? deselectThis(prev) : selectThis(prev)));
+    onClick();
   };
 
   return (
     <TableCell padding="checkbox">
       <Checkbox
         color="primary"
-        checked={isSelected}
+        checked={checked}
         size="small"
-        onClick={handleSelect}
+        onClick={handleClick}
       />
     </TableCell>
   );
 }
 
-function CellName({ name }) {
-  const display = useRecoilValue(EDITOR_DISPLAY);
-  const isDisplay = display === name;
-
+function CellName({ name, isDisplay }) {
   return (
     <TableCell
       padding="none"
@@ -65,10 +46,7 @@ function CellName({ name }) {
   );
 }
 
-function CellDisplay({ name }) {
-  const display = useRecoilValue(EDITOR_DISPLAY);
-  const isDisplay = display === name;
-
+function CellDisplayBox({ isDisplay }) {
   return (
     <TableCell padding="checkbox">
       <Checkbox
@@ -81,47 +59,75 @@ function CellDisplay({ name }) {
   );
 }
 
-function TableRow({ name, index }) {
-  const [display, setDisplay] = useRecoilState(EDITOR_DISPLAY);
-  const isDisplay = display === name;
-  const handleDisplay = () => setDisplay(name);
+function TableRow({ i, name, selected, display, onSelect, onDisplay }) {
+  const sx = {
+    cursor: "pointer",
+    backdropFilter: i % 2 ? "" : "brightness(0.85)",
+  };
 
   return (
     <MotionRow
       hover
       variants={tableItemVar}
       tabIndex={-1}
-      onClick={handleDisplay}
-      selected={isDisplay}
-      sx={{
-        cursor: "pointer",
-        backdropFilter: index % 2 ? "" : "brightness(0.85)",
-      }}
+      selected={display}
+      onClick={onDisplay}
+      sx={sx}
     >
-      <CellSelectBox name={name} />
-      <CellName name={name} />
-      <CellDisplay name={name} />
+      <CellSelectBox checked={selected} onClick={onSelect} />
+      <CellName name={name} isDisplay={display} />
+      <CellDisplayBox isDisplay={display} />
     </MotionRow>
   );
 }
 
 function TableBody() {
-  const names = useRecoilValue(EDITOR_INPUT_NAMES);
-  const order = useRecoilValue(EDITOR_ORDER);
+  const [input, setInput] = useRecoilState(EDITOR_INPUT);
 
-  const list = React.useMemo(
-    () => names.slice().sort(comparator(order)),
-    [names, order]
-  );
+  const order = useRecoilValue(EDITOR_ORDER);
+  const orderedInput = React.useMemo(() => {
+    const copy = input.slice();
+    const sortOrder = order === "desc" ? -1 : 1;
+    return copy.sort(
+      (a, b) => a.file.name.localeCompare(b.file.name) * sortOrder
+    );
+  }, [input, order]);
+
+  const isDisplay = (i) => orderedInput[i].display;
+  const handleDisplay = (i) => {
+    const newInput = orderedInput.map((item, index) => ({
+      ...item,
+      display: index === i,
+    }));
+    setInput(newInput);
+  };
+
+  const isSelected = (i) => orderedInput[i].selected;
+  const handleSelect = (i) => {
+    const newInput = orderedInput.map((item, index) => {
+      if (index !== i) return item;
+      return { ...item, selected: !item.selected };
+    });
+    setInput(newInput);
+  };
+
   const variants = orchestrationVar({
     delay: 0.15,
-    stagger: 0.5 / list.length,
+    stagger: 0.5 / orderedInput.length,
   });
 
   return (
     <MotionBody variants={variants}>
-      {list.map((name, i) => (
-        <TableRow key={name} name={name} index={i} />
+      {orderedInput.map((item, i) => (
+        <TableRow
+          key={item.file.name}
+          i={i}
+          name={item.file.name}
+          selected={isSelected(i)}
+          display={isDisplay(i)}
+          onSelect={() => handleSelect(i)}
+          onDisplay={() => handleDisplay(i)}
+        />
       ))}
     </MotionBody>
   );

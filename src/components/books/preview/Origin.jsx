@@ -3,7 +3,7 @@ import { useRecoilValue } from "recoil";
 import { motion } from "framer-motion";
 
 import { BOOKS_ROWS, BOOKS_SELECTED } from "../../../utils/store";
-import { useImageDecode } from "../../../utils/hooks";
+import { useBooksImageDecode } from "../../../utils/hooks";
 import Fullscreen from "./Fullscreen";
 
 function useSelected() {
@@ -20,7 +20,7 @@ function OriginImage({ src, name }) {
 
 export default function Origin() {
   const { category, name } = useSelected();
-  const [src, state] = useImageDecode(category, name, "4K");
+  const [src, state] = useBooksImageDecode(category, name, "4K");
   const [fullscreen, setFullscreen] = React.useState(false);
 
   const containerSx = {

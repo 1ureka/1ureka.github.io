@@ -340,7 +340,7 @@ export async function filterImage(file, options) {
       mimeType: `image/png`,
       convertSize: Infinity,
       success: resolve,
-      beforeDraw(context, _) {
+      beforeDraw(context) {
         context.filter = filters;
       },
     });

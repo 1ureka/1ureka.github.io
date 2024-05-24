@@ -3,14 +3,15 @@ import { Box, Typography } from "@mui/material";
 import { useRecoilValue } from "recoil";
 import { motion, useMotionTemplate, useMotionValue } from "framer-motion";
 
-import { EDITOR_DISPLAY, THEME } from "../../../utils/store";
+import { EDITOR_INPUT, THEME } from "../../../utils/store";
 import { MotionStack, toolsItemVar } from "../../Motion";
 import Image from "./Image";
 
 const margin = "32px";
 
 function Name() {
-  const name = useRecoilValue(EDITOR_DISPLAY);
+  const input = useRecoilValue(EDITOR_INPUT);
+  const name = input.find((item) => item.display)?.file.name;
   const sx = { position: "absolute", top: "8px", left: "8px", zIndex: 1 };
   return (
     <Typography variant="caption" color="text.secondary" sx={sx}>

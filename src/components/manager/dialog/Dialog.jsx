@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 import { List, ListItem, ListItemIcon, IconButton } from "@mui/material";
 import { ListItemText, Dialog, DialogTitle } from "@mui/material";
 import { DialogContent, DialogActions } from "@mui/material";
@@ -9,9 +9,8 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import AddPhotoAlternateRoundedIcon from "@mui/icons-material/AddPhotoAlternateRounded";
 import HideImageRoundedIcon from "@mui/icons-material/HideImageRounded";
 
-import { useImageAdd, useImageDelete } from "../../../utils/hooks";
-import { MANAGER_ADDED, MANAGER_DELED } from "../../../utils/store";
-import { TABLE_PAGE, TABLE_SELECTED } from "../../../utils/store";
+import { useManagerUpload, useManagerDelete } from "../../../utils/hooks";
+import { MANAGER_SELECTED } from "../../../utils/store";
 import { FinishHint, Progress, Warning } from "./Elements";
 
 function InfoHeader({ title, onClose }) {
@@ -96,12 +95,12 @@ function Template({ open, onClose, title, info, list, onSave, hint, icon }) {
 }
 
 export function DialogAdd({ open, onClose, list }) {
-  const addImages = useImageAdd();
+  const [num, setNum] = useState(0);
+  const addImages = useManagerUpload();
   const actionHandler = async () => {
-    await addImages(list);
+    const num = await addImages(list);
+    setNum(num);
   };
-
-  const num = useRecoilValue(MANAGER_ADDED);
 
   return (
     <Template
@@ -118,15 +117,13 @@ export function DialogAdd({ open, onClose, list }) {
 }
 
 export function DialogDel({ open, onClose }) {
-  const selected = useRecoilValue(TABLE_SELECTED);
-  const setPage = useSetRecoilState(TABLE_PAGE);
-  const deleteImages = useImageDelete();
+  const selected = useRecoilValue(MANAGER_SELECTED);
+  const [num, setNum] = useState(0);
+  const deleteImages = useManagerDelete();
   const actionHandler = async () => {
-    setPage(0);
-    await deleteImages(selected);
+    const num = await deleteImages(selected);
+    setNum(num);
   };
-
-  const num = useRecoilValue(MANAGER_DELED);
 
   return (
     <Template
