@@ -109,14 +109,6 @@ export const MANAGER_ROWS = selector({
     return rows;
   },
 });
-export const MANAGER_ADDED = atom({
-  key: "managerAdded",
-  default: 0,
-});
-export const MANAGER_DELED = atom({
-  key: "managerDeleted",
-  default: 0,
-});
 export const TABLE_ROWS_LENGTH = selector({
   key: "tableRowsLength",
   get: ({ get }) => {

@@ -16,9 +16,7 @@ import {
   EDITOR_OUTPUT,
   IMAGES,
   INDEX,
-  MANAGER_ADDED,
   MANAGER_CATEGORY,
-  MANAGER_DELED,
   SIDEBAR_IS_AUTH,
   SIDEBAR_OPEN,
   TABLE_PAGE,
@@ -329,7 +327,6 @@ export function useManagerSelect() {
 export function useManagerUpload() {
   const syncIndex = useSyncIndex();
   const setSelected = useSetRecoilState(TABLE_SELECTED);
-  const setAdded = useSetRecoilState(MANAGER_ADDED);
   const category = useRecoilValue(MANAGER_CATEGORY);
 
   const uploadImages = async (list) => {
@@ -351,14 +348,13 @@ export function useManagerUpload() {
       return Array.from(set);
     });
     await syncIndex();
-    setAdded(list.length);
+    return list.length;
   };
 }
 
 export function useManagerDelete() {
   const syncIndex = useSyncIndex();
   const setSelected = useSetRecoilState(TABLE_SELECTED);
-  const setDeled = useSetRecoilState(MANAGER_DELED);
   const setPage = useSetRecoilState(TABLE_PAGE);
   const category = useRecoilValue(MANAGER_CATEGORY);
 
@@ -379,7 +375,7 @@ export function useManagerDelete() {
     setSelected([]);
     setPage(0);
     await syncIndex();
-    setDeled(names.length);
+    return names.length;
   };
 }
 

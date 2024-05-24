@@ -10,7 +10,6 @@ import AddPhotoAlternateRoundedIcon from "@mui/icons-material/AddPhotoAlternateR
 import HideImageRoundedIcon from "@mui/icons-material/HideImageRounded";
 
 import { useManagerUpload, useManagerDelete } from "../../../utils/hooks";
-import { MANAGER_ADDED, MANAGER_DELED } from "../../../utils/store";
 import { TABLE_SELECTED } from "../../../utils/store";
 import { FinishHint, Progress, Warning } from "./Elements";
 
@@ -96,12 +95,12 @@ function Template({ open, onClose, title, info, list, onSave, hint, icon }) {
 }
 
 export function DialogAdd({ open, onClose, list }) {
+  const [num, setNum] = useState(0);
   const addImages = useManagerUpload();
   const actionHandler = async () => {
-    await addImages(list);
+    const num = await addImages(list);
+    setNum(num);
   };
-
-  const num = useRecoilValue(MANAGER_ADDED);
 
   return (
     <Template
@@ -119,12 +118,12 @@ export function DialogAdd({ open, onClose, list }) {
 
 export function DialogDel({ open, onClose }) {
   const selected = useRecoilValue(TABLE_SELECTED);
+  const [num, setNum] = useState(0);
   const deleteImages = useManagerDelete();
   const actionHandler = async () => {
-    await deleteImages(selected);
+    const num = await deleteImages(selected);
+    setNum(num);
   };
-
-  const num = useRecoilValue(MANAGER_DELED);
 
   return (
     <Template
