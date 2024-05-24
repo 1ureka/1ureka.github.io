@@ -1,48 +1,13 @@
-import * as React from "react";
 import { LinearProgress, Stack } from "@mui/material";
 import { useRecoilValue } from "recoil";
 import { motion } from "framer-motion";
 
 import { toolsItemVar } from "../../Motion";
-import { createFilter, compressImage } from "../../../utils/utils";
-import { delay, blobGetDataUrl } from "../../../utils/utils";
-import { EDITOR_INPUT } from "../../../utils/store";
-import { EDITOR_FILTER, EDITOR_OUTPUT } from "../../../utils/store";
-import { useBlob, useDecode } from "../../../utils/hooks";
+import { createFilter } from "../../../utils/utils";
+import { EDITOR_INPUT, EDITOR_FILTER } from "../../../utils/store";
+import { useBlob, useDecode, useEditorPreview } from "../../../utils/hooks";
 
 const imageSize = { width: "100%", height: "100%", objectFit: "contain" };
-
-// useEditorPreview?
-function useProcessImage(file) {
-  const options = useRecoilValue(EDITOR_OUTPUT);
-
-  const [state, setState] = React.useState(false);
-  const [src, setSrc] = React.useState(null);
-  const timeStamp = React.useRef(null);
-
-  const processing = async (file, options, createAt) => {
-    await delay(500);
-    if (createAt !== timeStamp.current) return;
-
-    const { maxSize, ...restOptions } = options;
-    const blob = await compressImage(file, {
-      maxSize: maxSize * 1024 * 1024,
-      ...restOptions,
-    });
-
-    const dataUrl = await blobGetDataUrl(blob);
-    setSrc(dataUrl);
-    setState(true);
-  };
-
-  React.useEffect(() => {
-    timeStamp.current = Date.now();
-    setState(false);
-    if (file) processing(file, options, timeStamp.current);
-  }, [file, options]);
-
-  return [src, state];
-}
 
 function Origin({ clipPath, src, state }) {
   const style = { ...imageSize, clipPath };
@@ -73,7 +38,7 @@ function useOriginImage(file) {
 }
 
 function useResultImage(file) {
-  const [dataUrl, urlState] = useProcessImage(file);
+  const [dataUrl, urlState] = useEditorPreview(file);
   const [src, state] = useDecode(urlState && dataUrl);
   return [src, state];
 }

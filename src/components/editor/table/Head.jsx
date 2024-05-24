@@ -1,10 +1,26 @@
-import { TableCell, Stack } from "@mui/material";
+import { TableCell, Stack, CircularProgress } from "@mui/material";
 import { TableHead, TableRow, TableSortLabel } from "@mui/material";
-import { Typography, Checkbox } from "@mui/material";
+import { Typography, Checkbox, Button } from "@mui/material";
 
 import { useRecoilState, useRecoilValue } from "recoil";
 import { EDITOR_INPUT, EDITOR_ORDER } from "../../../utils/store";
-import Action from "../action/Action";
+import { useEditorOutput } from "../../../utils/hooks";
+
+function ConvertButton() {
+  const { action, loading, disabled } = useEditorOutput();
+
+  return (
+    <Button
+      disabled={disabled}
+      sx={(theme) => theme.typography.caption}
+      variant="contained"
+      onClick={action}
+    >
+      Convert
+      {loading && <CircularProgress size={30} sx={{ position: "absolute" }} />}
+    </Button>
+  );
+}
 
 export function EnhancedTableToolbar() {
   const input = useRecoilValue(EDITOR_INPUT);
@@ -15,7 +31,7 @@ export function EnhancedTableToolbar() {
       <Typography sx={{ flex: "1" }} variant="caption" component="div">
         {numSelected} selected
       </Typography>
-      <Action />
+      <ConvertButton />
     </Stack>
   );
 }
