@@ -11,7 +11,9 @@ import {
   BOOKS_OPEN,
   BOOKS_ROWS,
   BOOKS_SELECTED,
+  EDITOR_FILTER,
   EDITOR_INPUT,
+  EDITOR_OUTPUT,
   IMAGES,
   INDEX,
   MANAGER_ADDED,
@@ -102,7 +104,7 @@ export function useDecode(src) {
 }
 
 export function useDropArea(onDrop) {
-  const [dragOver, setDragOver] = React.useState(false);
+  const [dragOver, setDragOver] = useState(false);
 
   const handleDragOver = (e) => {
     e.preventDefault();
@@ -356,7 +358,7 @@ export function useEditorInput() {
     return `${name} (copy).${extension}`;
   };
 
-  return (action = (fileList) => {
+  const action = (fileList) => {
     const files = Array.from(fileList);
     const imageFiles = files.filter((file) => file.type.startsWith("image/"));
 
@@ -377,14 +379,16 @@ export function useEditorInput() {
       const prevInput = prev.map((item) => ({ ...item, display: false }));
       return [...prevInput, ...newInput];
     });
-  });
+  };
+
+  return action;
 }
 
 export function useEditorOutput() {
   const [input, setInput] = useRecoilState(EDITOR_INPUT);
   const selected = input.filter((item) => item.selected);
 
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = useState(false);
   const disabled = selected.length === 0 || loading;
 
   const outputOptions = useRecoilValue(EDITOR_OUTPUT);
@@ -422,5 +426,37 @@ export function useEditorOutput() {
     setLoading(false);
   };
 
-  return [action, loading, disabled];
+  return { action, loading, disabled };
+}
+
+export function useEditorPreview(file) {
+  const options = useRecoilValue(EDITOR_OUTPUT);
+
+  const [state, setState] = useState(false);
+  const [src, setSrc] = useState(null);
+
+  useEffect(() => {
+    setState(false);
+    if (!file) return;
+
+    let lastTrigger = true;
+    (async () => {
+      await delay(500);
+      if (!lastTrigger) return;
+
+      const { maxSize, ...restOptions } = options;
+      const blob = await compressImage(file, {
+        maxSize: maxSize * 1024 * 1024,
+        ...restOptions,
+      });
+
+      const dataUrl = await blobGetDataUrl(blob);
+      setSrc(dataUrl);
+      setState(true);
+    })();
+
+    return () => (lastTrigger = false);
+  }, [file, options]);
+
+  return [src, state];
 }

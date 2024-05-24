@@ -13,7 +13,10 @@ function MotionBox({ children }) {
   return <motion.div variants={sidebarRightItemVar}>{children}</motion.div>;
 }
 
-function useHandleSubmit(setLoading, setError) {
+function useHandleSubmit() {
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState(false);
+
   const setAuth = useSetRecoilState(SIDEBAR_IS_AUTH);
   const setOpen = useSetRecoilState(SIDEBAR_OPEN);
   const syncIndex = useSyncIndex();
@@ -29,7 +32,7 @@ function useHandleSubmit(setLoading, setError) {
     setLoading(false);
   };
 
-  return async (e) => {
+  const action = async (e) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
     sessionStorage.setItem("username", data.get("username"));
@@ -42,15 +45,15 @@ function useHandleSubmit(setLoading, setError) {
       fail();
     }
   };
+
+  return { action, loading, error };
 }
 
 export default function LoginForm() {
-  const [loading, setLoading] = React.useState(false);
-  const [error, setError] = React.useState(false);
-  const handleSubmit = useHandleSubmit(setLoading, setError);
+  const { action, loading, error } = useHandleSubmit();
 
   return (
-    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+    <Box component="form" onSubmit={action} sx={{ mt: 1 }}>
       <MotionBox>
         <UsernameInput error={error} />
         <PasswordInput error={error} />

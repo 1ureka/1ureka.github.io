@@ -1,9 +1,9 @@
-import * as React from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilValue } from "recoil";
 import { alpha, styled, Badge } from "@mui/material";
 
 import { EDITOR_INPUT, THEME } from "../../../utils/store";
 import { MotionButtonBase, toolsItemVar } from "../../Motion";
+import { useDropArea, useEditorInput } from "../../../utils/hooks";
 
 function Svg() {
   const theme = useRecoilValue(THEME);
@@ -58,70 +58,8 @@ function Content() {
   );
 }
 
-function useDropArea(onDrop) {
-  const [dragOver, setDragOver] = React.useState(false);
-
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = "copy";
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    setDragOver(false);
-    onDrop(e.dataTransfer.files);
-  };
-
-  return [
-    dragOver,
-    {
-      onDragEnter: () => setDragOver(true),
-      onDragLeave: () => setDragOver(false),
-      onDrop: handleDrop,
-      onDragOver: handleDragOver,
-    },
-  ];
-}
-
-// useEditorInput?
-function useHandleInput() {
-  const [input, setInput] = useRecoilState(EDITOR_INPUT);
-  const inputNames = input.map((item) => item.file.name);
-
-  const copyName = (fileName) => {
-    const dotIndex = fileName.lastIndexOf(".");
-    const name = fileName.slice(0, dotIndex);
-    const extension = fileName.slice(dotIndex + 1);
-    return `${name} (copy).${extension}`;
-  };
-
-  const handleInput = (fileList) => {
-    const files = Array.from(fileList);
-    const imageFiles = files.filter((file) => file.type.startsWith("image/"));
-
-    const newFiles = imageFiles.map((file) => {
-      if (!inputNames.includes(file.name)) return file;
-      return new File([file], copyName(file.name), { type: file.type });
-    });
-
-    const newInput = newFiles.map((file, i) => ({
-      selected: true,
-      display: i + 1 === newFiles.length,
-      file,
-    }));
-
-    if (newInput.length > 0)
-      setInput((prev) => {
-        const prevInput = prev.map((item) => ({ ...item, display: false }));
-        return [...prevInput, ...newInput];
-      });
-  };
-
-  return handleInput;
-}
-
 export default function InputArea() {
-  const handleInput = useHandleInput();
+  const handleInput = useEditorInput();
   const [dragOver, DragProps] = useDropArea(handleInput);
   const handleChange = (e) => handleInput(e.target.files);
 

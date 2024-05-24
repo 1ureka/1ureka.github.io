@@ -3,7 +3,7 @@ import { MotionStack, orchestrationVar, toolsItemVar } from "../Motion";
 import Preview from "./preview/Preview";
 import Filter from "./param/Filter";
 import Output from "./param/Output";
-import InputArea from "./action/InputArea";
+import InputArea from "./param/InputArea";
 import EnhancedTable from "./table/Table";
 
 function Left() {
