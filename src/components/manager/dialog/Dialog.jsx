@@ -10,7 +10,7 @@ import AddPhotoAlternateRoundedIcon from "@mui/icons-material/AddPhotoAlternateR
 import HideImageRoundedIcon from "@mui/icons-material/HideImageRounded";
 
 import { useManagerUpload, useManagerDelete } from "../../../utils/hooks";
-import { TABLE_SELECTED } from "../../../utils/store";
+import { MANAGER_SELECTED } from "../../../utils/store";
 import { FinishHint, Progress, Warning } from "./Elements";
 
 function InfoHeader({ title, onClose }) {
@@ -117,7 +117,7 @@ export function DialogAdd({ open, onClose, list }) {
 }
 
 export function DialogDel({ open, onClose }) {
-  const selected = useRecoilValue(TABLE_SELECTED);
+  const selected = useRecoilValue(MANAGER_SELECTED);
   const [num, setNum] = useState(0);
   const deleteImages = useManagerDelete();
   const actionHandler = async () => {

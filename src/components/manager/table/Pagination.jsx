@@ -1,12 +1,13 @@
 import { TablePagination } from "@mui/material";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { TABLE_ROWS_LENGTH } from "../../../utils/store";
-import { TABLE_PAGE, TABLE_PAGE_ROWS } from "../../../utils/store";
+import { MANAGER_ROWS } from "../../../utils/store";
+import { MANAGER_PAGE, MANAGER_PAGE_ROWS } from "../../../utils/store";
 
 export function EnhancedTablePagination() {
-  const fullLength = useRecoilValue(TABLE_ROWS_LENGTH);
-  const [page, setPage] = useRecoilState(TABLE_PAGE);
-  const [perPage, setPerPage] = useRecoilState(TABLE_PAGE_ROWS);
+  const rows = useRecoilValue(MANAGER_ROWS);
+  const fullLength = rows.length;
+  const [page, setPage] = useRecoilState(MANAGER_PAGE);
+  const [perPage, setPerPage] = useRecoilState(MANAGER_PAGE_ROWS);
 
   const handleChangePage = (_, newPage) => {
     setPage(newPage);

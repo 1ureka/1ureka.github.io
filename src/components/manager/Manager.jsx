@@ -4,7 +4,7 @@ import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { Stack, Typography } from "@mui/material";
 
 import { MANAGER_CATEGORY } from "../../utils/store";
-import { TABLE_PAGE, TABLE_SELECTED } from "../../utils/store";
+import { MANAGER_PAGE, MANAGER_SELECTED } from "../../utils/store";
 import { MotionStack, managerItemVar } from "../Motion";
 
 import Table from "./table/Table";
@@ -22,8 +22,8 @@ function Title({ title }) {
 
 function Toggles() {
   const [category, setCategory] = useRecoilState(MANAGER_CATEGORY);
-  const setPage = useSetRecoilState(TABLE_PAGE);
-  const setSelected = useSetRecoilState(TABLE_SELECTED);
+  const setPage = useSetRecoilState(MANAGER_PAGE);
+  const setSelected = useSetRecoilState(MANAGER_SELECTED);
 
   const handleChange = (_, category) => {
     if (!category) return;

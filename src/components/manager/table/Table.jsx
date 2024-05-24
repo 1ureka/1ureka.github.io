@@ -4,10 +4,9 @@ import { LinearProgress, Paper, Checkbox } from "@mui/material";
 import { Table, TableCell, TableRow } from "@mui/material";
 import { TableContainer } from "@mui/material";
 
-import { MANAGER_ROWS, TABLE_ROWS_LENGTH } from "../../../utils/store";
-import { TABLE_ORDER, TABLE_ORDER_BY } from "../../../utils/store";
-import { TABLE_PAGE, TABLE_PAGE_ROWS } from "../../../utils/store";
-import { TABLE_SELECTED } from "../../../utils/store";
+import { MANAGER_ROWS, MANAGER_SELECTED } from "../../../utils/store";
+import { MANAGER_ORDER, MANAGER_ORDER_BY } from "../../../utils/store";
+import { MANAGER_PAGE, MANAGER_PAGE_ROWS } from "../../../utils/store";
 import { lightTheme } from "../../../utils/theme";
 
 import { EnhancedTableHead, EnhancedTableToolbar } from "./Head";
@@ -34,11 +33,11 @@ function comparator(order, orderBy) {
 
 function EnhancedTableBody() {
   const rows = useRecoilValue(MANAGER_ROWS);
-  const rowsLength = useRecoilValue(TABLE_ROWS_LENGTH);
-  const page = useRecoilValue(TABLE_PAGE);
-  const pageRows = useRecoilValue(TABLE_PAGE_ROWS);
-  const order = useRecoilValue(TABLE_ORDER);
-  const orderBy = useRecoilValue(TABLE_ORDER_BY);
+  const rowsLength = rows.length;
+  const page = useRecoilValue(MANAGER_PAGE);
+  const pageRows = useRecoilValue(MANAGER_PAGE_ROWS);
+  const order = useRecoilValue(MANAGER_ORDER);
+  const orderBy = useRecoilValue(MANAGER_ORDER_BY);
 
   const visibleRows = React.useMemo(
     () =>
@@ -73,7 +72,7 @@ function EnhancedTableBody() {
 }
 
 function VisibleTableRow({ row, index }) {
-  const [selected, setSelected] = useRecoilState(TABLE_SELECTED);
+  const [selected, setSelected] = useRecoilState(MANAGER_SELECTED);
   const isSelected = (name) => selected.indexOf(name) !== -1;
   const handleClick = () => {
     const isSelectedRow = isSelected(row.name);

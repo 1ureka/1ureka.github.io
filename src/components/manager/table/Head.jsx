@@ -4,10 +4,9 @@ import { TableHead, TableRow, TableSortLabel } from "@mui/material";
 import { Typography, Checkbox, IconButton } from "@mui/material";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
-import { MANAGER_ROWS, TABLE_ROWS_LENGTH } from "../../../utils/store";
-import { TABLE_ORDER, TABLE_ORDER_BY } from "../../../utils/store";
-import { TABLE_SELECTED, TABLE_SELECTED_LENGTH } from "../../../utils/store";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { MANAGER_ROWS, MANAGER_SELECTED } from "../../../utils/store";
+import { MANAGER_ORDER, MANAGER_ORDER_BY } from "../../../utils/store";
 
 const headCells = [
   {
@@ -25,7 +24,8 @@ const headCells = [
 ];
 
 export function EnhancedTableToolbar({ onDelete }) {
-  const numSelected = useRecoilValue(TABLE_SELECTED_LENGTH);
+  const selected = useRecoilValue(MANAGER_SELECTED);
+  const numSelected = selected.length;
 
   return (
     <Toolbar
@@ -59,7 +59,7 @@ export function EnhancedTableToolbar({ onDelete }) {
 }
 
 export function EnhancedTableHead() {
-  const setSelected = useSetRecoilState(TABLE_SELECTED);
+  const [selected, setSelected] = useRecoilState(MANAGER_SELECTED);
   const rows = useRecoilValue(MANAGER_ROWS);
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
@@ -70,16 +70,16 @@ export function EnhancedTableHead() {
     setSelected([]);
   };
 
-  const [order, setOrder] = useRecoilState(TABLE_ORDER);
-  const [orderBy, setOrderBy] = useRecoilState(TABLE_ORDER_BY);
+  const [order, setOrder] = useRecoilState(MANAGER_ORDER);
+  const [orderBy, setOrderBy] = useRecoilState(MANAGER_ORDER_BY);
   const createSortHandler = (property) => () => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
   };
 
-  const lengthS = useRecoilValue(TABLE_SELECTED_LENGTH);
-  const lengthA = useRecoilValue(TABLE_ROWS_LENGTH);
+  const lengthS = selected.length;
+  const lengthA = rows.length;
 
   return (
     <TableHead>

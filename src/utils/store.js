@@ -109,38 +109,24 @@ export const MANAGER_ROWS = selector({
     return rows;
   },
 });
-export const TABLE_ROWS_LENGTH = selector({
-  key: "tableRowsLength",
-  get: ({ get }) => {
-    const rows = get(MANAGER_ROWS);
-    return rows.length;
-  },
-});
-export const TABLE_ORDER = atom({
-  key: "tableOrder",
-  default: "asc",
-});
-export const TABLE_ORDER_BY = atom({
-  key: "tableOrderBy",
-  default: "name",
-});
-export const TABLE_SELECTED = atom({
-  key: "tableSelected",
+export const MANAGER_SELECTED = atom({
+  key: "managerSelected",
   default: [],
 });
-export const TABLE_SELECTED_LENGTH = selector({
-  key: "tableSelectedLength",
-  get: ({ get }) => {
-    const selected = get(TABLE_SELECTED);
-    return selected.length;
-  },
+export const MANAGER_ORDER = atom({
+  key: "managerOrder",
+  default: "asc",
 });
-export const TABLE_PAGE = atom({
-  key: "tablePage",
+export const MANAGER_ORDER_BY = atom({
+  key: "managerOrderBy",
+  default: "name",
+});
+export const MANAGER_PAGE = atom({
+  key: "managerPage",
   default: 0,
 });
-export const TABLE_PAGE_ROWS = atom({
-  key: "tableRowsPerPage",
+export const MANAGER_PAGE_ROWS = atom({
+  key: "managerRowsPerPage",
   default: 5,
 });
 

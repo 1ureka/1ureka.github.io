@@ -16,11 +16,11 @@ import {
   EDITOR_OUTPUT,
   IMAGES,
   INDEX,
-  MANAGER_CATEGORY,
   SIDEBAR_IS_AUTH,
   SIDEBAR_OPEN,
-  TABLE_PAGE,
-  TABLE_SELECTED,
+  MANAGER_CATEGORY,
+  MANAGER_PAGE,
+  MANAGER_SELECTED,
 } from "./store";
 
 import {
@@ -326,7 +326,7 @@ export function useManagerSelect() {
 
 export function useManagerUpload() {
   const syncIndex = useSyncIndex();
-  const setSelected = useSetRecoilState(TABLE_SELECTED);
+  const setSelected = useSetRecoilState(MANAGER_SELECTED);
   const category = useRecoilValue(MANAGER_CATEGORY);
 
   const uploadImages = async (list) => {
@@ -354,8 +354,8 @@ export function useManagerUpload() {
 
 export function useManagerDelete() {
   const syncIndex = useSyncIndex();
-  const setSelected = useSetRecoilState(TABLE_SELECTED);
-  const setPage = useSetRecoilState(TABLE_PAGE);
+  const setSelected = useSetRecoilState(MANAGER_SELECTED);
+  const setPage = useSetRecoilState(MANAGER_PAGE);
   const category = useRecoilValue(MANAGER_CATEGORY);
 
   const deleteImages = async (names = [""]) => {
