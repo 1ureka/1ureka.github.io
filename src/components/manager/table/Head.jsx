@@ -1,3 +1,4 @@
+import * as React from "react";
 import { Typography, Checkbox, Button, Stack } from "@mui/material";
 import { TableHead, TableRow, TableSortLabel, TableCell } from "@mui/material";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
@@ -5,8 +6,10 @@ import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { MANAGER_ROWS, MANAGER_SELECTED } from "../../../utils/store";
 import { MANAGER_ORDER, MANAGER_ORDER_BY } from "../../../utils/store";
+import { DialogDel } from "../dialog/Dialog";
 
-export function EnhancedTableToolbar({ onDelete }) {
+export function EnhancedTableToolbar() {
+  const [open, setOpen] = React.useState(false);
   const selected = useRecoilValue(MANAGER_SELECTED);
   const num = selected.length;
 
@@ -21,13 +24,14 @@ export function EnhancedTableToolbar({ onDelete }) {
     <Stack direction="row" sx={containerSx}>
       <Typography variant="subtitle2">{num} selected</Typography>
       <Button
-        onClick={onDelete}
+        onClick={() => setOpen(true)}
         disabled={!num > 0}
         startIcon={<DeleteRoundedIcon fontSize="small" />}
         sx={(theme) => theme.typography.caption}
       >
         Delete
       </Button>
+      <DialogDel open={open} onClose={() => setOpen(false)} />
     </Stack>
   );
 }

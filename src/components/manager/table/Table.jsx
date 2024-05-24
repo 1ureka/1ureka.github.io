@@ -108,7 +108,7 @@ function VisibleTableRow({ row, index }) {
   );
 }
 
-export default function EnhancedTable({ onDelete }) {
+export default function EnhancedTable() {
   const containerSx = {
     borderRadius: "10px",
     border: `2px solid ${lightTheme.palette.divider}`,
@@ -121,7 +121,7 @@ export default function EnhancedTable({ onDelete }) {
   );
   return (
     <Paper sx={containerSx} elevation={1}>
-      <EnhancedTableToolbar onDelete={onDelete} />
+      <EnhancedTableToolbar />
       <React.Suspense fallback={fallback}>
         <TableContainer>
           <Table sx={{ minWidth: 300, overflow: "hidden" }}>
