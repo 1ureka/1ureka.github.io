@@ -19,6 +19,8 @@ import {
   MANAGER_ADDED,
   MANAGER_CATEGORY,
   MANAGER_DELED,
+  SIDEBAR_IS_AUTH,
+  SIDEBAR_OPEN,
   TABLE_PAGE,
   TABLE_SELECTED,
 } from "./store";
@@ -52,6 +54,42 @@ export function useSyncIndex() {
   };
 
   return syncIndex;
+}
+
+export function useAuth() {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+
+  const setAuth = useSetRecoilState(SIDEBAR_IS_AUTH);
+  const setOpen = useSetRecoilState(SIDEBAR_OPEN);
+  const syncIndex = useSyncIndex();
+
+  const success = () => {
+    sessionStorage.setItem("auth", "1");
+    setAuth(true);
+    setOpen(false);
+  };
+  const fail = () => {
+    sessionStorage.clear();
+    setError(true);
+    setLoading(false);
+  };
+
+  const action = async (e) => {
+    e.preventDefault();
+    const data = new FormData(e.currentTarget);
+    sessionStorage.setItem("username", data.get("username"));
+    sessionStorage.setItem("password", data.get("password"));
+    try {
+      setLoading(true);
+      await syncIndex();
+      success();
+    } catch (_) {
+      fail();
+    }
+  };
+
+  return { action, loading, error };
 }
 
 export function useBlob(blob) {
@@ -396,17 +434,19 @@ export function useEditorOutput() {
   const options = { ...outputOptions, ...filterOptions };
   options.maxSize *= 1024 * 1024;
 
+  const name = (fileName) => {
+    const name = fileName.slice(0, fileName.lastIndexOf("."));
+    const extension = options.type;
+    return `${name}.${extension}`;
+  };
+
   const processImages = () => {
     return Promise.all(
       selected.map(async ({ file }) => {
         const filtered = await filterImage(file, options);
         const blob = await compressImage(filtered, options);
         const dataUrl = await blobGetDataUrl(blob);
-
-        return {
-          dataUrl,
-          name: file.name.slice(0, file.name.lastIndexOf(".")),
-        };
+        return { dataUrl, name: name(file.name) };
       })
     );
   };
