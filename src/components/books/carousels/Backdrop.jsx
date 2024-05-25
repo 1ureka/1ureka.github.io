@@ -1,3 +1,4 @@
+import * as React from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { motion } from "framer-motion";
 
@@ -9,6 +10,8 @@ export default function Backdrop({ children }) {
   const setSelected = useSetRecoilState(BOOKS_SELECTED);
   const rows = useRecoilValue(BOOKS_ROWS);
   const theme = useRecoilValue(THEME);
+
+  const [pointerEvents, setPointer] = React.useState("");
 
   const variants = {
     initial: { opacity: 0 },
@@ -46,14 +49,19 @@ export default function Backdrop({ children }) {
         alignItems: "center",
         position: "absolute",
         inset: 0,
+        pointerEvents,
       }}
       onContextMenu={(e) => {
         e.preventDefault();
         setOpen(false);
+        setPointer("none");
       }}
       onWheel={(e) => {
         const change = e.deltaY > 0 ? 1 : -1;
         setSelected((prev) => (prev + change + rows.length) % rows.length);
+      }}
+      onAnimationStart={(def) => {
+        if (def === "animate") setPointer("");
       }}
     >
       {children}
