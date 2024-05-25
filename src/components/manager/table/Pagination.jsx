@@ -26,6 +26,8 @@ export function EnhancedTablePagination() {
       rowsPerPage={perPage}
       onPageChange={handleChangePage}
       onRowsPerPageChange={handleChangeRowsPerPage}
+      showFirstButton
+      showLastButton
     />
   );
 }

@@ -1,4 +1,3 @@
-import * as React from "react";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { Stack, Typography } from "@mui/material";
@@ -10,7 +9,6 @@ import { MotionStack, managerItemVar } from "../Motion";
 import Table from "./table/Table";
 import AddButton from "./button/AddButton";
 import VerifyButton from "./button/VerifyButton";
-import { DialogDel } from "./dialog/Dialog";
 
 function Title({ title }) {
   return (
@@ -106,8 +104,6 @@ export default function Manager() {
     overflowY: "auto",
   };
 
-  const [open, setOpen] = React.useState(false);
-
   return (
     <Stack direction="row" sx={containerSx}>
       <Decal sx={{ left: 0 }} scale="1" />
@@ -116,8 +112,7 @@ export default function Manager() {
         <Operation />
       </MotionStack>
       <MotionStack variants={managerItemVar} sx={rightSx}>
-        <Table onDelete={() => setOpen(true)} />
-        <DialogDel open={open} onClose={() => setOpen(false)} />
+        <Table />
       </MotionStack>
     </Stack>
   );

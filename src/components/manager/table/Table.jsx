@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { LinearProgress, Paper, Checkbox } from "@mui/material";
+import { LinearProgress, Paper, Checkbox, Typography } from "@mui/material";
 import { Table, TableCell, TableRow } from "@mui/material";
 import { TableContainer } from "@mui/material";
 
@@ -63,7 +63,7 @@ function EnhancedTableBody() {
         <VisibleTableRow key={row.name} row={row} index={index} />
       ))}
       {emptyRows > 0 && (
-        <TableRow style={{ height: 58 * emptyRows }}>
+        <TableRow style={{ height: 52 * emptyRows }}>
           <TableCell colSpan={3} />
         </TableRow>
       )}
@@ -96,22 +96,23 @@ function VisibleTableRow({ row, index }) {
       }}
     >
       <TableCell padding="checkbox">
-        <Checkbox color="primary" checked={isSelected(row.name)} />
+        <Checkbox color="primary" checked={isSelected(row.name)} size="small" />
       </TableCell>
-      <TableCell component="th" scope="row" padding="none">
-        {row.name}
+      <TableCell sx={{ p: 1.5 }}>
+        <Typography variant="caption">{row.name}</Typography>
       </TableCell>
-      <TableCell align="right">{row.size}</TableCell>
+      <TableCell align="right" sx={{ p: 1.5 }}>
+        <Typography variant="caption">{row.size}</Typography>
+      </TableCell>
     </MotionRow>
   );
 }
 
-export default function EnhancedTable({ onDelete }) {
+export default function EnhancedTable() {
   const containerSx = {
     borderRadius: "10px",
     border: `2px solid ${lightTheme.palette.divider}`,
-    scale: "0.9",
-    transformOrigin: "top",
+    zIndex: 1,
   };
   const fallback = (
     <MotionStack variants={tableItemVar} sx={{ p: 2, width: "100%" }}>
@@ -120,7 +121,7 @@ export default function EnhancedTable({ onDelete }) {
   );
   return (
     <Paper sx={containerSx} elevation={1}>
-      <EnhancedTableToolbar onDelete={onDelete} />
+      <EnhancedTableToolbar />
       <React.Suspense fallback={fallback}>
         <TableContainer>
           <Table sx={{ minWidth: 300, overflow: "hidden" }}>
