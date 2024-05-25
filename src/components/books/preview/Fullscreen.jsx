@@ -1,9 +1,9 @@
 import * as React from "react";
 import { Portal } from "@mui/material";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useMotionValue } from "framer-motion";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
-function calcAnimateScale(originW, originH) {
+function calcScale(originW, originH) {
   const containerRatio = window.innerWidth / window.innerHeight;
   const imageRatio = originW / originH;
 
@@ -21,8 +21,8 @@ function calcAnimateScale(originW, originH) {
   return { initScale, w, h };
 }
 
-function FullscreenImage({ src, originW, originH }) {
-  const { initScale, w, h } = calcAnimateScale(originW, originH);
+function FullscreenImage({ src, originW, originH, pointerEvents }) {
+  const { initScale, w, h } = calcScale(originW, originH);
   const [cursor, setCursor] = React.useState("grab");
 
   return (
@@ -43,6 +43,13 @@ function FullscreenImage({ src, originW, originH }) {
           src={src}
           alt=""
           style={{ width: w, height: h }}
+          onAnimationStart={(def) => {
+            if (def.opacity === 0) {
+              pointerEvents.set("none");
+            } else {
+              pointerEvents.set("");
+            }
+          }}
         />
       </TransformComponent>
     </TransformWrapper>
@@ -50,6 +57,8 @@ function FullscreenImage({ src, originW, originH }) {
 }
 
 export default function Fullscreen({ src, originW, originH, open, onClose }) {
+  const pointerEvents = useMotionValue("");
+
   const handleContextMenu = (e) => {
     e.stopPropagation();
     e.preventDefault();
@@ -61,15 +70,21 @@ export default function Fullscreen({ src, originW, originH, open, onClose }) {
     inset: 0,
     display: "grid",
     placeItems: "center",
+    pointerEvents,
   };
 
   return (
     <Portal>
       <AnimatePresence>
         {open && (
-          <div onContextMenu={handleContextMenu} style={style}>
-            <FullscreenImage src={src} originW={originW} originH={originH} />
-          </div>
+          <motion.div onContextMenu={handleContextMenu} style={style}>
+            <FullscreenImage
+              src={src}
+              originW={originW}
+              originH={originH}
+              pointerEvents={pointerEvents}
+            />
+          </motion.div>
         )}
       </AnimatePresence>
     </Portal>

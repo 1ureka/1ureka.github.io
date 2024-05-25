@@ -1,4 +1,3 @@
-import * as React from "react";
 import { useRecoilValue } from "recoil";
 import { motion, LayoutGroup } from "framer-motion";
 
