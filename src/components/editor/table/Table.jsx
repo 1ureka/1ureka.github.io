@@ -145,7 +145,7 @@ export default function EnhancedTable() {
     <MotionPaper variants={toolsItemVar} sx={containerSx} elevation={1}>
       <Stack sx={{ height: "100%" }}>
         <TableContainer sx={{ overflowX: "hidden", flex: "1" }}>
-          <Table sx={{ tableLayout: "fixed" }}>
+          <Table sx={{ tableLayout: "fixed" }} stickyHeader>
             <EnhancedTableHead />
             <TableBody />
           </Table>
