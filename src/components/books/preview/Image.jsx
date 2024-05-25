@@ -1,72 +1,133 @@
-import { Stack } from "@mui/material";
+import * as React from "react";
+import { useRecoilValue } from "recoil";
 import { motion } from "framer-motion";
 
-import Thumbnail from "./Thumbnail";
-import Origin from "./Origin";
+import { BOOKS_ROWS, BOOKS_SELECTED } from "../../../utils/store";
+import { useBooksImageDecode, useBooksImageLoad } from "../../../utils/hooks";
+import Fullscreen from "./Fullscreen";
+
+function useSelected() {
+  const rows = useRecoilValue(BOOKS_ROWS);
+  const selected = useRecoilValue(BOOKS_SELECTED);
+  const { category, name } = rows[selected];
+  return { category, name };
+}
 
 function Placeholder() {
-  return (
-    <img
-      style={{ maxWidth: "100%", maxHeight: "100%", visibility: "hidden" }}
-      src="https://fakeimg.pl/1920x1080/"
-      alt=""
-    ></img>
-  );
+  const style = { maxWidth: "75vw", maxHeight: "77.5vh", visibility: "hidden" };
+  return <img style={style} src="./placeholder.jpg" alt="" />;
 }
 
-function Backdrop({ children }) {
-  const sx = {
+function Thumbnail() {
+  const { category, name } = useSelected();
+  const [src, state] = useBooksImageLoad(category, name, "1K");
+
+  const imageStyle = {
+    position: "absolute",
+    display: "block",
+    width: "100%",
+    height: "100%",
+    scale: "1.1",
+    filter: "blur(5px) brightness(0.8)",
+  };
+
+  return state && <img style={imageStyle} src={src} alt={name} />;
+}
+
+const Origin = React.forwardRef(({ onClick }, ref) => {
+  const { category, name } = useSelected();
+  const [src, state] = useBooksImageDecode(category, name, "4K");
+
+  const variants = {
+    show: {
+      opacity: 1,
+      scale: 1,
+      transition: { type: "spring", bounce: 0, duration: 1.5 },
+    },
+    hide: {
+      opacity: 0,
+      scale: 1.1,
+      transition: { type: "spring", bounce: 0 },
+    },
+  };
+
+  const imageStyle = {
+    position: "absolute",
+    display: "block",
+    width: "100%",
+    height: "100%",
+  };
+
+  return (
+    <motion.img
+      ref={ref}
+      variants={variants}
+      animate={state ? "show" : "hide"}
+      src={src}
+      alt={name}
+      onClick={() => state && onClick(src)}
+      style={imageStyle}
+    />
+  );
+});
+
+function Container({ children }) {
+  const transition = { type: "spring", bounce: 0, duration: 1 };
+  const variants = {
+    initial: { opacity: 0, scale: 1.1 },
+    animate: { opacity: 1, scale: 1, transition },
+    exit: { opacity: 0, scale: 1.1, transition },
+  };
+
+  const backdropStyle = {
     position: "fixed",
     inset: 0,
-    justifyContent: "center",
-    alignItems: "center",
+    display: "grid",
+    placeItems: "center",
   };
 
-  return <Stack style={sx}>{children}</Stack>;
-}
-
-function Container({ children, variants }) {
-  const sx = {
-    display: "flex",
-    alignItems: "center",
+  const containerStyle = {
     position: "relative",
-    maxWidth: "75%",
-    maxHeight: "77.5%",
-    overflow: "hidden",
+    display: "grid",
+    placeItems: "center",
+    overflow: "clip",
   };
 
   return (
-    <Backdrop>
-      <motion.div style={sx} variants={variants}>
-        <Placeholder />
+    <div style={backdropStyle}>
+      <motion.div style={containerStyle} variants={variants}>
         {children}
       </motion.div>
-    </Backdrop>
+    </div>
   );
 }
 
 export default function Image() {
-  const variants = {
-    initial: {
-      opacity: 0,
-      scale: 1.1,
-    },
-    animate: {
-      opacity: 1,
-      scale: 1,
-      transition: { type: "spring", bounce: 0, duration: 1 },
-    },
-    exit: {
-      opacity: 0,
-      scale: 1.1,
-      transition: { type: "spring", bounce: 0, duration: 1 },
-    },
+  const ref = React.useRef(null);
+  const [Props, setProps] = React.useState({
+    src: "",
+    open: false,
+    originW: 1,
+    originH: 1,
+  });
+
+  const handleClick = () => {
+    const src = ref.current.src;
+    const rect = ref.current.getBoundingClientRect();
+    const originW = rect.width;
+    const originH = rect.height;
+    setProps({ src, open: true, originW, originH });
   };
 
   return (
-    <Container variants={variants}>
+    <Container>
+      <Placeholder />
       <Thumbnail />
-      <Origin />
+      <Origin ref={ref} onClick={handleClick} />
+      <Fullscreen
+        onClose={() => setProps((prev) => ({ ...prev, open: false }))}
+        {...Props}
+      />
     </Container>
   );
 }
