@@ -122,6 +122,17 @@ export const orchestrationVar = ({ delay, stagger }) => ({
 });
 
 export const sidebarLeftVar = {
+  initial: { opacity: 0, x: -35 },
+  animate: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      type: "spring",
+      bounce: 0,
+      duration: 0.7,
+      staggerChildren: 0.1,
+    },
+  },
   open: { transition: { staggerChildren: 0.1 } },
   close: { transition: { staggerChildren: 0.1 } },
 };
@@ -137,8 +148,8 @@ export const sidebarRightVar = {
       type: "spring",
       stiffness: 200,
       damping: 20,
-      staggerChildren: 0.05,
-      delayChildren: 0.15,
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
     },
   },
 };
