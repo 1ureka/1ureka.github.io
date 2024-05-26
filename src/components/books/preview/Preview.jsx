@@ -1,16 +1,20 @@
 import * as React from "react";
 import { useRecoilValue } from "recoil";
+import { motion } from "framer-motion";
 import { Badge, Box, Skeleton } from "@mui/material";
 
 import { THEME } from "../../../utils/store";
 import { useBooksImageLoad } from "../../../utils/hooks";
-import { MotionButtonBase, MotionStack, booksItemVar } from "../../Motion";
+import { MotionButtonBase, booksItemVar } from "../../Motion";
 
 function Reflect({ hover, x, clipPath }) {
-  const variants = { nH: { opacity: 0, x: x - 60 }, h: { opacity: 1, x } };
+  const variants = {
+    notHover: { opacity: 0, x: x - 60 },
+    hover: { opacity: 1, x },
+  };
 
   const theme = useRecoilValue(THEME);
-  const sx = {
+  const style = {
     clipPath,
     zIndex: 1,
     pointerEvents: "none",
@@ -21,7 +25,11 @@ function Reflect({ hover, x, clipPath }) {
   };
 
   return (
-    <MotionStack variants={variants} animate={hover ? "h" : "nH"} sx={sx} />
+    <motion.div
+      variants={variants}
+      animate={hover ? "hover" : "notHover"}
+      style={style}
+    />
   );
 }
 
@@ -70,17 +78,21 @@ function Image({ category, name }) {
   );
 }
 
-function Button({ children, onClick }) {
-  const sx = { borderRadius: "5px", overflow: "clip", width: "100%" };
+function Button({ children, onClick, amount }) {
+  const buttonSx = { borderRadius: "5px", overflow: "clip", width: "100%" };
+
   return (
-    <MotionButtonBase
-      sx={sx}
-      onClick={onClick}
+    <motion.div
+      style={{ width: "100%" }}
       whileTap={{ scale: 0.97 }}
       whileHover={{ scale: 1.02, filter: "brightness(1.05)", rotate: 2 }}
     >
-      {children}
-    </MotionButtonBase>
+      <Badge badgeContent={amount} color="primary" sx={{ width: "100%" }}>
+        <MotionButtonBase sx={buttonSx} onClick={onClick}>
+          {children}
+        </MotionButtonBase>
+      </Badge>
+    </motion.div>
   );
 }
 
@@ -88,18 +100,16 @@ export default function Preview({ category, name, onClick, amount }) {
   const [hover, setHover] = React.useState(false);
 
   return (
-    <MotionStack
+    <motion.div
       layout
       variants={booksItemVar}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
-      <Badge badgeContent={amount} color="primary">
-        <Button onClick={onClick}>
-          <Image category={category} name={name} />
-          <Reflects hover={hover} />
-        </Button>
-      </Badge>
-    </MotionStack>
+      <Button onClick={onClick} amount={amount}>
+        <Image category={category} name={name} />
+        <Reflects hover={hover} />
+      </Button>
+    </motion.div>
   );
 }
