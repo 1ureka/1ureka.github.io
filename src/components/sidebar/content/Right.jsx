@@ -1,7 +1,7 @@
 import { useRecoilValue } from "recoil";
 import { AnimatePresence, motion } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Divider, Stack, Typography } from "@mui/material";
+import { Divider, Link, Stack, Typography } from "@mui/material";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 
@@ -100,11 +100,13 @@ function SidebarNav() {
 
 function SidebarSocialLink({ title, info, icon, url }) {
   const subSx = { color: "text.secondary", fontSize: "0.65rem" };
-  const titleSx = {
+
+  const linkProps = { href: url, target: "_blank", rel: "noopener" };
+  const linkSx = {
     color: "text.secondary",
-    "&:hover": { color: "text.primary", textDecoration: "underline" },
-    cursor: "pointer",
+    "&:hover": { color: "text.primary" },
   };
+
   return (
     <Stack spacing={1}>
       <Typography variant="caption" sx={subSx}>
@@ -112,9 +114,9 @@ function SidebarSocialLink({ title, info, icon, url }) {
       </Typography>
       <Stack direction={"row"} spacing={2}>
         {icon}
-        <Typography sx={titleSx} onClick={() => window.open(url)}>
+        <Link sx={linkSx} underline="hover" {...linkProps}>
           {info}
-        </Typography>
+        </Link>
       </Stack>
     </Stack>
   );

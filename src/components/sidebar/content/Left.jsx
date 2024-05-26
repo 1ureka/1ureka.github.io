@@ -150,7 +150,8 @@ export default function SidebarLeft() {
 
   return (
     <MotionStack
-      animate={open ? "open" : "close"}
+      initial="initial"
+      animate={open ? ["open", "animate"] : ["close", "animate"]}
       variants={sidebarLeftVar}
       sx={containerSx}
       gap={2.5}

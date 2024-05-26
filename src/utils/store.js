@@ -11,7 +11,7 @@ export const INDEX = atom({
 });
 export const MODE = atom({
   key: "mode",
-  default: "Light",
+  default: "System",
 });
 export const THEME = selector({
   key: "theme",

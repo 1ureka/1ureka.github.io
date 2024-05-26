@@ -14,8 +14,8 @@ export function EnhancedTableToolbar() {
   const num = selected.length;
 
   const containerSx = {
-    p: 2,
-    pl: 3,
+    p: 1.5,
+    pl: 2.5,
     justifyContent: "space-between",
     alignItems: "center",
   };
@@ -67,6 +67,7 @@ function LabelCells() {
           key={headCell.id}
           align={headCell.numeric ? "right" : "left"}
           sortDirection={orderBy === headCell.id ? order : false}
+          sx={{ p: 1.5 }}
         >
           <TableSortLabel
             active={orderBy === headCell.id}
