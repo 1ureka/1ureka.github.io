@@ -41,11 +41,7 @@ function SidebarSmallButton({ icon, title, onClick }) {
       <StyledIconButton size="small" onClick={onClick}>
         {icon}
       </StyledIconButton>
-      {title && (
-        <Typography variant="caption" sx={{ scale: "0.85" }}>
-          {title}
-        </Typography>
-      )}
+      <Typography sx={{ scale: "0.85" }}>{title}</Typography>
     </MotionStack>
   );
 }
@@ -133,9 +129,7 @@ function SidebarSpacer() {
       <Divider flexItem />
       <Stack alignItems="center" sx={{ flexGrow: 1 }}>
         <Divider orientation="vertical" sx={{ flexGrow: 1, height: "auto" }} />
-        <Typography variant="caption" sx={typoSx}>
-          {"1ureka's CG"}
-        </Typography>
+        <Typography sx={typoSx}>{"1ureka's CG"}</Typography>
         <Divider orientation="vertical" sx={{ flexGrow: 1, height: "auto" }} />
       </Stack>
       <Divider flexItem />

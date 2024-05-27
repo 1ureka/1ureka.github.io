@@ -26,9 +26,9 @@ function SidebarNavTitle({ title }) {
   };
 
   return (
-    <Typography variant="h6" sx={{ position: "relative" }}>
+    <Typography variant="h5" sx={{ position: "relative" }}>
       {title}
-      <motion.div variants={variants} style={lineSx}></motion.div>
+      <motion.div variants={variants} style={lineSx} />
     </Typography>
   );
 }
@@ -41,9 +41,8 @@ function SidebarNavButton({ title, info, onClick, selected }) {
     p: 2,
   };
 
-  const infoSx = { color: "text.secondary", textWrap: "nowrap" };
   const subTitle = info && (
-    <Typography variant="caption" sx={infoSx}>
+    <Typography variant="body2" sx={{ textWrap: "nowrap" }}>
       {info}
     </Typography>
   );
@@ -99,8 +98,6 @@ function SidebarNav() {
 }
 
 function SidebarSocialLink({ title, info, icon, url }) {
-  const subSx = { color: "text.secondary", fontSize: "0.65rem" };
-
   const linkProps = { href: url, target: "_blank", rel: "noopener" };
   const linkSx = {
     color: "text.secondary",
@@ -109,12 +106,10 @@ function SidebarSocialLink({ title, info, icon, url }) {
 
   return (
     <Stack spacing={1}>
-      <Typography variant="caption" sx={subSx}>
-        {title}
-      </Typography>
+      <Typography variant="caption">{title}</Typography>
       <Stack direction={"row"} spacing={2}>
         {icon}
-        <Link sx={linkSx} underline="hover" {...linkProps}>
+        <Link variant="h6" sx={linkSx} underline="hover" {...linkProps}>
           {info}
         </Link>
       </Stack>
@@ -143,10 +138,7 @@ function SidebarSocial() {
 
       <MotionStack variants={variants} spacing={2.5}>
         <Divider flexItem />
-        <Typography
-          variant="caption"
-          sx={{ color: "text.secondary", fontSize: "0.65rem" }}
-        >
+        <Typography variant="caption">
           Copyright © 1ureka. All rights reserved.
         </Typography>
       </MotionStack>

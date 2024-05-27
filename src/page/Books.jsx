@@ -24,15 +24,12 @@ const intro = {
 };
 
 function IntroBox({ title, info }) {
-  const fontSize = "0.65rem";
   const containerSx = { p: 3, alignItems: "flex-start" };
 
   return (
     <MotionStack variants={booksItemVar} sx={containerSx} gap={0.5}>
-      <Typography variant="caption" sx={{ color: "text.secondary", fontSize }}>
-        {title}
-      </Typography>
-      <Typography variant="caption" sx={{ fontSize }}>
+      <Typography variant="caption">{title}</Typography>
+      <Typography variant="caption" sx={{ color: "text.primary" }}>
         {info}
       </Typography>
     </MotionStack>
@@ -43,9 +40,7 @@ function IntroTypo({ info }) {
   const sx = { flexGrow: 1, p: 3 };
   return (
     <MotionStack variants={booksItemVar} alignItems="center" sx={sx}>
-      <Typography variant="caption" sx={{ color: "text.secondary" }}>
-        {info}
-      </Typography>
+      <Typography variant="body2">{info}</Typography>
     </MotionStack>
   );
 }

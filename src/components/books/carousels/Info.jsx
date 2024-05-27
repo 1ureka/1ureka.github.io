@@ -21,25 +21,17 @@ function MouseHint() {
     top,
     color: "text.secondary",
   };
-  const typoSx = {
-    fontSize: "0.65rem",
-    color: "inherit",
-  };
 
   return (
     <Stack {...flexProps} sx={containerSx} gap={3.5}>
       <Stack {...flexProps} gap={1}>
         <RightClickIcon />
-        <Typography variant="caption" sx={typoSx}>
-          exit
-        </Typography>
+        <Typography variant="caption">exit</Typography>
       </Stack>
       <Stack {...flexProps} gap={1}>
         <LeftClickIcon />
         <PhotoRoundedIcon fontSize="small" />
-        <Typography variant="caption" sx={typoSx}>
-          fullscreen
-        </Typography>
+        <Typography variant="caption">fullscreen</Typography>
       </Stack>
     </Stack>
   );
@@ -48,9 +40,7 @@ function MouseHint() {
 function ScrollHint() {
   return (
     <Stack sx={{ position: "absolute", right: "10%", bottom }}>
-      <Typography variant="caption" sx={{ color: "text.secondary" }}>
-        SCROLL TO DISCOVER MORE
-      </Typography>
+      <Typography variant="body2">SCROLL TO DISCOVER MORE</Typography>
     </Stack>
   );
 }
@@ -69,7 +59,7 @@ function Name() {
         bottom,
       }}
     >
-      <Typography>{name}</Typography>
+      <Typography variant="h6">{name}</Typography>
     </Stack>
   );
 }
@@ -82,7 +72,7 @@ function Word({ type, sx, children }) {
     ...sx,
   };
 
-  const wordVariant = type === "big" ? "h2" : "h5";
+  const wordVariant = type === "big" ? "h2" : "h4";
 
   return (
     <Typography variant={wordVariant} component="span" sx={wordSx}>

@@ -8,25 +8,13 @@ import { BOOKS_FOLD, MODE, SIDEBAR_SETTING_OPEN } from "../../../utils/store";
 import { MotionPaper, MotionStack } from "../../Motion";
 import { sidebarRightVar, sidebarRightItemVar } from "../../Motion";
 
-function Title({ title }) {
-  return (
-    <Typography variant="caption" sx={{ alignSelf: "center" }}>
-      {title}
-    </Typography>
-  );
-}
-
-function SubTitle({ title }) {
-  const sx = { color: "text.secondary", fontSize: "0.65rem" };
-  return (
-    <Typography variant="caption" sx={sx}>
-      {title}
-    </Typography>
-  );
-}
-
 function Toggles({ options, value, onChange }) {
-  const buttonSx = { py: 1, fontSize: "0.65rem", flexGrow: 1 };
+  const buttonSx = {
+    py: 1,
+    flexGrow: 1,
+    fontSize: darkTheme.typography.caption.fontSize,
+  };
+
   const handleChange = (_, mode) => {
     if (mode) onChange(mode);
   };
@@ -81,14 +69,14 @@ function Content() {
         gap={1.5}
       >
         <Divider flexItem />
-        <Title title="Settings" />
+        <Typography variant="subTitle">Settings</Typography>
       </MotionStack>
       <MotionStack variants={sidebarRightItemVar} sx={{ width: "100%" }}>
-        <SubTitle title="MODE" />
+        <Typography variant="caption">MODE</Typography>
         <ThemeControl />
       </MotionStack>
       <MotionStack variants={sidebarRightItemVar} sx={{ width: "100%" }}>
-        <SubTitle title="BOOKS DISPLAY" />
+        <Typography variant="caption">BOOKS DISPLAY</Typography>
         <BooksDisplayControl />
       </MotionStack>
     </Stack>
