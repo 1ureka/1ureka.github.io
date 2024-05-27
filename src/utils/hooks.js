@@ -379,6 +379,10 @@ export function useManagerDelete() {
   };
 }
 
+export function useManagerVerify() {
+  // return { action, result, loading }
+}
+
 //
 // Editor
 export function useEditorInput() {

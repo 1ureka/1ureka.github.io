@@ -7,6 +7,7 @@ import { TableContainer } from "@mui/material";
 import { MANAGER_ROWS, MANAGER_SELECTED } from "../../../utils/store";
 import { MANAGER_ORDER, MANAGER_ORDER_BY } from "../../../utils/store";
 import { MANAGER_PAGE, MANAGER_PAGE_ROWS } from "../../../utils/store";
+import { MANAGER_ROW_HEIGHT } from "../../../utils/store";
 import { lightTheme } from "../../../utils/theme";
 
 import { EnhancedTableHead, EnhancedTableToolbar } from "./Head";
@@ -57,13 +58,19 @@ function EnhancedTableBody() {
 
   const key = visibleRows.map(({ name }) => name).join("");
 
+  const [height, setHeight] = useRecoilState(MANAGER_ROW_HEIGHT);
+  const ref = React.useRef(null);
+  React.useEffect(() => {
+    setHeight((p) => (p !== null ? p : ref.current.clientHeight / 5));
+  }, [setHeight]);
+
   return (
-    <MotionBody variants={variants} key={key}>
+    <MotionBody variants={variants} key={key} ref={ref}>
       {visibleRows.map((row, index) => (
         <VisibleTableRow key={row.name} row={row} index={index} />
       ))}
       {emptyRows > 0 && (
-        <TableRow style={{ height: 52 * emptyRows }}>
+        <TableRow style={{ height: height * emptyRows }}>
           <TableCell colSpan={3} />
         </TableRow>
       )}

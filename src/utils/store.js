@@ -129,6 +129,10 @@ export const MANAGER_PAGE_ROWS = atom({
   key: "managerRowsPerPage",
   default: 5,
 });
+export const MANAGER_ROW_HEIGHT = atom({
+  key: "managerRowHeight",
+  default: null,
+});
 
 //
 //
