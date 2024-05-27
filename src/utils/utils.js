@@ -131,6 +131,7 @@ export async function deleteFile(path) {
 /**
  * 執行指定後端程式碼並返回輸出。
  * @param {string} program  - 執行的程式名稱
+ * @returns {Promise<{result: Object, timeStamp: Number}>}
  */
 export async function runWorkflow(program) {
   const octokit = new Octokit({ auth: sessionStorage.getItem("password") });
@@ -167,10 +168,10 @@ export async function runWorkflow(program) {
       }
     );
 
-    const { timeStamp, result } = JSON.parse(base64ToString(data.content));
+    const { timeStamp } = JSON.parse(base64ToString(data.content));
     if (timeStamp <= startTimeStamp) return await fetchResult();
 
-    return result;
+    return JSON.parse(base64ToString(data.content));
   };
 
   const data = await fetchResult();
