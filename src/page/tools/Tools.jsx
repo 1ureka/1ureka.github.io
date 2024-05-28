@@ -1,11 +1,11 @@
 import { useRecoilValue } from "recoil";
 import { Typography } from "@mui/material";
-import { TOOLS_TAB } from "../utils/store";
-import { MotionStack, toolsItemVar } from "../components/Motion";
+import { TOOLS_TAB } from "../../utils/store";
+import { MotionStack, toolsItemVar } from "../../components/Motion";
 
-import Manager from "../components/manager/Manager";
-import Editor from "../components/editor/Editor";
-import Layout from "../components/Layout";
+import Manager from "../../components/manager/Manager";
+import Editor from "../../components/editor/Editor";
+import Layout from "../../components/Layout";
 
 const intro = {
   manager: {

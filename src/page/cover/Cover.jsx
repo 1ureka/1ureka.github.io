@@ -2,10 +2,10 @@ import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import { Box, Stack, alpha } from "@mui/material";
 
-import { Background, CoverRadio } from "../components/cover";
-import { CloseButton, ExpandButton, PlayButton } from "../components/cover";
-import { MotionBox, MotionPaper, coverVar } from "../components/Motion";
-import { coverRightItemVar, coverRightVar } from "../components/Motion";
+import { Background, CoverRadio } from "../../components/cover";
+import { CloseButton, ExpandButton, PlayButton } from "../../components/cover";
+import { MotionBox, MotionPaper, coverVar } from "../../components/Motion";
+import { coverRightItemVar, coverRightVar } from "../../components/Motion";
 
 function Sidebar() {
   const [open, setOpen] = useState(true);
