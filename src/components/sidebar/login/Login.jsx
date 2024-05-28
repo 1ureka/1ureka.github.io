@@ -57,14 +57,13 @@ function Form() {
     height: "100%",
     alignItems: "center",
     justifyContent: "center",
-    scale: "0.85",
     minWidth: "420px",
   };
 
   return (
     <Stack sx={containerSx}>
       <Title />
-      <Box component="form" onSubmit={action} sx={{ mt: 1 }}>
+      <Box component="form" onSubmit={action} sx={{ mt: 1, px: 3 }}>
         <MotionBox>
           <UsernameInput error={error} />
           <PasswordInput error={error} />

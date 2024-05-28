@@ -1,20 +1,16 @@
 import { CircularProgress } from "@mui/material";
-import { Button, Typography, Stack } from "@mui/material";
+import { Button, Stack } from "@mui/material";
 
 export function GuestButton({ loading }) {
-  const handleClick = (e) => {
-    e.preventDefault();
-  };
-
   return (
-    <Stack alignItems={"center"} sx={{ width: "100%" }}>
+    <Stack alignItems="center" width="100%">
       <Button
-        variant="text"
         size="small"
-        onClick={handleClick}
         disabled={loading}
+        type="button"
+        sx={{ fontSize: (theme) => theme.typography.caption.fontSize }}
       >
-        <Typography variant="caption">Sign in as a guest</Typography>
+        Sign in as a guest
       </Button>
     </Stack>
   );
