@@ -3,21 +3,21 @@ import { InputAdornment, OutlinedInput } from "@mui/material";
 import { MenuItem, TextField } from "@mui/material";
 
 import ArrowDropDownRoundedIcon from "@mui/icons-material/ArrowDropDownRounded";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { EDITOR_OUTPUT, THEME } from "../../../utils/store";
+import { useRecoilState } from "recoil";
+import { EDITOR_OUTPUT } from "../../../utils/store";
 import { SubTitle, Title } from "./Typo";
 import { MotionStack, toolsItemVar } from "../../Motion";
 
 const inputSx = {
   "& .MuiInputBase-input": {
-    fontSize: "0.75rem",
+    fontSize: (theme) => theme.typography.body1.fontSize,
   },
 };
 
 function OutputInput({ end, inputProps, value, onChange }) {
   const endAdornment = (
     <InputAdornment position="end">
-      <Typography variant="caption">{end}</Typography>
+      <Typography variant="body2">{end}</Typography>
     </InputAdornment>
   );
 
@@ -37,10 +37,6 @@ function OutputInput({ end, inputProps, value, onChange }) {
 }
 
 function OutputSelect({ options, value, onChange }) {
-  const theme = useRecoilValue(THEME);
-  const fontSx = theme.typography.caption;
-  const icon = ArrowDropDownRoundedIcon;
-
   return (
     <MotionStack variants={toolsItemVar}>
       <TextField
@@ -49,11 +45,11 @@ function OutputSelect({ options, value, onChange }) {
         value={value}
         onChange={onChange}
         InputProps={{ sx: inputSx }}
-        SelectProps={{ IconComponent: icon }}
+        SelectProps={{ IconComponent: ArrowDropDownRoundedIcon }}
       >
         {options.map(({ name, val }) => (
-          <MenuItem key={name} value={val} sx={fontSx}>
-            {name}
+          <MenuItem key={name} value={val}>
+            <Typography>{name}</Typography>
           </MenuItem>
         ))}
       </TextField>

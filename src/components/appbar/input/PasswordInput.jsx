@@ -1,25 +1,10 @@
-import React from "react";
-import { InputAdornment, IconButton, TextField } from "@mui/material";
+import { useState } from "react";
+import { IconButton, InputAdornment, TextField } from "@mui/material";
 import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 
-export function UsernameInput({ error }) {
-  return (
-    <TextField
-      error={error}
-      margin="normal"
-      required
-      fullWidth
-      label="Username"
-      name="username"
-      autoComplete="username"
-      autoFocus
-    />
-  );
-}
-
-export function PasswordInput({ error }) {
-  const [showPassword, setShowPassword] = React.useState(false);
+export default function PasswordInput({ error }) {
+  const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleMouseDownPassword = (e) => e.preventDefault();
 

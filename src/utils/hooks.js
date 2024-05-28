@@ -21,6 +21,8 @@ import {
   MANAGER_CATEGORY,
   MANAGER_PAGE,
   MANAGER_SELECTED,
+  MANAGER_VERIFY_RESULT,
+  MANAGER_VERIFY_ID,
 } from "./store";
 
 import {
@@ -376,6 +378,35 @@ export function useManagerDelete() {
     setPage(0);
     await syncIndex();
     return names.length;
+  };
+}
+
+export function useManagerVerify() {
+  const setID = useSetRecoilState(MANAGER_VERIFY_ID);
+  const results = useRecoilValueLoadable(MANAGER_VERIFY_RESULT);
+  const loading = results.state !== "hasValue";
+
+  const action = () => setID((prev) => (prev += 1));
+
+  const parseData = () => {
+    if (loading) return null;
+
+    const { result, timeStamp } = results.contents;
+    const { emptyDirectories, propsMissingFiles, sceneMissingFiles } = result;
+
+    const list = [
+      { title: "Empty Directories", items: emptyDirectories },
+      { title: "Props Missing Files", items: propsMissingFiles },
+      { title: "Scene Missing Files", items: sceneMissingFiles },
+    ];
+
+    return { list, timeStamp };
+  };
+
+  return {
+    action,
+    result: parseData(),
+    loading,
   };
 }
 

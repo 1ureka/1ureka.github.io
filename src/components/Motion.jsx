@@ -1,7 +1,16 @@
 import { motion } from "framer-motion";
-import { ButtonBase, IconButton, Paper, Stack } from "@mui/material";
-import { TableBody, TableRow } from "@mui/material";
 
+import {
+  Box,
+  ButtonBase,
+  IconButton,
+  Paper,
+  Stack,
+  TableBody,
+  TableRow,
+} from "@mui/material";
+
+export const MotionBox = motion(Box);
 export const MotionPaper = motion(Paper);
 export const MotionStack = motion(Stack);
 export const MotionBody = motion(TableBody);
@@ -9,37 +18,25 @@ export const MotionRow = motion(TableRow);
 export const MotionIconButton = motion(IconButton);
 export const MotionButtonBase = motion(ButtonBase);
 
-export function MotionCover({ children }) {
-  const variants = {
-    initial: {
-      opacity: 0,
-      y: 100,
-      transition: { duration: 0 },
-    },
-    animate: {
-      opacity: 1,
-      y: 0,
-      transition: { type: "spring", stiffness: 110, damping: 15 },
-    },
-    exit: {
-      opacity: 0,
-      scale: 1.5,
-      transition: { type: "spring", bounce: 0, duration: 0.7 },
-    },
-  };
-
-  return (
-    <motion.div
-      variants={variants}
-      initial="initial"
-      animate="animate"
-      exit="exit"
-      style={{ position: "relative", height: "100%", flexGrow: 1 }}
-    >
-      {children}
-    </motion.div>
-  );
-}
+//
+// Cover
+export const coverVar = {
+  initial: {
+    opacity: 0,
+    y: 100,
+    transition: { duration: 0 },
+  },
+  animate: {
+    opacity: 1,
+    y: 0,
+    transition: { type: "spring", stiffness: 110, damping: 15 },
+  },
+  exit: {
+    opacity: 0,
+    scale: 1.5,
+    transition: { type: "spring", bounce: 0, duration: 0.7 },
+  },
+};
 
 export const coverRightVar = {
   initial: {
@@ -82,6 +79,8 @@ export const coverRightItemVar = {
     transition: { duration: 0 },
   },
 };
+
+//
 
 export function MotionPage({ children }) {
   const variants = {

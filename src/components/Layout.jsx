@@ -33,8 +33,7 @@ function StyledTab({ ...props }) {
   const sx = (theme) => ({
     // font
     textTransform: "none",
-    fontWeight: theme.typography.caption.fontWeight,
-    fontSize: theme.typography.caption.fontSize,
+    fontWeight: 400,
     // color
     backgroundColor: theme.palette.custom.unSelected,
     "&.Mui-selected": {

@@ -1,5 +1,58 @@
 import { createTheme } from "@mui/material";
 
+/** @param {import("@mui/material").Palette} palette */
+const typography = (palette) => ({
+  fontFamily: "Comfortaa",
+  // h1: {},
+  // h2: {},
+  // h3: {},
+  h4: {
+    fontWeight: 400,
+    fontSize: "1.5rem",
+    lineHeight: 1.334,
+  },
+  h5: {
+    fontWeight: 500,
+    fontSize: "1.25rem",
+    lineHeight: 1.6,
+  },
+  h6: {
+    fontWeight: 400,
+    fontSize: "1rem",
+    lineHeight: 1.5,
+  },
+  subTitle1: {
+    fontWeight: 500,
+    fontSize: "0.75rem",
+    lineHeight: 1.66,
+  },
+  subTitle2: {
+    fontWeight: 500,
+    fontSize: "0.75rem",
+    lineHeight: 1.66,
+    color: palette.text.secondary,
+  },
+  body1: {
+    fontSize: "0.75rem",
+    lineHeight: 1.66,
+  },
+  body2: {
+    fontSize: "0.75rem",
+    lineHeight: 1.66,
+    color: palette.text.secondary,
+  },
+  caption: {
+    fontSize: "0.65rem",
+    lineHeight: 1.66,
+    color: palette.text.secondary,
+  },
+  button: {
+    fontSize: "0.75rem",
+    lineHeight: 1.66,
+  },
+  // overline : {}
+});
+
 export const darkTheme = createTheme({
   palette: {
     mode: "dark",
@@ -16,12 +69,8 @@ export const darkTheme = createTheme({
       backdrop: "#121212d8",
     },
   },
-  shape: {
-    borderRadius: 5,
-  },
-  typography: {
-    fontFamily: "Comfortaa",
-  },
+  shape: { borderRadius: 5 },
+  typography,
 });
 
 export const lightTheme = createTheme({
@@ -42,10 +91,6 @@ export const lightTheme = createTheme({
       backdrop: "rgba(255, 255, 255, 0.85)",
     },
   },
-  shape: {
-    borderRadius: 5,
-  },
-  typography: {
-    fontFamily: "Comfortaa",
-  },
+  shape: { borderRadius: 5 },
+  typography,
 });

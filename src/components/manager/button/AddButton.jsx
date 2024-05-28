@@ -11,7 +11,6 @@ function Action({ onClick }) {
   return (
     <Button
       startIcon={<AddToPhotosRoundedIcon fontSize="small" />}
-      sx={(theme) => theme.typography.caption}
       onClick={onClick}
     >
       Add Image
@@ -30,9 +29,7 @@ function Task({ open, info }) {
     >
       <Stack alignItems={"center"} spacing={2}>
         <CircularProgress color="primary" disableShrink />
-        <Typography variant="body2" color="text.secondary">
-          {info}
-        </Typography>
+        <Typography variant="body2">{info}</Typography>
       </Stack>
     </Backdrop>
   );

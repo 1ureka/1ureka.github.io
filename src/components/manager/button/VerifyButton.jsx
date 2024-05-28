@@ -1,11 +1,10 @@
 import { useState } from "react";
-import { Button, CircularProgress, Dialog, Skeleton } from "@mui/material";
+import { List, ListItem, ListItemText, Stack, Typography } from "@mui/material";
 import { DialogActions, DialogContent, DialogTitle } from "@mui/material";
-import { Typography } from "@mui/material";
+import { Box, Button, CircularProgress, Dialog, Skeleton } from "@mui/material";
 
 import ImageSearchRoundedIcon from "@mui/icons-material/ImageSearchRounded";
-
-import { runWorkflow } from "../../../utils/utils";
+import { useManagerVerify } from "../../../utils/hooks";
 
 function Progress() {
   return (
@@ -22,20 +21,36 @@ function Progress() {
   );
 }
 
-function Action({ onClick }) {
+function VerifyResult({ list }) {
   return (
-    <Button
-      startIcon={<ImageSearchRoundedIcon fontSize="small" />}
-      sx={(theme) => theme.typography.caption}
-      onClick={onClick}
-    >
-      Verify Integrity
-    </Button>
+    <Box>
+      {list.map(({ title, items }, i) => (
+        <Box key={i} p={1}>
+          <Stack spacing={2} direction="row">
+            <Typography>{title}: . . .</Typography>
+            <Typography color={items.length > 0 ? "error" : "text.secondary"}>
+              {items.length > 0 ? "FAIL" : "PASS"}
+            </Typography>
+          </Stack>
+          {items.length > 0 && (
+            <List>
+              {items.map((item, itemIndex) => (
+                <ListItem key={itemIndex}>
+                  <ListItemText primary={item} />
+                </ListItem>
+              ))}
+            </List>
+          )}
+        </Box>
+      ))}
+    </Box>
   );
 }
 
-function Content({ onClose, open, result }) {
-  const loading = !result;
+function VerifyDialog({ onClose, open }) {
+  const { action, result, loading } = useManagerVerify();
+  const date = result ? new Date(result.timeStamp).toLocaleString() : "...";
+
   return (
     <Dialog onClose={onClose} open={open} maxWidth="sm" fullWidth>
       <DialogTitle sx={{ m: 0, p: 2 }}>
@@ -50,17 +65,22 @@ function Content({ onClose, open, result }) {
             <Skeleton animation="wave" />
           </>
         ) : (
-          <Typography sx={{ whiteSpace: "pre-wrap" }}>
-            {JSON.stringify(result, null, 2)}
-          </Typography>
+          <VerifyResult list={result.list} />
         )}
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={onClose} disabled={loading}>
-          Close
+        <Typography
+          variant="caption"
+          sx={{ position: "absolute", left: "16px" }}
+        >
+          Last check time: {date}
+        </Typography>
+        <Button onClick={action} disabled={loading}>
+          Rerun
           {loading && <Progress />}
         </Button>
+        <Button onClick={onClose}>Close</Button>
       </DialogActions>
     </Dialog>
   );
@@ -68,21 +88,18 @@ function Content({ onClose, open, result }) {
 
 export default function VerifyButton() {
   const [open, setOpen] = useState(false);
-  const [result, setResult] = useState(null);
-  const handleClick = async () => {
-    setOpen(true);
-    const result = await runWorkflow("valid");
-    setResult(result);
-  };
-  const handleClose = () => {
-    if (!result) return;
-    setOpen(false);
-    setResult(null);
-  };
+  const handleClose = () => setOpen(false);
+  const handleClick = () => setOpen(true);
+
   return (
     <>
-      <Action onClick={handleClick} />
-      <Content onClose={handleClose} open={open} result={result} />
+      <Button
+        startIcon={<ImageSearchRoundedIcon fontSize="small" />}
+        onClick={handleClick}
+      >
+        Verify Integrity
+      </Button>
+      <VerifyDialog onClose={handleClose} open={open} />
     </>
   );
 }

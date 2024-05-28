@@ -10,12 +10,7 @@ function ConvertButton() {
   const { action, loading, disabled } = useEditorOutput();
 
   return (
-    <Button
-      disabled={disabled}
-      sx={(theme) => theme.typography.caption}
-      variant="contained"
-      onClick={action}
-    >
+    <Button disabled={disabled} variant="contained" onClick={action}>
       Convert
       {loading && <CircularProgress size={30} sx={{ position: "absolute" }} />}
     </Button>
@@ -28,7 +23,7 @@ export function EnhancedTableToolbar() {
 
   return (
     <Stack direction="row" sx={{ alignItems: "center", pl: 2, pr: 1, py: 1 }}>
-      <Typography sx={{ flex: "1" }} variant="caption" component="div">
+      <Typography sx={{ flex: "1" }} component="div">
         {numSelected} selected
       </Typography>
       <ConvertButton />
@@ -36,27 +31,8 @@ export function EnhancedTableToolbar() {
   );
 }
 
-function EnhancedTableSortLable({ label }) {
-  const [order, setOrder] = useRecoilState(EDITOR_ORDER);
-  const handleSetOrder = () => {
-    setOrder((prev) => (prev === "asc" ? "desc" : "asc"));
-  };
-
-  return (
-    <TableSortLabel
-      active
-      direction={order}
-      onClick={handleSetOrder}
-      sx={(theme) => theme.typography.caption}
-    >
-      {label}
-    </TableSortLabel>
-  );
-}
-
 export function EnhancedTableHead() {
   const [input, setInput] = useRecoilState(EDITOR_INPUT);
-
   const handleSelectAllClick = (e) => {
     setInput((prev) => {
       const isChecked = e.target.checked;
@@ -64,7 +40,11 @@ export function EnhancedTableHead() {
     });
   };
 
-  const order = useRecoilValue(EDITOR_ORDER);
+  const [order, setOrder] = useRecoilState(EDITOR_ORDER);
+  const handleSetOrder = () => {
+    setOrder((prev) => (prev === "asc" ? "desc" : "asc"));
+  };
+
   const lengthS = input.filter((item) => item.selected).length;
   const lengthA = input.length;
 
@@ -81,9 +61,11 @@ export function EnhancedTableHead() {
           />
         </TableCell>
         <TableCell align={"center"} padding={"none"} sortDirection={order}>
-          <EnhancedTableSortLable label="File name" />
+          <TableSortLabel active direction={order} onClick={handleSetOrder}>
+            File name
+          </TableSortLabel>
         </TableCell>
-        <TableCell padding="checkbox"></TableCell>
+        <TableCell padding="checkbox" />
       </TableRow>
     </TableHead>
   );

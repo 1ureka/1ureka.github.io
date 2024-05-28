@@ -1,5 +1,5 @@
 import { atom, selector, selectorFamily } from "recoil";
-import { getSystemTheme, loadFile } from "./utils";
+import { getSystemTheme, loadFile, runWorkflow } from "./utils";
 import { darkTheme, lightTheme } from "./theme";
 
 //
@@ -128,6 +128,22 @@ export const MANAGER_PAGE = atom({
 export const MANAGER_PAGE_ROWS = atom({
   key: "managerRowsPerPage",
   default: 5,
+});
+export const MANAGER_ROW_HEIGHT = atom({
+  key: "managerRowHeight",
+  default: null,
+});
+export const MANAGER_VERIFY_ID = atom({
+  key: "managerVerifyID",
+  default: "0",
+});
+export const MANAGER_VERIFY_RESULT = selector({
+  key: "managerVerifyResult",
+  get: async ({ get }) => {
+    get(MANAGER_VERIFY_ID);
+    const result = await runWorkflow("valid");
+    return result;
+  },
 });
 
 //

@@ -26,7 +26,7 @@ function InfoHeader({ title, onClose }) {
           color: (theme) => theme.palette.grey[500],
         }}
       >
-        <CloseRoundedIcon />
+        <CloseRoundedIcon fontSize="small" />
       </IconButton>
     </>
   );
@@ -107,11 +107,11 @@ export function DialogAdd({ open, onClose, list }) {
       open={open}
       onClose={onClose}
       title="Adding Files"
-      info="Preparing to add the following files."
+      info="Preparing to add the following files:"
       list={list}
       onSave={actionHandler}
       hint={`${num} Files Added`}
-      icon={<AddPhotoAlternateRoundedIcon />}
+      icon={<AddPhotoAlternateRoundedIcon fontSize="small" />}
     />
   );
 }
@@ -130,11 +130,11 @@ export function DialogDel({ open, onClose }) {
       open={open}
       onClose={onClose}
       title="Deleting Files"
-      info="Preparing to delete the following files."
+      info="Preparing to delete the following files:"
       list={selected}
       onSave={actionHandler}
       hint={`${num} Files Deleted`}
-      icon={<HideImageRoundedIcon />}
+      icon={<HideImageRoundedIcon fontSize="small" />}
     />
   );
 }
