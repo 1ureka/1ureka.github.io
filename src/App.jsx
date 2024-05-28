@@ -9,7 +9,7 @@ import { AnimatePresence } from "framer-motion";
 import { THEME } from "./utils/store";
 import { decode, delay } from "./utils/utils";
 
-import Sidebar from "./components/sidebar/Sidebar";
+import Appbar from "./page/appbar/Appbar";
 import Cover from "./page/Cover";
 import Books from "./page/Books";
 import Tools from "./page/Tools";
@@ -76,7 +76,7 @@ function Root() {
 
   return (
     <Stack direction={"row"} sx={containerSx}>
-      <Sidebar />
+      <Appbar />
       <Outlet />
     </Stack>
   );
