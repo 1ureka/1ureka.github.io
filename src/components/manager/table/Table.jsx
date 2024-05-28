@@ -106,10 +106,10 @@ function VisibleTableRow({ row, index }) {
         <Checkbox color="primary" checked={isSelected(row.name)} size="small" />
       </TableCell>
       <TableCell sx={{ p: 1.5 }}>
-        <Typography variant="caption">{row.name}</Typography>
+        <Typography>{row.name}</Typography>
       </TableCell>
       <TableCell align="right" sx={{ p: 1.5 }}>
-        <Typography variant="caption">{row.size}</Typography>
+        <Typography>{row.size}</Typography>
       </TableCell>
     </MotionRow>
   );

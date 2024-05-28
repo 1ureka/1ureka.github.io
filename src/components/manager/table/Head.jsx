@@ -22,12 +22,11 @@ export function EnhancedTableToolbar() {
 
   return (
     <Stack direction="row" sx={containerSx}>
-      <Typography variant="subtitle2">{num} selected</Typography>
+      <Typography variant="subTitle1">{num} selected</Typography>
       <Button
         onClick={() => setOpen(true)}
         disabled={!num > 0}
         startIcon={<DeleteRoundedIcon fontSize="small" />}
-        sx={(theme) => theme.typography.caption}
       >
         Delete
       </Button>
@@ -74,9 +73,7 @@ function LabelCells() {
             direction={orderBy === headCell.id ? order : "asc"}
             onClick={createSortHandler(headCell.id)}
           >
-            <Typography variant="caption" sx={{ lineHeight: 0.1 }}>
-              {headCell.label}
-            </Typography>
+            <Typography sx={{ lineHeight: 0.1 }}>{headCell.label}</Typography>
           </TableSortLabel>
         </TableCell>
       ))}

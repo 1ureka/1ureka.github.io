@@ -10,14 +10,6 @@ import Table from "./table/Table";
 import AddButton from "./button/AddButton";
 import VerifyButton from "./button/VerifyButton";
 
-function Title({ title }) {
-  return (
-    <Typography variant="caption" sx={{ color: "text.secondary" }}>
-      {title}
-    </Typography>
-  );
-}
-
 function Toggles() {
   const [category, setCategory] = useRecoilState(MANAGER_CATEGORY);
   const setPage = useSetRecoilState(MANAGER_PAGE);
@@ -52,11 +44,11 @@ function Operation() {
   return (
     <>
       <MotionStack variants={managerItemVar} gap={1}>
-        <Title title="CATEGORY:" />
+        <Typography variant="subTitle2">CATEGORY:</Typography>
         <Toggles />
       </MotionStack>
       <MotionStack variants={managerItemVar} gap={1} alignItems="flex-start">
-        <Title title="OPERATION:" />
+        <Typography variant="subTitle2">OPERATION:</Typography>
         <AddButton />
         <VerifyButton />
       </MotionStack>

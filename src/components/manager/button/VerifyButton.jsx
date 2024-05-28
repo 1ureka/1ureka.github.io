@@ -25,7 +25,7 @@ function VerifyResult({ list }) {
   return (
     <Box>
       {list.map(({ title, items }, i) => (
-        <Box key={i} mb={2}>
+        <Box key={i} p={1}>
           <Stack spacing={2} direction="row">
             <Typography>{title}: . . .</Typography>
             <Typography color={items.length > 0 ? "error" : "text.secondary"}>
@@ -95,7 +95,6 @@ export default function VerifyButton() {
     <>
       <Button
         startIcon={<ImageSearchRoundedIcon fontSize="small" />}
-        sx={(theme) => theme.typography.caption}
         onClick={handleClick}
       >
         Verify Integrity

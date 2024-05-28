@@ -21,32 +21,20 @@ const intro = {
   },
 };
 
-function Title({ title }) {
-  return (
-    <MotionStack variants={toolsItemVar} sx={{ p: 3 }}>
-      <Typography>{title}</Typography>
-    </MotionStack>
-  );
-}
-
-function Intro({ info }) {
-  const sx = { flexGrow: 1, p: 3, alignItems: "center" };
-  return (
-    <MotionStack variants={toolsItemVar} sx={sx}>
-      <Typography variant="caption" sx={{ color: "text.secondary" }}>
-        {info}
-      </Typography>
-    </MotionStack>
-  );
-}
-
 function Header() {
   const tab = useRecoilValue(TOOLS_TAB);
   const { title, info } = intro[tab];
   return (
     <>
-      <Title title={title} />
-      <Intro info={info} />
+      <MotionStack variants={toolsItemVar} sx={{ p: 3 }}>
+        <Typography variant="h6">{title}</Typography>
+      </MotionStack>
+      <MotionStack
+        variants={toolsItemVar}
+        sx={{ flexGrow: 1, p: 3, alignItems: "center" }}
+      >
+        <Typography variant="body2">{info}</Typography>
+      </MotionStack>
     </>
   );
 }
