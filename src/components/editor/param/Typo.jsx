@@ -4,7 +4,7 @@ import { MotionStack, toolsItemVar } from "../../Motion";
 export function Title({ title, sx }) {
   return (
     <MotionStack variants={toolsItemVar}>
-      <Typography variant="caption" sx={{ color: "text.secondary", ...sx }}>
+      <Typography variant="subTitle2" sx={sx}>
         {title}
       </Typography>
     </MotionStack>
@@ -14,7 +14,7 @@ export function Title({ title, sx }) {
 export function SubTitle({ title }) {
   return (
     <MotionStack variants={toolsItemVar}>
-      <Typography variant="caption">{title}</Typography>
+      <Typography>{title}</Typography>
     </MotionStack>
   );
 }

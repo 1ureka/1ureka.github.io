@@ -26,7 +26,7 @@ export default function Sidebar() {
         open={open}
         onClick={() => setOpen(false)}
         sx={{ zIndex: darkTheme.zIndex.drawer, backdropFilter: "blur(5px)" }}
-      ></Backdrop>
+      />
       <Paper sx={containerSx}>
         <Setting />
         <SidebarLeft />

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { Table, TableCell, TableContainer } from "@mui/material";
-import { Checkbox, Stack } from "@mui/material";
+import { Checkbox, Stack, Box } from "@mui/material";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 
 import { EDITOR_INPUT, EDITOR_ORDER } from "../../../utils/store";
@@ -35,7 +35,6 @@ function CellName({ name, isDisplay }) {
       padding="none"
       align="center"
       sx={(theme) => ({
-        ...theme.typography.caption,
         color: isDisplay && theme.palette.primary.main,
         overflow: "hidden",
         textOverflow: "ellipsis",
@@ -49,12 +48,11 @@ function CellName({ name, isDisplay }) {
 function CellDisplayBox({ isDisplay }) {
   return (
     <TableCell padding="checkbox">
-      <Checkbox
-        icon={<></>}
-        checkedIcon={<VisibilityRoundedIcon fontSize="small" />}
-        checked={isDisplay}
-        size="small"
-      />
+      <Box sx={{ display: "grid", placeItems: "center" }}>
+        {isDisplay && (
+          <VisibilityRoundedIcon sx={{ fontSize: 22 }} color="primary" />
+        )}
+      </Box>
     </TableCell>
   );
 }

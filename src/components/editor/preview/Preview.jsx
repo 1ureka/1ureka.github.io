@@ -14,7 +14,7 @@ function Name() {
   const name = input.find((item) => item.display)?.file.name;
   const sx = { position: "absolute", top: "8px", left: "8px", zIndex: 1 };
   return (
-    <Typography variant="caption" color="text.secondary" sx={sx}>
+    <Typography variant="caption" sx={sx}>
       {name}
     </Typography>
   );
@@ -39,7 +39,7 @@ function SliderHandle({ cursor }) {
         background: bgColor,
         cursor,
       }}
-    ></motion.div>
+    />
   );
 }
 
