@@ -1,75 +1,53 @@
-import { useRecoilValue } from "recoil";
-import { Typography } from "@mui/material";
+import { useRecoilState } from "recoil";
+import { Box, Divider } from "@mui/material";
 
-import { BOOKS_ROWS, BOOKS_TAB } from "../../utils/store";
+import { BOOKS_TAB } from "../../utils/store";
 import { MotionStack } from "../../components/Motion";
-import { booksItemVar } from "../../components/Motion";
+import { booksVar, orchestrationVar } from "../../components/Motion";
 
-import Books from "../../components/books/Books";
-import Layout from "../../components/Layout";
-import Carousels from "../../components/books/Carousels";
-
-const intro = {
-  scene: {
-    project: "PJ27, PJ28",
-    info: `Reimagining classic scenes from anime and games with a realistic
-      touch, along with original works inspired by Japan’s countryside.`,
-  },
-  props: {
-    project: "PJ26",
-    info: `It includes a variety of models, from small screws to buildings, 
-      to meet outdoor scene requirements. It provides pre-packaged objects
-      based on instances.`,
-  },
-};
-
-function IntroBox({ title, info }) {
-  const containerSx = { p: 3, alignItems: "flex-start" };
-
-  return (
-    <MotionStack variants={booksItemVar} sx={containerSx} gap={0.5}>
-      <Typography variant="caption">{title}</Typography>
-      <Typography variant="caption" sx={{ color: "text.primary" }}>
-        {info}
-      </Typography>
-    </MotionStack>
-  );
-}
-
-function IntroTypo({ info }) {
-  const sx = { flexGrow: 1, p: 3 };
-  return (
-    <MotionStack variants={booksItemVar} alignItems="center" sx={sx}>
-      <Typography variant="body2">{info}</Typography>
-    </MotionStack>
-  );
-}
-
-function Header() {
-  const tab = useRecoilValue(BOOKS_TAB);
-  const rows = useRecoilValue(BOOKS_ROWS);
-  const { project, info } = intro[tab];
-  const includes = `${rows.length} Images`;
-
-  return (
-    <>
-      <IntroBox title={"PROJECTS:"} info={project} />
-      <IntroBox title={"INCLUDES:"} info={includes} />
-      <IntroTypo info={info} />
-    </>
-  );
-}
+import Bookmarks from "../../components/Bookmarks";
+import BooksHeader from "./header/BooksHeader";
+import BooksContent from "./content/BooksContent";
+import BooksCarousels from "./carousels/BooksCarousels";
 
 export default function Page() {
+  const [tab, setTab] = useRecoilState(BOOKS_TAB);
+
   return (
-    <Layout
-      tabState={BOOKS_TAB}
-      tabs={["Scene", "Props"]}
-      header={<Header />}
-      content={<Books />}
-      scroll={true}
+    <MotionStack
+      variants={booksVar}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      sx={{ position: "relative", py: 3, px: 5, height: "100%", flexGrow: 1 }}
     >
-      <Carousels />
-    </Layout>
+      <Bookmarks
+        labels={["Scene", "Props"]}
+        value={tab}
+        onChange={(tab) => setTab(tab)}
+      />
+
+      <MotionStack
+        sx={{
+          bgcolor: "custom.content",
+          flexGrow: 1,
+          borderRadius: "0 50px 5px 5px",
+        }}
+        variants={orchestrationVar({ delay: 0.15, stagger: 0.05 })}
+        key={tab}
+      >
+        <Box sx={{ mt: "55px" }}>
+          <BooksHeader tab={tab} />
+        </Box>
+
+        <Divider flexItem variant="middle" />
+
+        <Box sx={{ flexGrow: 1, height: "1px", overflowY: "auto" }}>
+          <BooksContent tab={tab} />
+        </Box>
+      </MotionStack>
+
+      {/* <BooksCarousels /> */}
+    </MotionStack>
   );
 }
