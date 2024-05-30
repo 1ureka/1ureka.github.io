@@ -47,7 +47,7 @@ export default function Page() {
         </Box>
       </MotionStack>
 
-      {/* <BooksCarousels /> */}
+      <BooksCarousels />
     </MotionStack>
   );
 }
