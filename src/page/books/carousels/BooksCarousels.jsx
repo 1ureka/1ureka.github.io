@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { AnimatePresence, useMotionValue } from "framer-motion";
 import { Box, Stack, Typography } from "@mui/material";
@@ -70,12 +69,11 @@ export default function BooksCarousels() {
                 overflow: "clip",
                 width: "75vw",
                 height: "77.5vh",
-                maxWidth: "calc(75vh * (16 / 9))",
+                maxWidth: "calc(77.5vh * (16 / 9))",
                 maxHeight: "calc(75vw * (9 / 16))",
               }}
             >
-              {/* <BooksCarouselsImage category={category} name={name} /> */}
-              <Box sx={{ bgcolor: "gray", position: "absolute", inset: 0 }} />
+              <BooksCarouselsImage category={category} name={name} />
             </MotionBox>
 
             <Typography
@@ -94,7 +92,10 @@ export default function BooksCarousels() {
             <ImageSlides rows={rows} selected={selected} />
           </MotionBox>
 
-          <Box sx={{ position: "absolute", inset: "3% 10% 3% 2%" }}>
+          <Box
+            position="absolute"
+            sx={{ inset: "3% 10% 3% 2%", pointerEvents: "none" }}
+          >
             <Stack
               direction="row"
               alignItems="ceter"
