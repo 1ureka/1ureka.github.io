@@ -1,7 +1,9 @@
 import { useRecoilState } from "recoil";
+import { Box, Divider } from "@mui/material";
 import { TOOLS_TAB } from "../../utils/store";
-import { toolsVar } from "../../components/Motion";
 
+import { MotionStack } from "../../components/Motion";
+import { orchestrationVar, toolsVar } from "../../components/Motion";
 import Bookmarks from "../../components/Bookmarks";
 import ToolsHeader from "./header/ToolsHeader";
 

@@ -1,5 +1,6 @@
-import { IconButton, Snackbar } from "@mui/material";
 import { useEffect, useState } from "react";
+import { IconButton, Snackbar } from "@mui/material";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
 export default function ConsecutiveSnackbars({ timeStamp, message }) {
   const [snackPack, setSnackPack] = useState([]);
