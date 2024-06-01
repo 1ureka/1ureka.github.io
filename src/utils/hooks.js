@@ -261,6 +261,21 @@ export function useBooksImageDecode(category, name, size) {
 
 //
 // Manager
+export function useManagerCategory() {
+  const [category, setCategory] = useRecoilState(MANAGER_CATEGORY);
+  const setPage = useSetRecoilState(MANAGER_PAGE);
+  const setSelected = useSetRecoilState(MANAGER_SELECTED);
+
+  const handleToggle = (_, category) => {
+    if (!category) return;
+    setPage(0);
+    setSelected([]);
+    setCategory(category);
+  };
+
+  return { category, handleToggle };
+}
+
 export function useManagerUpload() {
   const syncIndex = useSyncIndex();
   const setSelected = useSetRecoilState(MANAGER_SELECTED);
@@ -338,11 +353,7 @@ export function useManagerVerify() {
     return { list, timeStamp };
   };
 
-  return {
-    action,
-    result: parseData(),
-    loading,
-  };
+  return { action, result: parseData(), loading };
 }
 
 //
