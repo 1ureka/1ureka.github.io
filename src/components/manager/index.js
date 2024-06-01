@@ -9,3 +9,6 @@ export { default as ConsecutiveSnackbars } from "./popup/ConsecutiveSnackbars";
 
 // Input
 export { default as ToggleButtons } from "./input/ToggleButtons";
+
+// Table
+export { default as Table } from "./table/Table";

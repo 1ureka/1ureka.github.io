@@ -6,10 +6,8 @@ import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { MANAGER_ROWS, MANAGER_SELECTED } from "../../../utils/store";
 import { MANAGER_ORDER, MANAGER_ORDER_BY } from "../../../utils/store";
-import { DialogDel } from "../dialog/Dialog";
 
-export function EnhancedTableToolbar() {
-  const [open, setOpen] = React.useState(false);
+export function EnhancedTableToolbar({ onDelete }) {
   const selected = useRecoilValue(MANAGER_SELECTED);
   const num = selected.length;
 
@@ -24,13 +22,12 @@ export function EnhancedTableToolbar() {
     <Stack direction="row" sx={containerSx}>
       <Typography variant="subTitle1">{num} selected</Typography>
       <Button
-        onClick={() => setOpen(true)}
+        onClick={() => onDelete(selected)}
         disabled={!num > 0}
         startIcon={<DeleteRoundedIcon fontSize="small" />}
       >
         Delete
       </Button>
-      <DialogDel open={open} onClose={() => setOpen(false)} />
     </Stack>
   );
 }
