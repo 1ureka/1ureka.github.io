@@ -1,4 +1,4 @@
-import { Skeleton } from "@mui/material";
+import { Box, Skeleton } from "@mui/material";
 import { useBooksImageLoad } from "../../../utils/hooks";
 import { useSpring, useTransform } from "framer-motion";
 import { useEffect } from "react";
@@ -37,19 +37,16 @@ export default function ImageSlides({ rows, selected }) {
       {rows.map(({ category, name }, i) => (
         <MotionBox
           key={name}
-          sx={{
-            translate: "0 -50%",
-            transformOrigin: "right",
-            borderRadius: 1,
-            overflow: "clip",
-          }}
+          sx={{ translate: "0 -50%", transformOrigin: "right", py: 1 }}
           animate={
             i === selected
               ? { opacity: 1, scale: 0.9 }
               : { opacity: 0.85, scale: 0.65 }
           }
         >
-          <Image category={category} name={name} />
+          <Box sx={{ borderRadius: 1, overflow: "clip" }}>
+            <Image category={category} name={name} />
+          </Box>
         </MotionBox>
       ))}
     </MotionStack>

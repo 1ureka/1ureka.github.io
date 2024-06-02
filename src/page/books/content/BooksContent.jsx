@@ -20,7 +20,7 @@ export default function BooksContent({ tab }) {
       sx={{
         display: "grid",
         gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-        gap: 2,
+        gap: 1.75,
         p: 3,
       }}
       variants={orchestrationVar({ delay: 0, stagger: 0.3 / length })}
