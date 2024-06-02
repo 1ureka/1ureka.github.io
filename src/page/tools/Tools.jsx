@@ -4,8 +4,23 @@ import { TOOLS_TAB } from "../../utils/store";
 
 import { MotionStack } from "../../components/Motion";
 import { orchestrationVar, toolsVar } from "../../components/Motion";
+
 import Bookmarks from "../../components/Bookmarks";
 import ToolsHeader from "./header/ToolsHeader";
+import FileManager from "./content/FileManager";
+
+function Content({ tab }) {
+  switch (tab) {
+    case "manager":
+      return <FileManager />;
+    case "editor":
+      return null;
+    case "toNormal":
+      return null; // todo
+    default:
+      return null;
+  }
+}
 
 export default function Page() {
   const [tab, setTab] = useRecoilState(TOOLS_TAB);
@@ -39,8 +54,8 @@ export default function Page() {
 
         <Divider flexItem variant="middle" />
 
-        <Box sx={{ flexGrow: 1, height: "1px", overflowY: "auto" }}>
-          {HelloWorld}
+        <Box sx={{ flexGrow: 1, height: "1px", overflowY: "visible" }}>
+          <Content tab={tab} />
         </Box>
       </MotionStack>
     </MotionStack>
