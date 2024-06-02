@@ -38,7 +38,6 @@ export default function ConsecutiveSnackbars({ timeStamp, message }) {
       open={open}
       onClose={handleClose}
       autoHideDuration={3500}
-      anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       TransitionProps={{ onExited: handleExited }}
       message={messageInfo?.message}
       action={

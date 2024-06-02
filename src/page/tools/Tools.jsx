@@ -8,13 +8,14 @@ import { orchestrationVar, toolsVar } from "../../components/Motion";
 import Bookmarks from "../../components/Bookmarks";
 import ToolsHeader from "./header/ToolsHeader";
 import FileManager from "./content/FileManager";
+import ImageEditor from "./content/ImageEditor";
 
 function Content({ tab }) {
   switch (tab) {
     case "manager":
       return <FileManager />;
     case "editor":
-      return null;
+      return <ImageEditor />;
     case "toNormal":
       return null; // todo
     default:

@@ -13,11 +13,11 @@ export default function DeleteDialog({ open, onClose, list = [] }) {
   const [loading, setLoading] = useState(false);
   const deleteImages = useManagerDelete();
 
-  const handleSave = async () => {
+  const handleSave = async (e) => {
     setLoading(true);
     const num = await deleteImages(list);
     setLoading(false);
-    onClose(`${num} Files Deleted`);
+    onClose(e, `${num} Files Deleted`);
   };
 
   const handleClose = () => {

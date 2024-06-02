@@ -1,13 +1,14 @@
 import { useState } from "react";
-import { Box, Button, Stack, Typography, Switch } from "@mui/material";
-import { FormControl, FormControlLabel, FormHelperText } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import AddToPhotosRoundedIcon from "@mui/icons-material/AddToPhotosRounded";
 import ImageSearchRoundedIcon from "@mui/icons-material/ImageSearchRounded";
 
 import { LoadingScreen, Table } from "../../../components/manager";
-import { ToggleButtons, VerifyDialog } from "../../../components/manager";
+import { DryModeSwitch, ToggleButtons } from "../../../components/manager";
+import { VerifyDialog } from "../../../components/manager";
 import { DeleteDialog, UploadDialog } from "../../../components/manager";
 import { ConsecutiveSnackbars } from "../../../components/manager";
+
 import { MotionBox, MotionStack } from "../../../components/Motion";
 import { managerItemVar } from "../../../components/Motion";
 
@@ -32,7 +33,7 @@ export default function FileManager() {
   const { category, handleToggle } = useManagerCategory();
 
   const [stateL, setloadScreen] = useState({ open: false, info: "" });
-  const [stateS, setSnack] = useState({ timeStamp: Date.now(), info: "" });
+  const [stateS, setSnack] = useState({ timeStamp: Date.now(), message: "" });
   const [stateD, setDialog] = useState({ id: "", props: {} });
 
   const handleAddClick = async () => {
@@ -41,14 +42,14 @@ export default function FileManager() {
     const files = await getNativeFiles();
     if (files.length === 0) {
       setloadScreen((prev) => ({ ...prev, open: false }));
-      setSnack({ timeStamp: Date.now(), info: "No file selected" });
+      setSnack({ timeStamp: Date.now(), message: "No file selected" });
       return;
     }
     if (!files.every((file) => file.type.match("image.*"))) {
       setloadScreen((prev) => ({ ...prev, open: false }));
       setSnack({
         timeStamp: Date.now(),
-        info: "Please select only image files",
+        message: "Please select only image files",
       });
       return;
     }
@@ -67,9 +68,9 @@ export default function FileManager() {
     setDialog({ id: "verify", props: {} });
   };
 
-  const handleDialogClose = (message) => {
+  const handleDialogClose = (_, message) => {
     setDialog((prev) => ({ ...prev, id: "" }));
-    message && setSnack({ timeStamp: Date.now(), info: message });
+    message && setSnack({ timeStamp: Date.now(), message });
   };
 
   return (
@@ -104,14 +105,7 @@ export default function FileManager() {
         <Box sx={{ flexGrow: 1 }} />
 
         <MotionBox variants={managerItemVar}>
-          <FormControl variant="standard">
-            <FormControlLabel control={<Switch />} label={"dry mode"} />
-            <FormHelperText>
-              <Typography variant="caption">
-                Simulates actions without affecting backend data.
-              </Typography>
-            </FormHelperText>
-          </FormControl>
+          <DryModeSwitch />
         </MotionBox>
       </MotionStack>
 

@@ -23,6 +23,7 @@ import {
   MANAGER_SELECTED,
   MANAGER_VERIFY_RESULT,
   MANAGER_VERIFY_ID,
+  MANAGER_DRY_MODE,
 } from "./store";
 
 import {
@@ -280,6 +281,7 @@ export function useManagerUpload() {
   const syncIndex = useSyncIndex();
   const setSelected = useSetRecoilState(MANAGER_SELECTED);
   const category = useRecoilValue(MANAGER_CATEGORY);
+  const isDry = useRecoilValue(MANAGER_DRY_MODE);
 
   const uploadImages = async (list) => {
     await Promise.all(
@@ -294,7 +296,7 @@ export function useManagerUpload() {
 
   /** @param {Object[]} list @param {string} list[].name @param {string} list[].thumbnail @param {string} list[].origin */
   return async (list) => {
-    await uploadImages(list);
+    await (isDry ? delay(1500) : uploadImages(list));
     setSelected((prev) => {
       const set = new Set([...prev, ...list.map((val) => val.name)]);
       return Array.from(set);
@@ -309,6 +311,7 @@ export function useManagerDelete() {
   const setSelected = useSetRecoilState(MANAGER_SELECTED);
   const setPage = useSetRecoilState(MANAGER_PAGE);
   const category = useRecoilValue(MANAGER_CATEGORY);
+  const isDry = useRecoilValue(MANAGER_DRY_MODE);
 
   const deleteImages = async (names = [""]) => {
     await Promise.all(
@@ -323,7 +326,7 @@ export function useManagerDelete() {
 
   /**@param {string[]} names */
   return async (names) => {
-    await deleteImages(names);
+    await (isDry ? delay(1500) : deleteImages(names));
     setSelected([]);
     setPage(0);
     await syncIndex();

@@ -13,11 +13,11 @@ export default function UploadDialog({ open, onClose, list = [] }) {
   const [loading, setLoading] = useState(false);
   const addImages = useManagerUpload();
 
-  const handleSave = async () => {
+  const handleSave = async (e) => {
     setLoading(true);
     const num = await addImages(list);
     setLoading(false);
-    onClose(`${num} Files Added`);
+    onClose(e, `${num} Files Added`);
   };
 
   const handleClose = () => {

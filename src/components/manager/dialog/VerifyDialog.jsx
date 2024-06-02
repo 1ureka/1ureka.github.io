@@ -35,7 +35,7 @@ export default function VerifyDialog({ open, onClose }) {
   const date = result ? new Date(result.timeStamp).toLocaleString() : "...";
 
   return (
-    <Dialog onClose={onClose} open={open} maxWidth="sm" fullWidth>
+    <Dialog onClose={(e) => onClose(e)} open={open} maxWidth="sm" fullWidth>
       <DialogTitle sx={{ m: 0, p: 2 }}>
         {loading ? "Verifying..." : "Verify Result:"}
       </DialogTitle>

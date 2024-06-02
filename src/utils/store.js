@@ -145,6 +145,10 @@ export const MANAGER_VERIFY_RESULT = selector({
     return result;
   },
 });
+export const MANAGER_DRY_MODE = atom({
+  key: "managerDryMode",
+  default: false,
+});
 
 //
 //
