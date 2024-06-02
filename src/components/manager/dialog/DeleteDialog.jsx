@@ -9,7 +9,7 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import HideImageRoundedIcon from "@mui/icons-material/HideImageRounded";
 import { useManagerDelete } from "../../../utils/hooks";
 
-export default function DeleteDialog({ open, onClose, list }) {
+export default function DeleteDialog({ open, onClose, list = [] }) {
   const [loading, setLoading] = useState(false);
   const deleteImages = useManagerDelete();
 
@@ -72,7 +72,7 @@ export default function DeleteDialog({ open, onClose, list }) {
         </Button>
       </DialogActions>
 
-      <Grow in={open}>
+      <Grow in={loading}>
         <Stack
           alignItems={"center"}
           sx={{ position: "fixed", inset: "20px 0 auto 0" }}

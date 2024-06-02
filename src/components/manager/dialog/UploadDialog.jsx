@@ -9,7 +9,7 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import AddPhotoAlternateRoundedIcon from "@mui/icons-material/AddPhotoAlternateRounded";
 import { useManagerUpload } from "../../../utils/hooks";
 
-export default function UploadDialog({ open, onClose, list }) {
+export default function UploadDialog({ open, onClose, list = [] }) {
   const [loading, setLoading] = useState(false);
   const addImages = useManagerUpload();
 
@@ -72,7 +72,7 @@ export default function UploadDialog({ open, onClose, list }) {
         </Button>
       </DialogActions>
 
-      <Grow in={open}>
+      <Grow in={loading}>
         <Stack
           alignItems={"center"}
           sx={{ position: "fixed", inset: "20px 0 auto 0" }}
