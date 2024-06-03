@@ -55,7 +55,15 @@ export default function Page() {
 
         <Divider flexItem variant="middle" />
 
-        <Box sx={{ flexGrow: 1, height: "1px", overflowY: "visible" }}>
+        <Box
+          sx={{
+            position: "relative",
+            flexGrow: 1,
+            height: "1px",
+            overflowY: "visible",
+            p: 3,
+          }}
+        >
           <Content tab={tab} />
         </Box>
       </MotionStack>

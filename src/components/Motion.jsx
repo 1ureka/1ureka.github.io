@@ -18,7 +18,7 @@ export const MotionRow = motion(TableRow);
 export const MotionIconButton = motion(IconButton);
 export const MotionButtonBase = motion(ButtonBase);
 
-export const orchestrationVar = ({ delay, stagger }) => ({
+export const orchestrationVar = ({ delay = 0, stagger = 0.1 } = {}) => ({
   animate: { transition: { delayChildren: delay, staggerChildren: stagger } },
 });
 
@@ -244,40 +244,24 @@ export const carouselsSlidesVar = {
 };
 
 //
-
-export function MotionPage({ children }) {
-  const variants = {
-    initial: {
-      opacity: 0,
-      y: 100,
-      transition: { duration: 0 },
-    },
-    animate: {
-      opacity: 1,
-      y: 0,
-      transition: { type: "spring", stiffness: 150, damping: 15 },
-    },
-    exit: {
-      opacity: 0,
-      y: 50,
-      transition: { type: "spring", bounce: 0, duration: 0.5 },
-    },
-  };
-
-  const sx = { position: "relative", py: 3, px: 5, height: "100%" };
-
-  return (
-    <MotionStack
-      variants={variants}
-      initial="initial"
-      animate="animate"
-      exit="exit"
-      sx={{ ...sx, flexGrow: 1 }}
-    >
-      {children}
-    </MotionStack>
-  );
-}
+// Tools
+export const toolsVar = {
+  initial: {
+    opacity: 0,
+    y: 100,
+    transition: { duration: 0 },
+  },
+  animate: {
+    opacity: 1,
+    y: 0,
+    transition: { type: "spring", stiffness: 150, damping: 15 },
+  },
+  exit: {
+    opacity: 0,
+    y: 50,
+    transition: { type: "spring", bounce: 0, duration: 0.5 },
+  },
+};
 
 export const toolsItemVar = {
   initial: {
@@ -327,6 +311,7 @@ export const managerItemVar = {
   },
 };
 
+// Components
 export const tableItemVar = {
   initial: {
     opacity: 0,

@@ -74,10 +74,7 @@ export default function FileManager() {
   };
 
   return (
-    <Stack
-      direction="row"
-      sx={{ position: "relative", width: "100%", height: "100%", p: 3 }}
-    >
+    <Stack direction="row" sx={{ height: "100%" }}>
       <MotionStack variants={managerItemVar} sx={{ px: 4, py: 3 }} spacing={8}>
         <MotionStack variants={managerItemVar} gap={1} alignItems="flex-start">
           <Typography variant="subTitle2">CATEGORY:</Typography>
