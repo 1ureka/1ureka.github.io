@@ -1,51 +1,21 @@
-import { useRecoilValue } from "recoil";
-import { Typography } from "@mui/material";
+import { useRecoilState } from "recoil";
+import { Box, Divider } from "@mui/material";
 import { TOOLS_TAB } from "../../utils/store";
-import { MotionStack, toolsItemVar } from "../../components/Motion";
 
-import Manager from "../../components/manager/Manager";
-import Editor from "../../components/editor/Editor";
-import Layout from "../../components/Layout";
+import { MotionStack } from "../../components/Motion";
+import { orchestrationVar, toolsVar } from "../../components/Motion";
 
-const intro = {
-  manager: {
-    title: "File Manager",
-    info: `Synced in real-time with the backend, 
-    manage the images in your album with ease, 
-    facilitating effortless addition, updating, and deletion of images.`,
-  },
-  editor: {
-    title: "Image Editor",
-    info: `A toolkit featuring image conversion, compression, 
-    and filtering. It supports batch processing and includes before-and-after comparison.`,
-  },
-};
+import Bookmarks from "../../components/Bookmarks";
+import ToolsHeader from "./header/ToolsHeader";
+import FileManager from "./content/FileManager";
+import ImageEditor from "./content/ImageEditor";
 
-function Header() {
-  const tab = useRecoilValue(TOOLS_TAB);
-  const { title, info } = intro[tab];
-  return (
-    <>
-      <MotionStack variants={toolsItemVar} sx={{ p: 3 }}>
-        <Typography variant="h6">{title}</Typography>
-      </MotionStack>
-      <MotionStack
-        variants={toolsItemVar}
-        sx={{ flexGrow: 1, p: 3, alignItems: "center" }}
-      >
-        <Typography variant="body2">{info}</Typography>
-      </MotionStack>
-    </>
-  );
-}
-
-function Content() {
-  const tab = useRecoilValue(TOOLS_TAB);
+function Content({ tab }) {
   switch (tab) {
     case "manager":
-      return <Manager />;
+      return <FileManager />;
     case "editor":
-      return <Editor />;
+      return <ImageEditor />;
     case "toNormal":
       return null; // todo
     default:
@@ -54,13 +24,49 @@ function Content() {
 }
 
 export default function Page() {
+  const [tab, setTab] = useRecoilState(TOOLS_TAB);
+
   return (
-    <Layout
-      tabState={TOOLS_TAB}
-      tabs={["Manager", "Editor"]}
-      header={<Header />}
-      content={<Content />}
-      scroll={false}
-    />
+    <MotionStack
+      variants={toolsVar}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      sx={{ position: "relative", py: 3, px: 5, height: "100%", flexGrow: 1 }}
+    >
+      <Bookmarks
+        labels={["Manager", "Editor"]}
+        value={tab}
+        onChange={(tab) => setTab(tab)}
+      />
+
+      <MotionStack
+        sx={{
+          bgcolor: "custom.content",
+          flexGrow: 1,
+          borderRadius: "0 50px 5px 5px",
+        }}
+        variants={orchestrationVar({ delay: 0.15, stagger: 0.05 })}
+        key={tab}
+      >
+        <Box sx={{ mt: "55px" }}>
+          <ToolsHeader tab={tab} />
+        </Box>
+
+        <Divider flexItem variant="middle" />
+
+        <Box
+          sx={{
+            position: "relative",
+            flexGrow: 1,
+            height: "1px",
+            overflowY: "visible",
+            p: 3,
+          }}
+        >
+          <Content tab={tab} />
+        </Box>
+      </MotionStack>
+    </MotionStack>
   );
 }

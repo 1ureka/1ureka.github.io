@@ -1,25 +1,8 @@
-import { useState } from "react";
-import { List, ListItem, ListItemText, Stack, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
+import { CircularProgress, Skeleton, Dialog } from "@mui/material";
 import { DialogActions, DialogContent, DialogTitle } from "@mui/material";
-import { Box, Button, CircularProgress, Dialog, Skeleton } from "@mui/material";
-
-import ImageSearchRoundedIcon from "@mui/icons-material/ImageSearchRounded";
+import { List, ListItem, ListItemText } from "@mui/material";
 import { useManagerVerify } from "../../../utils/hooks";
-
-function Progress() {
-  return (
-    <CircularProgress
-      size={30}
-      sx={{
-        position: "absolute",
-        top: "50%",
-        left: "50%",
-        marginTop: "-15px",
-        marginLeft: "-15px",
-      }}
-    />
-  );
-}
 
 function VerifyResult({ list }) {
   return (
@@ -47,12 +30,12 @@ function VerifyResult({ list }) {
   );
 }
 
-function VerifyDialog({ onClose, open }) {
+export default function VerifyDialog({ open, onClose }) {
   const { action, result, loading } = useManagerVerify();
   const date = result ? new Date(result.timeStamp).toLocaleString() : "...";
 
   return (
-    <Dialog onClose={onClose} open={open} maxWidth="sm" fullWidth>
+    <Dialog onClose={(e) => onClose(e)} open={open} maxWidth="sm" fullWidth>
       <DialogTitle sx={{ m: 0, p: 2 }}>
         {loading ? "Verifying..." : "Verify Result:"}
       </DialogTitle>
@@ -78,28 +61,21 @@ function VerifyDialog({ onClose, open }) {
         </Typography>
         <Button onClick={action} disabled={loading}>
           Rerun
-          {loading && <Progress />}
+          {loading && (
+            <CircularProgress
+              size={30}
+              sx={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                marginTop: "-15px",
+                marginLeft: "-15px",
+              }}
+            />
+          )}
         </Button>
         <Button onClick={onClose}>Close</Button>
       </DialogActions>
     </Dialog>
-  );
-}
-
-export default function VerifyButton() {
-  const [open, setOpen] = useState(false);
-  const handleClose = () => setOpen(false);
-  const handleClick = () => setOpen(true);
-
-  return (
-    <>
-      <Button
-        startIcon={<ImageSearchRoundedIcon fontSize="small" />}
-        onClick={handleClick}
-      >
-        Verify Integrity
-      </Button>
-      <VerifyDialog onClose={handleClose} open={open} />
-    </>
   );
 }

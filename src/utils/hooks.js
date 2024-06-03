@@ -23,6 +23,7 @@ import {
   MANAGER_SELECTED,
   MANAGER_VERIFY_RESULT,
   MANAGER_VERIFY_ID,
+  MANAGER_DRY_MODE,
 } from "./store";
 
 import {
@@ -261,75 +262,26 @@ export function useBooksImageDecode(category, name, size) {
 
 //
 // Manager
-export function useManagerSelect() {
-  const [task, setTask] = useState("");
-  const [hint, setHint] = useState("");
-  const [list, setList] = useState([]);
+export function useManagerCategory() {
+  const [category, setCategory] = useRecoilState(MANAGER_CATEGORY);
+  const setPage = useSetRecoilState(MANAGER_PAGE);
+  const setSelected = useSetRecoilState(MANAGER_SELECTED);
 
-  const createInput = () => {
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = "image/*";
-    input.multiple = true;
-    input.style.display = "none";
-    return input;
+  const handleToggle = (_, category) => {
+    if (!category) return;
+    setPage(0);
+    setSelected([]);
+    setCategory(category);
   };
 
-  const getInput = async () => {
-    const input = createInput();
-    const fileList = await new Promise((resolve) => {
-      input.addEventListener("cancel", () => resolve([]));
-      input.addEventListener("change", () => resolve(input.files));
-      document.body.appendChild(input);
-      input.click();
-    });
-    input.remove();
-    return Array.from(fileList);
-  };
-
-  /** @param {File[]} files*/
-  const processImages = (files) => {
-    return Promise.all(
-      files.map(async (file) => {
-        const blobO = await compressImage(file);
-        const blobT = await compressImage(file, { scale: 0.125 });
-        const origin = await blobGetDataUrl(blobO);
-        const thumbnail = await blobGetDataUrl(blobT);
-        const name = file.name.replace(/\.[^.]+$/, "");
-        return { name, origin, thumbnail };
-      })
-    );
-  };
-
-  const action = async () => {
-    setHint("");
-    setTask("Selecting files...");
-
-    const files = await getInput();
-    if (files.length === 0) {
-      setHint("No file selected");
-      setTask("");
-      return;
-    }
-    if (!files.every((file) => file.type.match("image.*"))) {
-      setHint("Please select only image files");
-      setTask("");
-      return;
-    }
-
-    setTask("Compressing files...");
-    const list = await processImages(files);
-    setTask("");
-    setList(list);
-  };
-
-  return { action, task, hint, list };
+  return { category, handleToggle };
 }
 
 export function useManagerUpload() {
   const syncIndex = useSyncIndex();
   const setSelected = useSetRecoilState(MANAGER_SELECTED);
   const category = useRecoilValue(MANAGER_CATEGORY);
+  const isDry = useRecoilValue(MANAGER_DRY_MODE);
 
   const uploadImages = async (list) => {
     await Promise.all(
@@ -344,7 +296,7 @@ export function useManagerUpload() {
 
   /** @param {Object[]} list @param {string} list[].name @param {string} list[].thumbnail @param {string} list[].origin */
   return async (list) => {
-    await uploadImages(list);
+    await (isDry ? delay(1500) : uploadImages(list));
     setSelected((prev) => {
       const set = new Set([...prev, ...list.map((val) => val.name)]);
       return Array.from(set);
@@ -359,6 +311,7 @@ export function useManagerDelete() {
   const setSelected = useSetRecoilState(MANAGER_SELECTED);
   const setPage = useSetRecoilState(MANAGER_PAGE);
   const category = useRecoilValue(MANAGER_CATEGORY);
+  const isDry = useRecoilValue(MANAGER_DRY_MODE);
 
   const deleteImages = async (names = [""]) => {
     await Promise.all(
@@ -373,7 +326,7 @@ export function useManagerDelete() {
 
   /**@param {string[]} names */
   return async (names) => {
-    await deleteImages(names);
+    await (isDry ? delay(1500) : deleteImages(names));
     setSelected([]);
     setPage(0);
     await syncIndex();
@@ -403,11 +356,7 @@ export function useManagerVerify() {
     return { list, timeStamp };
   };
 
-  return {
-    action,
-    result: parseData(),
-    loading,
-  };
+  return { action, result: parseData(), loading };
 }
 
 //

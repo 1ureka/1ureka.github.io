@@ -349,3 +349,27 @@ export async function filterImage(file, options) {
 
   return blob;
 }
+
+/**
+ * 從用戶的設備取得檔案 (例如: 圖片、文件等)。
+ * @param {string} [accept="image/*"] - 指定接受的檔案類型，預設為所有圖片類型。
+ * @param {boolean} [multiple=true] - 是否允許多選檔案，預設為允許。
+ * @returns {Promise<File[]>} 包含所選檔案的 Promise。
+ */
+export async function getNativeFiles(accept = "image/*", multiple = true) {
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = accept;
+  input.multiple = multiple;
+  input.style.display = "none";
+
+  const fileList = await new Promise((resolve) => {
+    input.addEventListener("cancel", () => resolve([]));
+    input.addEventListener("change", () => resolve(input.files));
+    document.body.appendChild(input);
+    input.click();
+  });
+
+  input.remove();
+  return Array.from(fileList);
+}
