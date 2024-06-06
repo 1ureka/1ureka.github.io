@@ -26,15 +26,15 @@ export const THEME = selector({
 //
 //
 // Sidebar, Tabs
-export const SIDEBAR_IS_AUTH = atom({
+export const APPBAR_IS_AUTH = atom({
   key: "sidebarIsAuth",
   default: false,
 });
-export const SIDEBAR_OPEN = atom({
+export const APPBAR_OPEN = atom({
   key: "sidebarOpen",
   default: false,
 });
-export const SIDEBAR_SETTING_OPEN = atom({
+export const APPBAR_SETTING_OPEN = atom({
   key: "sidebarSettingOpen",
   default: false,
 });

@@ -16,8 +16,8 @@ import {
   EDITOR_OUTPUT,
   IMAGES,
   INDEX,
-  SIDEBAR_IS_AUTH,
-  SIDEBAR_OPEN,
+  APPBAR_IS_AUTH,
+  APPBAR_OPEN,
   MANAGER_CATEGORY,
   MANAGER_PAGE,
   MANAGER_SELECTED,
@@ -61,8 +61,8 @@ export function useAuth() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
-  const setAuth = useSetRecoilState(SIDEBAR_IS_AUTH);
-  const setOpen = useSetRecoilState(SIDEBAR_OPEN);
+  const setAuth = useSetRecoilState(APPBAR_IS_AUTH);
+  const setOpen = useSetRecoilState(APPBAR_OPEN);
   const syncIndex = useSyncIndex();
 
   const success = () => {

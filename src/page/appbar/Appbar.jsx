@@ -2,17 +2,17 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { ThemeProvider, Backdrop, Paper } from "@mui/material";
 
 import { darkTheme } from "../../utils/theme";
-import { SIDEBAR_IS_AUTH, SIDEBAR_OPEN } from "../../utils/store";
-import { SIDEBAR_SETTING_OPEN } from "../../utils/store";
+import { APPBAR_IS_AUTH, APPBAR_OPEN } from "../../utils/store";
+import { APPBAR_SETTING_OPEN } from "../../utils/store";
 
 import DesktopCollapsed from "./desktop/Collapsed";
 import DesktopExpanded from "./desktop/Expanded";
 import DesktopSetting from "./desktop/Setting";
 
 export default function Appbar() {
-  const [settingOpen, setSettingOpen] = useRecoilState(SIDEBAR_SETTING_OPEN);
-  const [open, setOpen] = useRecoilState(SIDEBAR_OPEN);
-  const isAuth = useRecoilValue(SIDEBAR_IS_AUTH);
+  const [settingOpen, setSettingOpen] = useRecoilState(APPBAR_SETTING_OPEN);
+  const [open, setOpen] = useRecoilState(APPBAR_OPEN);
+  const isAuth = useRecoilValue(APPBAR_IS_AUTH);
 
   const containerSx = {
     position: "relative",
