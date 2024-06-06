@@ -1,6 +1,8 @@
-import { Stack, Typography } from "@mui/material";
+import { Button, Stack, Typography } from "@mui/material";
+import AutoFixHighRoundedIcon from "@mui/icons-material/AutoFixHighRounded";
 import { useRecoilValue } from "recoil";
-import { MotionStack, booksItemVar } from "../../../components/Motion";
+import { MotionBox, MotionStack } from "../../../components/Motion";
+import { booksItemVar } from "../../../components/Motion";
 import { BOOKS_ROWS } from "../../../utils/store";
 
 const intro = {
@@ -53,6 +55,12 @@ export default function BooksHeader({ tab }) {
       >
         <Typography variant="body2">{info}</Typography>
       </MotionStack>
+
+      <MotionBox variants={booksItemVar} sx={{ p: 3 }}>
+        <Button startIcon={<AutoFixHighRoundedIcon fontSize="small" />}>
+          filter
+        </Button>
+      </MotionBox>
     </Stack>
   );
 }
