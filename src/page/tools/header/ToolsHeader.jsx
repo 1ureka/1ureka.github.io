@@ -19,7 +19,7 @@ export default function ToolsHeader({ tab }) {
   const { title, info } = intro[tab];
 
   return (
-    <Stack direction="row" alignItems="flex-end" spacing={1}>
+    <Stack direction="row" alignItems="flex-end" spacing={1} sx={{ px: 4 }}>
       <MotionStack variants={toolsItemVar} sx={{ p: 3 }}>
         <Typography variant="h6">{title}</Typography>
       </MotionStack>
