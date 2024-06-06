@@ -1,3 +1,4 @@
+import { useRecoilState } from "recoil";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import { Box, Stack, Typography } from "@mui/material";
@@ -18,6 +19,7 @@ import { darkTheme } from "../../../utils/theme";
 import { Flowers, LinkButton, NavButton } from "../../../components/appbar";
 import { PasswordInput, UserInput } from "../../../components/appbar";
 import { Corners, GuestButton, SubmitButton } from "../../../components/appbar";
+import { BOOKS_TAB, TOOLS_TAB } from "../../../utils/store";
 
 function DesktopExpandedLogin() {
   const { action, loading, error } = useAuth();
@@ -70,25 +72,49 @@ function DesktopExpandedLogin() {
 function DesktopExpandedContent() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const [booksTab, setBooksTab] = useRecoilState(BOOKS_TAB);
+  const [toolsTab, setToolsTab] = useRecoilState(TOOLS_TAB);
 
   const config = [
     {
-      title: "Cover",
-      info: null,
-      selected: pathname === "/",
-      onClick: () => navigate("/"),
+      title: "BOOKS",
+      type: "caption",
     },
     {
-      title: "Books",
-      info: "scene, props",
-      selected: pathname === "/books",
-      onClick: () => navigate("/books"),
+      title: "Scene",
+      selected: pathname === "/books" && booksTab === "scene",
+      onClick: () => {
+        setBooksTab("scene");
+        navigate("/books");
+      },
     },
     {
-      title: "Tools",
-      info: "files, tools",
-      selected: pathname === "/tools",
-      onClick: () => navigate("/tools"),
+      title: "Props",
+      selected: pathname === "/books" && booksTab === "props",
+      onClick: () => {
+        setBooksTab("props");
+        navigate("/books");
+      },
+    },
+    {
+      title: "TOOLS",
+      type: "caption",
+    },
+    {
+      title: "Manager",
+      selected: pathname === "/tools" && toolsTab === "manager",
+      onClick: () => {
+        setToolsTab("manager");
+        navigate("/tools");
+      },
+    },
+    {
+      title: "Editor",
+      selected: pathname === "/tools" && toolsTab === "editor",
+      onClick: () => {
+        setToolsTab("editor");
+        navigate("/tools");
+      },
     },
   ];
 
@@ -107,9 +133,15 @@ function DesktopExpandedContent() {
       </MotionStack>
 
       <Stack spacing={1}>
-        {config.map((props) => (
+        {config.map((props, i) => (
           <MotionStack key={props.title} variants={sidebarRightItemVar}>
-            <NavButton {...props} />
+            {props.type === "caption" ? (
+              <Typography variant="caption" sx={{ mt: i !== 0 && 6 }}>
+                {props.title}
+              </Typography>
+            ) : (
+              <NavButton {...props} />
+            )}
           </MotionStack>
         ))}
       </Stack>
