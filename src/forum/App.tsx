@@ -7,36 +7,24 @@ import {
   createTheme,
   CssBaseline,
   Divider,
-  IconButton,
   Paper,
   Stack,
-  TextField,
   ThemeProvider,
-  Toolbar,
-  Tooltip,
   Typography,
   useMediaQuery,
 } from "@mui/material";
 import type { BoxProps } from "@mui/material";
-import PeopleRoundedIcon from "@mui/icons-material/PeopleRounded";
 import ArrowRightAltRoundedIcon from "@mui/icons-material/ArrowRightAltRounded";
-import AddRoundedIcon from "@mui/icons-material/AddRounded";
-import EmojiEmotionsRoundedIcon from "@mui/icons-material/EmojiEmotionsRounded";
-import InsertPhotoRoundedIcon from "@mui/icons-material/InsertPhotoRounded";
-import AttachFileRoundedIcon from "@mui/icons-material/AttachFileRounded";
-import PublishRoundedIcon from "@mui/icons-material/PublishRounded";
 import CommentRoundedIcon from "@mui/icons-material/CommentRounded";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 import ThumbUpRoundedIcon from "@mui/icons-material/ThumbUpRounded";
 import { Toaster } from "./Toast";
 import "./app.css";
 import { posts, authors } from "./test";
-import { AccountMenu } from "./components/AccountMenu";
-import { AppTitle } from "./components/AppTitle";
-import { SearchBar } from "./components/SearchBar";
-import { DesktopMenu } from "./components/DesktopMenu";
-import { MobileMenu } from "./components/MobileMenu";
 import { Fragment, useEffect } from "react";
+import { AppbarDesktop } from "./components/AppbarDesktop";
+import { AppbarMobile } from "./components/AppbarMobile";
+import { NewPost } from "./components/NewPost";
 
 const theme = createTheme({
   cssVariables: { colorSchemeSelector: ".mode-%s" },
@@ -100,35 +88,7 @@ function App() {
       <Box sx={{ bgcolor: "secondary.main", height: "35vh", position: "absolute", inset: "0 0 auto 0" }} />
 
       <ScrollArea>
-        <Toolbar
-          className="mode-dark"
-          disableGutters
-          sx={{ zIndex: 1, bgcolor: "secondary.main", borderBottom: "solid 1px #fff2", position: "sticky", top: 0 }}
-        >
-          <Container sx={{ display: "flex", alignItems: "center", gap: 1, color: "text.primary" }} maxWidth="xl">
-            <Box sx={{ display: "flex", gap: 1, alignItems: "center", flex: { xs: undefined, md: 1 } }}>
-              {!isMd && <MobileMenu />}
-              <AppTitle mobile={!isMd} />
-            </Box>
-
-            <Box sx={{ display: "flex", gap: 1, alignItems: "center", justifyContent: "center", flex: 1 }}>
-              <SearchBar />
-            </Box>
-
-            <Box
-              sx={{
-                display: "flex",
-                gap: 1,
-                alignItems: "center",
-                justifyContent: "flex-end",
-                flex: { xs: 0.5, md: 1 },
-              }}
-            >
-              {isMd && <DesktopMenu />}
-              <AccountMenu user={USER} mobile={!isMd} />
-            </Box>
-          </Container>
-        </Toolbar>
+        {isMd ? <AppbarDesktop user={USER} /> : <AppbarMobile user={USER} />}
 
         <Container
           maxWidth="lg"
@@ -142,93 +102,7 @@ function App() {
         >
           <Box sx={{ flex: 1 }}>
             <Paper sx={{ py: 3, borderRadius: 3, border: "1px solid", borderColor: "divider" }} elevation={1}>
-              <Box sx={{ display: "flex", gap: 1, alignItems: "center", px: 3 }}>
-                <PeopleRoundedIcon
-                  className="mode-light"
-                  sx={{
-                    fontSize: 48,
-                    mr: 1,
-                    bgcolor: "primary.main",
-                    borderRadius: 1,
-                    color: "background.default",
-                    p: 1,
-                    opacity: 0.8,
-                  }}
-                />
-                <Typography variant="h5" component="h2" color="primary" sx={{ opacity: 0.8 }}>
-                  {USER}
-                </Typography>
-                <Typography variant="h5" component="h2">
-                  ，你在想些什麼？
-                </Typography>
-              </Box>
-
-              <Divider sx={{ my: 2 }} />
-
-              <Box sx={{ px: 3 }}>
-                <TextField
-                  multiline
-                  fullWidth
-                  placeholder="分享你的想法..."
-                  variant="filled"
-                  minRows={6}
-                  maxRows={12}
-                  sx={{ mb: 1 }}
-                />
-                <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-                  <Typography variant="body2" component="span" sx={{ color: "text.secondary" }}>
-                    標籤：
-                  </Typography>
-                  <Tooltip title="刪除" arrow placement="top">
-                    <Chip label="標籤1" clickable />
-                  </Tooltip>
-                  <Tooltip title="刪除" arrow placement="top">
-                    <Chip label="標籤2" clickable />
-                  </Tooltip>
-                  <Tooltip title="刪除" arrow placement="top">
-                    <Chip label="標籤3" clickable />
-                  </Tooltip>
-                  <Chip label="新增標籤" clickable icon={<AddRoundedIcon />} variant="outlined" />
-                </Box>
-              </Box>
-
-              <Divider sx={{ mt: 1 }} />
-
-              <Box
-                sx={{
-                  position: "relative",
-                  display: "flex",
-                  gap: 1,
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  py: 1,
-                  px: 3,
-                }}
-              >
-                <Box sx={{ position: "absolute", inset: 0, bgcolor: "divider", opacity: 0.35 }} />
-
-                <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-                  <Tooltip title="表情符號" arrow>
-                    <IconButton size="small">
-                      <EmojiEmotionsRoundedIcon fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip title="插入照片" arrow>
-                    <IconButton size="small">
-                      <InsertPhotoRoundedIcon fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip title="附加檔案" arrow>
-                    <IconButton size="small">
-                      <AttachFileRoundedIcon fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
-                </Box>
-
-                <Button variant="contained" color="primary" endIcon={<PublishRoundedIcon />}>
-                  發佈
-                </Button>
-              </Box>
+              <NewPost user={USER} />
 
               <Divider />
 
@@ -342,7 +216,7 @@ function App() {
             </Paper>
           </Box>
 
-          <Stack sx={{ gap: 4, maxWidth: { xs: 1, md: 400 }, width: { xs: 1, md: "30vw" } }}>
+          <Stack sx={{ gap: { xs: 1, md: 4 }, maxWidth: { xs: 1, md: 400 }, width: { xs: 1, md: "30vw" } }}>
             <Paper sx={{ p: 3, borderRadius: 3, border: "1px solid", borderColor: "divider" }} elevation={1}>
               <Typography variant="h6" component="h2" sx={{ mb: 1.5 }}>
                 本週熱門討論 🔥
