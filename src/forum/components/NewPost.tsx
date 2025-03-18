@@ -28,6 +28,11 @@ const NewPost = ({ user }: { user: string }) => {
   const [attachments, setAttachments] = useState<File[]>([]);
   const [photoPreviewUrls, setPhotoPreviewUrls] = useState<string[]>([]);
 
+  const handleSubmit = () => {
+    // TODO: validate form data
+    console.log({ title, content, tags, photos, attachments });
+  };
+
   // 處理附件上傳
   const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files) return;
@@ -346,7 +351,7 @@ const NewPost = ({ user }: { user: string }) => {
           </Tooltip>
         </Box>
 
-        <Button variant="contained" color="primary" endIcon={<PublishRoundedIcon />}>
+        <Button variant="contained" color="primary" endIcon={<PublishRoundedIcon />} onClick={handleSubmit}>
           發佈
         </Button>
       </Box>
