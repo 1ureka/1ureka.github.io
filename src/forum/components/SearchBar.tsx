@@ -1,0 +1,44 @@
+import { useState } from "react";
+import { IconButton, InputAdornment, TextField, Tooltip } from "@mui/material";
+import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
+
+const SEARCH_PAGE = "https://example.com/search?";
+const SEARCH_QUERY = "q=";
+
+const SearchBar = () => {
+  const [search, setSearch] = useState("");
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value);
+  const href = SEARCH_PAGE + SEARCH_QUERY + search;
+
+  return (
+    <TextField
+      variant="filled"
+      label="搜尋"
+      placeholder="使用者 / 貼文"
+      size="small"
+      sx={{ minWidth: 150, width: 1, maxWidth: 800 }}
+      value={search}
+      onChange={handleSearch}
+      onKeyDown={(event) => {
+        if (event.key !== "Enter") return;
+        if (!search.trim()) return console.error("請輸入搜尋內容");
+        window.open(href, "_blank", "noopener,noreferrer");
+      }}
+      slotProps={{
+        input: {
+          endAdornment: (
+            <Tooltip title={search.trim() ? "搜尋" : "請輸入搜尋內容"} arrow>
+              <InputAdornment position="end">
+                <IconButton edge="end" href={href} target="_blank" rel="noopener noreferrer" disabled={!search.trim()}>
+                  <SearchRoundedIcon />
+                </IconButton>
+              </InputAdornment>
+            </Tooltip>
+          ),
+        },
+      }}
+    />
+  );
+};
+
+export { SearchBar };

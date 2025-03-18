@@ -1,0 +1,31 @@
+/* Iansui-Regular.ttf */
+/* @font-face {
+  font-family: "Iansui-Regular";
+  src: url("../assets/fonts/Iansui-Regular.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+} */
+
+/* RawMarukoGothicCjkTc-Regular */
+/* @font-face {
+  font-family: "RawMarukoGothicCjkTc-Regular";
+  src: url("../assets/fonts/RawMarukoGothicCjkTc-Regular.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+} */
+
+/* timemachine-wa */
+@font-face {
+  font-family: "timemachine-wa";
+  src: url("../assets/fonts/timemachine-wa.ttf") format("truetype");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: gray transparent;
+}
