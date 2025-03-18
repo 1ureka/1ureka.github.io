@@ -33,7 +33,7 @@ const Title = () => (
 const DesktopSx = {
   position: "sticky",
   top: 0,
-  zIndex: 1,
+  zIndex: "appBar",
   bgcolor: "secondary.main",
   borderBottom: "solid 1px #fff2",
   boxShadow: 3,

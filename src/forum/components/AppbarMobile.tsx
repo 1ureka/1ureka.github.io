@@ -16,7 +16,7 @@ import { SearchBar } from "./SearchBar";
 const TopSx = {
   position: "sticky",
   top: 0,
-  zIndex: 1,
+  zIndex: "appBar",
   bgcolor: "secondary.main",
   borderBottom: "solid 1px #fff2",
   boxShadow: 3,
@@ -27,7 +27,7 @@ const TopSx = {
 const BottomSx = {
   position: "fixed",
   inset: "auto 0 0 0",
-  zIndex: 1,
+  zIndex: "appBar",
   bgcolor: "secondary.main",
   borderTop: "solid 1px #fff2",
   boxShadow: 3,
