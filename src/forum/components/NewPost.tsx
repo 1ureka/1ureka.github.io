@@ -6,6 +6,7 @@ import InsertPhotoRoundedIcon from "@mui/icons-material/InsertPhotoRounded";
 import AttachFileRoundedIcon from "@mui/icons-material/AttachFileRounded";
 import PublishRoundedIcon from "@mui/icons-material/PublishRounded";
 import PeopleRoundedIcon from "@mui/icons-material/PeopleRounded";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { useState } from "react";
 import { posts } from "../test";
 
@@ -23,6 +24,38 @@ const NewPost = ({ user }: { user: string }) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tags, setTags] = useState<string[]>([]);
+  const [photos, setPhotos] = useState<File[]>([]);
+  const [attachments, setAttachments] = useState<File[]>([]);
+  const [photoPreviewUrls, setPhotoPreviewUrls] = useState<string[]>([]);
+
+  // 處理附件上傳
+  const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!event.target.files) return;
+
+    const newFiles = Array.from(event.target.files);
+    setPhotos((prevPhotos) => [...prevPhotos, ...newFiles]);
+
+    // 生成預覽 URL
+    const newPreviewUrls = newFiles.map((file) => URL.createObjectURL(file));
+    setPhotoPreviewUrls((prevUrls) => [...prevUrls, ...newPreviewUrls]);
+  };
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!event.target.files) return;
+
+    const newFiles = Array.from(event.target.files);
+    setAttachments((prevAttachments) => [...prevAttachments, ...newFiles]);
+  };
+
+  // 移除附件
+  const removePhoto = (index: number) => {
+    URL.revokeObjectURL(photoPreviewUrls[index]);
+
+    setPhotos((prevPhotos) => prevPhotos.filter((_, i) => i !== index));
+    setPhotoPreviewUrls((prevUrls) => prevUrls.filter((_, i) => i !== index));
+  };
+  const removeAttachment = (index: number) => {
+    setAttachments((prevAttachments) => prevAttachments.filter((_, i) => i !== index));
+  };
 
   // 標籤相關狀態
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -120,6 +153,55 @@ const NewPost = ({ user }: { user: string }) => {
           value={content}
           onChange={(e) => setContent(e.target.value)}
         />
+
+        {/* 附件預覽 */}
+        {photoPreviewUrls.length > 0 && (
+          <Box sx={{ mb: 1, display: "flex", flexWrap: "wrap", gap: 1 }}>
+            {photoPreviewUrls.map((url, index) => (
+              <Box
+                key={index}
+                sx={{ position: "relative", width: 100, height: 100, borderRadius: 1, overflow: "hidden" }}
+              >
+                <img
+                  src={url}
+                  alt={`上傳的圖片 ${index + 1}`}
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+                <IconButton
+                  size="small"
+                  onClick={() => removePhoto(index)}
+                  sx={{
+                    position: "absolute",
+                    top: 4,
+                    right: 4,
+                    bgcolor: "divider",
+                    color: "white",
+                    "&:hover": { bgcolor: "error.main" },
+                    p: 0.5,
+                  }}
+                >
+                  <CloseRoundedIcon fontSize="small" />
+                </IconButton>
+              </Box>
+            ))}
+          </Box>
+        )}
+        {attachments.length > 0 && (
+          <Box sx={{ mb: 1 }}>
+            <Typography variant="body2" sx={{ color: "text.secondary", mb: 0.5 }}>
+              附件檔案：
+            </Typography>
+            {attachments.map((file, index) => (
+              <Chip
+                key={index}
+                label={`${file.name} (${(file.size / 1024).toFixed(1)}KB)`}
+                onDelete={() => removeAttachment(index)}
+                sx={{ mr: 1, mb: 1 }}
+              />
+            ))}
+          </Box>
+        )}
+
         <Box sx={{ display: "flex", gap: 1, alignItems: "center", flexWrap: "wrap" }}>
           <Typography variant="body2" component="span" sx={{ color: "text.secondary" }}>
             標籤：
@@ -243,13 +325,23 @@ const NewPost = ({ user }: { user: string }) => {
           </Menu>
 
           <Tooltip title="插入照片" arrow>
-            <IconButton size="small">
+            <IconButton size="small" onClick={() => document.getElementById("photo-upload")?.click()}>
               <InsertPhotoRoundedIcon fontSize="small" />
+              <input
+                type="file"
+                id="photo-upload"
+                accept="image/*"
+                multiple
+                style={{ display: "none" }}
+                onChange={handlePhotoUpload}
+              />
             </IconButton>
           </Tooltip>
+
           <Tooltip title="附加檔案" arrow>
-            <IconButton size="small">
+            <IconButton size="small" onClick={() => document.getElementById("file-upload")?.click()}>
               <AttachFileRoundedIcon fontSize="small" />
+              <input type="file" id="file-upload" multiple style={{ display: "none" }} onChange={handleFileUpload} />
             </IconButton>
           </Tooltip>
         </Box>
