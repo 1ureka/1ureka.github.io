@@ -20,6 +20,8 @@ const TopSx = {
   bgcolor: "secondary.main",
   borderBottom: "solid 1px #fff2",
   boxShadow: 3,
+  ".top &": { boxShadow: "none" },
+  transition: "all 0.2s ease-in-out",
 } as const;
 
 const BottomSx = {

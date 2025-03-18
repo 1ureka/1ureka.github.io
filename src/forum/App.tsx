@@ -96,7 +96,14 @@ function App() {
 
       <Box sx={{ bgcolor: "secondary.main", height: "35vh", position: "absolute", inset: "0 0 auto 0" }} />
 
-      <ScrollArea>
+      <ScrollArea
+        className="top"
+        onScroll={(e) => {
+          const target = e.target as HTMLElement;
+          if (target.scrollTop < 25) target.classList.add("top");
+          else target.classList.remove("top");
+        }}
+      >
         {isMd ? <AppbarDesktop user={USER} /> : <AppbarMobile user={USER} />}
 
         <Container
