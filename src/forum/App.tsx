@@ -1,8 +1,6 @@
 import {
-  Avatar,
   Box,
   Button,
-  Chip,
   Container,
   createTheme,
   CssBaseline,
@@ -10,22 +8,21 @@ import {
   Paper,
   Stack,
   ThemeProvider,
-  Typography,
   useMediaQuery,
 } from "@mui/material";
 import type { BoxProps } from "@mui/material";
 import ArrowRightAltRoundedIcon from "@mui/icons-material/ArrowRightAltRounded";
-import CommentRoundedIcon from "@mui/icons-material/CommentRounded";
-import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
-import ThumbUpRoundedIcon from "@mui/icons-material/ThumbUpRounded";
 import { Toaster } from "./Toast";
 import "./app.css";
 import { posts, authors } from "./test";
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+
 import { AppbarDesktop } from "./components/AppbarDesktop";
 import { AppbarMobile } from "./components/AppbarMobile";
 import { NewPost } from "./components/NewPost";
 import { CollapsedPost } from "./components/CollapsedPost";
+import { FeedDesktop } from "./components/FeedDesktop";
+import { FeedMobile } from "./components/FeedMobile";
 
 const theme = createTheme({
   cssVariables: { colorSchemeSelector: ".mode-%s" },
@@ -143,76 +140,11 @@ function App() {
           </Box>
 
           <Stack sx={{ gap: { xs: 1, md: 4 }, maxWidth: { xs: 1, md: 400 }, width: { xs: 1, md: "30vw" } }}>
-            <Paper sx={{ p: 3, borderRadius: 3, border: "1px solid", borderColor: "divider" }} elevation={1}>
-              <Typography variant="h6" component="h2" sx={{ mb: 1.5 }}>
-                本週熱門討論 🔥
-              </Typography>
-
-              {top3Posts.map((post, i) => (
-                <Stack key={post.id} sx={{ gap: 0.5, my: i < 2 ? 1 : 0 }}>
-                  <Typography variant="subtitle1" component="h3">
-                    {post.title}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    component="p"
-                    sx={{ color: "text.secondary", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
-                  >
-                    {post.content}
-                  </Typography>
-                  <Button endIcon={<ArrowRightAltRoundedIcon />} href={`#${post.id}`} sx={{ width: "fit-content" }}>
-                    查看更多
-                  </Button>
-                  {i < 2 && <Divider />}
-                </Stack>
-              ))}
-            </Paper>
-            <Paper sx={{ p: 3, borderRadius: 3, border: "1px solid", borderColor: "divider" }} elevation={1}>
-              <Typography variant="h6" component="h2">
-                你可能會喜歡
-              </Typography>
-
-              <Box sx={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 1, mt: 1 }}>
-                {tags.map((tag) => (
-                  <Chip key={tag} label={tag} clickable />
-                ))}
-              </Box>
-
-              <Button sx={{ mt: 1 }} endIcon={<ArrowRightAltRoundedIcon />}>
-                更多主題
-              </Button>
-            </Paper>
-            <Paper sx={{ p: 3, borderRadius: 3, border: "1px solid", borderColor: "divider" }} elevation={1}>
-              <Typography variant="h6" component="h2" sx={{ mb: 1.5 }}>
-                推薦追蹤
-              </Typography>
-
-              <Box
-                sx={{
-                  display: "grid",
-                  gridTemplateColumns: "auto 1fr auto",
-                  alignItems: "center",
-                  gap: 2,
-                }}
-              >
-                {authors.slice(0, 5).map(({ name, description }) => (
-                  <Fragment key={name}>
-                    <Avatar sx={{ bgcolor: "primary.main", width: "2rem", height: "2rem" }}>
-                      {name.slice(0, 1).toUpperCase()}
-                    </Avatar>
-                    <Box>
-                      <Typography variant="subtitle1" sx={{ textWrap: "nowrap" }}>
-                        {name}
-                      </Typography>
-                      <Typography variant="body2" component="p" sx={{ color: "text.secondary" }}>
-                        {description}
-                      </Typography>
-                    </Box>
-                    <Chip variant="outlined" label="追蹤" clickable />
-                  </Fragment>
-                ))}
-              </Box>
-            </Paper>
+            {isMd ? (
+              <FeedDesktop top3Posts={top3Posts} tags={tags} authors={authors} />
+            ) : (
+              <FeedMobile top3Posts={top3Posts} tags={tags} authors={authors} />
+            )}
           </Stack>
         </Container>
       </ScrollArea>
