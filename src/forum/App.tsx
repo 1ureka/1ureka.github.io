@@ -45,6 +45,7 @@ const theme = createTheme({
       },
     },
   },
+  spacing: "0.5rem",
 });
 
 const overflowSx: BoxProps["sx"] = {
@@ -71,12 +72,16 @@ for (const post of posts) {
 }
 
 function App() {
+  const isLg = useMediaQuery(theme.breakpoints.up("lg"));
   const isMd = useMediaQuery(theme.breakpoints.up("md"));
+  const isSm = useMediaQuery(theme.breakpoints.up("sm"));
 
   useEffect(() => {
-    if (isMd) document.documentElement.style.fontSize = "16px";
-    else document.documentElement.style.fontSize = "14px";
-  }, [isMd]);
+    if (isLg) document.documentElement.style.fontSize = "16px";
+    else if (isMd) document.documentElement.style.fontSize = "14px";
+    else if (isSm) document.documentElement.style.fontSize = "13px";
+    else document.documentElement.style.fontSize = "13px";
+  }, [isLg, isMd, isSm]);
 
   const top3Posts = posts.toSorted((a, b) => b.viewCount - a.viewCount).slice(0, 3);
   const tags = posts.flatMap((post) => post.tags).slice(0, 5);
@@ -143,7 +148,7 @@ function App() {
             {isMd ? (
               <FeedDesktop top3Posts={top3Posts} tags={tags} authors={authors} />
             ) : (
-              <FeedMobile top3Posts={top3Posts} tags={tags} authors={authors} />
+              <FeedMobile top3Posts={top3Posts} tags={tags} authors={authors.slice(0, 3)} />
             )}
           </Stack>
         </Container>
