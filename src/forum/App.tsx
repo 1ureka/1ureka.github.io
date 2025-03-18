@@ -21,10 +21,11 @@ import ThumbUpRoundedIcon from "@mui/icons-material/ThumbUpRounded";
 import { Toaster } from "./Toast";
 import "./app.css";
 import { posts, authors } from "./test";
-import { Fragment, useEffect } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { AppbarDesktop } from "./components/AppbarDesktop";
 import { AppbarMobile } from "./components/AppbarMobile";
 import { NewPost } from "./components/NewPost";
+import { CollapsedPost } from "./components/CollapsedPost";
 
 const theme = createTheme({
   cssVariables: { colorSchemeSelector: ".mode-%s" },
@@ -67,6 +68,10 @@ const ScrollArea = ({ children, ...props }: BoxProps) => (
 );
 
 const USER = "1ureka";
+const userLikes = new Set<number>();
+for (const post of posts) {
+  if (Math.random() < 0.5) userLikes.add(post.id);
+}
 
 function App() {
   const isMd = useMediaQuery(theme.breakpoints.up("md"));
@@ -78,6 +83,8 @@ function App() {
 
   const top3Posts = posts.toSorted((a, b) => b.viewCount - a.viewCount).slice(0, 3);
   const tags = posts.flatMap((post) => post.tags).slice(0, 5);
+
+  const [likes, setLikes] = useState(userLikes);
 
   return (
     <ThemeProvider theme={theme}>
@@ -107,109 +114,28 @@ function App() {
               <Divider />
 
               <Stack sx={{ alignItems: "stretch", mb: 1.5 }}>
-                {posts.slice(0, 5).map((post, i) => (
-                  <Fragment key={post.id}>
-                    <Box sx={{ p: 1.5, cursor: "pointer", "&:hover": { bgcolor: "action.hover" } }}>
-                      <Box sx={{ display: "flex", gap: 1.5, mb: 2, alignItems: "center" }}>
-                        <Avatar sx={{ bgcolor: "primary.main", width: "2rem", height: "2rem" }}>
-                          {post.author.slice(0, 1).toUpperCase()}
-                        </Avatar>
-                        <Typography variant="subtitle1" sx={{ color: "text.secondary" }}>
-                          by {post.author}
-                        </Typography>
-                        <Box sx={{ flex: 1 }} />
-                        <Typography variant="body2" sx={{ color: "text.secondary", opacity: 0.9 }}>
-                          {post.createdAt.toLocaleString()}
-                        </Typography>
-                      </Box>
-
-                      <Typography
-                        variant="h6"
-                        component="h3"
-                        sx={{
-                          textAlign: "start",
-                          display: "-webkit-box",
-                          WebkitLineClamp: 1,
-                          WebkitBoxOrient: "vertical",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                        }}
-                      >
-                        {post.title}
-                      </Typography>
-
-                      <Typography
-                        variant="body2"
-                        component="p"
-                        sx={{
-                          color: "text.secondary",
-                          textAlign: "start",
-                          display: "-webkit-box",
-                          WebkitLineClamp: 1,
-                          WebkitBoxOrient: "vertical",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                        }}
-                      >
-                        {post.content}
-                      </Typography>
-
-                      <Box sx={{ display: "flex", gap: 1.5, mt: 2 }}>
-                        {post.tags.map((tag, i) => i < 3 && <Chip key={tag} label={tag} clickable size="small" />)}
-                        {post.tags.length > 3 && (
-                          <Chip label={`+${post.tags.length - 3}`} clickable size="small" variant="outlined" />
-                        )}
-                      </Box>
-                    </Box>
-
-                    <Divider flexItem />
-
-                    <Box
-                      sx={{
-                        p: 1.5,
-                        py: 1,
-                        display: "flex",
-                        gap: 1.5,
-                        alignItems: "center",
-                        position: "relative",
-                        color: "text.secondary",
-                      }}
-                    >
-                      <Box sx={{ position: "absolute", inset: 0, bgcolor: "divider", opacity: 0.35 }} />
-
-                      <Button
-                        startIcon={<ThumbUpRoundedIcon />}
-                        size="small"
-                        color={i % 2 === 0 ? "primary" : "inherit"}
-                      >
-                        <Typography variant="caption" component="span">
-                          {post.likeCount} 個讚
-                        </Typography>
-                      </Button>
-                      <Button color="inherit" startIcon={<CommentRoundedIcon />} size="small">
-                        <Typography variant="caption" component="span">
-                          {post.replyCount} 則回覆
-                        </Typography>
-                      </Button>
-                      <Button
-                        startIcon={<VisibilityRoundedIcon />}
-                        disabled
-                        size="small"
-                        sx={{ "button&.Mui-disabled": { color: "text.secondary", opacity: 0.8 } }}
-                      >
-                        <Typography variant="caption" component="span">
-                          {post.viewCount} 次瀏覽
-                        </Typography>
-                      </Button>
-                    </Box>
-
-                    <Divider flexItem />
-                  </Fragment>
+                {posts.slice(0, 5).map((post) => (
+                  <CollapsedPost
+                    key={post.id}
+                    post={post}
+                    like={likes.has(post.id)}
+                    onLike={() => {
+                      if (likes.has(post.id)) likes.delete(post.id);
+                      else likes.add(post.id);
+                      setLikes(new Set(likes));
+                    }}
+                  />
                 ))}
               </Stack>
 
               <Box sx={{ mx: 1.5 }}>
-                <Button variant="outlined" color="primary" fullWidth>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  fullWidth
+                  href="/posts"
+                  endIcon={<ArrowRightAltRoundedIcon />}
+                >
                   查看更多
                 </Button>
               </Box>
