@@ -248,3 +248,4 @@ const authors: Author[] = [
 ];
 
 export { posts, authors };
+export type { Post, Author };
