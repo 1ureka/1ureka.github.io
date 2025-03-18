@@ -1,4 +1,4 @@
-import { Badge, Box, Container, Divider, IconButton, ListItemIcon } from "@mui/material";
+import { Badge, Box, Container, Divider, IconButton, ListItemIcon, type ToolbarProps } from "@mui/material";
 import { Toolbar, Typography, MenuItem, MenuList, Popover } from "@mui/material";
 
 import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
@@ -20,7 +20,7 @@ const TopSx = {
   bgcolor: "secondary.main",
   borderBottom: "solid 1px #fff2",
   boxShadow: 3,
-};
+} as const;
 
 const BottomSx = {
   position: "fixed",
@@ -31,7 +31,7 @@ const BottomSx = {
   boxShadow: 3,
 };
 
-const AppbarMobile = ({ user }: { user: string }) => {
+const AppbarMobile = ({ user, sx, ...props }: { user: string } & ToolbarProps) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
@@ -43,7 +43,7 @@ const AppbarMobile = ({ user }: { user: string }) => {
 
   return (
     <>
-      <Toolbar className="mode-dark" disableGutters sx={TopSx}>
+      <Toolbar className="mode-dark" disableGutters sx={{ ...TopSx, ...sx }} {...props}>
         <Container sx={{ display: "flex", alignItems: "center", gap: 1, color: "text.primary" }} maxWidth="xl">
           <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
             <Typography variant="h4" component="h1" sx={{ mr: 1 }}>

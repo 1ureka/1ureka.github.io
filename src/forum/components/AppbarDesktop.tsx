@@ -1,4 +1,4 @@
-import { Badge, Box, ButtonBase, Container, IconButton } from "@mui/material";
+import { Badge, Box, ButtonBase, Container, IconButton, type ToolbarProps } from "@mui/material";
 import { Toolbar, Tooltip, Typography } from "@mui/material";
 
 import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
@@ -37,11 +37,11 @@ const DesktopSx = {
   bgcolor: "secondary.main",
   borderBottom: "solid 1px #fff2",
   boxShadow: 3,
-};
+} as const;
 
-const AppbarDesktop = ({ user }: { user: string }) => {
+const AppbarDesktop = ({ user, sx, ...props }: { user: string } & ToolbarProps) => {
   return (
-    <Toolbar className="mode-dark" disableGutters sx={DesktopSx}>
+    <Toolbar className="mode-dark" disableGutters sx={{ ...DesktopSx, ...sx }} {...props}>
       <Container sx={{ display: "flex", alignItems: "center", gap: 1, color: "text.primary" }} maxWidth="xl">
         <Box sx={{ display: "flex", gap: 1, alignItems: "center", flex: { xs: undefined, md: 1 } }}>
           <ForumRoundedIcon fontSize="large" color="primary" />
@@ -59,6 +59,7 @@ const AppbarDesktop = ({ user }: { user: string }) => {
               <FavoriteRoundedIcon fontSize="small" />
             </IconButton>
           </Tooltip>
+
           <Tooltip title="訊息" arrow>
             <IconButton>
               <Badge badgeContent={1} color="primary">
@@ -66,6 +67,7 @@ const AppbarDesktop = ({ user }: { user: string }) => {
               </Badge>
             </IconButton>
           </Tooltip>
+
           <Tooltip title="通知" arrow>
             <IconButton>
               <Badge badgeContent={3} color="primary">
@@ -73,6 +75,7 @@ const AppbarDesktop = ({ user }: { user: string }) => {
               </Badge>
             </IconButton>
           </Tooltip>
+
           <AccountMenu user={user} />
         </Box>
       </Container>
