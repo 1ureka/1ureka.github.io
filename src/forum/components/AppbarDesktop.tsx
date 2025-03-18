@@ -1,0 +1,83 @@
+import { Badge, Box, ButtonBase, Container, IconButton } from "@mui/material";
+import { Toolbar, Tooltip, Typography } from "@mui/material";
+
+import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
+import ChatRoundedIcon from "@mui/icons-material/ChatRounded";
+import NotificationsRoundedIcon from "@mui/icons-material/NotificationsRounded";
+import ForumRoundedIcon from "@mui/icons-material/ForumRounded";
+
+import { ThemeMenuWithButton } from "./ThemeMenu";
+import { AccountMenu } from "./AccountMenu";
+import { SearchBar } from "./SearchBar";
+
+const Title = () => (
+  <Tooltip title="返回首頁" arrow>
+    <ButtonBase
+      href="/"
+      sx={{
+        ml: 1,
+        borderRadius: 1,
+        p: 1,
+        "&:hover": { bgcolor: "divider" },
+        "&:active": { scale: "0.95" },
+        transition: "all 0.2s ease-in-out",
+      }}
+    >
+      <Typography variant="h4" component="h1">
+        論壇樣板
+      </Typography>
+    </ButtonBase>
+  </Tooltip>
+);
+
+const DesktopSx = {
+  position: "sticky",
+  top: 0,
+  zIndex: 1,
+  bgcolor: "secondary.main",
+  borderBottom: "solid 1px #fff2",
+  boxShadow: 3,
+};
+
+const AppbarDesktop = ({ user }: { user: string }) => {
+  return (
+    <Toolbar className="mode-dark" disableGutters sx={DesktopSx}>
+      <Container sx={{ display: "flex", alignItems: "center", gap: 1, color: "text.primary" }} maxWidth="xl">
+        <Box sx={{ display: "flex", gap: 1, alignItems: "center", flex: { xs: undefined, md: 1 } }}>
+          <ForumRoundedIcon fontSize="large" color="primary" />
+          <Title />
+        </Box>
+
+        <Box sx={{ display: "flex", gap: 1, alignItems: "center", justifyContent: "center", flex: 1 }}>
+          <SearchBar />
+        </Box>
+
+        <Box sx={{ display: "flex", gap: 1, alignItems: "center", justifyContent: "flex-end", flex: 1 }}>
+          <ThemeMenuWithButton />
+          <Tooltip title="收藏與追蹤" arrow>
+            <IconButton>
+              <FavoriteRoundedIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="訊息" arrow>
+            <IconButton>
+              <Badge badgeContent={1} color="primary">
+                <ChatRoundedIcon fontSize="small" />
+              </Badge>
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="通知" arrow>
+            <IconButton>
+              <Badge badgeContent={3} color="primary">
+                <NotificationsRoundedIcon fontSize="small" />
+              </Badge>
+            </IconButton>
+          </Tooltip>
+          <AccountMenu user={user} />
+        </Box>
+      </Container>
+    </Toolbar>
+  );
+};
+
+export { AppbarDesktop };
