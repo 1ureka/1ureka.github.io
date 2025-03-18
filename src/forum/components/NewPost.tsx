@@ -8,7 +8,7 @@ import PublishRoundedIcon from "@mui/icons-material/PublishRounded";
 import PeopleRoundedIcon from "@mui/icons-material/PeopleRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { useState } from "react";
-import { posts } from "../test";
+import { posts } from "../utils/test";
 
 const recommendedTags = posts.flatMap((post) => post.tags).reduce((acc, tag) => acc.add(tag), new Set<string>());
 

@@ -12,9 +12,9 @@ import {
 } from "@mui/material";
 import type { BoxProps } from "@mui/material";
 import ArrowRightAltRoundedIcon from "@mui/icons-material/ArrowRightAltRounded";
-import { Toaster } from "./Toast";
+import { Toaster } from "./components/Toast";
 import "./app.css";
-import { posts, authors } from "./test";
+import { posts, authors } from "./utils/test";
 import { useEffect, useState } from "react";
 
 import { AppbarDesktop } from "./components/AppbarDesktop";
@@ -90,7 +90,6 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <title>論壇樣板</title>
       <CssBaseline />
       <Toaster />
 

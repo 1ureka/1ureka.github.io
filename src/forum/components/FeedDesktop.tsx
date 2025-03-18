@@ -1,7 +1,7 @@
 import { Avatar, Box, Button, Chip, Divider, Paper, Stack, Typography } from "@mui/material";
 import ArrowRightAltRoundedIcon from "@mui/icons-material/ArrowRightAltRounded";
 import { Fragment } from "react";
-import type { Author, Post } from "../test";
+import type { Author, Post } from "../utils/test";
 
 // TODO: top3Posts 改為 hotPosts (由父組件決定數量)
 // TODO: authors 改為由父組件決定數量

@@ -2,7 +2,7 @@ import { Avatar, Box, Button, Chip, Divider, Tooltip, Typography } from "@mui/ma
 import CommentRoundedIcon from "@mui/icons-material/CommentRounded";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 import ThumbUpRoundedIcon from "@mui/icons-material/ThumbUpRounded";
-import type { Post } from "../test";
+import type { Post } from "../utils/test";
 
 const CollapsedPost = ({ post, like, onLike }: { post: Post; like: boolean; onLike: () => void }) => {
   return (

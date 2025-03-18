@@ -14,8 +14,9 @@ import type { BoxProps } from "@mui/material";
 import MaleRoundedIcon from "@mui/icons-material/MaleRounded";
 import PortraitRoundedIcon from "@mui/icons-material/PortraitRounded";
 import EmojiObjectsRoundedIcon from "@mui/icons-material/EmojiObjectsRounded";
-import CustomIcon from "./SVG.tsx";
-import Autobiography from "./Autobiography.tsx";
+import CustomIcon from "./components/SVG.tsx";
+import Autobiography from "./components/Autobiography.tsx";
+import "./app.css";
 
 const theme = createTheme({
   cssVariables: { colorSchemeSelector: ".mode-%s" },
@@ -110,7 +111,6 @@ const Skill = () => (
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <title>個人履歷資料網頁 410170017</title>
       <CssBaseline />
       <PageContainer>
         <Box

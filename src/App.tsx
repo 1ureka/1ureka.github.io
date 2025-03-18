@@ -1,25 +1,8 @@
-import { useState } from "react";
-import HW1 from "./hw1/App";
-import Forum from "./forum/App";
-
-type Project = "hw1" | "forum" | null;
-
 function App() {
-  const [project, setProject] = useState<Project>(null);
-
-  if (project === "hw1") {
-    return <HW1 />;
-  }
-
-  if (project === "forum") {
-    return <Forum />;
-  }
-
   return (
     <div>
-      <title>1ureka's 測試樣板專案</title>
-      <button onClick={() => setProject("hw1")}>HW1</button>
-      <button onClick={() => setProject("forum")}>Forum</button>
+      <a href="/src/hw1/index.html">第一次作業</a>
+      <a href="/src/forum/index.html">論壇樣板</a>
     </div>
   );
 }
