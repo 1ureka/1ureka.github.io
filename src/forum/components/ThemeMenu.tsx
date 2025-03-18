@@ -25,7 +25,8 @@ const ThemeMenuWithButton = () => {
 
       <Popover
         anchorEl={anchorEl}
-        anchorOrigin={{ horizontal: "left", vertical: "bottom" }}
+        anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
+        transformOrigin={{ horizontal: "center", vertical: "top" }}
         open={open}
         onClose={handleClose}
       >
