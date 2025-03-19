@@ -69,7 +69,18 @@ const FeedDesktop = ({ top3Posts, tags, authors }: { top3Posts: Post[]; tags: st
                 {name.slice(0, 1).toUpperCase()}
               </Avatar>
               <Box>
-                <Typography variant="subtitle1" sx={{ textWrap: "nowrap" }}>
+                <Typography
+                  variant="subtitle1"
+                  sx={{
+                    textWrap: "nowrap",
+                    color: "text.primary",
+                    cursor: "pointer",
+                    textDecoration: "none",
+                    "&:hover": { textDecoration: "underline" },
+                  }}
+                  component="a"
+                  href={`/src/forum/pages/users/index.html?user=${name}`}
+                >
                   {name}
                 </Typography>
                 <Typography variant="body2" component="p" sx={{ color: "text.secondary" }}>
