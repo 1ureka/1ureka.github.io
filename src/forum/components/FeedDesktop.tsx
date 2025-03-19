@@ -4,8 +4,6 @@ import { Fragment } from "react";
 import type { Author, Post } from "../utils/test";
 
 // TODO: top3Posts 改為 hotPosts (由父組件決定數量)
-// TODO: authors 改為由父組件決定數量
-// TODO: tags 改為由父組件決定數量
 const FeedDesktop = ({ top3Posts, tags, authors }: { top3Posts: Post[]; tags: string[]; authors: Author[] }) => {
   return (
     <>

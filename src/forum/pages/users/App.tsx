@@ -10,9 +10,11 @@ import { theme, useResponsiveFontSize } from "@/forum/utils/theme";
 function App() {
   const { isMd } = useResponsiveFontSize();
   const urlParams = new URLSearchParams(window.location.search);
+  if (!urlParams.get("user")) return window.location.replace("/");
 
   return (
     <ThemeProvider theme={theme}>
+      <title>{`論壇樣板 | ${urlParams.get("user")}`}</title>
       <CssBaseline />
       <Toaster />
 
@@ -23,15 +25,9 @@ function App() {
 
         <Container maxWidth="lg" sx={{ position: "relative", my: 10 }}>
           <Paper sx={{ py: 3, borderRadius: 3, border: "1px solid", borderColor: "divider" }} elevation={1}>
-            {urlParams.get("user") ? (
-              <Typography variant="h4" align="center">
-                {urlParams.get("user")}'s profile
-              </Typography>
-            ) : (
-              <Typography variant="h4" align="center">
-                404 Not Found
-              </Typography>
-            )}
+            <Typography variant="h4" align="center">
+              {urlParams.get("user")} 的個人檔案
+            </Typography>
           </Paper>
         </Container>
       </ScrollArea>
