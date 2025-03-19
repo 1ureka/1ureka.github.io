@@ -6,4 +6,5 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   plugins: [react()],
   build: { rollupOptions: { input: "src/forum/index.html" }, chunkSizeWarningLimit: 1000 },
+  resolve: { alias: { "@": "/src" } },
 });
