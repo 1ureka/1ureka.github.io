@@ -26,7 +26,7 @@ const FeedMobile = ({ top3Posts, tags, authors }: { top3Posts: Post[]; tags: str
             >
               {post.content}
             </Typography>
-            <Button endIcon={<ArrowRightAltRoundedIcon />} href={`#${post.id}`} sx={{ width: "fit-content" }}>
+            <Button endIcon={<ArrowRightAltRoundedIcon />} sx={{ width: "fit-content" }} href={`#${post.id}`}>
               查看更多
             </Button>
             {i < 2 && <Divider />}
@@ -45,11 +45,17 @@ const FeedMobile = ({ top3Posts, tags, authors }: { top3Posts: Post[]; tags: str
 
         <Box sx={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 1, mt: 1 }}>
           {tags.map((tag) => (
-            <Chip key={tag} label={tag} clickable />
+            <Chip
+              key={tag}
+              label={tag}
+              clickable
+              component="a"
+              href={`/src/forum/pages/posts/index.html?topic=${tag}`}
+            />
           ))}
         </Box>
 
-        <Button sx={{ mt: 1 }} endIcon={<ArrowRightAltRoundedIcon />}>
+        <Button sx={{ mt: 1 }} endIcon={<ArrowRightAltRoundedIcon />} href="/src/forum/pages/posts/index.html">
           更多主題
         </Button>
       </Box>
