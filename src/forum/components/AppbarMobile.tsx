@@ -35,7 +35,7 @@ const BottomSx = {
   boxShadow: 3,
 };
 
-const AppbarMobile = ({ user, sx, ...props }: { user: string } & ToolbarProps) => {
+const AppbarMobile = ({ sx, ...props }: ToolbarProps) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
@@ -138,7 +138,6 @@ const AppbarMobile = ({ user, sx, ...props }: { user: string } & ToolbarProps) =
 
           <Box sx={{ display: "flex", gap: 1, alignItems: "center", justifyContent: "flex-end", flex: 1 }}>
             <AccountMenu
-              user={user}
               mobile
               slotsProps={{
                 popover: {

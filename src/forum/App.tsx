@@ -14,12 +14,7 @@ import { FeedMobile } from "./components/FeedMobile";
 import { ScrollArea } from "./components/ScrollArea";
 import { posts, authors } from "./utils/test";
 import { theme, useResponsiveFontSize } from "./utils/theme";
-
-const USER = "1ureka";
-const userLikes = new Set<number>();
-for (const post of posts) {
-  if (Math.random() < 0.5) userLikes.add(post.id);
-}
+import { useSession } from "./utils/session";
 
 function App() {
   const { isMd } = useResponsiveFontSize();
@@ -27,7 +22,8 @@ function App() {
   const top3Posts = posts.toSorted((a, b) => b.viewCount - a.viewCount).slice(0, 3);
   const tags = posts.flatMap((post) => post.tags).slice(0, 5);
 
-  const [likes, setLikes] = useState(userLikes);
+  const { user } = useSession();
+  const [likes, setLikes] = useState(user.likes ?? new Set());
 
   return (
     <ThemeProvider theme={theme}>
@@ -37,7 +33,7 @@ function App() {
       <Box sx={{ bgcolor: "secondary.main", height: "35vh", position: "absolute", inset: "0 0 auto 0" }} />
 
       <ScrollArea>
-        {isMd ? <AppbarDesktop user={USER} /> : <AppbarMobile user={USER} />}
+        {isMd ? <AppbarDesktop /> : <AppbarMobile />}
 
         <Container
           maxWidth="lg"
@@ -51,7 +47,7 @@ function App() {
         >
           <Box sx={{ flex: 1 }}>
             <Paper sx={{ py: 3, borderRadius: 3, border: "1px solid", borderColor: "divider" }} elevation={1}>
-              <NewPost user={USER} />
+              <NewPost />
 
               <Divider />
 

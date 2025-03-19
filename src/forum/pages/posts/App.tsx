@@ -5,15 +5,8 @@ import "@/forum/app.css";
 import { Toaster } from "@/forum/components/Toast";
 import { AppbarDesktop } from "@/forum/components/AppbarDesktop";
 import { AppbarMobile } from "@/forum/components/AppbarMobile";
-import { posts } from "@/forum/utils/test";
 import { ScrollArea } from "@/forum/components/ScrollArea";
 import { theme, useResponsiveFontSize } from "@/forum/utils/theme";
-
-const USER = "1ureka";
-const userLikes = new Set<number>();
-for (const post of posts) {
-  if (Math.random() < 0.5) userLikes.add(post.id);
-}
 
 function App() {
   const { isMd } = useResponsiveFontSize();
@@ -26,7 +19,7 @@ function App() {
       <Box sx={{ bgcolor: "secondary.main", height: "35vh", position: "absolute", inset: "0 0 auto 0" }} />
 
       <ScrollArea>
-        {isMd ? <AppbarDesktop user={USER} /> : <AppbarMobile user={USER} />}
+        {isMd ? <AppbarDesktop /> : <AppbarMobile />}
 
         <Container maxWidth="lg" sx={{ position: "relative", my: 10 }}>
           <Paper sx={{ py: 3, borderRadius: 3, border: "1px solid", borderColor: "divider" }} elevation={1}>

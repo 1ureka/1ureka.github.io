@@ -48,7 +48,7 @@ const DesktopSx = {
   transition: "all 0.2s ease-in-out",
 } as const;
 
-const AppbarDesktop = ({ user, sx, ...props }: { user: string } & ToolbarProps) => {
+const AppbarDesktop = ({ sx, ...props }: ToolbarProps) => {
   const [notificationAnchorEl, setNotificationAnchorEl] = useState<null | HTMLElement>(null);
   const handleNotificationClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setNotificationAnchorEl(notificationAnchorEl ? null : event.currentTarget);
@@ -97,7 +97,7 @@ const AppbarDesktop = ({ user, sx, ...props }: { user: string } & ToolbarProps) 
             onClose={handleNotificationClose}
           />
 
-          <AccountMenu user={user} />
+          <AccountMenu />
         </Box>
       </Container>
     </Toolbar>

@@ -79,7 +79,7 @@ function App() {
             gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
             gridAutoRows: "200px",
             gap: 2,
-            mt: 2,
+            my: 2,
           }}
         >
           <ProjectCard

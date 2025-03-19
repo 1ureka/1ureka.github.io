@@ -5,16 +5,16 @@ import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 import ManageAccountsRoundedIcon from "@mui/icons-material/ManageAccountsRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
+import { useSession } from "../utils/session";
 
 const AccountMenu = ({
-  user,
   mobile,
   slotsProps,
 }: {
-  user: string;
   mobile?: boolean;
   slotsProps?: { popover?: Partial<PopoverProps> };
 }) => {
+  const { user } = useSession();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
@@ -25,12 +25,12 @@ const AccountMenu = ({
       {mobile ? (
         <IconButton onClick={handleClick} edge="end" size="small">
           <Avatar sx={{ bgcolor: "primary.main", width: "2rem", height: "2rem" }}>
-            {user.slice(0, 1).toUpperCase()}
+            {user.name.slice(0, 1).toUpperCase()}
           </Avatar>
         </IconButton>
       ) : (
         <Button variant="outlined" color="inherit" startIcon={<AccountCircleRoundedIcon />} onClick={handleClick}>
-          {user}
+          {user.name}
         </Button>
       )}
 

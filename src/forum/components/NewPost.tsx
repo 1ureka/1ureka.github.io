@@ -1,5 +1,6 @@
 import { Autocomplete, Box, Button, Chip, Divider } from "@mui/material";
 import { IconButton, Menu, TextField, Tooltip, Typography } from "@mui/material";
+
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import EmojiEmotionsRoundedIcon from "@mui/icons-material/EmojiEmotionsRounded";
 import InsertPhotoRoundedIcon from "@mui/icons-material/InsertPhotoRounded";
@@ -7,7 +8,9 @@ import AttachFileRoundedIcon from "@mui/icons-material/AttachFileRounded";
 import PublishRoundedIcon from "@mui/icons-material/PublishRounded";
 import PeopleRoundedIcon from "@mui/icons-material/PeopleRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+
 import { useState } from "react";
+import { useSession } from "../utils/session";
 import { posts } from "../utils/test";
 
 const recommendedTags = posts.flatMap((post) => post.tags).reduce((acc, tag) => acc.add(tag), new Set<string>());
@@ -20,7 +23,9 @@ const emojiGroups = [
   { name: "動物", emojis: ["🐶", "🐱", "🐭", "🐹", "🦊", "🐻", "🐼", "🐨", "🦁", "🐮"] },
 ];
 
-const NewPost = ({ user }: { user: string }) => {
+const NewPost = () => {
+  const { user } = useSession();
+
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tags, setTags] = useState<string[]>([]);
@@ -128,7 +133,7 @@ const NewPost = ({ user }: { user: string }) => {
           }}
         />
         <Typography variant="h5" component="h2" color="primary" sx={{ opacity: 0.8 }}>
-          {user}
+          {user.name}
         </Typography>
         <Typography variant="h5" component="h2">
           ，你在想些什麼？
