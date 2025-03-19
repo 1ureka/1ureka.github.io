@@ -20,3 +20,7 @@
   scrollbar-width: thin;
   scrollbar-color: gray transparent;
 }
+
+body {
+  overflow: hidden;
+}
