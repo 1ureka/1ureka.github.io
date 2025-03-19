@@ -10,7 +10,6 @@ import {
   ThemeProvider,
   useMediaQuery,
 } from "@mui/material";
-import type { BoxProps } from "@mui/material";
 import ArrowRightAltRoundedIcon from "@mui/icons-material/ArrowRightAltRounded";
 import { Toaster } from "./components/Toast";
 import "./app.css";
@@ -23,6 +22,7 @@ import { NewPost } from "./components/NewPost";
 import { CollapsedPost } from "./components/CollapsedPost";
 import { FeedDesktop } from "./components/FeedDesktop";
 import { FeedMobile } from "./components/FeedMobile";
+import { ScrollArea } from "./components/ScrollArea";
 
 const theme = createTheme({
   cssVariables: { colorSchemeSelector: ".mode-%s" },
@@ -47,23 +47,6 @@ const theme = createTheme({
   },
   spacing: "0.5rem",
 });
-
-const overflowSx: BoxProps["sx"] = {
-  position: "relative",
-  height: "100dvh",
-  overflow: "auto",
-  scrollbarWidth: "thin",
-  scrollbarColor: "gray transparent",
-};
-
-/**
- * 滾動容器
- */
-const ScrollArea = ({ children, ...props }: BoxProps) => (
-  <Box sx={overflowSx} {...props}>
-    {children}
-  </Box>
-);
 
 const USER = "1ureka";
 const userLikes = new Set<number>();
@@ -95,14 +78,7 @@ function App() {
 
       <Box sx={{ bgcolor: "secondary.main", height: "35vh", position: "absolute", inset: "0 0 auto 0" }} />
 
-      <ScrollArea
-        className="top"
-        onScroll={(e) => {
-          const target = e.target as HTMLElement;
-          if (target.scrollTop < 25) target.classList.add("top");
-          else target.classList.remove("top");
-        }}
-      >
+      <ScrollArea>
         {isMd ? <AppbarDesktop user={USER} /> : <AppbarMobile user={USER} />}
 
         <Container
@@ -141,7 +117,7 @@ function App() {
                   variant="outlined"
                   color="primary"
                   fullWidth
-                  href="/posts"
+                  href="/src/forum/pages/posts/index.html"
                   endIcon={<ArrowRightAltRoundedIcon />}
                 >
                   查看更多
