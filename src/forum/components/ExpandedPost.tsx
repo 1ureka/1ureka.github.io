@@ -125,9 +125,28 @@ const ExpandedPost = ({ post }: { post: Post }) => {
           }}
         >
           <Box sx={{ display: "flex", gap: 1.5, flexWrap: "wrap" }}>
-            {post.tags.map((tag, i) => i < 5 && <Chip key={tag} label={tag} clickable size="small" />)}
+            {post.tags.map(
+              (tag, i) =>
+                i < 5 && (
+                  <Chip
+                    key={tag}
+                    label={tag}
+                    clickable
+                    size="small"
+                    component="a"
+                    href={`/src/forum/pages/posts/index.html?topic=${tag}`}
+                  />
+                )
+            )}
             {post.tags.length > 5 && (
-              <Chip label={`+${post.tags.length - 5}`} clickable size="small" variant="outlined" />
+              <Chip
+                label={`+${post.tags.length - 5}`}
+                clickable
+                size="small"
+                variant="outlined"
+                component="a"
+                href={`/src/forum/pages/post/index.html?postId=${post.id}`}
+              />
             )}
           </Box>
 
