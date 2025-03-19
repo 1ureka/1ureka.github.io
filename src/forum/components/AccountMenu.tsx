@@ -56,7 +56,12 @@ const AccountMenu = ({
             設定
           </MenuItem>
           <Divider />
-          <MenuItem onClick={onClose}>
+          <MenuItem
+            onClick={() => {
+              window.location.href = "/src/forum/pages/login/index.html";
+              onClose();
+            }}
+          >
             <ListItemIcon>
               <LogoutRoundedIcon />
             </ListItemIcon>
