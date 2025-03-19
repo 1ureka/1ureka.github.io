@@ -6,11 +6,10 @@ import { AppbarDesktop } from "@/forum/components/AppbarDesktop";
 import { AppbarMobile } from "@/forum/components/AppbarMobile";
 import { ScrollArea } from "@/forum/components/ScrollArea";
 import { theme, useResponsiveFontSize } from "@/forum/utils/theme";
-import { useState } from "react";
 
 function App() {
   const { isMd } = useResponsiveFontSize();
-  const [urlParams] = useState(new URLSearchParams(window.location.search)); // 客戶端渲染時不需要再次更新
+  const urlParams = new URLSearchParams(window.location.search);
 
   return (
     <ThemeProvider theme={theme}>
