@@ -18,7 +18,10 @@ const Title = () => (
     <ButtonBase
       href="/"
       sx={{
-        ml: 1,
+        display: "flex",
+        gap: 1.5,
+        alignItems: "center",
+        justifyContent: "center",
         borderRadius: 1,
         p: 1,
         "&:hover": { bgcolor: "divider" },
@@ -26,6 +29,7 @@ const Title = () => (
         transition: "all 0.2s ease-in-out",
       }}
     >
+      <ForumRoundedIcon fontSize="large" color="primary" />
       <Typography variant="h4" component="h1">
         論壇樣板
       </Typography>
@@ -56,12 +60,11 @@ const AppbarDesktop = ({ user, sx, ...props }: { user: string } & ToolbarProps) 
   return (
     <Toolbar className="mode-dark" disableGutters sx={{ ...DesktopSx, ...sx }} {...props}>
       <Container sx={{ display: "flex", alignItems: "center", gap: 1, color: "text.primary" }} maxWidth="xl">
-        <Box sx={{ display: "flex", gap: 1, alignItems: "center", flex: { xs: undefined, md: 1 } }}>
-          <ForumRoundedIcon fontSize="large" color="primary" />
+        <Box sx={{ display: "flex", justifyContent: "flex-start", flex: { xs: undefined, md: 1 } }}>
           <Title />
         </Box>
 
-        <Box sx={{ display: "flex", gap: 1, alignItems: "center", justifyContent: "center", flex: 1 }}>
+        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", flex: 1 }}>
           <SearchBar />
         </Box>
 

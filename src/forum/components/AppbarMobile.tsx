@@ -83,7 +83,7 @@ const AppbarMobile = ({ user, sx, ...props }: { user: string } & ToolbarProps) =
               onClose={onClose}
             >
               <MenuList dense>
-                <MenuItem>
+                <MenuItem href="/" component="a">
                   <ListItemIcon>
                     <HomeRoundedIcon fontSize="small" />
                   </ListItemIcon>
