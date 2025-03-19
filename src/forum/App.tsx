@@ -1,21 +1,10 @@
-import {
-  Box,
-  Button,
-  Container,
-  createTheme,
-  CssBaseline,
-  Divider,
-  Paper,
-  Stack,
-  ThemeProvider,
-  useMediaQuery,
-} from "@mui/material";
+import { useState } from "react";
+import { Box, Button, Container, Divider, Paper, Stack } from "@mui/material";
+import { CssBaseline, ThemeProvider } from "@mui/material";
 import ArrowRightAltRoundedIcon from "@mui/icons-material/ArrowRightAltRounded";
-import { Toaster } from "./components/Toast";
-import "./app.css";
-import { posts, authors } from "./utils/test";
-import { useEffect, useState } from "react";
 
+import "./app.css";
+import { Toaster } from "./components/Toast";
 import { AppbarDesktop } from "./components/AppbarDesktop";
 import { AppbarMobile } from "./components/AppbarMobile";
 import { NewPost } from "./components/NewPost";
@@ -23,30 +12,8 @@ import { CollapsedPost } from "./components/CollapsedPost";
 import { FeedDesktop } from "./components/FeedDesktop";
 import { FeedMobile } from "./components/FeedMobile";
 import { ScrollArea } from "./components/ScrollArea";
-
-const theme = createTheme({
-  cssVariables: { colorSchemeSelector: ".mode-%s" },
-  typography: {
-    fontFamily: `"timemachine-wa", "NOTO SANS TC"`,
-  },
-  colorSchemes: {
-    light: {
-      palette: {
-        text: { primary: "#000" },
-        primary: { main: "#FF772E", contrastText: "#fff" },
-        secondary: { main: "#075056" },
-      },
-    },
-    dark: {
-      palette: {
-        primary: { main: "#FF772E", contrastText: "#fff" },
-        secondary: { main: "#075056" },
-        background: { default: "#222", paper: "#222" },
-      },
-    },
-  },
-  spacing: "0.5rem",
-});
+import { posts, authors } from "./utils/test";
+import { theme, useResponsiveFontSize } from "./utils/theme";
 
 const USER = "1ureka";
 const userLikes = new Set<number>();
@@ -55,16 +22,7 @@ for (const post of posts) {
 }
 
 function App() {
-  const isLg = useMediaQuery(theme.breakpoints.up("lg"));
-  const isMd = useMediaQuery(theme.breakpoints.up("md"));
-  const isSm = useMediaQuery(theme.breakpoints.up("sm"));
-
-  useEffect(() => {
-    if (isLg) document.documentElement.style.fontSize = "16px";
-    else if (isMd) document.documentElement.style.fontSize = "14px";
-    else if (isSm) document.documentElement.style.fontSize = "13px";
-    else document.documentElement.style.fontSize = "13px";
-  }, [isLg, isMd, isSm]);
+  const { isMd } = useResponsiveFontSize();
 
   const top3Posts = posts.toSorted((a, b) => b.viewCount - a.viewCount).slice(0, 3);
   const tags = posts.flatMap((post) => post.tags).slice(0, 5);
