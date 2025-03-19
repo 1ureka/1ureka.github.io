@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Badge, Box, ButtonBase, Container, IconButton, type ToolbarProps } from "@mui/material";
 import { Toolbar, Tooltip, Typography } from "@mui/material";
 
@@ -9,6 +10,8 @@ import ForumRoundedIcon from "@mui/icons-material/ForumRounded";
 import { ThemeMenuWithButton } from "./ThemeMenu";
 import { AccountMenu } from "./AccountMenu";
 import { SearchBar } from "./SearchBar";
+import { NotificationMenu } from "./NotificationMenu";
+import { notifications } from "../utils/test";
 
 const Title = () => (
   <Tooltip title="返回首頁" arrow>
@@ -42,6 +45,14 @@ const DesktopSx = {
 } as const;
 
 const AppbarDesktop = ({ user, sx, ...props }: { user: string } & ToolbarProps) => {
+  const [notificationAnchorEl, setNotificationAnchorEl] = useState<null | HTMLElement>(null);
+  const handleNotificationClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setNotificationAnchorEl(notificationAnchorEl ? null : event.currentTarget);
+  };
+  const handleNotificationClose = () => {
+    setNotificationAnchorEl(null);
+  };
+
   return (
     <Toolbar className="mode-dark" disableGutters sx={{ ...DesktopSx, ...sx }} {...props}>
       <Container sx={{ display: "flex", alignItems: "center", gap: 1, color: "text.primary" }} maxWidth="xl">
@@ -71,12 +82,17 @@ const AppbarDesktop = ({ user, sx, ...props }: { user: string } & ToolbarProps) 
           </Tooltip>
 
           <Tooltip title="通知" arrow>
-            <IconButton>
+            <IconButton onClick={handleNotificationClick}>
               <Badge badgeContent={3} color="primary">
                 <NotificationsRoundedIcon fontSize="small" />
               </Badge>
             </IconButton>
           </Tooltip>
+          <NotificationMenu
+            notifications={notifications}
+            anchorEl={notificationAnchorEl}
+            onClose={handleNotificationClose}
+          />
 
           <AccountMenu user={user} />
         </Box>

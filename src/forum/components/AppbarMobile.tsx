@@ -12,6 +12,8 @@ import { useState } from "react";
 import { ThemeMenu } from "./ThemeMenu";
 import { AccountMenu } from "./AccountMenu";
 import { SearchBar } from "./SearchBar";
+import { NotificationMenu } from "./NotificationMenu";
+import { notifications } from "../utils/test";
 
 const TopSx = {
   position: "sticky",
@@ -42,6 +44,14 @@ const AppbarMobile = ({ user, sx, ...props }: { user: string } & ToolbarProps) =
   const [themeAnchorEl, setThemeAnchorEl] = useState<HTMLElement | null>(null);
   const handleThemeOpen = (event: React.MouseEvent<HTMLElement>) => setThemeAnchorEl(event.currentTarget);
   const handleThemeClose = () => setThemeAnchorEl(null);
+
+  const [notificationAnchorEl, setNotificationAnchorEl] = useState<null | HTMLElement>(null);
+  const handleNotificationClick = (event: React.MouseEvent<HTMLLIElement>) => {
+    setNotificationAnchorEl(notificationAnchorEl ? null : event.currentTarget);
+  };
+  const handleNotificationClose = () => {
+    setNotificationAnchorEl(null);
+  };
 
   return (
     <>
@@ -96,7 +106,8 @@ const AppbarMobile = ({ user, sx, ...props }: { user: string } & ToolbarProps) =
                     訊息
                   </Badge>
                 </MenuItem>
-                <MenuItem>
+
+                <MenuItem onClick={handleNotificationClick}>
                   <ListItemIcon>
                     <NotificationsRoundedIcon fontSize="small" />
                   </ListItemIcon>
@@ -104,6 +115,13 @@ const AppbarMobile = ({ user, sx, ...props }: { user: string } & ToolbarProps) =
                     通知
                   </Badge>
                 </MenuItem>
+                <NotificationMenu
+                  notifications={notifications}
+                  anchorEl={notificationAnchorEl}
+                  onClose={handleNotificationClose}
+                  anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+                  transformOrigin={{ horizontal: "left", vertical: "top" }}
+                />
 
                 <Divider />
 
