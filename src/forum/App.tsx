@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Box, Button, Container, Divider, Paper, Stack } from "@mui/material";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import ArrowRightAltRoundedIcon from "@mui/icons-material/ArrowRightAltRounded";
@@ -14,16 +13,12 @@ import { FeedMobile } from "./components/FeedMobile";
 import { ScrollArea } from "./components/ScrollArea";
 import { posts, authors } from "./utils/test";
 import { theme, useResponsiveFontSize } from "./utils/theme";
-import { useSession } from "./utils/session";
 
 function App() {
   const { isMd } = useResponsiveFontSize();
 
   const top3Posts = posts.toSorted((a, b) => b.viewCount - a.viewCount).slice(0, 3);
   const tags = posts.flatMap((post) => post.tags).slice(0, 5);
-
-  const { user } = useSession();
-  const [likes, setLikes] = useState(user.likes ?? new Set());
 
   return (
     <ThemeProvider theme={theme}>
@@ -53,16 +48,7 @@ function App() {
 
               <Stack sx={{ alignItems: "stretch", mb: 1.5 }}>
                 {posts.slice(0, 5).map((post) => (
-                  <CollapsedPost
-                    key={post.id}
-                    post={post}
-                    like={likes.has(post.id)}
-                    onLike={() => {
-                      if (likes.has(post.id)) likes.delete(post.id);
-                      else likes.add(post.id);
-                      setLikes(new Set(likes));
-                    }}
-                  />
+                  <CollapsedPost key={post.id} post={post} />
                 ))}
               </Stack>
 

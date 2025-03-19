@@ -2,9 +2,18 @@ import { Avatar, Box, Button, Chip, Divider, Tooltip, Typography } from "@mui/ma
 import CommentRoundedIcon from "@mui/icons-material/CommentRounded";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 import ThumbUpRoundedIcon from "@mui/icons-material/ThumbUpRounded";
+
+import { useSession } from "../utils/session";
+import { useState } from "react";
 import type { Post } from "../utils/test";
 
-const CollapsedPost = ({ post, like, onLike }: { post: Post; like: boolean; onLike: () => void }) => {
+const CollapsedPost = ({ post }: { post: Post }) => {
+  const { user } = useSession();
+  const [like, setLike] = useState(user.likes?.has(post.id) ?? false);
+  const onLike = () => {
+    setLike((prev) => !prev);
+  };
+
   return (
     <>
       <Box sx={{ p: 1.5, cursor: "pointer", "&:hover": { bgcolor: "action.hover" } }}>
@@ -47,6 +56,7 @@ const CollapsedPost = ({ post, like, onLike }: { post: Post; like: boolean; onLi
             WebkitBoxOrient: "vertical",
             overflow: "hidden",
             textOverflow: "ellipsis",
+            whiteSpace: "pre-line",
           }}
         >
           {post.content}
