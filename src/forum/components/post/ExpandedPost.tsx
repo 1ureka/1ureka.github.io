@@ -1,27 +1,18 @@
-import { Avatar, Box, Button, ButtonBase, Chip, Divider, Stack, Tooltip, Typography } from "@mui/material";
+import { Box, Button, ButtonBase, Chip, Divider, Stack, Tooltip, Typography } from "@mui/material";
 import CommentRoundedIcon from "@mui/icons-material/CommentRounded";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 import AttachFileRoundedIcon from "@mui/icons-material/AttachFileRounded";
 
 import type { Post } from "@/forum/utils/test";
 import { LikeButton } from "./LikeButton";
+import { TopicTags } from "./TopicTags";
+import { PostHeader } from "./PostHeader";
 
 const ExpandedPost = ({ post }: { post: Post }) => {
   return (
     <>
       <Box sx={{ p: 1.5, cursor: "pointer", "&:hover": { bgcolor: "action.hover" } }}>
-        <Box sx={{ display: "flex", gap: 1.5, mb: 2, alignItems: "center" }}>
-          <Avatar sx={{ bgcolor: "primary.main", width: "2rem", height: "2rem" }}>
-            {post.author.slice(0, 1).toUpperCase()}
-          </Avatar>
-          <Typography variant="subtitle1" sx={{ color: "text.secondary" }}>
-            by {post.author}
-          </Typography>
-          <Box sx={{ flex: 1 }} />
-          <Typography variant="body2" sx={{ color: "text.secondary", opacity: 0.9 }}>
-            {post.createdAt.toLocaleString()}
-          </Typography>
-        </Box>
+        <PostHeader post={post} />
 
         <Stack sx={{ gap: 1.5, flexDirection: { xs: "column", md: "row" }, justifyContent: "space-between", mb: 2 }}>
           <Box sx={{ flex: 1 }}>
@@ -117,29 +108,7 @@ const ExpandedPost = ({ post }: { post: Post }) => {
           }}
         >
           <Box sx={{ display: "flex", gap: 1.5, flexWrap: "wrap" }}>
-            {post.tags.map(
-              (tag, i) =>
-                i < 5 && (
-                  <Chip
-                    key={tag}
-                    label={tag}
-                    clickable
-                    size="small"
-                    component="a"
-                    href={`/src/forum/pages/posts/index.html?topic=${tag}`}
-                  />
-                )
-            )}
-            {post.tags.length > 5 && (
-              <Chip
-                label={`+${post.tags.length - 5}`}
-                clickable
-                size="small"
-                variant="outlined"
-                component="a"
-                href={`/src/forum/pages/post/index.html?postId=${post.id}`}
-              />
-            )}
+            <TopicTags post={post} displayCount={5} />
           </Box>
 
           {post.attachments && post.attachments.length > 0 && (
