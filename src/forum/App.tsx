@@ -3,8 +3,8 @@ import ArrowRightAltRoundedIcon from "@mui/icons-material/ArrowRightAltRounded";
 
 import "./app.css";
 import { AppWrapper } from "./components/AppWrapper";
-import { AppbarDesktop } from "./components/AppbarDesktop";
-import { AppbarMobile } from "./components/AppbarMobile";
+import { AppbarDesktop } from "./components/appbar/AppbarDesktop";
+import { AppbarMobile } from "./components/appbar/AppbarMobile";
 import { NewPost } from "./components/NewPost";
 import { CollapsedPost } from "./components/CollapsedPost";
 import { FeedDesktop } from "./components/FeedDesktop";

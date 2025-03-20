@@ -7,11 +7,11 @@ import ChatRoundedIcon from "@mui/icons-material/ChatRounded";
 import NotificationsRoundedIcon from "@mui/icons-material/NotificationsRounded";
 import ForumRoundedIcon from "@mui/icons-material/ForumRounded";
 
-import { ThemeMenuWithButton } from "./ThemeMenu";
+import { ThemeMenuWithButton } from "../ThemeMenu";
 import { AccountMenu } from "./AccountMenu";
 import { SearchBar } from "./SearchBar";
 import { NotificationMenu } from "./NotificationMenu";
-import { notifications } from "../utils/test";
+import { notifications } from "@/forum/utils/test";
 
 const Title = () => (
   <Tooltip title="返回首頁" arrow>

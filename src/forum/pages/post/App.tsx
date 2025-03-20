@@ -3,10 +3,11 @@ import ArrowRightAltRoundedIcon from "@mui/icons-material/ArrowRightAltRounded";
 
 import "@/forum/app.css";
 import { AppWrapper } from "@/forum/components/AppWrapper";
-import { AppbarDesktop } from "@/forum/components/AppbarDesktop";
-import { AppbarMobile } from "@/forum/components/AppbarMobile";
+import { AppbarDesktop } from "@/forum/components/appbar/AppbarDesktop";
+import { AppbarMobile } from "@/forum/components/appbar/AppbarMobile";
 import { ScrollArea } from "@/forum/components/ScrollArea";
 import { useResponsiveFontSize } from "@/forum/utils/theme";
+import { Post, Comment } from "@/forum/components/FullPost";
 
 // TODO: 上方有 tabs ，可以切換搜尋結果是 "文章" 或 "用戶" 或 "標籤"
 function App() {

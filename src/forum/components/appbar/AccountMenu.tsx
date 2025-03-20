@@ -6,7 +6,7 @@ import ManageAccountsRoundedIcon from "@mui/icons-material/ManageAccountsRounded
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import LoginRoundedIcon from "@mui/icons-material/LoginRounded";
-import { useSession } from "../hooks/session";
+import { useSession } from "@/forum/hooks/session";
 
 const avatorSize = "2rem";
 

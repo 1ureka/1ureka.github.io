@@ -9,11 +9,11 @@ import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 
 import { useState } from "react";
-import { ThemeMenu } from "./ThemeMenu";
+import { ThemeMenu } from "../ThemeMenu";
 import { AccountMenu } from "./AccountMenu";
 import { SearchBar } from "./SearchBar";
 import { NotificationMenu } from "./NotificationMenu";
-import { notifications } from "../utils/test";
+import { notifications } from "@/forum/utils/test";
 
 const TopSx = {
   position: "sticky",

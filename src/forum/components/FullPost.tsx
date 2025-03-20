@@ -17,4 +17,4 @@ const Comment = ({ post }: { post: Post }) => {
   );
 };
 
-export { FullPost, Comment };
+export { FullPost as Post, Comment };

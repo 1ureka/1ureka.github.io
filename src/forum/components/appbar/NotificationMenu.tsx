@@ -2,7 +2,7 @@ import { Fragment } from "react";
 import { Divider, List, ListItem, ListItemIcon, ListItemText, Popover } from "@mui/material";
 import CampaignRoundedIcon from "@mui/icons-material/CampaignRounded";
 import type { PopoverProps } from "@mui/material";
-import type { Notification } from "../utils/test";
+import type { Notification } from "@/forum/utils/test";
 
 type NotificationMenuProps = {
   notifications: Notification[];
