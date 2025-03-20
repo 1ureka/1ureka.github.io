@@ -4,7 +4,7 @@ import { usePosts } from "@/forum/hooks/post";
 import { CollapsedLoadingPost } from "../post/LoadingPost";
 
 const PostList = () => {
-  const { data, isFetching } = usePosts();
+  const { data, isFetching } = usePosts({ length: 5 });
 
   if (isFetching || !data) {
     return (
@@ -18,7 +18,7 @@ const PostList = () => {
 
   return (
     <Stack sx={{ alignItems: "stretch", mb: 1.5 }}>
-      {data.slice(0, 5).map((postId) => (
+      {data.map((postId) => (
         <CollapsedPost key={postId} postId={postId} />
       ))}
     </Stack>
