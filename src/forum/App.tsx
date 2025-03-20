@@ -9,7 +9,6 @@ import { NewPost } from "./components/post/NewPost";
 import { FeedDesktop } from "./components/home/FeedDesktop";
 import { FeedMobile } from "./components/home/FeedMobile";
 import { ScrollArea } from "./components/ScrollArea";
-import { authors } from "./utils/test";
 import { useResponsiveFontSize } from "./utils/theme";
 import { PostList } from "./components/home/PostList";
 
@@ -56,7 +55,7 @@ function App() {
           </Box>
 
           <Stack sx={{ gap: { xs: 1, md: 4 }, maxWidth: { xs: 1, md: 400 }, width: { xs: 1, md: "30vw" } }}>
-            {isMd ? <FeedDesktop authors={authors} /> : <FeedMobile authors={authors.slice(0, 3)} />}
+            {isMd ? <FeedDesktop /> : <FeedMobile />}
           </Stack>
         </Container>
       </ScrollArea>
