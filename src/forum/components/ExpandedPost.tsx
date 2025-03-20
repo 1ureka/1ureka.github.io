@@ -1,20 +1,12 @@
 import { Avatar, Box, Button, ButtonBase, Chip, Divider, Stack, Tooltip, Typography } from "@mui/material";
 import CommentRoundedIcon from "@mui/icons-material/CommentRounded";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
-import ThumbUpRoundedIcon from "@mui/icons-material/ThumbUpRounded";
 import AttachFileRoundedIcon from "@mui/icons-material/AttachFileRounded";
 
-import { useSession } from "../utils/session";
-import { useState } from "react";
 import type { Post } from "../utils/test";
+import { PostLike } from "./PostLike";
 
 const ExpandedPost = ({ post }: { post: Post }) => {
-  const { user } = useSession();
-  const [like, setLike] = useState(user.likes?.has(post.id) ?? false);
-  const onLike = () => {
-    setLike((prev) => !prev);
-  };
-
   return (
     <>
       <Box sx={{ p: 1.5, cursor: "pointer", "&:hover": { bgcolor: "action.hover" } }}>
@@ -186,13 +178,7 @@ const ExpandedPost = ({ post }: { post: Post }) => {
       >
         <Box sx={{ position: "absolute", inset: 0, bgcolor: "divider", opacity: 0.35 }} />
 
-        <Tooltip title={like ? "取消喜歡" : "喜歡"} arrow placement="left">
-          <Button startIcon={<ThumbUpRoundedIcon />} size="small" color={like ? "primary" : "inherit"} onClick={onLike}>
-            <Typography variant="caption" component="span">
-              {post.likeCount} 個讚
-            </Typography>
-          </Button>
-        </Tooltip>
+        <PostLike postId={post.id} />
 
         <Button color="inherit" startIcon={<CommentRoundedIcon />} size="small">
           <Typography variant="caption" component="span">
