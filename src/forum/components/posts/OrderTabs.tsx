@@ -1,21 +1,36 @@
 import { Box, Stack, Tab, Tabs, Tooltip, Typography } from "@mui/material";
 import SortRoundedIcon from "@mui/icons-material/SortRounded";
 import ArrowUpwardRoundedIcon from "@mui/icons-material/ArrowUpwardRounded";
-import { useState } from "react";
+import { useUrl } from "@/forum/hooks/url";
+import type { Post } from "@/forum/utils/test";
 
-const orders = ["title", "createdAt", "updatedAt", "comments", "views", "likes"];
+const orders: (keyof Post)[] = ["title", "createdAt", "updatedAt", "replyCount", "viewCount", "likeCount"];
 const ordersTC = ["標題", "建立時間", "更新時間", "回覆數", "瀏覽數", "讚數"];
 
-// TODO: 改成 recoil
 const OrderTabs = () => {
-  const [orderId, setOrderId] = useState<number>(0);
-  const [orderDesc, setOrderDesc] = useState<boolean>(false);
+  const { searchParams, updateSearchParams } = useUrl();
+
+  // 從 URL 獲取排序欄位，如果不存在則使用默認值
+  const orderBy = searchParams.get("orderBy") || orders[0];
+  const orderDesc = searchParams.get("orderDesc") === "true";
+
+  // 根據 orderBy 找到對應的索引
+  const orderId = orders.findIndex((field) => field === orderBy);
 
   const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
-    setOrderId(newValue);
+    updateSearchParams({
+      orderBy: orders[newValue],
+      orderDesc: orderDesc.toString(),
+    });
   };
+
   const createHandleTabClick = (index: number) => () => {
-    if (orderId === index) setOrderDesc((prev) => !prev);
+    if (orderId === index) {
+      updateSearchParams({
+        orderBy: orders[index],
+        orderDesc: (!orderDesc).toString(),
+      });
+    }
   };
 
   return (
