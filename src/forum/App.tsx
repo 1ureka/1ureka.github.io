@@ -1,9 +1,8 @@
 import { Box, Button, Container, Divider, Paper, Stack } from "@mui/material";
-import { CssBaseline, ThemeProvider } from "@mui/material";
 import ArrowRightAltRoundedIcon from "@mui/icons-material/ArrowRightAltRounded";
 
 import "./app.css";
-import { Toaster } from "./components/Toast";
+import { AppWrapper } from "./components/AppWrapper";
 import { AppbarDesktop } from "./components/AppbarDesktop";
 import { AppbarMobile } from "./components/AppbarMobile";
 import { NewPost } from "./components/NewPost";
@@ -12,7 +11,7 @@ import { FeedDesktop } from "./components/FeedDesktop";
 import { FeedMobile } from "./components/FeedMobile";
 import { ScrollArea } from "./components/ScrollArea";
 import { posts, authors } from "./utils/test";
-import { theme, useResponsiveFontSize } from "./utils/theme";
+import { useResponsiveFontSize } from "./utils/theme";
 
 function App() {
   const { isMd } = useResponsiveFontSize();
@@ -21,10 +20,7 @@ function App() {
   const tags = posts.flatMap((post) => post.tags).slice(0, 5);
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Toaster />
-
+    <AppWrapper>
       <Box sx={{ bgcolor: "secondary.main", height: "35vh", position: "absolute", inset: "0 0 auto 0" }} />
 
       <ScrollArea>
@@ -75,7 +71,7 @@ function App() {
           </Stack>
         </Container>
       </ScrollArea>
-    </ThemeProvider>
+    </AppWrapper>
   );
 }
 

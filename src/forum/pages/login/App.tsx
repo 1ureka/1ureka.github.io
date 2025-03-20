@@ -1,4 +1,4 @@
-import { Box, Button, Container, CssBaseline, Paper, Stack, TextField, ThemeProvider, Typography } from "@mui/material";
+import { Box, Button, Container, Paper, Stack, TextField, Typography } from "@mui/material";
 import ArrowBackIosNewRoundedIcon from "@mui/icons-material/ArrowBackIosNewRounded";
 import ForumRoundedIcon from "@mui/icons-material/ForumRounded";
 import PostAddRoundedIcon from "@mui/icons-material/PostAddRounded";
@@ -7,9 +7,9 @@ import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
 import PersonAddRoundedIcon from "@mui/icons-material/PersonAddRounded";
 
 import "@/forum/app.css";
-import { Toaster } from "@/forum/components/Toast";
+import { AppWrapper } from "@/forum/components/AppWrapper";
 import { ScrollArea } from "@/forum/components/ScrollArea";
-import { theme, useResponsiveFontSize } from "@/forum/utils/theme";
+import { useResponsiveFontSize } from "@/forum/utils/theme";
 import { ThemeMenuWithButton } from "@/forum/components/ThemeMenu";
 import { NotSupportPage } from "@/forum/components/NotSupportPage";
 
@@ -20,10 +20,7 @@ function App() {
   const { isMd } = useResponsiveFontSize();
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Toaster />
-
+    <AppWrapper>
       {!isMd && <NotSupportPage />}
 
       {isMd && <Box sx={{ position: "fixed", inset: "0 auto 0 0", width: 0.5, bgcolor: "secondary.main" }} />}
@@ -191,7 +188,7 @@ function App() {
           </Container>
         )}
       </ScrollArea>
-    </ThemeProvider>
+    </AppWrapper>
   );
 }
 

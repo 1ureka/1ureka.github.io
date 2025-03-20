@@ -1,18 +1,16 @@
-import { Box, Container, CssBaseline, Divider, Paper, Stack, Typography } from "@mui/material";
-import { ThemeProvider } from "@mui/material";
+import { Box, Container, Divider, Paper, Stack, Typography } from "@mui/material";
 import PeopleRoundedIcon from "@mui/icons-material/PeopleRounded";
 
-import { posts } from "@/forum/utils/test";
 import "@/forum/app.css";
-
-import { Toaster } from "@/forum/components/Toast";
+import { AppWrapper } from "@/forum/components/AppWrapper";
 import { AppbarDesktop } from "@/forum/components/AppbarDesktop";
 import { AppbarMobile } from "@/forum/components/AppbarMobile";
 import { ScrollArea } from "@/forum/components/ScrollArea";
-import { theme, useResponsiveFontSize } from "@/forum/utils/theme";
+import { useResponsiveFontSize } from "@/forum/utils/theme";
 import { ExpandedPost } from "@/forum/components/ExpandedPost";
 import { OrderTabs } from "@/forum/components/OrderTabs";
 import { TopicSelect } from "@/forum/components/TopicSelect";
+import { posts } from "@/forum/utils/test";
 
 function App() {
   const { isMd } = useResponsiveFontSize();
@@ -22,10 +20,8 @@ function App() {
   );
 
   return (
-    <ThemeProvider theme={theme}>
+    <AppWrapper>
       <title>{urlParams.has("topic") ? `論壇樣板 | 貼文 #${urlParams.get("topic")}` : "論壇樣板 | 貼文"}</title>
-      <CssBaseline />
-      <Toaster />
 
       <Box sx={{ bgcolor: "secondary.main", height: "35vh", position: "absolute", inset: "0 0 auto 0" }} />
 
@@ -82,7 +78,7 @@ function App() {
           </Paper>
         </Container>
       </ScrollArea>
-    </ThemeProvider>
+    </AppWrapper>
   );
 }
 

@@ -1,11 +1,11 @@
-import { Box, Button, CssBaseline, Paper, TextField, ThemeProvider, Typography } from "@mui/material";
+import { Box, Button, Paper, TextField, Typography } from "@mui/material";
 import ForumRoundedIcon from "@mui/icons-material/ForumRounded";
 import EmailRoundedIcon from "@mui/icons-material/EmailRounded";
 
 import "@/forum/app.css";
-import { Toaster } from "@/forum/components/Toast";
+import { AppWrapper } from "@/forum/components/AppWrapper";
 import { ScrollArea } from "@/forum/components/ScrollArea";
-import { theme, useResponsiveFontSize } from "@/forum/utils/theme";
+import { useResponsiveFontSize } from "@/forum/utils/theme";
 import { useState } from "react";
 
 const TOTAL_USRS = 1202;
@@ -15,10 +15,7 @@ function App() {
   const [isSent, setIsSent] = useState(false);
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Toaster />
-
+    <AppWrapper>
       <ScrollArea>
         <Box
           sx={{
@@ -88,7 +85,7 @@ function App() {
           </Typography>
         </Box>
       </ScrollArea>
-    </ThemeProvider>
+    </AppWrapper>
   );
 }
 

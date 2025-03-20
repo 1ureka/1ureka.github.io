@@ -1,11 +1,11 @@
-import { Box, Container, CssBaseline, Paper, ThemeProvider, Typography } from "@mui/material";
+import { Box, Container, Paper, Typography } from "@mui/material";
 
 import "@/forum/app.css";
-import { Toaster } from "@/forum/components/Toast";
+import { AppWrapper } from "@/forum/components/AppWrapper";
 import { AppbarDesktop } from "@/forum/components/AppbarDesktop";
 import { AppbarMobile } from "@/forum/components/AppbarMobile";
 import { ScrollArea } from "@/forum/components/ScrollArea";
-import { theme, useResponsiveFontSize } from "@/forum/utils/theme";
+import { useResponsiveFontSize } from "@/forum/utils/theme";
 
 function App() {
   const { isMd } = useResponsiveFontSize();
@@ -13,10 +13,8 @@ function App() {
   if (!urlParams.get("user")) return window.location.replace("/");
 
   return (
-    <ThemeProvider theme={theme}>
+    <AppWrapper>
       <title>{`論壇樣板 | ${urlParams.get("user")}`}</title>
-      <CssBaseline />
-      <Toaster />
 
       <Box sx={{ bgcolor: "secondary.main", height: "35vh", position: "absolute", inset: "0 0 auto 0" }} />
 
@@ -31,7 +29,7 @@ function App() {
           </Paper>
         </Container>
       </ScrollArea>
-    </ThemeProvider>
+    </AppWrapper>
   );
 }
 
