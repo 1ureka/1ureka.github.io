@@ -10,8 +10,8 @@ import PeopleRoundedIcon from "@mui/icons-material/PeopleRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
 import { useState } from "react";
-import { useSession } from "../hooks/session";
-import { posts } from "../utils/test";
+import { useSession } from "@/forum/hooks/session";
+import { posts } from "@/forum/utils/test";
 
 const recommendedTags = posts.flatMap((post) => post.tags).reduce((acc, tag) => acc.add(tag), new Set<string>());
 

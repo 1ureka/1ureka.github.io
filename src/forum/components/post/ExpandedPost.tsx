@@ -3,7 +3,7 @@ import CommentRoundedIcon from "@mui/icons-material/CommentRounded";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 import AttachFileRoundedIcon from "@mui/icons-material/AttachFileRounded";
 
-import type { Post } from "../utils/test";
+import type { Post } from "@/forum/utils/test";
 import { PostLike } from "./PostLike";
 
 const ExpandedPost = ({ post }: { post: Post }) => {

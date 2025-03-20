@@ -1,4 +1,4 @@
-import type { Post } from "../utils/test";
+import type { Post } from "@/forum/utils/test";
 
 const FullPost = ({ post }: { post: Post }) => {
   return (

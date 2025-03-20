@@ -1,6 +1,6 @@
 import { Button, Tooltip, Typography } from "@mui/material";
 import ThumbUpRoundedIcon from "@mui/icons-material/ThumbUpRounded";
-import { usePostLike } from "../hooks/interaction";
+import { usePostLike } from "@/forum/hooks/interaction";
 
 const PostLike = ({ postId }: { postId: number }) => {
   const { isLiked, liked, handleLike, likeButtonDisabled, likeButtonLoading, likeButtonError } = usePostLike(postId);

@@ -7,7 +7,7 @@ import { AppbarDesktop } from "@/forum/components/appbar/AppbarDesktop";
 import { AppbarMobile } from "@/forum/components/appbar/AppbarMobile";
 import { ScrollArea } from "@/forum/components/ScrollArea";
 import { useResponsiveFontSize } from "@/forum/utils/theme";
-import { ExpandedPost } from "@/forum/components/ExpandedPost";
+import { ExpandedPost } from "@/forum/components/post/ExpandedPost";
 import { OrderTabs } from "@/forum/components/OrderTabs";
 import { TopicSelect } from "@/forum/components/TopicSelect";
 import { posts } from "@/forum/utils/test";
