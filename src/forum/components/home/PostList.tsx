@@ -4,7 +4,7 @@ import { usePosts } from "@/forum/hooks/post";
 import { CollapsedLoadingPost } from "../post/LoadingPost";
 
 const PostList = () => {
-  const { data, isFetching } = usePosts({ length: 5 });
+  const { data, isFetching } = usePosts({ limit: 5 });
 
   if (isFetching || !data) {
     return (

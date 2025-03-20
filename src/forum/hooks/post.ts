@@ -3,18 +3,37 @@
 // ----------------------------------------
 
 import { useQuery } from "@tanstack/react-query";
-import { posts } from "../utils/test";
+import { posts, type Post } from "../utils/test";
 
-const fakeFetchPostIds = async ({ length, topic }: QueryPostsOptions = {}) => {
+const sortObjectArray = <T extends object>(array: T[], orderBy: keyof T, order: "asc" | "desc" = "asc"): T[] => {
+  return [...array].sort((a, b) => {
+    const valueA = a[orderBy];
+    const valueB = b[orderBy];
+
+    if (valueA === valueB) return 0;
+
+    // 升序或降序排列
+    const comparison = valueA < valueB ? -1 : 1;
+    return order === "asc" ? comparison : -comparison;
+  });
+};
+
+const fakeFetchPosts = async ({ limit, topic, orderBy, order = "asc" }: QueryPostsOptions = {}) => {
   await new Promise((resolve) => setTimeout(resolve, Math.random() * 1000));
 
   // 如果提供了 topic，按標籤篩選
   let filteredPosts = posts;
   if (topic) filteredPosts = posts.filter((post) => post.tags.includes(topic));
+
+  // 如果提供了排序條件，進行排序
+  if (orderBy) {
+    filteredPosts = sortObjectArray(filteredPosts, orderBy, order);
+  }
+
   const postIds = filteredPosts.map(({ id }) => id);
 
-  // 如果提供了 length，限制回傳數量
-  if (length && length > 0) return postIds.slice(0, length);
+  // 如果提供了 limit，限制回傳數量
+  if (limit && limit > 0) return postIds.slice(0, limit);
   return postIds;
 };
 
@@ -33,16 +52,18 @@ const fakeFetchTags = async () => {
 // ----------------------------------------
 
 type QueryPostsOptions = {
-  length?: number;
+  limit?: number;
   topic?: string;
+  orderBy?: keyof Post;
+  order?: "asc" | "desc";
 };
 
 const staleTime = 1 * 60 * 1000;
 
-const usePosts = ({ length, topic }: QueryPostsOptions = {}) => {
+const usePosts = ({ limit, topic, orderBy, order }: QueryPostsOptions = {}) => {
   return useQuery({
-    queryKey: ["posts", length, topic],
-    queryFn: () => fakeFetchPostIds({ length, topic }),
+    queryKey: ["posts", limit, topic, orderBy, order],
+    queryFn: () => fakeFetchPosts({ limit, topic, orderBy, order }),
     staleTime,
   });
 };
