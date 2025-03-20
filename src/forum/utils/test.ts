@@ -23,6 +23,7 @@ type Post = {
   likeCount: number;
   replyCount: number;
   createdAt: Date;
+  updatedAt?: Date;
 };
 
 const posts: Post[] = [
@@ -44,6 +45,7 @@ const posts: Post[] = [
     likeCount: 250,
     replyCount: 30,
     createdAt: new Date("2024-03-01"),
+    updatedAt: new Date("2024-03-03"),
   },
   {
     id: 2,
@@ -56,6 +58,7 @@ const posts: Post[] = [
     likeCount: 410,
     replyCount: 75,
     createdAt: new Date("2024-03-05"),
+    updatedAt: new Date("2024-03-07"),
   },
   {
     id: 3,
@@ -68,6 +71,7 @@ const posts: Post[] = [
     likeCount: 590,
     replyCount: 88,
     createdAt: new Date("2024-03-10"),
+    updatedAt: new Date("2024-03-12"),
   },
   {
     id: 4,
@@ -84,6 +88,7 @@ const posts: Post[] = [
     likeCount: 720,
     replyCount: 120,
     createdAt: new Date("2024-03-15"),
+    updatedAt: new Date("2024-03-17"),
   },
   {
     id: 5,
@@ -95,6 +100,7 @@ const posts: Post[] = [
     likeCount: 460,
     replyCount: 95,
     createdAt: new Date("2024-03-20"),
+    updatedAt: new Date("2024-03-22"),
   },
   {
     id: 6,
@@ -108,6 +114,7 @@ const posts: Post[] = [
     likeCount: 310,
     replyCount: 60,
     createdAt: new Date("2024-03-25"),
+    updatedAt: new Date("2024-03-27"),
   },
   {
     id: 7,
@@ -119,6 +126,7 @@ const posts: Post[] = [
     likeCount: 190,
     replyCount: 45,
     createdAt: new Date("2024-03-30"),
+    updatedAt: new Date("2024-04-01"),
   },
   {
     id: 8,
@@ -133,6 +141,7 @@ const posts: Post[] = [
     likeCount: 680,
     replyCount: 110,
     createdAt: new Date("2024-04-02"),
+    updatedAt: new Date("2024-04-05"),
   },
   {
     id: 9,
@@ -146,6 +155,7 @@ const posts: Post[] = [
     likeCount: 350,
     replyCount: 65,
     createdAt: new Date("2024-04-07"),
+    updatedAt: new Date("2024-04-10"),
   },
   {
     id: 10,
@@ -161,6 +171,7 @@ const posts: Post[] = [
     likeCount: 500,
     replyCount: 85,
     createdAt: new Date("2024-04-12"),
+    updatedAt: new Date("2024-04-15"),
   },
   {
     id: 11,
@@ -177,6 +188,7 @@ const posts: Post[] = [
     likeCount: 610,
     replyCount: 130,
     createdAt: new Date("2024-04-18"),
+    updatedAt: new Date("2024-04-20"),
   },
   {
     id: 12,
@@ -188,6 +200,7 @@ const posts: Post[] = [
     likeCount: 490,
     replyCount: 95,
     createdAt: new Date("2024-04-25"),
+    updatedAt: new Date("2024-04-28"),
   },
   {
     id: 13,
@@ -199,6 +212,7 @@ const posts: Post[] = [
     likeCount: 290,
     replyCount: 50,
     createdAt: new Date("2024-04-28"),
+    updatedAt: new Date("2024-05-01"),
   },
   {
     id: 14,
@@ -212,6 +226,7 @@ const posts: Post[] = [
     likeCount: 840,
     replyCount: 170,
     createdAt: new Date("2024-05-01"),
+    updatedAt: new Date("2024-05-03"),
   },
   {
     id: 15,
@@ -224,6 +239,7 @@ const posts: Post[] = [
     likeCount: 420,
     replyCount: 78,
     createdAt: new Date("2024-05-05"),
+    updatedAt: new Date("2024-05-07"),
   },
 ];
 
