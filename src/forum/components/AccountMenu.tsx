@@ -5,7 +5,10 @@ import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 import ManageAccountsRoundedIcon from "@mui/icons-material/ManageAccountsRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
-import { useSession } from "../utils/session";
+import LoginRoundedIcon from "@mui/icons-material/LoginRounded";
+import { useSession } from "../hooks/session";
+
+const avatorSize = "2rem";
 
 const AccountMenu = ({
   mobile,
@@ -14,23 +17,50 @@ const AccountMenu = ({
   mobile?: boolean;
   slotsProps?: { popover?: Partial<PopoverProps> };
 }) => {
-  const { user } = useSession();
+  const { user, loading, authenticated } = useSession();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
   const onClose = () => setAnchorEl(null);
 
+  if (loading) {
+    return mobile ? (
+      <IconButton edge="end" size="small" disabled loading={loading}>
+        <Avatar sx={{ width: avatorSize, height: avatorSize }} />
+      </IconButton>
+    ) : (
+      <Button variant="outlined" color="inherit" startIcon={<AccountCircleRoundedIcon />} disabled loading={loading}>
+        Loading
+      </Button>
+    );
+  }
+
   return (
     <>
-      {mobile ? (
-        <IconButton onClick={handleClick} edge="end" size="small">
-          <Avatar sx={{ bgcolor: "primary.main", width: "2rem", height: "2rem" }}>
-            {user.name.slice(0, 1).toUpperCase()}
-          </Avatar>
+      {authenticated ? (
+        mobile ? (
+          <IconButton onClick={handleClick} edge="end" size="small">
+            <Avatar sx={{ bgcolor: "primary.main", width: avatorSize, height: avatorSize }}>
+              {user.name.slice(0, 1).toUpperCase()}
+            </Avatar>
+          </IconButton>
+        ) : (
+          <Button variant="outlined" color="inherit" startIcon={<AccountCircleRoundedIcon />} onClick={handleClick}>
+            {user.name}
+          </Button>
+        )
+      ) : mobile ? (
+        <IconButton edge="end" size="small" color="inherit" href="/src/forum/pages/login/index.html">
+          <LoginRoundedIcon />
         </IconButton>
       ) : (
-        <Button variant="outlined" color="inherit" startIcon={<AccountCircleRoundedIcon />} onClick={handleClick}>
-          {user.name}
+        <Button
+          variant="outlined"
+          color="inherit"
+          startIcon={<LoginRoundedIcon />}
+          href="/src/forum/pages/login/index.html"
+        >
+          登入
         </Button>
       )}
 
