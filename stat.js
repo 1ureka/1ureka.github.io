@@ -41,22 +41,25 @@ function isAllowedFile(filePath) {
   return allowedExtensions.includes(ext);
 }
 
-// 計算文件行數的函數
-function countLinesInFile(filePath) {
+// 計算文件行數和非空字元的函數
+function countLinesAndCharsInFile(filePath) {
   try {
     const content = readFileSync(filePath, "utf8");
     // 計算換行符數量
     const lines = content.split("\n").length;
-    return lines;
+    // 計算非空字元數量（移除所有空白字元）
+    const nonEmptyChars = content.replace(/\s+/g, "").length;
+    return { lines, nonEmptyChars };
   } catch (error) {
     console.error(`讀取檔案 ${filePath} 出錯:`, error.message);
-    return 0;
+    return { lines: 0, nonEmptyChars: 0 };
   }
 }
 
-// 遞歸統計目錄中所有文件的行數
+// 遞歸統計目錄中所有文件的行數和字元數
 function countLinesInDirectory(dir) {
   let totalLines = 0;
+  let totalNonEmptyChars = 0;
   let fileCount = 0;
   let skippedCount = 0;
 
@@ -68,16 +71,18 @@ function countLinesInDirectory(dir) {
 
       if (entry.isDirectory()) {
         // 如果是目錄，則遞歸處理
-        const { lines, files, skipped } = countLinesInDirectory(fullPath);
+        const { lines, nonEmptyChars, files, skipped } = countLinesInDirectory(fullPath);
         totalLines += lines;
+        totalNonEmptyChars += nonEmptyChars;
         fileCount += files;
         skippedCount += skipped;
       } else if (entry.isFile()) {
         // 如果是文件，檢查是否在白名單中
         if (isAllowedFile(fullPath)) {
-          const lines = countLinesInFile(fullPath);
-          console.log(`${fullPath}: ${lines} 行`);
+          const { lines, nonEmptyChars } = countLinesAndCharsInFile(fullPath);
+          console.log(`${fullPath}: ${lines} 行, ${nonEmptyChars} 非空字元`);
           totalLines += lines;
+          totalNonEmptyChars += nonEmptyChars;
           fileCount += 1;
         } else {
           skippedCount += 1;
@@ -88,7 +93,12 @@ function countLinesInDirectory(dir) {
     console.error(`讀取目錄 ${dir} 出錯:`, error.message);
   }
 
-  return { lines: totalLines, files: fileCount, skipped: skippedCount };
+  return {
+    lines: totalLines,
+    nonEmptyChars: totalNonEmptyChars,
+    files: fileCount,
+    skipped: skippedCount,
+  };
 }
 
 // 檢查 src 目錄是否存在
@@ -97,9 +107,9 @@ if (!existsSync(srcDir)) {
   process.exit(1);
 }
 
-console.log(`開始統計行數（僅包含以下副檔名：${allowedExtensions.join(", ")}）`);
+console.log(`開始統計行數及非空字元數（僅包含以下副檔名：${allowedExtensions.join(", ")}）`);
 
 // 執行統計
 const result = countLinesInDirectory(srcDir);
-console.log(`\n總計: ${result.files} 個檔案, ${result.lines} 行程式碼`);
+console.log(`\n總計: ${result.files} 個檔案, ${result.lines} 行程式碼, ${result.nonEmptyChars} 非空字元`);
 console.log(`跳過: ${result.skipped} 個不在白名單中的檔案`);
