@@ -1,6 +1,6 @@
 import { Autocomplete, Menu, TextField, Tooltip, Typography } from "@mui/material";
 import { useState } from "react";
-import { posts } from "../utils/test";
+import { posts } from "@/forum/utils/test";
 
 const tags = posts.flatMap((post) => post.tags).reduce((acc, tag) => acc.add(tag), new Set<string>());
 

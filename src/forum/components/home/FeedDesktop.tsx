@@ -1,7 +1,7 @@
 import { Avatar, Box, Button, Chip, Divider, Paper, Stack, Typography } from "@mui/material";
 import ArrowRightAltRoundedIcon from "@mui/icons-material/ArrowRightAltRounded";
 import { Fragment } from "react";
-import type { Author, Post } from "../utils/test";
+import type { Author, Post } from "@/forum/utils/test";
 
 // TODO: top3Posts 改為 hotPosts (由父組件決定數量)
 const FeedDesktop = ({ top3Posts, tags, authors }: { top3Posts: Post[]; tags: string[]; authors: Author[] }) => {
