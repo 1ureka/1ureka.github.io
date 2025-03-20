@@ -15,7 +15,8 @@ const OrderTabs = () => {
   const orderDesc = searchParams.get("orderDesc") === "true";
 
   // 根據 orderBy 找到對應的索引
-  const orderId = orders.findIndex((field) => field === orderBy);
+  let orderId = orders.findIndex((field) => field === orderBy);
+  if (orderId === -1) orderId = 0;
 
   const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
     updateSearchParams({
