@@ -227,6 +227,16 @@ const posts: Post[] = [
   },
 ];
 
+type User = {
+  id: number;
+  name: string;
+};
+
+const user: User = {
+  id: 1,
+  name: "1ureka",
+};
+
 type Author = {
   name: string;
   description: string;
@@ -320,5 +330,5 @@ const notifications: Notification[] = [
   },
 ];
 
-export { posts, authors, notifications };
-export type { Post, Author, Notification };
+export { user, posts, authors, notifications };
+export type { User, Post, Author, Notification };
