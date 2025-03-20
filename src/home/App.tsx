@@ -1,6 +1,6 @@
 import { Box, Container, createTheme, CssBaseline, ThemeProvider, Typography } from "@mui/material";
 import type { BoxProps } from "@mui/material";
-import { Toaster } from "./components/Toast";
+import { Toaster } from "@/components/Toast";
 import { ThemeMenu } from "./components/ThemeMenu";
 import { useEffect } from "react";
 import "./app.css";
