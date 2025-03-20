@@ -16,7 +16,6 @@ import { PostList } from "./components/home/PostList";
 function App() {
   const { isMd } = useResponsiveFontSize();
 
-  const top3Posts = posts.toSorted((a, b) => b.viewCount - a.viewCount).slice(0, 3);
   const tags = posts.flatMap((post) => post.tags).slice(0, 5);
 
   return (
@@ -60,9 +59,9 @@ function App() {
 
           <Stack sx={{ gap: { xs: 1, md: 4 }, maxWidth: { xs: 1, md: 400 }, width: { xs: 1, md: "30vw" } }}>
             {isMd ? (
-              <FeedDesktop top3Posts={top3Posts} tags={tags} authors={authors} />
+              <FeedDesktop tags={tags} authors={authors} />
             ) : (
-              <FeedMobile top3Posts={top3Posts} tags={tags} authors={authors.slice(0, 3)} />
+              <FeedMobile tags={tags} authors={authors.slice(0, 3)} />
             )}
           </Stack>
         </Container>

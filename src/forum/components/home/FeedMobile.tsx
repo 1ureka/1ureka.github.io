@@ -1,35 +1,14 @@
-import { Avatar, Box, Button, Chip, Divider, Paper, Stack, Typography } from "@mui/material";
+import { Avatar, Box, Button, Chip, Divider, Paper, Typography } from "@mui/material";
 import ArrowRightAltRoundedIcon from "@mui/icons-material/ArrowRightAltRounded";
 import { Fragment } from "react";
-import type { Author, Post } from "@/forum/utils/test";
+import type { Author } from "@/forum/utils/test";
+import { FeedHotSection } from "./FeedHotSection";
 
-// TODO: top3Posts 改為 hotPosts (由父組件決定數量)
-const FeedMobile = ({ top3Posts, tags, authors }: { top3Posts: Post[]; tags: string[]; authors: Author[] }) => {
+const FeedMobile = ({ tags, authors }: { tags: string[]; authors: Author[] }) => {
   return (
     <Paper sx={{ borderRadius: 3, border: "1px solid", borderColor: "divider" }} elevation={1}>
       <Box sx={{ p: 3 }}>
-        <Typography variant="h6" component="h2" sx={{ mb: 1.5 }}>
-          本週熱門討論 🔥
-        </Typography>
-
-        {top3Posts.map((post, i) => (
-          <Stack key={post.id} sx={{ gap: 0.5, my: i < 2 ? 1 : 0 }}>
-            <Typography variant="subtitle1" component="h3">
-              {post.title}
-            </Typography>
-            <Typography
-              variant="body2"
-              component="p"
-              sx={{ color: "text.secondary", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
-            >
-              {post.content}
-            </Typography>
-            <Button endIcon={<ArrowRightAltRoundedIcon />} sx={{ width: "fit-content" }} href={`#${post.id}`}>
-              查看更多
-            </Button>
-            {i < 2 && <Divider />}
-          </Stack>
-        ))}
+        <FeedHotSection length={3} />
       </Box>
 
       <Divider />
