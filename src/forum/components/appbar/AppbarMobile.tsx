@@ -131,7 +131,7 @@ const AppbarMobile = ({ sx, ...props }: ToolbarProps) => {
                   </ListItemIcon>
                   切換主題
                 </MenuItem>
-                <ThemeMenu anchorEl={themeAnchorEl} onClose={handleThemeClose} />
+                <ThemeMenu open={Boolean(themeAnchorEl)} anchorEl={themeAnchorEl} onClose={handleThemeClose} />
               </MenuList>
             </Popover>
           </Box>
