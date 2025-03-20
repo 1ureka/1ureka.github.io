@@ -1,4 +1,4 @@
-import { Autocomplete, Box, Button, Chip, Divider } from "@mui/material";
+import { Autocomplete, Box, Button, Chip, Divider, Skeleton } from "@mui/material";
 import { IconButton, Menu, TextField, Tooltip, Typography } from "@mui/material";
 
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
@@ -10,7 +10,7 @@ import PeopleRoundedIcon from "@mui/icons-material/PeopleRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
 import { useState } from "react";
-import { useSession } from "../utils/session";
+import { useSession } from "../hooks/session";
 import { posts } from "../utils/test";
 
 const recommendedTags = posts.flatMap((post) => post.tags).reduce((acc, tag) => acc.add(tag), new Set<string>());
@@ -24,7 +24,7 @@ const emojiGroups = [
 ];
 
 const NewPost = () => {
-  const { user } = useSession();
+  const { user, authenticated, loading } = useSession();
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -132,12 +132,26 @@ const NewPost = () => {
             opacity: 0.8,
           }}
         />
-        <Typography variant="h5" component="h2" color="primary" sx={{ opacity: 0.8 }}>
-          {user.name}
-        </Typography>
-        <Typography variant="h5" component="h2">
-          ，你在想些什麼？
-        </Typography>
+        {authenticated ? (
+          <>
+            <Typography variant="h5" component="h2" color="primary" sx={{ opacity: 0.8 }}>
+              {user.name}
+            </Typography>
+            <Typography variant="h5" component="h2">
+              ，你在想些什麼？
+            </Typography>
+          </>
+        ) : loading ? (
+          <Skeleton variant="rounded">
+            <Typography variant="h5" component="h2">
+              登入就能分享你的想法喔 ✨
+            </Typography>
+          </Skeleton>
+        ) : (
+          <Typography variant="h5" component="h2">
+            登入就能分享你的想法喔 ✨
+          </Typography>
+        )}
       </Box>
 
       <Divider sx={{ my: 2 }} />
@@ -150,6 +164,7 @@ const NewPost = () => {
           sx={{ mb: 0.5 }}
           value={title}
           onChange={(e) => setTitle(e.target.value)}
+          disabled={!authenticated || loading}
         />
         <TextField
           multiline
@@ -162,6 +177,7 @@ const NewPost = () => {
           sx={{ mb: 1 }}
           value={content}
           onChange={(e) => setContent(e.target.value)}
+          disabled={!authenticated || loading}
         />
 
         {/* 附件預覽 */}
@@ -221,7 +237,14 @@ const NewPost = () => {
               <Chip label={tag} clickable onClick={() => setTags(tags.filter((t) => t !== tag))} />
             </Tooltip>
           ))}
-          <Chip label="新增標籤" clickable icon={<AddRoundedIcon />} variant="outlined" onClick={handleAddTagClick} />
+          <Chip
+            label="新增標籤"
+            clickable
+            icon={<AddRoundedIcon />}
+            variant="outlined"
+            onClick={handleAddTagClick}
+            disabled={!authenticated || loading}
+          />
 
           {/* 標籤選單 */}
           <Menu
@@ -290,9 +313,11 @@ const NewPost = () => {
 
         <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
           <Tooltip title="表情符號" arrow>
-            <IconButton size="small" onClick={handleEmojiMenuOpen}>
-              <EmojiEmotionsRoundedIcon fontSize="small" />
-            </IconButton>
+            <span>
+              <IconButton size="small" onClick={handleEmojiMenuOpen} disabled={!authenticated || loading}>
+                <EmojiEmotionsRoundedIcon fontSize="small" />
+              </IconButton>
+            </span>
           </Tooltip>
 
           {/* 表情符號選單 */}
@@ -335,28 +360,46 @@ const NewPost = () => {
           </Menu>
 
           <Tooltip title="插入照片" arrow>
-            <IconButton size="small" onClick={() => document.getElementById("photo-upload")?.click()}>
-              <InsertPhotoRoundedIcon fontSize="small" />
-              <input
-                type="file"
-                id="photo-upload"
-                accept="image/*"
-                multiple
-                style={{ display: "none" }}
-                onChange={handlePhotoUpload}
-              />
-            </IconButton>
+            <span>
+              <IconButton
+                size="small"
+                onClick={() => document.getElementById("photo-upload")?.click()}
+                disabled={!authenticated || loading}
+              >
+                <InsertPhotoRoundedIcon fontSize="small" />
+                <input
+                  type="file"
+                  id="photo-upload"
+                  accept="image/*"
+                  multiple
+                  style={{ display: "none" }}
+                  onChange={handlePhotoUpload}
+                />
+              </IconButton>
+            </span>
           </Tooltip>
 
           <Tooltip title="附加檔案" arrow>
-            <IconButton size="small" onClick={() => document.getElementById("file-upload")?.click()}>
-              <AttachFileRoundedIcon fontSize="small" />
-              <input type="file" id="file-upload" multiple style={{ display: "none" }} onChange={handleFileUpload} />
-            </IconButton>
+            <span>
+              <IconButton
+                size="small"
+                onClick={() => document.getElementById("file-upload")?.click()}
+                disabled={!authenticated || loading}
+              >
+                <AttachFileRoundedIcon fontSize="small" />
+                <input type="file" id="file-upload" multiple style={{ display: "none" }} onChange={handleFileUpload} />
+              </IconButton>
+            </span>
           </Tooltip>
         </Box>
 
-        <Button variant="contained" color="primary" endIcon={<PublishRoundedIcon />} onClick={handleSubmit}>
+        <Button
+          variant="contained"
+          color="primary"
+          endIcon={<PublishRoundedIcon />}
+          onClick={handleSubmit}
+          disabled={!authenticated || loading}
+        >
           發佈
         </Button>
       </Box>
