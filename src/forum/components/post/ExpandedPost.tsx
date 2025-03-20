@@ -3,12 +3,19 @@ import CommentRoundedIcon from "@mui/icons-material/CommentRounded";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 import AttachFileRoundedIcon from "@mui/icons-material/AttachFileRounded";
 
-import type { Post } from "@/forum/utils/test";
 import { LikeButton } from "./LikeButton";
 import { TopicTags } from "./TopicTags";
 import { PostHeader } from "./PostHeader";
+import { usePostById } from "@/forum/hooks/post";
+import { ExpandedLoadingPost } from "./LoadingPost";
 
-const ExpandedPost = ({ post }: { post: Post }) => {
+const ExpandedPost = ({ postId }: { postId: number }) => {
+  const { data: post, isLoading } = usePostById(postId);
+
+  if (isLoading || !post) {
+    return <ExpandedLoadingPost />;
+  }
+
   return (
     <>
       <Box sx={{ p: 1.5, cursor: "pointer", "&:hover": { bgcolor: "action.hover" } }}>

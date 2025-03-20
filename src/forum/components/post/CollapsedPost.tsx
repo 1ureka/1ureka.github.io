@@ -2,12 +2,19 @@ import { Box, Button, Divider, Typography } from "@mui/material";
 import CommentRoundedIcon from "@mui/icons-material/CommentRounded";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 
-import type { Post } from "@/forum/utils/test";
+import { usePostById } from "@/forum/hooks/post";
 import { LikeButton } from "./LikeButton";
 import { TopicTags } from "./TopicTags";
 import { PostHeader } from "./PostHeader";
+import { CollapsedLoadingPost } from "./LoadingPost";
 
-const CollapsedPost = ({ post }: { post: Post }) => {
+const CollapsedPost = ({ postId }: { postId: number }) => {
+  const { data: post, isLoading } = usePostById(postId);
+
+  if (isLoading || !post) {
+    return <CollapsedLoadingPost />;
+  }
+
   return (
     <>
       <Box sx={{ p: 1.5, cursor: "pointer", "&:hover": { bgcolor: "action.hover" } }}>
