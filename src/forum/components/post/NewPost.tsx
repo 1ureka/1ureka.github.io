@@ -1,4 +1,4 @@
-import { Autocomplete, Box, Button, Chip, Divider, Skeleton } from "@mui/material";
+import { Box, Button, Chip, Divider, Skeleton } from "@mui/material";
 import { IconButton, Menu, TextField, Tooltip, Typography } from "@mui/material";
 
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
@@ -11,9 +11,7 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
 import { useState } from "react";
 import { useSession } from "@/forum/hooks/session";
-import { posts } from "@/forum/utils/test";
-
-const recommendedTags = posts.flatMap((post) => post.tags).reduce((acc, tag) => acc.add(tag), new Set<string>());
+import { TopicAutocomplete } from "./TopicAutocomplete";
 
 // 常用表情符號分組
 const emojiGroups = [
@@ -69,14 +67,10 @@ const NewPost = () => {
 
   // 標籤相關狀態
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
   const handleAddTagClick = (event: React.MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
   const handleAddTagClose = () => setAnchorEl(null);
-
-  const [tagInput, setTagInput] = useState<string>("");
-  const handleAddTag = () => {
-    setTags([...tags, tagInput]);
-    setTagInput("");
+  const handleAddTag = (value: string) => {
+    setTags([...tags, value]);
     handleAddTagClose();
   };
 
@@ -237,6 +231,7 @@ const NewPost = () => {
               <Chip label={tag} clickable onClick={() => setTags(tags.filter((t) => t !== tag))} />
             </Tooltip>
           ))}
+
           <Chip
             label="新增標籤"
             clickable
@@ -245,54 +240,13 @@ const NewPost = () => {
             onClick={handleAddTagClick}
             disabled={!authenticated || loading}
           />
-
-          {/* 標籤選單 */}
-          <Menu
-            open={open}
+          <TopicAutocomplete
+            type="add"
+            open={Boolean(anchorEl)}
             anchorEl={anchorEl}
             onClose={handleAddTagClose}
-            slotProps={{
-              paper: { sx: { borderRadius: 3, scale: "0.9" } },
-              list: {
-                disablePadding: true,
-                dense: true,
-                component: "div",
-                sx: { display: "flex", gap: 1, p: 1, pl: 1.5, pt: 0, alignItems: "flex-end" },
-              },
-            }}
-          >
-            <Autocomplete
-              freeSolo
-              options={Array.from(recommendedTags)}
-              value={tagInput}
-              onChange={(_, value) => setTagInput(value ?? "")}
-              onKeyDown={(e) => {
-                if (e.key !== "Enter") return;
-                if (!tagInput.trim()) return console.error("請輸入標籤名稱");
-                e.preventDefault();
-                handleAddTag();
-              }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  autoFocus
-                  required
-                  label="標籤"
-                  variant="standard"
-                  size="small"
-                  sx={{ minWidth: 150 }}
-                  onChange={(e) => setTagInput(e.target.value)}
-                />
-              )}
-            />
-            <Tooltip title={tagInput.trim() ? "添加" : "請輸入標籤名稱"} arrow>
-              <span>
-                <IconButton disabled={!tagInput.trim()} onClick={handleAddTag} size="small">
-                  <AddRoundedIcon />
-                </IconButton>
-              </span>
-            </Tooltip>
-          </Menu>
+            onAdd={handleAddTag}
+          />
         </Box>
       </Box>
 
