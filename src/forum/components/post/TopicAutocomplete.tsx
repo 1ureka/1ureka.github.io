@@ -1,10 +1,12 @@
 import { useTags } from "@/forum/hooks/post";
+import { useUrl } from "@/forum/hooks/url";
 import { Autocomplete, Box, CircularProgress, Menu, TextField } from "@mui/material";
 import type { MenuProps } from "@mui/material";
 
 type InputProps =
   | {
       type: "query";
+      onSelect: () => void;
     }
   | {
       type: "add";
@@ -18,19 +20,25 @@ const createAddHandler =
     onAdd(value.trim());
   };
 
-const handleQuery = (_: React.SyntheticEvent<Element, Event>, value: string | null) => {
-  if (value === null || !value.trim()) return;
-  if (value === "顯示全部") return (window.location.href = "?");
-  window.location.href = `?topic=${value.trim()}`;
-};
-
 const Input = (props: InputProps) => {
+  const { searchParams, updateSearchParams } = useUrl();
   const { data, isFetching } = useTags();
   const { type } = props;
 
   const tags = Array.from(data ?? []);
   const options = type === "query" ? ["顯示全部", ...tags] : tags;
-  const value = type === "query" ? new URLSearchParams(window.location.search).get("topic") ?? "" : "";
+  const value = type === "query" ? searchParams.get("topic") ?? "" : "";
+
+  const handleQuery = (_: React.SyntheticEvent<Element, Event>, value: string | null) => {
+    if (props.type === "query") props.onSelect();
+    if (value === null || !value.trim()) return;
+    if (value === "顯示全部") {
+      updateSearchParams({ topic: null });
+    } else {
+      updateSearchParams({ topic: value.trim() });
+    }
+  };
+
   const handleChange = type === "query" ? handleQuery : createAddHandler(props.onAdd);
 
   return (
@@ -57,7 +65,8 @@ const Input = (props: InputProps) => {
 
 const TopicAutocomplete = (props: MenuProps & InputProps) => {
   const { type, ...remain } = props;
-  const menuProps = type === "add" ? (({ onAdd, ...rest }) => rest)(remain as any) : remain;
+  const menuProps =
+    type === "add" ? (({ onAdd, ...rest }) => rest)(remain as any) : (({ onSelect, ...rest }) => rest)(remain as any);
 
   return (
     <Menu
@@ -72,7 +81,7 @@ const TopicAutocomplete = (props: MenuProps & InputProps) => {
       }}
       {...menuProps}
     >
-      {type === "query" ? <Input type="query" /> : <Input type="add" onAdd={props.onAdd} />}
+      {type === "query" ? <Input type="query" onSelect={props.onSelect} /> : <Input type="add" onAdd={props.onAdd} />}
     </Menu>
   );
 };

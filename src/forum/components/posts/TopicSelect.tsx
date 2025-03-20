@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { Tooltip, Typography } from "@mui/material";
 import { TopicAutocomplete } from "../post/TopicAutocomplete";
+import { useUrl } from "@/forum/hooks/url";
 
 const TopicSelect = () => {
-  const urlParams = new URLSearchParams(window.location.search);
+  const { searchParams } = useUrl();
+
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const handleOpen = (event: React.MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
@@ -20,11 +22,17 @@ const TopicSelect = () => {
           }}
           onClick={handleOpen}
         >
-          #{urlParams.get("topic") ?? "全部"}
+          #{searchParams.get("topic") ?? "全部"}
         </Typography>
       </Tooltip>
 
-      <TopicAutocomplete type="query" open={Boolean(anchorEl)} anchorEl={anchorEl} onClose={handleClose} />
+      <TopicAutocomplete
+        type="query"
+        open={Boolean(anchorEl)}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        onSelect={handleClose}
+      />
     </>
   );
 };

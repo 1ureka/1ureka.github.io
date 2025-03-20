@@ -2,9 +2,14 @@ import { Skeleton, Stack, Typography } from "@mui/material";
 import { usePosts } from "@/forum/hooks/post";
 import { ExpandedPost } from "../post/ExpandedPost";
 import { ExpandedLoadingPost } from "../post/LoadingPost";
+import { useUrl } from "@/forum/hooks/url";
 
-const PostList = ({ topic }: { topic?: string }) => {
-  const { data, isFetching } = usePosts({ topic });
+const PostList = () => {
+  const { searchParams } = useUrl();
+  const topic = searchParams.get("topic") ?? undefined;
+  const orderBy = searchParams.get("orderBy") ?? "createdAt";
+  const orderDesc = searchParams.get("orderDesc") === "true";
+  const { data, isFetching } = usePosts({ topic, orderBy, order: orderDesc ? "desc" : "asc" });
 
   if (isFetching || !data) {
     return (
@@ -33,7 +38,9 @@ const PostList = ({ topic }: { topic?: string }) => {
   );
 };
 
-const PostCounts = ({ topic }: { topic?: string }) => {
+const PostCounts = () => {
+  const { searchParams } = useUrl();
+  const topic = searchParams.get("topic") ?? undefined;
   const { data } = usePosts({ topic });
 
   if (!data) {
@@ -53,4 +60,11 @@ const PostCounts = ({ topic }: { topic?: string }) => {
   );
 };
 
-export { PostList, PostCounts };
+const PageTitle = () => {
+  const { searchParams } = useUrl();
+  const topic = searchParams.get("topic") ?? "全部";
+
+  return <title>{`論壇樣板 | 貼文 #${topic}`}</title>;
+};
+
+export { PostList, PostCounts, PageTitle };
