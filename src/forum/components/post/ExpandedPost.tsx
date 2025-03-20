@@ -4,7 +4,7 @@ import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 import AttachFileRoundedIcon from "@mui/icons-material/AttachFileRounded";
 
 import type { Post } from "@/forum/utils/test";
-import { PostLike } from "./PostLike";
+import { LikeButton } from "./LikeButton";
 
 const ExpandedPost = ({ post }: { post: Post }) => {
   return (
@@ -178,7 +178,7 @@ const ExpandedPost = ({ post }: { post: Post }) => {
       >
         <Box sx={{ position: "absolute", inset: 0, bgcolor: "divider", opacity: 0.35 }} />
 
-        <PostLike postId={post.id} />
+        <LikeButton postId={post.id} />
 
         <Button color="inherit" startIcon={<CommentRoundedIcon />} size="small">
           <Typography variant="caption" component="span">

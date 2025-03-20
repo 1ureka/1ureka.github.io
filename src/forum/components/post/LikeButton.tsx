@@ -2,7 +2,7 @@ import { Button, Tooltip, Typography } from "@mui/material";
 import ThumbUpRoundedIcon from "@mui/icons-material/ThumbUpRounded";
 import { usePostLike } from "@/forum/hooks/interaction";
 
-const PostLike = ({ postId }: { postId: number }) => {
+const LikeButton = ({ postId }: { postId: number }) => {
   const { isLiked, liked, handleLike, likeButtonDisabled, likeButtonLoading, likeButtonError } = usePostLike(postId);
 
   return (
@@ -25,4 +25,4 @@ const PostLike = ({ postId }: { postId: number }) => {
   );
 };
 
-export { PostLike };
+export { LikeButton };
