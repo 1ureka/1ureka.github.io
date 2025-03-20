@@ -142,7 +142,7 @@ const NewPost = () => {
             </Typography>
           </>
         ) : loading ? (
-          <Skeleton variant="rounded">
+          <Skeleton variant="rounded" animation="wave">
             <Typography variant="h5" component="h2">
               登入就能分享你的想法喔 ✨
             </Typography>

@@ -1,4 +1,4 @@
-import { Box, Container, Divider, Paper, Stack, Typography } from "@mui/material";
+import { Box, Container, Divider, Paper, Typography } from "@mui/material";
 import PeopleRoundedIcon from "@mui/icons-material/PeopleRounded";
 
 import "@/forum/app.css";
@@ -7,17 +7,13 @@ import { AppbarDesktop } from "@/forum/components/appbar/AppbarDesktop";
 import { AppbarMobile } from "@/forum/components/appbar/AppbarMobile";
 import { ScrollArea } from "@/forum/components/ScrollArea";
 import { useResponsiveFontSize } from "@/forum/utils/theme";
-import { ExpandedPost } from "@/forum/components/post/ExpandedPost";
 import { OrderTabs } from "@/forum/components/posts/OrderTabs";
 import { TopicSelect } from "@/forum/components/posts/TopicSelect";
-import { posts } from "@/forum/utils/test";
+import { PostCounts, PostList } from "@/forum/components/posts/PostList";
 
 function App() {
   const { isMd } = useResponsiveFontSize();
   const urlParams = new URLSearchParams(window.location.search);
-  const filterdPosts = posts.filter((post) =>
-    urlParams.has("topic") ? post.tags.includes(urlParams.get("topic")!) : true
-  );
 
   return (
     <AppWrapper>
@@ -51,9 +47,7 @@ function App() {
 
               <Box sx={{ flex: 1 }} />
 
-              <Typography variant="body2" component="span" sx={{ color: "text.secondary" }}>
-                共 {filterdPosts.length} 篇
-              </Typography>
+              <PostCounts topic={urlParams.get("topic") ?? undefined} />
             </Box>
 
             <Divider sx={{ mt: 2 }} />
@@ -65,16 +59,7 @@ function App() {
 
             <Divider />
 
-            <Stack sx={{ alignItems: "stretch", mb: 1.5 }}>
-              {filterdPosts.map((post) => (
-                <ExpandedPost key={post.id} post={post} />
-              ))}
-              {filterdPosts.length === 0 && (
-                <Typography variant="body1" component="p" sx={{ color: "text.secondary", textAlign: "center", mt: 3 }}>
-                  沒有符合條件的貼文
-                </Typography>
-              )}
-            </Stack>
+            <PostList topic={urlParams.get("topic") ?? undefined} />
           </Paper>
         </Container>
       </ScrollArea>

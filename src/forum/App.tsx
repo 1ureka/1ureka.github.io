@@ -6,12 +6,12 @@ import { AppWrapper } from "./components/AppWrapper";
 import { AppbarDesktop } from "./components/appbar/AppbarDesktop";
 import { AppbarMobile } from "./components/appbar/AppbarMobile";
 import { NewPost } from "./components/post/NewPost";
-import { CollapsedPost } from "./components/post/CollapsedPost";
 import { FeedDesktop } from "./components/home/FeedDesktop";
 import { FeedMobile } from "./components/home/FeedMobile";
 import { ScrollArea } from "./components/ScrollArea";
 import { posts, authors } from "./utils/test";
 import { useResponsiveFontSize } from "./utils/theme";
+import { PostList } from "./components/home/PostList";
 
 function App() {
   const { isMd } = useResponsiveFontSize();
@@ -42,11 +42,7 @@ function App() {
 
               <Divider />
 
-              <Stack sx={{ alignItems: "stretch", mb: 1.5 }}>
-                {posts.slice(0, 5).map((post) => (
-                  <CollapsedPost key={post.id} post={post} />
-                ))}
-              </Stack>
+              <PostList />
 
               <Box sx={{ mx: 1.5 }}>
                 <Button
