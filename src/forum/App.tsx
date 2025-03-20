@@ -9,14 +9,12 @@ import { NewPost } from "./components/post/NewPost";
 import { FeedDesktop } from "./components/home/FeedDesktop";
 import { FeedMobile } from "./components/home/FeedMobile";
 import { ScrollArea } from "./components/ScrollArea";
-import { posts, authors } from "./utils/test";
+import { authors } from "./utils/test";
 import { useResponsiveFontSize } from "./utils/theme";
 import { PostList } from "./components/home/PostList";
 
 function App() {
   const { isMd } = useResponsiveFontSize();
-
-  const tags = posts.flatMap((post) => post.tags).slice(0, 5);
 
   return (
     <AppWrapper>
@@ -58,11 +56,7 @@ function App() {
           </Box>
 
           <Stack sx={{ gap: { xs: 1, md: 4 }, maxWidth: { xs: 1, md: 400 }, width: { xs: 1, md: "30vw" } }}>
-            {isMd ? (
-              <FeedDesktop tags={tags} authors={authors} />
-            ) : (
-              <FeedMobile tags={tags} authors={authors.slice(0, 3)} />
-            )}
+            {isMd ? <FeedDesktop authors={authors} /> : <FeedMobile authors={authors.slice(0, 3)} />}
           </Stack>
         </Container>
       </ScrollArea>

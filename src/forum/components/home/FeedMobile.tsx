@@ -1,10 +1,10 @@
-import { Avatar, Box, Button, Chip, Divider, Paper, Typography } from "@mui/material";
-import ArrowRightAltRoundedIcon from "@mui/icons-material/ArrowRightAltRounded";
 import { Fragment } from "react";
-import type { Author } from "@/forum/utils/test";
+import { Avatar, Box, Chip, Divider, Paper, Typography } from "@mui/material";
 import { FeedHotSection } from "./FeedHotSection";
+import { FeedTopics } from "./FeedTopics";
+import type { Author } from "@/forum/utils/test";
 
-const FeedMobile = ({ tags, authors }: { tags: string[]; authors: Author[] }) => {
+const FeedMobile = ({ authors }: { authors: Author[] }) => {
   return (
     <Paper sx={{ borderRadius: 3, border: "1px solid", borderColor: "divider" }} elevation={1}>
       <Box sx={{ p: 3 }}>
@@ -15,26 +15,7 @@ const FeedMobile = ({ tags, authors }: { tags: string[]; authors: Author[] }) =>
 
       <Box sx={{ p: 3, position: "relative" }}>
         <Box sx={{ position: "absolute", inset: 0, bgcolor: "divider", opacity: 0.35 }} />
-
-        <Typography variant="h6" component="h2">
-          你可能會喜歡
-        </Typography>
-
-        <Box sx={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 1, mt: 1 }}>
-          {tags.map((tag) => (
-            <Chip
-              key={tag}
-              label={tag}
-              clickable
-              component="a"
-              href={`/src/forum/pages/posts/index.html?topic=${tag}`}
-            />
-          ))}
-        </Box>
-
-        <Button sx={{ mt: 1 }} endIcon={<ArrowRightAltRoundedIcon />} href="/src/forum/pages/posts/index.html">
-          更多主題
-        </Button>
+        <FeedTopics length={5} />
       </Box>
 
       <Divider />
@@ -44,14 +25,7 @@ const FeedMobile = ({ tags, authors }: { tags: string[]; authors: Author[] }) =>
           推薦追蹤
         </Typography>
 
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: "auto 1fr auto",
-            alignItems: "center",
-            gap: 2,
-          }}
-        >
+        <Box sx={{ display: "grid", gridTemplateColumns: "auto 1fr auto", alignItems: "center", gap: 2 }}>
           {authors.slice(0, 5).map(({ name, description }) => (
             <Fragment key={name}>
               <Avatar sx={{ bgcolor: "primary.main", width: "2rem", height: "2rem" }}>
