@@ -9,9 +9,9 @@ import { PostHeader } from "./PostHeader";
 import { CollapsedLoadingPost } from "./LoadingPost";
 
 const CollapsedPost = ({ postId }: { postId: number }) => {
-  const { data: post, isLoading } = usePostById(postId);
+  const { data: post, isFetching } = usePostById(postId);
 
-  if (isLoading || !post) {
+  if (isFetching || !post) {
     return <CollapsedLoadingPost />;
   }
 

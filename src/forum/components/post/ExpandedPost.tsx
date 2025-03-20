@@ -10,9 +10,9 @@ import { usePostById } from "@/forum/hooks/post";
 import { ExpandedLoadingPost } from "./LoadingPost";
 
 const ExpandedPost = ({ postId }: { postId: number }) => {
-  const { data: post, isLoading } = usePostById(postId);
+  const { data: post, isFetching } = usePostById(postId);
 
-  if (isLoading || !post) {
+  if (isFetching || !post) {
     return <ExpandedLoadingPost />;
   }
 

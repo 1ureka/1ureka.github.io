@@ -5,13 +5,13 @@ const customEvent = new Event("locationchange");
 const originalPushState = window.history.pushState;
 const originalReplaceState = window.history.replaceState;
 
-window.history.pushState = function () {
-  originalPushState.apply(this, arguments as any);
+window.history.pushState = function (...args) {
+  originalPushState.apply(this, args);
   window.dispatchEvent(customEvent);
 };
 
-window.history.replaceState = function () {
-  originalReplaceState.apply(this, arguments as any);
+window.history.replaceState = function (...args) {
+  originalReplaceState.apply(this, args);
   window.dispatchEvent(customEvent);
 };
 
