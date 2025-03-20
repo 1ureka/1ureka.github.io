@@ -9,15 +9,14 @@ import { ScrollArea } from "@/forum/components/ScrollArea";
 import { useResponsiveFontSize } from "@/forum/utils/theme";
 import { OrderTabs } from "@/forum/components/posts/OrderTabs";
 import { TopicSelect } from "@/forum/components/posts/TopicSelect";
-import { PostCounts, PostList } from "@/forum/components/posts/PostList";
+import { PageTitle, PostCounts, PostList } from "@/forum/components/posts/PostList";
 
 function App() {
   const { isMd } = useResponsiveFontSize();
-  const urlParams = new URLSearchParams(window.location.search);
 
   return (
     <AppWrapper>
-      <title>{urlParams.has("topic") ? `論壇樣板 | 貼文 #${urlParams.get("topic")}` : "論壇樣板 | 貼文"}</title>
+      <PageTitle />
 
       <Box sx={{ bgcolor: "secondary.main", height: "35vh", position: "absolute", inset: "0 0 auto 0" }} />
 
@@ -47,7 +46,7 @@ function App() {
 
               <Box sx={{ flex: 1 }} />
 
-              <PostCounts topic={urlParams.get("topic") ?? undefined} />
+              <PostCounts />
             </Box>
 
             <Divider sx={{ mt: 2 }} />
@@ -59,7 +58,7 @@ function App() {
 
             <Divider />
 
-            <PostList topic={urlParams.get("topic") ?? undefined} />
+            <PostList />
           </Paper>
         </Container>
       </ScrollArea>

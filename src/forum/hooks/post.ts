@@ -3,7 +3,7 @@
 // ----------------------------------------
 
 import { useQuery } from "@tanstack/react-query";
-import { posts, type Post } from "../utils/test";
+import { posts } from "../utils/test";
 
 const sortObjectArray = <T extends object>(array: T[], orderBy: keyof T, order: "asc" | "desc" = "asc"): T[] => {
   return [...array].sort((a, b) => {
@@ -26,8 +26,8 @@ const fakeFetchPosts = async ({ limit, topic, orderBy, order = "asc" }: QueryPos
   if (topic) filteredPosts = posts.filter((post) => post.tags.includes(topic));
 
   // 如果提供了排序條件，進行排序
-  if (orderBy) {
-    filteredPosts = sortObjectArray(filteredPosts, orderBy, order);
+  if (orderBy && Object.keys(posts[0]).includes(orderBy)) {
+    filteredPosts = sortObjectArray(filteredPosts, orderBy as keyof (typeof posts)[0], order);
   }
 
   const postIds = filteredPosts.map(({ id }) => id);
@@ -54,7 +54,7 @@ const fakeFetchTags = async () => {
 type QueryPostsOptions = {
   limit?: number;
   topic?: string;
-  orderBy?: keyof Post;
+  orderBy?: string;
   order?: "asc" | "desc";
 };
 
