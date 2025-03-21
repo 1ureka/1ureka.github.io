@@ -1,5 +1,6 @@
-import { Box, Container, Divider, Paper, Typography } from "@mui/material";
+import { Box, Button, Container, Divider, Paper, Stack, Typography } from "@mui/material";
 import PeopleRoundedIcon from "@mui/icons-material/PeopleRounded";
+import ArrowBackIosRoundedIcon from "@mui/icons-material/ArrowBackIosRounded";
 
 import "@/forum/app.css";
 import { AppWrapper } from "@/forum/components/AppWrapper";
@@ -25,28 +26,35 @@ function App() {
 
         <Container maxWidth="lg" sx={{ position: "relative", my: 10 }}>
           <Paper sx={{ py: 3, borderRadius: 3, border: "1px solid", borderColor: "divider" }} elevation={1}>
-            <Box sx={{ display: "flex", gap: 1, alignItems: "center", px: { xs: 3, md: 5 } }}>
-              <PeopleRoundedIcon
-                className="mode-light"
-                sx={{
-                  fontSize: 48,
-                  mr: 1,
-                  bgcolor: "primary.main",
-                  borderRadius: 1,
-                  color: "background.default",
-                  p: 1,
-                  opacity: 0.8,
-                }}
-              />
-              <Typography variant="h5" component="h2">
-                貼文列表
-              </Typography>
+            <Box sx={{ display: "flex", gap: 1, alignItems: "center", pr: { xs: 3, md: 5 }, pl: 2 }}>
+              <Stack sx={{ alignItems: "flex-start", flex: 1 }}>
+                <Button href="/" startIcon={<ArrowBackIosRoundedIcon />} variant="outlined" sx={{ textWrap: "nowrap" }}>
+                  {isMd ? "返回首頁" : "首頁"}
+                </Button>
+              </Stack>
 
-              <TopicSelect />
+              <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+                <PeopleRoundedIcon
+                  className="mode-light"
+                  sx={{
+                    fontSize: 48,
+                    mr: 1,
+                    bgcolor: "primary.main",
+                    borderRadius: 1,
+                    color: "background.default",
+                    p: 1,
+                    opacity: 0.8,
+                  }}
+                />
+                <Typography variant="h5" component="h2">
+                  貼文列表
+                </Typography>
+                <TopicSelect />
+              </Box>
 
-              <Box sx={{ flex: 1 }} />
-
-              <PostCounts />
+              <Stack sx={{ alignItems: "flex-end", flex: 1 }}>
+                <PostCounts />
+              </Stack>
             </Box>
 
             <Divider sx={{ mt: 2 }} />
