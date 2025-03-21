@@ -16,9 +16,13 @@ const ExpandedPost = ({ postId }: { postId: number }) => {
     return <ExpandedLoadingPost />;
   }
 
+  const handleNavigateToPost = () => {
+    window.location.href = `/src/forum/pages/post/index.html?postId=${post.id}`;
+  };
+
   return (
     <>
-      <Box sx={{ p: 1.5, cursor: "pointer", "&:hover": { bgcolor: "action.hover" } }}>
+      <Box sx={{ p: 1.5, cursor: "pointer", "&:hover": { bgcolor: "action.hover" } }} onClick={handleNavigateToPost}>
         <PostHeader post={post} />
 
         <Stack sx={{ gap: 1.5, flexDirection: { xs: "column", md: "row" }, justifyContent: "space-between", mb: 2 }}>
@@ -156,7 +160,12 @@ const ExpandedPost = ({ postId }: { postId: number }) => {
 
         <LikeButton postId={post.id} />
 
-        <Button color="inherit" startIcon={<CommentRoundedIcon />} size="small">
+        <Button
+          color="inherit"
+          startIcon={<CommentRoundedIcon />}
+          size="small"
+          href={`/src/forum/pages/post/index.html?postId=${post.id}`}
+        >
           <Typography variant="caption" component="span">
             {post.replyCount} 則回覆
           </Typography>

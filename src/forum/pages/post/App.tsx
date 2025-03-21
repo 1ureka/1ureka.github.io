@@ -10,7 +10,6 @@ import { useResponsiveFontSize } from "@/forum/utils/theme";
 import { Post, Comment } from "@/forum/components/post/FullPost";
 import { NextPostNav, PrevPostNav } from "@/forum/components/post/PrevNextPostNav";
 
-// TODO: 上方有 tabs ，可以切換搜尋結果是 "文章" 或 "用戶" 或 "標籤"
 function App() {
   const { isMd } = useResponsiveFontSize();
 
