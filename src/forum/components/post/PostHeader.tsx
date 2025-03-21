@@ -1,8 +1,8 @@
 import type { Post } from "@/forum/utils/test";
-import { Avatar, Box, Typography } from "@mui/material";
+import { Avatar, Box, BoxProps, Typography } from "@mui/material";
 
-const PostHeader = ({ post }: { post: Post }) => (
-  <Box sx={{ display: "flex", gap: 1.5, mb: 2, alignItems: "center" }}>
+const PostHeader = ({ post, sx, ...props }: { post: Post } & BoxProps) => (
+  <Box sx={{ display: "flex", gap: 1.5, mb: 2, alignItems: "center", ...sx }} {...props}>
     <Avatar sx={{ bgcolor: "primary.main", width: "2rem", height: "2rem" }}>
       {post.author.slice(0, 1).toUpperCase()}
     </Avatar>
