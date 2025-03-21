@@ -13,7 +13,37 @@ import { ThemeMenu } from "../ThemeMenu";
 import { AccountMenu } from "./AccountMenu";
 import { SearchBar } from "./SearchBar";
 import { NotificationMenu } from "./NotificationMenu";
-import { notifications } from "@/forum/utils/test";
+import { useNotifications } from "@/forum/hooks/notification";
+
+const NotificationMenuItem = () => {
+  const { data, isFetching } = useNotifications();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const handleNotificationClick = (event: React.MouseEvent<HTMLLIElement>) => {
+    setAnchorEl(anchorEl ? null : event.currentTarget);
+  };
+  const handleNotificationClose = () => {
+    setAnchorEl(null);
+  };
+
+  return (
+    <>
+      <MenuItem onClick={handleNotificationClick} disabled={isFetching || !data}>
+        <ListItemIcon>
+          <NotificationsRoundedIcon fontSize="small" />
+        </ListItemIcon>
+        <Badge badgeContent={data?.length} color="primary" anchorOrigin={{ vertical: "top", horizontal: "left" }}>
+          通知
+        </Badge>
+      </MenuItem>
+      <NotificationMenu
+        anchorEl={anchorEl}
+        onClose={handleNotificationClose}
+        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+        transformOrigin={{ horizontal: "left", vertical: "top" }}
+      />
+    </>
+  );
+};
 
 const TopSx = {
   position: "sticky",
@@ -44,14 +74,6 @@ const AppbarMobile = ({ sx, ...props }: ToolbarProps) => {
   const [themeAnchorEl, setThemeAnchorEl] = useState<HTMLElement | null>(null);
   const handleThemeOpen = (event: React.MouseEvent<HTMLElement>) => setThemeAnchorEl(event.currentTarget);
   const handleThemeClose = () => setThemeAnchorEl(null);
-
-  const [notificationAnchorEl, setNotificationAnchorEl] = useState<null | HTMLElement>(null);
-  const handleNotificationClick = (event: React.MouseEvent<HTMLLIElement>) => {
-    setNotificationAnchorEl(notificationAnchorEl ? null : event.currentTarget);
-  };
-  const handleNotificationClose = () => {
-    setNotificationAnchorEl(null);
-  };
 
   return (
     <>
@@ -107,21 +129,7 @@ const AppbarMobile = ({ sx, ...props }: ToolbarProps) => {
                   </Badge>
                 </MenuItem>
 
-                <MenuItem onClick={handleNotificationClick}>
-                  <ListItemIcon>
-                    <NotificationsRoundedIcon fontSize="small" />
-                  </ListItemIcon>
-                  <Badge badgeContent={3} color="primary" anchorOrigin={{ vertical: "top", horizontal: "left" }}>
-                    通知
-                  </Badge>
-                </MenuItem>
-                <NotificationMenu
-                  notifications={notifications}
-                  anchorEl={notificationAnchorEl}
-                  onClose={handleNotificationClose}
-                  anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-                  transformOrigin={{ horizontal: "left", vertical: "top" }}
-                />
+                <NotificationMenuItem />
 
                 <Divider />
 

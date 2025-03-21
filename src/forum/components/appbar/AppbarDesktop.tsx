@@ -11,7 +11,7 @@ import { ThemeMenuWithButton } from "../ThemeMenu";
 import { AccountMenu } from "./AccountMenu";
 import { SearchBar } from "./SearchBar";
 import { NotificationMenu } from "./NotificationMenu";
-import { notifications } from "@/forum/utils/test";
+import { useNotifications } from "@/forum/hooks/notification";
 
 const Title = () => (
   <Tooltip title="返回首頁" arrow>
@@ -37,6 +37,32 @@ const Title = () => (
   </Tooltip>
 );
 
+const NotificationIconButton = () => {
+  const { data, isFetching } = useNotifications();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const handleNotificationClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(anchorEl ? null : event.currentTarget);
+  };
+  const handleNotificationClose = () => {
+    setAnchorEl(null);
+  };
+
+  return (
+    <>
+      <Tooltip title="通知" arrow>
+        <span>
+          <IconButton onClick={handleNotificationClick} loading={isFetching || !data}>
+            <Badge badgeContent={data?.length} color="primary">
+              <NotificationsRoundedIcon fontSize="small" />
+            </Badge>
+          </IconButton>
+        </span>
+      </Tooltip>
+      <NotificationMenu anchorEl={anchorEl} onClose={handleNotificationClose} />
+    </>
+  );
+};
+
 const DesktopSx = {
   position: "sticky",
   top: 0,
@@ -49,14 +75,6 @@ const DesktopSx = {
 } as const;
 
 const AppbarDesktop = ({ sx, ...props }: ToolbarProps) => {
-  const [notificationAnchorEl, setNotificationAnchorEl] = useState<null | HTMLElement>(null);
-  const handleNotificationClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setNotificationAnchorEl(notificationAnchorEl ? null : event.currentTarget);
-  };
-  const handleNotificationClose = () => {
-    setNotificationAnchorEl(null);
-  };
-
   return (
     <Toolbar className="mode-dark" disableGutters sx={{ ...DesktopSx, ...sx }} {...props}>
       <Container sx={{ display: "flex", alignItems: "center", gap: 1, color: "text.primary" }} maxWidth="xl">
@@ -84,18 +102,7 @@ const AppbarDesktop = ({ sx, ...props }: ToolbarProps) => {
             </IconButton>
           </Tooltip>
 
-          <Tooltip title="通知" arrow>
-            <IconButton onClick={handleNotificationClick}>
-              <Badge badgeContent={3} color="primary">
-                <NotificationsRoundedIcon fontSize="small" />
-              </Badge>
-            </IconButton>
-          </Tooltip>
-          <NotificationMenu
-            notifications={notifications}
-            anchorEl={notificationAnchorEl}
-            onClose={handleNotificationClose}
-          />
+          <NotificationIconButton />
 
           <AccountMenu />
         </Box>

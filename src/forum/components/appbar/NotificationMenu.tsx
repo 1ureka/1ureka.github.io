@@ -2,15 +2,17 @@ import { Fragment } from "react";
 import { Divider, List, ListItem, ListItemIcon, ListItemText, Popover } from "@mui/material";
 import CampaignRoundedIcon from "@mui/icons-material/CampaignRounded";
 import type { PopoverProps } from "@mui/material";
-import type { Notification } from "@/forum/utils/test";
+import { useNotifications } from "@/forum/hooks/notification";
 
 type NotificationMenuProps = {
-  notifications: Notification[];
   anchorEl: null | HTMLElement;
   onClose: () => void;
 } & Omit<PopoverProps, "children" | "open" | "onClose">;
 
-const NotificationMenu = ({ notifications, anchorEl, onClose, ...props }: NotificationMenuProps) => {
+const NotificationMenu = ({ anchorEl, onClose, ...props }: NotificationMenuProps) => {
+  const { data } = useNotifications();
+  const notifications = data ?? [];
+
   return (
     <Popover
       anchorEl={anchorEl}
