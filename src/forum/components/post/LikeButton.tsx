@@ -3,7 +3,7 @@ import ThumbUpRoundedIcon from "@mui/icons-material/ThumbUpRounded";
 import { usePostLike } from "@/forum/hooks/interaction";
 
 const LikeButton = ({ postId }: { postId: number }) => {
-  const { isLiked, liked, handleLike, likeButtonDisabled, likeButtonLoading, likeButtonError } = usePostLike(postId);
+  const { isLiked, liked, handleLike, isLoading, disabled } = usePostLike(postId);
 
   return (
     <Tooltip title={isLiked ? "取消喜歡" : "喜歡"} arrow placement="left">
@@ -13,11 +13,11 @@ const LikeButton = ({ postId }: { postId: number }) => {
           size="small"
           color={isLiked ? "primary" : "inherit"}
           onClick={handleLike}
-          disabled={likeButtonDisabled || likeButtonLoading || Boolean(likeButtonError)}
-          loading={likeButtonLoading}
+          disabled={disabled}
+          loading={isLoading}
         >
           <Typography variant="caption" component="span">
-            {likeButtonError ? "錯誤" : `${liked} 個讚`}
+            {`${liked} 個讚`}
           </Typography>
         </Button>
       </span>

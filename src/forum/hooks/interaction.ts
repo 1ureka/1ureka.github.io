@@ -1,12 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "./session";
+import { posts } from "../utils/test";
 
 // ----------------------------------------
 // 假資料與模擬 API
 // ----------------------------------------
 
 const fakeInteractionMap = new Map<string, boolean>();
-const fakePostBaseInteractions = Array.from({ length: 100 }, () => Math.floor(Math.random() * 770) + 30);
 
 // 獲取一個文章的互動數據
 const fakeFetchInteractionsByPostId = async (postId: number) => {
@@ -14,8 +14,7 @@ const fakeFetchInteractionsByPostId = async (postId: number) => {
     setTimeout(() => resolve(), Math.random() * 1000);
   });
 
-  // 從 Map 中取得文章的互動數據 (fakePostBaseInteractions) + fakeInteractionMap
-  const baseLikes = fakePostBaseInteractions[postId % fakePostBaseInteractions.length];
+  const baseLikes = posts.find((post) => post.id === postId)?.likeCount || 0;
   const key = `${postId}:1`;
   const likes = fakeInteractionMap.has(key) ? baseLikes + (fakeInteractionMap.get(key)! ? 1 : 0) : baseLikes;
 
@@ -62,11 +61,7 @@ const usePostLike = (postId: number) => {
   const queryClient = useQueryClient();
 
   // 獲取文章互動數據
-  const {
-    data: postData,
-    isFetching: isPostFetching,
-    error: postError,
-  } = useQuery({
+  const { data: postData, isFetching: isPostFetching } = useQuery({
     queryKey: ["postInteractions", postId],
     queryFn: () => fakeFetchInteractionsByPostId(postId),
     enabled: !loading, // 只有在 session 載入完成後才開始查詢
@@ -74,7 +69,11 @@ const usePostLike = (postId: number) => {
   });
 
   // 獲取用戶與文章的互動狀態
-  const { data: userData, isFetching: isUserFetching } = useQuery({
+  const {
+    data: userData,
+    isFetching: isUserFetching,
+    isSuccess,
+  } = useQuery({
     queryKey: ["userInteraction", postId, user?.id],
     queryFn: () => {
       if (!user?.id) throw new Error("使用者未登入");
@@ -104,11 +103,12 @@ const usePostLike = (postId: number) => {
   };
 
   const liked = postData?.success ? postData.likes : 0;
-  const likeButtonDisabled = !authenticated;
-  const likeButtonLoading = isPending || isPostFetching || isUserFetching;
-  const likeButtonError = postError;
+  const disabled = !authenticated;
+  const isLoading = !authenticated
+    ? isPending || isPostFetching
+    : isPending || isPostFetching || isUserFetching || !isSuccess;
 
-  return { liked, handleLike, isLiked, likeButtonDisabled, likeButtonLoading, likeButtonError };
+  return { liked, handleLike, isLiked, isLoading, disabled };
 };
 
 export { usePostLike };
