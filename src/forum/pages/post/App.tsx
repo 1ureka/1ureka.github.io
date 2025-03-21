@@ -13,8 +13,6 @@ import { NextPostNav, PrevPostNav } from "@/forum/components/post/PrevNextPostNa
 // TODO: 上方有 tabs ，可以切換搜尋結果是 "文章" 或 "用戶" 或 "標籤"
 function App() {
   const { isMd } = useResponsiveFontSize();
-  const param = new URLSearchParams(window.location.search).get("postId");
-  const postId = param && /^\d+$/.test(param) && Number(param) > 0 ? Number(param) : -1;
 
   return (
     <AppWrapper>
@@ -33,13 +31,13 @@ function App() {
               <Box sx={{ flex: 1 }} />
 
               <ButtonGroup variant="text">
-                <PrevPostNav currentPostId={postId} />
-                <NextPostNav currentPostId={postId} />
+                <PrevPostNav />
+                <NextPostNav />
               </ButtonGroup>
             </Box>
 
-            <Post postId={postId} />
-            <Comment postId={postId} />
+            <Post />
+            <Comment />
           </Paper>
         </Container>
       </ScrollArea>
