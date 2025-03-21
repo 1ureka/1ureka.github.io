@@ -6,7 +6,7 @@ import ManageAccountsRoundedIcon from "@mui/icons-material/ManageAccountsRounded
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import LoginRoundedIcon from "@mui/icons-material/LoginRounded";
-import { useSession } from "@/forum/hooks/session";
+import { useSession, useSessionActions } from "@/forum/hooks/session";
 
 const avatorSize = "2rem";
 
@@ -22,6 +22,7 @@ const AccountMenu = ({
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
   const onClose = () => setAnchorEl(null);
+  const { logout } = useSessionActions();
 
   if (loading) {
     return mobile ? (
@@ -88,7 +89,7 @@ const AccountMenu = ({
           <Divider />
           <MenuItem
             onClick={() => {
-              window.location.href = "/src/forum/pages/login/index.html";
+              logout();
               onClose();
             }}
           >
