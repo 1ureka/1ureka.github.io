@@ -1,5 +1,5 @@
-import { Box, Button, Container, Paper } from "@mui/material";
-import ArrowRightAltRoundedIcon from "@mui/icons-material/ArrowRightAltRounded";
+import { Box, Button, ButtonGroup, Container, Paper } from "@mui/material";
+import ArrowBackIosRoundedIcon from "@mui/icons-material/ArrowBackIosRounded";
 
 import "@/forum/app.css";
 import { AppWrapper } from "@/forum/components/AppWrapper";
@@ -8,10 +8,13 @@ import { AppbarMobile } from "@/forum/components/appbar/AppbarMobile";
 import { ScrollArea } from "@/forum/components/ScrollArea";
 import { useResponsiveFontSize } from "@/forum/utils/theme";
 import { Post, Comment } from "@/forum/components/post/FullPost";
+import { NextPostNav, PrevPostNav } from "@/forum/components/post/PrevNextPostNav";
 
 // TODO: 上方有 tabs ，可以切換搜尋結果是 "文章" 或 "用戶" 或 "標籤"
 function App() {
   const { isMd } = useResponsiveFontSize();
+  const param = new URLSearchParams(window.location.search).get("postId");
+  const postId = param && /^\d+$/.test(param) && Number(param) > 0 ? Number(param) : -1;
 
   return (
     <AppWrapper>
@@ -21,12 +24,22 @@ function App() {
         {isMd ? <AppbarDesktop /> : <AppbarMobile />}
 
         <Container maxWidth="lg" sx={{ position: "relative", my: 10 }}>
-          <Paper sx={{ py: 3, borderRadius: 3, border: "1px solid", borderColor: "divider" }} elevation={1}>
-            <Box sx={{ mx: 1.5 }}>
-              <Button variant="outlined" color="primary" fullWidth endIcon={<ArrowRightAltRoundedIcon />}>
-                查看更多
+          <Paper sx={{ pb: 3, borderRadius: 3, border: "1px solid", borderColor: "divider" }} elevation={1}>
+            <Box sx={{ display: "flex", justifyContent: "center", mt: 2, mx: 1 }}>
+              <Button href="/" startIcon={<ArrowBackIosRoundedIcon />} variant="outlined" sx={{ textWrap: "nowrap" }}>
+                {isMd ? "返回首頁" : "首頁"}
               </Button>
+
+              <Box sx={{ flex: 1 }} />
+
+              <ButtonGroup variant="text">
+                <PrevPostNav currentPostId={postId} />
+                <NextPostNav currentPostId={postId} />
+              </ButtonGroup>
             </Box>
+
+            <Post postId={postId} />
+            <Comment postId={postId} />
           </Paper>
         </Container>
       </ScrollArea>
