@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo, useRef } from "react";
 
 const customEvent = new Event("locationchange");
 
@@ -18,10 +18,31 @@ window.history.replaceState = function (...args) {
 type SearchParamsUpdate = Record<string, string | null>;
 
 export function useUrl() {
-  // 初始化 searchParams 狀態，假設完全不使用 SSR
+  // 初始化 searchParams 狀態
   const [searchParams, setSearchParams] = useState(new URLSearchParams(window.location.search));
 
-  // 用於更新 URL 搜索參數的函數
+  // 創建訪問過的參數集合，避免重新渲染時重置
+  const accessedKeysRef = useRef(new Set<string>());
+
+  // 代理 searchParams，使其具有 get、getAll、has 方法
+  const proxySearchParams = useMemo(() => {
+    return {
+      get: (key: string) => {
+        accessedKeysRef.current.add(key);
+        return searchParams.get(key);
+      },
+      getAll: (key: string) => {
+        accessedKeysRef.current.add(key);
+        return searchParams.getAll(key);
+      },
+      has: (key: string) => {
+        accessedKeysRef.current.add(key);
+        return searchParams.has(key);
+      },
+    };
+  }, [searchParams]);
+
+  // 用於更新 URL 參數的函數
   const updateSearchParams = useCallback((updates: SearchParamsUpdate) => {
     const url = new URL(window.location.href);
     const params = url.searchParams;
@@ -39,19 +60,30 @@ export function useUrl() {
     window.history.pushState({}, "", url);
   }, []);
 
-  // 監聽瀏覽器的 popstate 事件（當使用者點擊瀏覽器的前進/後退按鈕時觸發）
+  // 監聽 URL 變化
   useEffect(() => {
-    const handlePopState = () => {
-      setSearchParams(new URLSearchParams(window.location.search));
+    const handleUrlChange = () => {
+      const newParams = new URLSearchParams(window.location.search);
+      let shouldUpdate = false;
+
+      // 檢查是否有被訂閱的參數發生變化
+      accessedKeysRef.current.forEach((key) => {
+        if (searchParams.get(key) !== newParams.get(key)) {
+          shouldUpdate = true;
+        }
+      });
+
+      if (shouldUpdate) setSearchParams(newParams);
     };
 
-    window.addEventListener("popstate", handlePopState);
-    window.addEventListener("locationchange", handlePopState);
+    window.addEventListener("popstate", handleUrlChange);
+    window.addEventListener("locationchange", handleUrlChange);
+
     return () => {
-      window.removeEventListener("popstate", handlePopState);
-      window.removeEventListener("locationchange", handlePopState);
+      window.removeEventListener("popstate", handleUrlChange);
+      window.removeEventListener("locationchange", handleUrlChange);
     };
-  }, []);
+  }, [searchParams, accessedKeysRef]);
 
-  return { searchParams, updateSearchParams };
+  return { searchParams: proxySearchParams, updateSearchParams };
 }
