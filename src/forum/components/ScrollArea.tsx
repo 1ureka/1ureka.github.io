@@ -14,6 +14,7 @@ const overflowSx: BoxProps["sx"] = {
 const ScrollArea = ({ children, ...props }: BoxProps) => (
   <Box
     sx={overflowSx}
+    id="scroll-area"
     className="top"
     onScroll={(e) => {
       const target = e.target as HTMLElement;

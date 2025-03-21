@@ -1,5 +1,5 @@
 import { Skeleton, Stack, Typography } from "@mui/material";
-import { usePosts } from "@/forum/hooks/post";
+import { useInfinitePosts, usePostCounts } from "@/forum/hooks/post";
 import { ExpandedPost } from "../post/ExpandedPost";
 import { ExpandedLoadingPost } from "../post/LoadingPost";
 import { useUrl } from "@/forum/hooks/url";
@@ -9,9 +9,13 @@ const PostList = () => {
   const topic = searchParams.get("topic") ?? undefined;
   const orderBy = searchParams.get("orderBy") ?? "createdAt";
   const orderDesc = searchParams.get("orderDesc") === "true";
-  const { data, isFetching } = usePosts({ topic, orderBy, order: orderDesc ? "desc" : "asc" });
+  const { data, isLoading, isFetchingNextPage } = useInfinitePosts({
+    topic,
+    orderBy,
+    order: orderDesc ? "desc" : "asc",
+  });
 
-  if (isFetching || !data) {
+  if (isLoading || !data) {
     return (
       <Stack sx={{ alignItems: "stretch", mb: 1.5 }}>
         {[...Array(3)].map((_, i) => (
@@ -21,7 +25,7 @@ const PostList = () => {
     );
   }
 
-  if (data.length === 0) {
+  if (data.pages[0].items.length === 0) {
     return (
       <Typography variant="body1" component="p" sx={{ color: "text.secondary", textAlign: "center", mt: 3 }}>
         沒有符合條件的貼文
@@ -31,9 +35,14 @@ const PostList = () => {
 
   return (
     <Stack sx={{ alignItems: "stretch", mb: 1.5 }}>
-      {data.map((postId) => (
-        <ExpandedPost key={postId} postId={postId} />
-      ))}
+      {data.pages.map((page) => page.items.map((postId) => <ExpandedPost key={postId} postId={postId} />))}
+      {isFetchingNextPage && (
+        <Stack sx={{ alignItems: "stretch", mt: 1.5 }}>
+          {[...Array(3)].map((_, i) => (
+            <ExpandedLoadingPost key={i} />
+          ))}
+        </Stack>
+      )}
     </Stack>
   );
 };
@@ -41,7 +50,7 @@ const PostList = () => {
 const PostCounts = () => {
   const { searchParams } = useUrl();
   const topic = searchParams.get("topic") ?? undefined;
-  const { data } = usePosts({ topic });
+  const { data } = usePostCounts({ topic });
 
   if (!data) {
     return (
@@ -55,7 +64,7 @@ const PostCounts = () => {
 
   return (
     <Typography variant="body2" component="span" sx={{ color: "text.secondary" }}>
-      共 {data.length} 篇
+      共 {data} 篇
     </Typography>
   );
 };

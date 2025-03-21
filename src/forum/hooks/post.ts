@@ -2,8 +2,9 @@
 // 假資料與模擬 API
 // ----------------------------------------
 
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { posts } from "../utils/test";
+import { useEffect } from "react";
 
 const sortObjectArray = <T extends object>(array: T[], orderBy: keyof T, order: "asc" | "desc" = "asc"): T[] => {
   return [...array].sort((a, b) => {
@@ -18,7 +19,13 @@ const sortObjectArray = <T extends object>(array: T[], orderBy: keyof T, order: 
   });
 };
 
-const fakeFetchPosts = async ({ limit, topic, orderBy, order = "asc" }: QueryPostsOptions = {}) => {
+const fakeFetchPosts = async ({
+  pageParam = 0, // 頁面參數
+  limit = 10, // 默認每頁 10 條
+  topic,
+  orderBy,
+  order = "asc",
+}: QueryPostsOptions & { pageParam?: number } = {}) => {
   await new Promise((resolve) => setTimeout(resolve, Math.random() * 1000));
 
   // 如果提供了 topic，按標籤篩選
@@ -32,9 +39,18 @@ const fakeFetchPosts = async ({ limit, topic, orderBy, order = "asc" }: QueryPos
 
   const postIds = filteredPosts.map(({ id }) => id);
 
-  // 如果提供了 limit，限制回傳數量
-  if (limit && limit > 0) return postIds.slice(0, limit);
-  return postIds;
+  // 計算當前頁面的資料
+  const startIndex = pageParam * limit;
+  const endIndex = startIndex + limit;
+  const paginatedIds = postIds.slice(startIndex, endIndex);
+
+  // 返回需要的資料結構
+  return {
+    items: paginatedIds,
+    nextPage: endIndex < postIds.length ? pageParam + 1 : null, // 如果還有下一頁，返回下一頁的頁碼
+    totalItems: postIds.length,
+    totalPages: Math.ceil(postIds.length / limit),
+  };
 };
 
 const fakeFetchPostById = async (postId: number) => {
@@ -63,9 +79,54 @@ const staleTime = 1 * 60 * 1000;
 const usePosts = ({ limit, topic, orderBy, order }: QueryPostsOptions = {}) => {
   return useQuery({
     queryKey: ["posts", limit, topic, orderBy, order],
-    queryFn: () => fakeFetchPosts({ limit, topic, orderBy, order }),
+    queryFn: async () => {
+      const result = await fakeFetchPosts({ pageParam: 0, limit, topic, orderBy, order });
+      return result.items;
+    },
     staleTime,
   });
+};
+
+const usePostCounts = ({ topic }: { topic?: string } = {}) => {
+  return useQuery({
+    queryKey: ["postCounts", topic],
+    queryFn: async () => {
+      const result = await fakeFetchPosts({ pageParam: 0, topic, limit: 1 });
+      return result.totalItems;
+    },
+    staleTime,
+  });
+};
+
+const useInfinitePosts = ({ limit = 6, topic, orderBy, order }: QueryPostsOptions = {}) => {
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery({
+    queryKey: ["infinitePosts", limit, topic, orderBy, order],
+    queryFn: ({ pageParam }) => fakeFetchPosts({ pageParam, limit, topic, orderBy, order }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) => lastPage.nextPage,
+    staleTime,
+  });
+
+  useEffect(() => {
+    const scrollContainer = document.getElementById("scroll-area");
+    if (!scrollContainer) return;
+
+    const scrollHandler = () => {
+      const scrollHeight = scrollContainer.scrollHeight;
+      const scrollTop = scrollContainer.scrollTop;
+      const clientHeight = scrollContainer.clientHeight;
+      const margin = 100;
+
+      if (scrollTop + clientHeight >= scrollHeight - margin && hasNextPage && !isFetchingNextPage) {
+        fetchNextPage();
+      }
+    };
+
+    scrollContainer.addEventListener("scroll", scrollHandler);
+    return () => scrollContainer.removeEventListener("scroll", scrollHandler);
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+
+  return { data, isLoading, isFetchingNextPage };
 };
 
 const useTags = () => {
@@ -90,4 +151,4 @@ const usePostById = (postId: number | undefined) => {
   });
 };
 
-export { usePosts, useTags, usePostById };
+export { usePosts, usePostCounts, useInfinitePosts, useTags, usePostById };
