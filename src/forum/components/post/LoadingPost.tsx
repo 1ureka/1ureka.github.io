@@ -2,22 +2,7 @@ import { Box, Button, Chip, Divider, Skeleton, Typography } from "@mui/material"
 import CommentRoundedIcon from "@mui/icons-material/CommentRounded";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 import ThumbUpRoundedIcon from "@mui/icons-material/ThumbUpRounded";
-
-const LoadingPostHeader = () => (
-  <Box sx={{ display: "flex", gap: 1.5, mb: 2, alignItems: "center" }}>
-    <Skeleton variant="circular" sx={{ width: "2rem", height: "2rem" }} animation="wave" />
-
-    <Skeleton variant="rounded" animation="wave">
-      <Typography variant="subtitle1">by loading...</Typography>
-    </Skeleton>
-
-    <Box sx={{ flex: 1 }} />
-
-    <Skeleton variant="rounded" animation="wave">
-      <Typography variant="body2">0000-00-00 00:00</Typography>
-    </Skeleton>
-  </Box>
-);
+import { LoadingPostHeader } from "./PostHeader";
 
 const CollapsedLoadingPost = () => {
   return (
