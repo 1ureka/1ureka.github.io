@@ -80,7 +80,7 @@ const AppbarMobile = ({ sx, ...props }: ToolbarProps) => {
       <Toolbar className="mode-dark" disableGutters sx={{ ...TopSx, ...sx }} {...props}>
         <Container sx={{ display: "flex", alignItems: "center", gap: 1, color: "text.primary" }} maxWidth="xl">
           <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-            <Typography variant="h4" component="h1" sx={{ mr: 1 }}>
+            <Typography variant="h4" component="h1" sx={{ mr: 1, fontFamily: `"timemachine-wa"` }}>
               論壇樣板
             </Typography>
           </Box>

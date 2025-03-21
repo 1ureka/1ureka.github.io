@@ -122,7 +122,7 @@ function App() {
 
                   <Box sx={{ p: 2, display: "flex", justifyContent: "center", alignItems: "center", gap: 1 }}>
                     <ForumRoundedIcon color="primary" sx={{ fontSize: "3rem" }} />
-                    <Typography variant="h3" component="h1">
+                    <Typography variant="h3" component="h1" sx={{ fontFamily: `"timemachine-wa"` }}>
                       論壇樣板
                     </Typography>
                   </Box>

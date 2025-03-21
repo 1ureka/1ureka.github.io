@@ -30,7 +30,7 @@ const Title = () => (
       }}
     >
       <ForumRoundedIcon fontSize="large" color="primary" />
-      <Typography variant="h4" component="h1">
+      <Typography variant="h4" component="h1" sx={{ fontFamily: `"timemachine-wa"` }}>
         論壇樣板
       </Typography>
     </ButtonBase>

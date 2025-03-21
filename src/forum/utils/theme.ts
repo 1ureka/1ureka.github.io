@@ -4,7 +4,7 @@ import { useEffect } from "react";
 const theme = createTheme({
   cssVariables: { colorSchemeSelector: ".mode-%s" },
   typography: {
-    fontFamily: `"timemachine-wa", "NOTO SANS TC"`,
+    fontFamily: `"NOTO SANS TC"`,
   },
   colorSchemes: {
     light: {
