@@ -55,7 +55,7 @@ const fakeFetchPosts = async ({
 
 const fakeFetchPostById = async (postId: number) => {
   await new Promise((resolve) => setTimeout(resolve, Math.random() * 1000));
-  return posts.find((post) => post.id === postId);
+  return posts.find((post) => post.id === postId) ?? null;
 };
 
 const fakeFetchTags = async () => {
@@ -141,9 +141,7 @@ const usePostById = (postId: number | undefined) => {
   return useQuery({
     queryKey: ["post", postId],
     queryFn: () => {
-      if (postId === undefined || Number.isNaN(postId)) {
-        throw new Error("Invalid post ID");
-      }
+      if (postId === undefined || Number.isNaN(postId)) return null;
       return fakeFetchPostById(postId);
     },
     enabled: postId !== undefined && !Number.isNaN(postId) && postId >= 0, // 確保有效的 postId
