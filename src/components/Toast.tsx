@@ -39,8 +39,6 @@ const useToaster = () => {
   }, []);
 };
 
-export { useToaster };
-
 const styledToasterOptions: ToasterProps["toastOptions"] = {
   style: {
     background: "var(--mui-palette-background-paper)",
