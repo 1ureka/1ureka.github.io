@@ -46,7 +46,7 @@ const Comments = () => {
 
   const orderByParam = searchParams.get("orderBy") || "latest";
   const orderBy = orderByParam === "likes" ? "likes" : "latest";
-  const handleOrderByChange = (_: React.ChangeEvent<{}>, newValue: number) => {
+  const handleOrderByChange = (_: React.ChangeEvent<unknown>, newValue: number) => {
     updateSearchParams({ orderBy: newValue === 0 ? "latest" : "likes" });
   };
 
