@@ -30,8 +30,8 @@ const Input = (props: InputProps) => {
   const value = type === "query" ? searchParams.get("topic") ?? "" : "";
 
   const handleQuery = (_: React.SyntheticEvent<Element, Event>, value: string | null) => {
-    if (props.type === "query") props.onSelect();
     if (value === null || !value.trim()) return;
+    if (props.type === "query") props.onSelect();
     if (value === "顯示全部") {
       updateSearchParams({ topic: null });
     } else {
@@ -65,8 +65,13 @@ const Input = (props: InputProps) => {
 
 const TopicAutocomplete = (props: MenuProps & InputProps) => {
   const { type, ...remain } = props;
+
   const menuProps =
-    type === "add" ? (({ onAdd, ...rest }) => rest)(remain as any) : (({ onSelect, ...rest }) => rest)(remain as any);
+    type === "add"
+      ? // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        (({ onAdd, ...rest }) => rest)(remain as MenuProps & { onAdd: (val: string) => void })
+      : // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        (({ onSelect, ...rest }) => rest)(remain as MenuProps & { onSelect: () => void });
 
   return (
     <Menu
