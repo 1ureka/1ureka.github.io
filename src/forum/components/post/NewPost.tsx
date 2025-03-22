@@ -1,8 +1,7 @@
 import { Box, Button, Chip, Divider, Skeleton } from "@mui/material";
-import { IconButton, Menu, TextField, Tooltip, Typography } from "@mui/material";
+import { IconButton, TextField, Tooltip, Typography } from "@mui/material";
 
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
-import EmojiEmotionsRoundedIcon from "@mui/icons-material/EmojiEmotionsRounded";
 import InsertPhotoRoundedIcon from "@mui/icons-material/InsertPhotoRounded";
 import AttachFileRoundedIcon from "@mui/icons-material/AttachFileRounded";
 import PublishRoundedIcon from "@mui/icons-material/PublishRounded";
@@ -12,14 +11,7 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { useState } from "react";
 import { useSession } from "@/forum/hooks/session";
 import { TopicAutocomplete } from "./TopicAutocomplete";
-
-// 常用表情符號分組
-const emojiGroups = [
-  { name: "表情", emojis: ["😀", "😃", "😄", "😁", "😆", "😅", "😂", "🤣", "😊", "😇"] },
-  { name: "手勢", emojis: ["👍", "👎", "✌️", "🤞", "👌", "🤟", "👏", "🙌", "🤝", "👊"] },
-  { name: "符號", emojis: ["❤️", "💔", "💯", "✨", "🔥", "💩", "⭐", "🌟", "💪", "🎉"] },
-  { name: "動物", emojis: ["🐶", "🐱", "🐭", "🐹", "🦊", "🐻", "🐼", "🐨", "🦁", "🐮"] },
-];
+import { EmojiMenu } from "./EmojiMenu";
 
 const NewPost = () => {
   const { user, authenticated, loading } = useSession();
@@ -72,17 +64,6 @@ const NewPost = () => {
   const handleAddTag = (value: string) => {
     setTags([...tags, value]);
     handleAddTagClose();
-  };
-
-  // 表情符號選擇器相關狀態
-  const [emojiAnchorEl, setEmojiAnchorEl] = useState<null | HTMLElement>(null);
-  const emojiMenuOpen = Boolean(emojiAnchorEl);
-
-  const handleEmojiMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setEmojiAnchorEl(event.currentTarget);
-  };
-  const handleEmojiMenuClose = () => {
-    setEmojiAnchorEl(null);
   };
 
   // 插入表情符號到內容中
@@ -266,52 +247,7 @@ const NewPost = () => {
         <Box sx={{ position: "absolute", inset: 0, bgcolor: "divider", opacity: 0.35 }} />
 
         <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-          <Tooltip title="表情符號" arrow>
-            <span>
-              <IconButton size="small" onClick={handleEmojiMenuOpen} disabled={!authenticated || loading}>
-                <EmojiEmotionsRoundedIcon fontSize="small" />
-              </IconButton>
-            </span>
-          </Tooltip>
-
-          {/* 表情符號選單 */}
-          <Menu
-            anchorEl={emojiAnchorEl}
-            open={emojiMenuOpen}
-            onClose={handleEmojiMenuClose}
-            slotProps={{ paper: { sx: { borderRadius: 2, maxHeight: 300, width: 280 } } }}
-          >
-            {emojiGroups.map((group) => (
-              <Box key={group.name} sx={{ px: 1 }}>
-                <Typography variant="caption" sx={{ color: "text.secondary", pl: 1 }}>
-                  {group.name}
-                </Typography>
-                <Box sx={{ display: "flex", flexWrap: "wrap" }}>
-                  {group.emojis.map((emoji) => (
-                    <IconButton
-                      key={emoji}
-                      size="small"
-                      disableRipple
-                      onClick={() => {
-                        handleEmojiInsert(emoji);
-                        handleEmojiMenuClose();
-                      }}
-                      sx={{
-                        fontSize: "1.2rem",
-                        p: 0.5,
-                        minWidth: "auto",
-                        borderRadius: 1,
-                        "&:hover": { bgcolor: "action.hover" },
-                      }}
-                    >
-                      {emoji}
-                    </IconButton>
-                  ))}
-                </Box>
-                {group !== emojiGroups[emojiGroups.length - 1] && <Divider sx={{ mt: 0.5 }} />}
-              </Box>
-            ))}
-          </Menu>
+          <EmojiMenu onEmojiClick={handleEmojiInsert} disabled={!authenticated || loading} />
 
           <Tooltip title="插入照片" arrow>
             <span>
