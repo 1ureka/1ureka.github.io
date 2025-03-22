@@ -1,13 +1,8 @@
 import { useCommentsByCommentId, useCommentsByPostId } from "@/forum/hooks/comment";
 import { Box, Divider, Skeleton, Tab, Tabs, Typography } from "@mui/material";
 import { Comment, LoadingComment } from "./Comment";
+import { NewComment } from "@/forum/components/post/NewComment";
 import { useUrl } from "@/forum/hooks/url";
-
-const NoCommentsDisplay = () => (
-  <Typography variant="body2" sx={{ color: "text.secondary", textAlign: "center", mt: 2 }}>
-    還沒有留言，快來發表您的看法吧！
-  </Typography>
-);
 
 const Replaies = ({ commentId }: { commentId: number }) => {
   const { data: comments, isFetching } = useCommentsByCommentId(commentId);
@@ -83,7 +78,20 @@ const Comments = () => {
       </>
     );
 
-  if (!comments || comments.length === 0) return <NoCommentsDisplay />;
+  if (!comments || comments.length === 0)
+    return (
+      <>
+        <Box sx={{ pr: 2 }}>
+          <NewComment />
+        </Box>
+
+        <Box sx={{ pb: 2 }}>
+          <Typography variant="body2" sx={{ color: "text.secondary", textAlign: "center", mt: 2 }}>
+            還沒有留言，快來發表您的看法吧！
+          </Typography>
+        </Box>
+      </>
+    );
 
   return (
     <>
@@ -103,6 +111,7 @@ const Comments = () => {
       <Divider />
 
       <Box sx={{ pr: 2, "& > .comment:nth-of-type(odd):before": oddBeforeSx }}>
+        <NewComment className="comment" />
         {comments.map((commentId) => (
           <Comment key={commentId} commentId={commentId} nestedLevel={0} className="comment" />
         ))}
