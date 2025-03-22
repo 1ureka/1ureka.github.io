@@ -10,8 +10,8 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
 import { useState } from "react";
 import { useSession } from "@/forum/hooks/session";
-import { TopicAutocomplete } from "./TopicAutocomplete";
-import { EmojiMenu } from "./EmojiMenu";
+import { TopicAutocomplete } from "./shared/TopicAutocomplete";
+import { EmojiMenu } from "./shared/EmojiMenu";
 
 const NewPost = () => {
   const { user, authenticated, loading } = useSession();

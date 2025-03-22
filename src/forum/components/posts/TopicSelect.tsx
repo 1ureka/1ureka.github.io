@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Tooltip, Typography } from "@mui/material";
-import { TopicAutocomplete } from "../post/TopicAutocomplete";
+import { TopicAutocomplete } from "../postElement/shared/TopicAutocomplete";
 import { useUrl } from "@/forum/hooks/url";
 
 const TopicSelect = () => {

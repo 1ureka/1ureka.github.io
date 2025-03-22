@@ -1,7 +1,7 @@
 import { useSession } from "@/forum/hooks/session";
 import { Avatar, Box, Button, TextField, type BoxProps } from "@mui/material";
 import { useState } from "react";
-import { EmojiMenu } from "./EmojiMenu";
+import { EmojiMenu } from "../postElement/shared/EmojiMenu";
 
 const NewComment = ({ sx, ...props }: BoxProps) => {
   const { user, authenticated, loading } = useSession();

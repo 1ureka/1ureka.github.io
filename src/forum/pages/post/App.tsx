@@ -7,8 +7,8 @@ import { AppbarDesktop } from "@/forum/components/appbar/AppbarDesktop";
 import { AppbarMobile } from "@/forum/components/appbar/AppbarMobile";
 import { ScrollArea } from "@/forum/components/ScrollArea";
 import { useResponsiveFontSize } from "@/forum/utils/theme";
-import { Post } from "@/forum/components/post/FullPost";
-import { NextPostNav, PrevPostNav } from "@/forum/components/post/PrevNextPostNav";
+import { Post } from "@/forum/components/postElement/FullPost";
+import { NextPostNav, PrevPostNav } from "@/forum/components/postPage/PrevNextPostNav";
 import { Comments } from "@/forum/components/post/Comments";
 
 function App() {

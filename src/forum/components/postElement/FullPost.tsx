@@ -8,9 +8,9 @@ import ThumbUpRoundedIcon from "@mui/icons-material/ThumbUpRounded";
 import SellIcon from "@mui/icons-material/Sell";
 
 import { usePostById } from "@/forum/hooks/post";
-import { LoadingPostHeader, PostHeader } from "./PostHeader";
-import { TopicTags } from "./TopicTags";
-import { LikeButton } from "./LikeButton";
+import { LoadingPostHeader, PostHeader } from "./shared/PostHeader";
+import { TopicTags } from "./shared/TopicTags";
+import { LikeButton } from "./shared/LikeButton";
 import { useUrl } from "@/forum/hooks/url";
 
 // 用於生成載入中的貼文內容 (每個lenght長度是0~1)

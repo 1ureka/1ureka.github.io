@@ -1,7 +1,6 @@
 import { Skeleton, Stack, Typography } from "@mui/material";
 import { useInfinitePosts, usePostCounts } from "@/forum/hooks/post";
-import { ExpandedPost } from "../post/ExpandedPost";
-import { ExpandedLoadingPost } from "../post/LoadingPost";
+import { ExpandedPost, ExpandedLoadingPost } from "../postElement/ExpandedPost";
 import { useUrl } from "@/forum/hooks/url";
 
 const PostList = () => {

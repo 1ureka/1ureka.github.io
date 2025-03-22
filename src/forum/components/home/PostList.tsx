@@ -1,7 +1,6 @@
 import { Stack } from "@mui/material";
-import { CollapsedPost } from "../post/CollapsedPost";
+import { CollapsedLoadingPost, CollapsedPost } from "../postElement/CollapsedPost";
 import { usePosts } from "@/forum/hooks/post";
-import { CollapsedLoadingPost } from "../post/LoadingPost";
 
 const PostList = () => {
   const { data, isFetching } = usePosts({ limit: 5 });
