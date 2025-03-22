@@ -1,3 +1,11 @@
+@font-face {
+  font-family: "Comfortaa";
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: block;
+  src: url(../assets/fonts/Comfortaa-VariableFont_wght.ttf) format("truetype");
+}
+
 /* timemachine-wa */
 @font-face {
   font-family: "timemachine-wa";
@@ -23,4 +31,9 @@
 
 body {
   overflow: hidden;
+}
+
+a {
+  text-decoration: none;
+  color: unset;
 }
