@@ -1,29 +1,113 @@
+import type { User, Notification, Post, Comment } from "./dataType";
+
+const notifications: Notification[] = [
+  {
+    id: 1,
+    title: "歡迎加入 論壇樣板！",
+    content: "感謝您加入論壇樣板，希望您在這裡能找到有趣的討論。",
+  },
+  {
+    id: 2,
+    title: "預計維護公告",
+    content: "論壇樣板將於下週四的 10:00 AM 進行系統維護，預計需 2 小時。",
+  },
+  {
+    id: 3,
+    title: "新留言通知",
+    content: "您的貼文 'React 18 的並發模式值得升級嗎？' 有新留言。",
+  },
+];
+
+const authors: User[] = [
+  {
+    id: 2,
+    name: "Alice Johnson",
+    description: "前端開發者和 React 愛好者。",
+  },
+  {
+    id: 3,
+    name: "Bob Smith",
+    description: "UI/UX 設計師和 CSS 愛好者。",
+  },
+  {
+    id: 4,
+    name: "Charlie Brown",
+    description: "網頁效能工程師和 Vite 粉絲。",
+  },
+  {
+    id: 5,
+    name: "David Lee",
+    description: "全端開發者和 Next.js 專家。",
+  },
+  {
+    id: 6,
+    name: "Eve Walker",
+    description: "安全研究員和身份驗證專家。",
+  },
+  {
+    id: 7,
+    name: "Frank Harris",
+    description: "React 開發者和 Zustand 使用者。",
+  },
+  {
+    id: 8,
+    name: "Grace Miller",
+    description: "UI 設計師和 shadcn/ui 貢獻者。",
+  },
+  {
+    id: 9,
+    name: "Henry Wilson",
+    description: "React 開發者和 Server Components 倡導者。",
+  },
+  {
+    id: 10,
+    name: "Isabella Carter",
+    description: "後端開發者和 Supabase 使用者。",
+  },
+  {
+    id: 11,
+    name: "Jack Anderson",
+    description: "前端開發者和 React Query/SWR 使用者。",
+  },
+  {
+    id: 12,
+    name: "Karen Martinez",
+    description: "網頁效能專家和優化愛好者。",
+  },
+  {
+    id: 13,
+    name: "Liam Rodriguez",
+    description: "後端開發者和 Bun 愛好者。",
+  },
+  {
+    id: 14,
+    name: "Mia Thompson",
+    description: "WebAssembly 愛好者和效能專家。",
+  },
+  {
+    id: 15,
+    name: "Noah White",
+    description: "前端開發者和技術趨勢追隨者。",
+  },
+  {
+    id: 16,
+    name: "Olivia Lewis",
+    description: "前端開發者和 Turbopack 使用者。",
+  },
+];
+
+const user: User = {
+  id: 1,
+  name: "1ureka",
+  description: "",
+};
+
 const generateRandomFile = (): File => {
   const randomSize = Math.floor(Math.random() * 1000) + 1000;
   const randomName = Math.random().toString(36).substring(7);
   return new File([new ArrayBuffer(randomSize)], `${randomName}.pdf`, {
     type: "application/pdf",
   });
-};
-
-type Photo = {
-  name: string;
-  url: string;
-};
-
-type Post = {
-  id: number;
-  title: string;
-  author: string; // 作者名稱(英文)
-  content: string;
-  tags: string[]; // 盡量超過 3 個
-  photos?: Photo[]; // 照片連結
-  attachments?: File[]; // 附件連結
-  viewCount: number;
-  likeCount: number;
-  replyCount: number;
-  createdAt: Date;
-  updatedAt: Date;
 };
 
 const posts: Post[] = [
@@ -243,108 +327,164 @@ const posts: Post[] = [
   },
 ];
 
-type User = {
-  id: number;
-  name: string;
-};
-
-const user: User = {
-  id: 1,
-  name: "1ureka",
-};
-
-type Author = {
-  name: string;
-  description: string;
-};
-
-// 根據 posts 寫出 authors
-const authors: Author[] = [
-  {
-    name: "Alice Johnson",
-    description: "前端開發者和 React 愛好者。",
-  },
-  {
-    name: "Bob Smith",
-    description: "UI/UX 設計師和 CSS 愛好者。",
-  },
-  {
-    name: "Charlie Brown",
-    description: "網頁效能工程師和 Vite 粉絲。",
-  },
-  {
-    name: "David Lee",
-    description: "全端開發者和 Next.js 專家。",
-  },
-  {
-    name: "Eve Walker",
-    description: "安全研究員和身份驗證專家。",
-  },
-  {
-    name: "Frank Harris",
-    description: "React 開發者和 Zustand 使用者。",
-  },
-  {
-    name: "Grace Miller",
-    description: "UI 設計師和 shadcn/ui 貢獻者。",
-  },
-  {
-    name: "Henry Wilson",
-    description: "React 開發者和 Server Components 倡導者。",
-  },
-  {
-    name: "Isabella Carter",
-    description: "後端開發者和 Supabase 使用者。",
-  },
-  {
-    name: "Jack Anderson",
-    description: "前端開發者和 React Query/SWR 使用者。",
-  },
-  {
-    name: "Karen Martinez",
-    description: "網頁效能專家和優化愛好者。",
-  },
-  {
-    name: "Liam Rodriguez",
-    description: "後端開發者和 Bun 愛好者。",
-  },
-  {
-    name: "Mia Thompson",
-    description: "WebAssembly 愛好者和效能專家。",
-  },
-  {
-    name: "Noah White",
-    description: "前端開發者和技術趨勢追隨者。",
-  },
-  {
-    name: "Olivia Lewis",
-    description: "前端開發者和 Turbopack 使用者。",
-  },
-];
-
-type Notification = {
-  id: number;
-  title: string;
-  content: string;
-};
-
-const notifications: Notification[] = [
+//TODO: 製作 comments 假資料，完成後 Post 不會再有 replyCount 欄位
+const comments: Comment[] = [
+  // 主留言
   {
     id: 1,
-    title: "歡迎加入 論壇樣板！",
-    content: "感謝您加入論壇樣板，希望您在這裡能找到有趣的討論。",
+    postId: 1,
+    userId: 4,
+    content: "非常同意作者的觀點，並發模式確實解決了很多效能問題，特別是在處理大量資料的應用程式中。",
+    createdAt: new Date("2024-03-01T10:15:00"),
+    updatedAt: new Date("2024-03-01T10:15:00"),
   },
   {
     id: 2,
-    title: "預計維護公告",
-    content: "論壇樣板將於下週四的 10:00 AM 進行系統維護，預計需 2 小時。",
+    postId: 1,
+    userId: 7,
+    content: "我最近在一個專案中實作了 startTransition，確實讓用戶體驗提升不少，尤其是在資料載入時的反應速度。",
+    createdAt: new Date("2024-03-01T11:30:00"),
+    updatedAt: new Date("2024-03-01T11:30:00"),
   },
   {
     id: 3,
-    title: "新留言通知",
-    content: "您的貼文 'React 18 的並發模式值得升級嗎？' 有新留言。",
+    postId: 1,
+    userId: 10,
+    content: "雖然並發模式很好，但升級時需要注意某些第三方庫的相容性問題，我遇到過一些 UI 庫不相容的情況。",
+    createdAt: new Date("2024-03-01T13:45:00"),
+    updatedAt: new Date("2024-03-01T13:45:00"),
+  },
+  {
+    id: 4,
+    postId: 1,
+    userId: 3,
+    content: "有人可以分享一下實際使用 useTransition 的經驗嗎？我還在考慮是否要在專案中導入。",
+    createdAt: new Date("2024-03-01T15:20:00"),
+    updatedAt: new Date("2024-03-01T15:20:00"),
+  },
+  {
+    id: 5,
+    postId: 1,
+    userId: 9,
+    content: "除了並發模式，React 18 的自動批次處理(Automatic Batching)也是一個很棒的功能，可以減少渲染次數。",
+    createdAt: new Date("2024-03-01T16:10:00"),
+    updatedAt: new Date("2024-03-01T16:10:00"),
+  },
+  {
+    id: 6,
+    postId: 1,
+    userId: 12,
+    content: "我覺得作者低估了並發模式的學習曲線，對於小型團隊來說可能不值得為此升級。",
+    createdAt: new Date("2024-03-01T17:30:00"),
+    updatedAt: new Date("2024-03-01T17:30:00"),
+  },
+  {
+    id: 7,
+    postId: 1,
+    userId: 5,
+    content: "想請問一下，有沒有推薦的教學資源來學習這些新功能？官方文件有點太技術性了。",
+    createdAt: new Date("2024-03-01T19:05:00"),
+    updatedAt: new Date("2024-03-01T19:05:00"),
+  },
+  {
+    id: 8,
+    postId: 1,
+    userId: 14,
+    content: "效能優化不應該只依賴框架的新功能，良好的代碼結構和懂得使用 useMemo/useCallback 同樣重要。",
+    createdAt: new Date("2024-03-01T20:40:00"),
+    updatedAt: new Date("2024-03-01T20:40:00"),
+  },
+
+  // 回覆留言
+  {
+    id: 9,
+    postId: 1,
+    parentid: 3,
+    userId: 6,
+    content: "我也遇到過這個問題！特別是一些動畫庫，有時會有奇怪的行為。你遇到問題的是哪個庫？",
+    createdAt: new Date("2024-03-01T14:15:00"),
+    updatedAt: new Date("2024-03-01T14:15:00"),
+  },
+  {
+    id: 10,
+    postId: 1,
+    parentid: 9,
+    userId: 10,
+    content: "主要是 react-spring 和一些比較老的 UI 庫，需要做不少調整才能正常運作。",
+    createdAt: new Date("2024-03-01T14:30:00"),
+    updatedAt: new Date("2024-03-01T14:30:00"),
+  },
+  {
+    id: 11,
+    postId: 1,
+    parentid: 4,
+    userId: 7,
+    content: "我們在一個有大量表格資料的應用中使用了 useTransition，當用戶篩選資料時體驗好很多，界面不會卡頓。",
+    createdAt: new Date("2024-03-01T15:45:00"),
+    updatedAt: new Date("2024-03-01T15:45:00"),
+  },
+  {
+    id: 12,
+    postId: 1,
+    parentid: 11,
+    userId: 3,
+    content: "感謝分享！這正是我們專案中遇到的情況，看來值得一試。",
+    createdAt: new Date("2024-03-01T16:00:00"),
+    updatedAt: new Date("2024-03-01T16:00:00"),
+  },
+  {
+    id: 13,
+    postId: 1,
+    parentid: 7,
+    userId: 8,
+    content: "我推薦 'React Working Group' 的 YouTube 頻道，他們有很多關於 React 18 新功能的實用教學。",
+    createdAt: new Date("2024-03-01T19:20:00"),
+    updatedAt: new Date("2024-03-01T19:20:00"),
+  },
+  {
+    id: 14,
+    postId: 1,
+    parentid: 7,
+    userId: 11,
+    content: "Josh Comeau 的部落格也有一些很好的文章介紹並發模式，解釋得很清楚。",
+    createdAt: new Date("2024-03-01T19:40:00"),
+    updatedAt: new Date("2024-03-01T19:40:00"),
+  },
+  {
+    id: 15,
+    postId: 1,
+    parentid: 6,
+    userId: 2,
+    content: "我不完全同意。雖然有學習曲線，但即使是小團隊也能從並發模式中獲益，特別是處理表單輸入時。",
+    createdAt: new Date("2024-03-01T18:00:00"),
+    updatedAt: new Date("2024-03-01T18:00:00"),
+  },
+  {
+    id: 16,
+    postId: 1,
+    userId: 13,
+    content: "有人測試過並發模式在移動設備上的效能差異嗎？我很好奇在低端手機上的表現如何。",
+    createdAt: new Date("2024-03-01T21:15:00"),
+    updatedAt: new Date("2024-03-01T21:15:00"),
+  },
+  {
+    id: 17,
+    postId: 1,
+    parentid: 16,
+    userId: 15,
+    content: "我們有在各種Android設備上測試過，在低端設備上效果更明顯，因為並發模式能更好地管理有限的計算資源。",
+    createdAt: new Date("2024-03-01T21:35:00"),
+    updatedAt: new Date("2024-03-01T21:35:00"),
+  },
+  {
+    id: 18,
+    postId: 1,
+    parentid: 8,
+    userId: 14,
+    content: "補充一點，React 18的並發模式和良好的代碼結構結合起來使用，效果會更好。兩者不是互斥的關係。",
+    createdAt: new Date("2024-03-01T22:10:00"),
+    updatedAt: new Date("2024-03-01T22:10:00"),
   },
 ];
 
-export { user, posts, authors, notifications };
-export type { User, Post, Author, Notification };
+export { notifications, authors, user, posts, comments };

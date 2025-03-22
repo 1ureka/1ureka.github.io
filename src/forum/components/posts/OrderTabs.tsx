@@ -2,7 +2,7 @@ import { Box, Stack, Tab, Tabs, Tooltip, Typography } from "@mui/material";
 import SortRoundedIcon from "@mui/icons-material/SortRounded";
 import ArrowUpwardRoundedIcon from "@mui/icons-material/ArrowUpwardRounded";
 import { useUrl } from "@/forum/hooks/url";
-import type { Post } from "@/forum/utils/test";
+import type { Post } from "@/forum/utils/dataType";
 
 const orders: (keyof Post)[] = ["title", "createdAt", "updatedAt", "replyCount", "viewCount", "likeCount"];
 const ordersTC = ["標題", "建立時間", "更新時間", "回覆數", "瀏覽數", "讚數"];

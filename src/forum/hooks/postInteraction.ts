@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "./session";
-import { posts } from "../utils/test";
+import { posts } from "../utils/data";
 
 // ----------------------------------------
 // 假資料與模擬 API

@@ -1,4 +1,4 @@
-import type { Post } from "@/forum/utils/test";
+import type { Post } from "@/forum/utils/dataType";
 import { Chip } from "@mui/material";
 
 type TopicTagsProps = {

@@ -3,7 +3,7 @@
 // ----------------------------------------
 
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { posts } from "../utils/test";
+import { posts } from "../utils/data";
 import { useEffect } from "react";
 
 const sortObjectArray = <T extends object>(array: T[], orderBy: keyof T, order: "asc" | "desc" = "asc"): T[] => {

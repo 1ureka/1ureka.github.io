@@ -3,7 +3,7 @@
 // ----------------------------------------
 
 import { useQuery } from "@tanstack/react-query";
-import { notifications } from "../utils/test";
+import { notifications } from "../utils/data";
 
 const fakeFetchNotifications = async () => {
   await new Promise<void>((resolve) => setTimeout(() => resolve(), Math.random() * 1000));

@@ -1,5 +1,6 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { user as mockUser, type User } from "../utils/test";
+import { user as mockUser } from "../utils/data";
+import type { User } from "../utils/dataType";
 
 export type Session =
   | {

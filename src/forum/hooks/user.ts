@@ -5,7 +5,7 @@
 // ----------------------------------------
 
 import { useQuery } from "@tanstack/react-query";
-import { authors } from "../utils/test";
+import { authors } from "../utils/data";
 
 const fakeFetchUsers = async () => {
   await new Promise((resolve) => setTimeout(resolve, Math.random() * 1000));

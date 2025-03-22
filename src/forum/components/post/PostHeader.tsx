@@ -1,4 +1,4 @@
-import type { Post } from "@/forum/utils/test";
+import type { Post } from "@/forum/utils/dataType";
 import { Avatar, Box, BoxProps, Skeleton, Tooltip, Typography } from "@mui/material";
 
 const PostHeader = ({ post, sx, ...props }: { post: Post } & BoxProps) => {
