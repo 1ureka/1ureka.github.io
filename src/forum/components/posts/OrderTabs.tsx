@@ -11,12 +11,12 @@ const OrderTabs = () => {
   const { searchParams, updateSearchParams } = useUrl();
 
   // 從 URL 獲取排序欄位，如果不存在則使用默認值
-  const orderBy = searchParams.get("orderBy") || orders[0];
+  const orderBy = searchParams.get("orderBy") || orders[1];
   const orderDesc = searchParams.get("orderDesc") === "true";
 
   // 根據 orderBy 找到對應的索引
   let orderId = orders.findIndex((field) => field === orderBy);
-  if (orderId === -1) orderId = 0;
+  if (orderId === -1) orderId = 1;
 
   const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
     updateSearchParams({

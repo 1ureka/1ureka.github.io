@@ -2,6 +2,9 @@ import { Skeleton, Stack, Typography } from "@mui/material";
 import { useInfinitePosts, usePostCounts } from "@/forum/hooks/post";
 import { ExpandedPost, ExpandedLoadingPost } from "../postElement/ExpandedPost";
 import { useUrl } from "@/forum/hooks/url";
+import type { Post } from "@/forum/utils/dataType";
+
+const orders: (keyof Post)[] = ["title", "createdAt", "updatedAt", "replyCount", "viewCount", "likeCount"];
 
 const PostList = () => {
   const { searchParams } = useUrl();
@@ -10,7 +13,7 @@ const PostList = () => {
   const orderDesc = searchParams.get("orderDesc") === "true";
   const { data, isLoading, isFetchingNextPage } = useInfinitePosts({
     topic,
-    orderBy,
+    orderBy: orders.includes(orderBy as keyof Post) ? orderBy : "createdAt",
     order: orderDesc ? "desc" : "asc",
   });
 
