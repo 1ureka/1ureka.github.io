@@ -1,19 +1,22 @@
 import { useSession } from "@/forum/hooks/session";
 import { Avatar, Box, Button, TextField, type BoxProps } from "@mui/material";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { EmojiMenu } from "../postElement/shared/EmojiMenu";
 
-const NewComment = ({ sx, ...props }: BoxProps) => {
+type NewCommentProps = {
+  onCancel?: () => void;
+};
+
+const NewComment = ({ sx, onCancel, ...props }: BoxProps & NewCommentProps) => {
   const { user, authenticated, loading } = useSession();
 
+  const ref = useRef<HTMLInputElement | null>(null);
   const [content, setContent] = useState("");
 
   // 插入表情符號到內容中
   const handleEmojiInsert = (emoji: string) => {
     setContent((prevContent) => {
-      const textField = document.querySelector(
-        "input[name='comment'], textarea[name='comment']"
-      ) as HTMLTextAreaElement;
+      const textField = ref.current;
 
       if (textField) {
         const start = textField.selectionStart || 0;
@@ -49,6 +52,7 @@ const NewComment = ({ sx, ...props }: BoxProps) => {
 
         <Box sx={{ flex: 1 }} component="form">
           <TextField
+            inputRef={ref}
             variant="standard"
             size="small"
             name="comment"
@@ -68,7 +72,10 @@ const NewComment = ({ sx, ...props }: BoxProps) => {
                 size="small"
                 disabled={!authenticated || loading}
                 sx={{ color: "text.secondary" }}
-                onClick={() => setContent("")}
+                onClick={() => {
+                  setContent("");
+                  onCancel && onCancel();
+                }}
               >
                 取消
               </Button>
