@@ -1,4 +1,4 @@
-import { Box, Button, ButtonGroup, Container, Paper } from "@mui/material";
+import { Box, Button, ButtonGroup, Container, Divider, Paper, Tab, Tabs, Typography } from "@mui/material";
 import ArrowBackIosRoundedIcon from "@mui/icons-material/ArrowBackIosRounded";
 
 import "@/forum/app.css";
@@ -7,8 +7,9 @@ import { AppbarDesktop } from "@/forum/components/appbar/AppbarDesktop";
 import { AppbarMobile } from "@/forum/components/appbar/AppbarMobile";
 import { ScrollArea } from "@/forum/components/ScrollArea";
 import { useResponsiveFontSize } from "@/forum/utils/theme";
-import { Post, Comment } from "@/forum/components/post/FullPost";
+import { Post } from "@/forum/components/post/FullPost";
 import { NextPostNav, PrevPostNav } from "@/forum/components/post/PrevNextPostNav";
+import { Comments } from "@/forum/components/post/Comments";
 
 function App() {
   const { isMd } = useResponsiveFontSize();
@@ -36,7 +37,23 @@ function App() {
             </Box>
 
             <Post />
-            <Comment />
+
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+              <Typography variant="subtitle1" component="h3" sx={{ px: 2 }}>
+                15則留言
+              </Typography>
+
+              <Divider flexItem orientation="vertical" variant="middle" />
+
+              <Tabs value={0} onChange={() => {}}>
+                <Tab label="最新" />
+                <Tab label="最多人按讚" />
+              </Tabs>
+            </Box>
+
+            <Divider />
+
+            <Comments />
           </Paper>
         </Container>
       </ScrollArea>
