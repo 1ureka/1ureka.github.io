@@ -33,7 +33,7 @@ const oddBeforeSx = {
   position: "absolute",
   inset: 0,
   bgcolor: "divider",
-  opacity: 0.25,
+  opacity: 0.2,
   pointerEvents: "none",
   mr: -2,
 } as const;
@@ -87,7 +87,7 @@ const Comments = () => {
 
         <Box sx={{ pb: 2 }}>
           <Typography variant="body2" sx={{ color: "text.secondary", textAlign: "center", mt: 2 }}>
-            還沒有留言，快來發表您的看法吧！
+            還沒有留言，快來發表你的看法吧！
           </Typography>
         </Box>
       </>
