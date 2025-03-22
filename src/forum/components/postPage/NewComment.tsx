@@ -74,7 +74,7 @@ const NewComment = ({ sx, onCancel, ...props }: BoxProps & NewCommentProps) => {
                 sx={{ color: "text.secondary" }}
                 onClick={() => {
                   setContent("");
-                  onCancel && onCancel();
+                  if (onCancel !== undefined) onCancel();
                 }}
               >
                 取消

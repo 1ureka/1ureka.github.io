@@ -5,6 +5,7 @@ import { useUrl } from "@/forum/hooks/url";
 import type { Post } from "@/forum/utils/dataType";
 
 const orders: (keyof Post)[] = ["title", "createdAt", "updatedAt", "replyCount", "viewCount", "likeCount"];
+const isOrder = (value: string): value is keyof Post => orders.includes(value as keyof Post);
 
 const PostList = () => {
   const { searchParams } = useUrl();
@@ -13,7 +14,7 @@ const PostList = () => {
   const orderDesc = searchParams.get("orderDesc") === "true";
   const { data, isLoading, isFetchingNextPage } = useInfinitePosts({
     topic,
-    orderBy: orders.includes(orderBy as keyof Post) ? orderBy : "createdAt",
+    orderBy: isOrder(orderBy) ? orderBy : "createdAt",
     order: orderDesc ? "desc" : "asc",
   });
 

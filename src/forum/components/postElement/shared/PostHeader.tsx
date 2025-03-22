@@ -8,7 +8,16 @@ const PostHeader = ({ post, sx, ...props }: { post: Post } & BoxProps) => {
       <Avatar sx={{ bgcolor: "primary.main", width: "2rem", height: "2rem" }}>
         {post.author.slice(0, 1).toUpperCase()}
       </Avatar>
-      <Typography variant="subtitle1" sx={{ color: "text.secondary" }}>
+      <Typography
+        variant="subtitle1"
+        component="a"
+        href={`/src/forum/pages/users/index.html?user=${post.author}`}
+        sx={{
+          color: "text.secondary",
+          textDecoration: "none",
+          "&:hover": { textDecoration: "underline", color: "text.primary" },
+        }}
+      >
         by {post.author}
       </Typography>
       <Box sx={{ flex: 1 }} />
