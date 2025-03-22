@@ -1,7 +1,6 @@
 import { Box, Button, ButtonBase, Chip, CircularProgress } from "@mui/material";
 import { Divider, Skeleton, Stack, Tooltip, Typography } from "@mui/material";
 
-import CommentRoundedIcon from "@mui/icons-material/CommentRounded";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 import AttachFileRoundedIcon from "@mui/icons-material/AttachFileRounded";
 import BookmarkAddRoundedIcon from "@mui/icons-material/BookmarkAddRounded";
@@ -18,7 +17,7 @@ import { useUrl } from "@/forum/hooks/url";
 const randomLengthArray = (length: number) => Array.from({ length }, () => Math.random() * 0.7 + 0.3);
 
 const LoadingFullPost = () => (
-  <Box sx={{ py: 1.5 }}>
+  <Box sx={{ pt: 1.5 }}>
     <Divider />
 
     <Box sx={{ position: "relative", py: 1.5, height: "fit-content" }}>
@@ -71,12 +70,6 @@ const LoadingFullPost = () => (
         </Typography>
       </Button>
 
-      <Button color="inherit" startIcon={<CommentRoundedIcon />} size="small" loading={true}>
-        <Typography variant="caption" component="span">
-          100 則回覆
-        </Typography>
-      </Button>
-
       <Box sx={{ flex: 1 }} />
 
       <Button color="inherit" startIcon={<VisibilityRoundedIcon />} size="small" loading={true}>
@@ -102,7 +95,7 @@ const FullPost = () => {
 
   if (!post) {
     return (
-      <Box sx={{ py: 1.5 }}>
+      <Box sx={{ pt: 1.5 }}>
         <Divider />
         <Typography variant="body1" component="p" sx={{ color: "text.secondary", textAlign: "center", mt: 6 }}>
           找不到該貼文
@@ -112,7 +105,7 @@ const FullPost = () => {
   }
 
   return (
-    <Box sx={{ py: 1.5 }}>
+    <Box sx={{ pt: 1.5 }}>
       <title>{`論壇樣板 | ${post.title}`}</title>
       <Divider />
 
@@ -226,17 +219,6 @@ const FullPost = () => {
           </Typography>
         </Button>
 
-        <Button
-          startIcon={<CommentRoundedIcon />}
-          disabled
-          size="small"
-          sx={{ "button&.Mui-disabled": { color: "text.secondary", opacity: 0.8 } }}
-        >
-          <Typography variant="caption" component="span">
-            {post.replyCount} 則回覆
-          </Typography>
-        </Button>
-
         <Box sx={{ flex: 1 }} />
 
         <Button
@@ -256,8 +238,4 @@ const FullPost = () => {
   );
 };
 
-const Comment = () => {
-  return <div></div>;
-};
-
-export { FullPost as Post, Comment };
+export { FullPost as Post };
