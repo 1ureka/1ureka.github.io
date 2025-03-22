@@ -33,7 +33,7 @@ type Post = {
 type Comment = {
   id: number;
   postId: number; // 所屬的貼文 ID
-  parentid?: number; // 父留言 ID，若為空則為主留言
+  parentId?: number; // 父留言 ID，若為空則為主留言
   userId: number;
   content: string;
   createdAt: Date;
