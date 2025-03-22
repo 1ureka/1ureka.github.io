@@ -8,6 +8,7 @@ import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownR
 import { authors } from "@/forum/utils/data";
 import { useCommentById, useCommentsByCommentId } from "@/forum/hooks/comment";
 import { Replies } from "./Comments";
+import { NewComment } from "./NewComment";
 
 interface CommentProps {
   commentId: number;
@@ -32,6 +33,9 @@ const Comment = ({ commentId, nestedLevel, sx, ...props }: CommentProps & BoxPro
 
   const [isShowReplies, setIsShowReplies] = useState(false);
   const handleSwitchReplies = () => setIsShowReplies((prev) => !prev);
+
+  const [isShowNewComment, setIsShowNewComment] = useState(false);
+  const handleSwitchNewComment = () => setIsShowNewComment((prev) => !prev);
 
   if (isFetching || !comment || isFetchingComments) {
     return <LoadingComment nestedLevel={nestedLevel} sx={sx} {...props} />;
@@ -106,10 +110,17 @@ const Comment = ({ commentId, nestedLevel, sx, ...props }: CommentProps & BoxPro
               <Typography variant="caption">{likeCount > 0 ? likeCount : "讚"}</Typography>
             </Button>
 
-            <Button size="small" startIcon={<ReplyRoundedIcon />} sx={{ color: "text.secondary" }}>
-              <Typography variant="caption">回覆</Typography>
+            <Button
+              size="small"
+              startIcon={<ReplyRoundedIcon />}
+              sx={{ color: "text.secondary" }}
+              onClick={handleSwitchNewComment}
+            >
+              <Typography variant="caption">{isShowNewComment ? "取消回覆" : "回覆"}</Typography>
             </Button>
           </Box>
+
+          {isShowNewComment && <NewComment onCancel={() => setIsShowNewComment(false)} />}
 
           {comments && comments.length > 0 && (
             <Button

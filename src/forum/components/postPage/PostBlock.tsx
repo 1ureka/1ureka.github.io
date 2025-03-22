@@ -55,7 +55,7 @@ const PostBlock = () => {
         <Box sx={{ position: "relative" }}>
           <Box sx={{ position: "absolute", inset: 0, bgcolor: "divider", opacity: 0.35 }} />
           <Typography variant="h6" sx={{ p: 2 }}>
-            或許你會對這些熱門貼文感興趣:
+            我們找不到這篇貼文...但你可能會喜歡這些！
           </Typography>
         </Box>
 
