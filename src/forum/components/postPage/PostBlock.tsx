@@ -1,8 +1,32 @@
-import { usePostById } from "@/forum/hooks/post";
-import { useUrl } from "@/forum/hooks/url";
-import { FullPost, LoadingFullPost } from "../postElement/FullPost";
 import { Box, Divider, Typography } from "@mui/material";
+import SentimentDissatisfiedRoundedIcon from "@mui/icons-material/SentimentDissatisfiedRounded";
+
+import { useUrl } from "@/forum/hooks/url";
+import { usePostById, usePosts } from "@/forum/hooks/post";
+import { ExpandedLoadingPost, ExpandedPost } from "../postElement/ExpandedPost";
+import { FullPost, LoadingFullPost } from "../postElement/FullPost";
 import { Comments } from "./Comments";
+
+const FallbackPosts = () => {
+  const { data: posts, isFetching } = usePosts({ limit: 2, orderBy: "likeCount", order: "desc" });
+
+  if (isFetching || !posts) {
+    return (
+      <Box>
+        <ExpandedLoadingPost />
+        <ExpandedLoadingPost />
+      </Box>
+    );
+  }
+
+  return (
+    <Box>
+      {posts.map((postId) => (
+        <ExpandedPost key={postId} postId={postId} />
+      ))}
+    </Box>
+  );
+};
 
 const PostBlock = () => {
   const { searchParams } = useUrl();
@@ -18,9 +42,26 @@ const PostBlock = () => {
     return (
       <Box sx={{ pt: 1.5 }}>
         <Divider />
-        <Typography variant="body1" component="p" sx={{ color: "text.secondary", textAlign: "center", mt: 6 }}>
-          找不到該貼文
-        </Typography>
+
+        <Box sx={{ py: 6, display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
+          <SentimentDissatisfiedRoundedIcon sx={{ fontSize: "6rem", color: "action.disabled" }} />
+          <Typography variant="body1" component="p" sx={{ color: "text.secondary", textAlign: "center" }}>
+            貼文不存在或已被刪除
+          </Typography>
+        </Box>
+
+        <Divider />
+
+        <Box sx={{ position: "relative" }}>
+          <Box sx={{ position: "absolute", inset: 0, bgcolor: "divider", opacity: 0.35 }} />
+          <Typography variant="h6" sx={{ p: 2 }}>
+            或許你會對這些熱門貼文感興趣:
+          </Typography>
+        </Box>
+
+        <Divider />
+
+        <FallbackPosts />
       </Box>
     );
   }
