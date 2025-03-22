@@ -1,15 +1,15 @@
 import { useCommentsByCommentId, useCommentsByPostId } from "@/forum/hooks/comment";
 import { Box, Divider, Skeleton, Tab, Tabs, Typography } from "@mui/material";
 import { Comment, LoadingComment } from "./Comment";
-import { NewComment } from "@/forum/components/post/NewComment";
+import { NewComment } from "@/forum/components/postPage/NewComment";
 import { useUrl } from "@/forum/hooks/url";
 
-const Replaies = ({ commentId }: { commentId: number }) => {
+const Replies = ({ commentId }: { commentId: number }) => {
   const { data: comments, isFetching } = useCommentsByCommentId(commentId);
 
   if (isFetching)
     return (
-      <Box sx={{ pl: 2 }}>
+      <Box>
         {[...Array(1)].map((_, i) => (
           <LoadingComment key={i} nestedLevel={1} />
         ))}
@@ -19,7 +19,7 @@ const Replaies = ({ commentId }: { commentId: number }) => {
   if (!comments) return null;
 
   return (
-    <Box sx={{ pl: 2 }}>
+    <Box>
       {comments.map((commentId) => (
         <Comment key={commentId} commentId={commentId} nestedLevel={1} />
       ))}
@@ -120,4 +120,4 @@ const Comments = () => {
   );
 };
 
-export { Comments, Replaies };
+export { Comments, Replies };

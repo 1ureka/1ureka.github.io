@@ -10,7 +10,7 @@ import { useResponsiveFontSize } from "@/forum/utils/theme";
 function App() {
   const { isMd } = useResponsiveFontSize();
   const urlParams = new URLSearchParams(window.location.search);
-  if (!urlParams.get("user")) return window.location.replace("/");
+  if (!urlParams.get("user")) window.location.replace("/");
 
   return (
     <AppWrapper>

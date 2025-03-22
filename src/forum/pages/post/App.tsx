@@ -7,9 +7,8 @@ import { AppbarDesktop } from "@/forum/components/appbar/AppbarDesktop";
 import { AppbarMobile } from "@/forum/components/appbar/AppbarMobile";
 import { ScrollArea } from "@/forum/components/ScrollArea";
 import { useResponsiveFontSize } from "@/forum/utils/theme";
-import { Post } from "@/forum/components/postElement/FullPost";
 import { NextPostNav, PrevPostNav } from "@/forum/components/postPage/PrevNextPostNav";
-import { Comments } from "@/forum/components/post/Comments";
+import { PostBlock } from "@/forum/components/postPage/PostBlock";
 
 function App() {
   const { isMd } = useResponsiveFontSize();
@@ -23,7 +22,7 @@ function App() {
 
         <Container maxWidth="lg" sx={{ position: "relative", my: 10 }}>
           <Paper sx={{ pb: 3, borderRadius: 3, border: "1px solid", borderColor: "divider" }} elevation={1}>
-            <Box sx={{ display: "flex", justifyContent: "center", mt: 2, mx: 1 }}>
+            <Box sx={{ display: "flex", justifyContent: "center", mt: 2, mx: 2 }}>
               <Button href="/" startIcon={<ArrowBackIosRoundedIcon />} variant="outlined" sx={{ textWrap: "nowrap" }}>
                 {isMd ? "返回首頁" : "首頁"}
               </Button>
@@ -36,9 +35,7 @@ function App() {
               </ButtonGroup>
             </Box>
 
-            <Post />
-
-            <Comments />
+            <PostBlock />
           </Paper>
         </Container>
       </ScrollArea>

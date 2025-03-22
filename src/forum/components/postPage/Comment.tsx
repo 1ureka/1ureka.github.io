@@ -7,7 +7,7 @@ import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownR
 
 import { authors } from "@/forum/utils/data";
 import { useCommentById, useCommentsByCommentId } from "@/forum/hooks/comment";
-import { Replaies } from "./Comments";
+import { Replies } from "./Comments";
 
 interface CommentProps {
   commentId: number;
@@ -130,7 +130,7 @@ const Comment = ({ commentId, nestedLevel, sx, ...props }: CommentProps & BoxPro
             </Button>
           )}
 
-          {isShowReplies && comments && <Replaies commentId={commentId} />}
+          {isShowReplies && comments && <Replies commentId={commentId} />}
         </Box>
       </Box>
     </Box>
