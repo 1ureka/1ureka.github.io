@@ -1,15 +1,16 @@
 import { usePostById } from "@/forum/hooks/post";
-import { Button, Typography } from "@mui/material";
+import { Button, ButtonProps, Typography } from "@mui/material";
 import ArrowRightRoundedIcon from "@mui/icons-material/ArrowRightRounded";
 import ArrowLeftRoundedIcon from "@mui/icons-material/ArrowLeftRounded";
 import { useUrl } from "@/forum/hooks/url";
 
-const buttonTypoSx = {
+const buttonTypoSx: ButtonProps["sx"] = {
   display: "-webkit-box",
   WebkitLineClamp: 1,
   WebkitBoxOrient: "vertical",
   overflow: "hidden",
   textOverflow: "ellipsis",
+  textTransform: "none",
 } as const;
 
 const PrevPostNav = () => {
