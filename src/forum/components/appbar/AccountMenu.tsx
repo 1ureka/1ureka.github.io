@@ -1,5 +1,5 @@
-import { IconButton, ListItemIcon, MenuItem, MenuList, Popover, Typography } from "@mui/material";
-import { Avatar, BottomNavigationAction, Box, Button, CircularProgress, Divider, Drawer } from "@mui/material";
+import { IconButton, ListItemIcon, MenuItem, MenuList, Popover, styled, Typography } from "@mui/material";
+import { Avatar, BottomNavigationAction, Box, Button, CircularProgress, Divider, SwipeableDrawer } from "@mui/material";
 
 import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 import ManageAccountsRoundedIcon from "@mui/icons-material/ManageAccountsRounded";
@@ -92,6 +92,19 @@ const AccountMenuDesktop = () => {
   );
 };
 
+const Puller = styled("div")(({ theme }) => ({
+  height: 30,
+  width: 6,
+  backgroundColor: theme.palette.divider,
+  borderRadius: 3,
+  position: "absolute",
+  left: 8,
+  top: "calc(50% - 15px)",
+  ...theme.applyStyles("dark", {
+    backgroundColor: theme.palette.divider,
+  }),
+}));
+
 const AccountMenuMobile = () => {
   const { user, loading, authenticated } = useSession();
   const [open, setOpen] = useState(false);
@@ -124,7 +137,15 @@ const AccountMenuMobile = () => {
         />
       )}
 
-      <Drawer anchor="right" open={open} onClose={handleClose} slotProps={{ paper: { sx: { width: 240 } } }}>
+      <SwipeableDrawer
+        anchor="right"
+        open={open}
+        onClose={handleClose}
+        onOpen={handleOpen}
+        slotProps={{ paper: { sx: { width: 240 } } }}
+      >
+        <Puller />
+
         <Box sx={{ p: 3, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <Typography variant="h6">帳戶</Typography>
           <IconButton onClick={handleClose}>
@@ -133,7 +154,7 @@ const AccountMenuMobile = () => {
         </Box>
 
         <AccountMenuList onItemClick={handleClose} />
-      </Drawer>
+      </SwipeableDrawer>
     </>
   );
 };

@@ -1,5 +1,5 @@
-import { Badge, BottomNavigationAction, List, ListItem, ListItemIcon, ListItemText } from "@mui/material";
-import { Box, Divider, Drawer, IconButton, Typography, Popover, Tooltip } from "@mui/material";
+import { Badge, BottomNavigationAction, List, ListItem, ListItemIcon, ListItemText, styled } from "@mui/material";
+import { Box, Divider, SwipeableDrawer, IconButton, Typography, Popover, Tooltip } from "@mui/material";
 import type { ListProps } from "@mui/material";
 
 import NotificationsRoundedIcon from "@mui/icons-material/NotificationsRounded";
@@ -61,6 +61,19 @@ const NotificationMenuDesktop = () => {
   );
 };
 
+const Puller = styled("div")(({ theme }) => ({
+  height: 30,
+  width: 6,
+  backgroundColor: theme.palette.divider,
+  borderRadius: 3,
+  position: "absolute",
+  right: 8,
+  top: "calc(50% - 15px)",
+  ...theme.applyStyles("dark", {
+    backgroundColor: theme.palette.divider,
+  }),
+}));
+
 const NotificationMenuMobile = () => {
   const { data, isFetching } = useNotifications();
   const [open, setOpen] = useState(false);
@@ -81,7 +94,9 @@ const NotificationMenuMobile = () => {
         }
       />
 
-      <Drawer anchor="left" open={open} onClose={handleClose}>
+      <SwipeableDrawer anchor="left" open={open} onClose={handleClose} onOpen={handleOpen}>
+        <Puller />
+
         <Box sx={{ p: 3, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <Typography variant="h6">通知</Typography>
           <IconButton onClick={handleClose}>
@@ -90,7 +105,7 @@ const NotificationMenuMobile = () => {
         </Box>
 
         <NotificationList />
-      </Drawer>
+      </SwipeableDrawer>
     </>
   );
 };
