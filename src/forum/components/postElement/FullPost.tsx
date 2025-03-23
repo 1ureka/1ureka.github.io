@@ -10,7 +10,8 @@ import SellIcon from "@mui/icons-material/Sell";
 import { LoadingPostHeader, PostHeader } from "./shared/PostHeader";
 import { TopicTags } from "./shared/TopicTags";
 import { LikeButton } from "./shared/LikeButton";
-import { Post } from "@/forum/utils/dataType";
+import type { Post } from "@/forum/utils/dataType";
+import { FavButton } from "./shared/FavButton";
 
 // 用於生成載入中的貼文內容 (每個lenght長度是0~1)
 const randomLengthArray = (length: number) => Array.from({ length }, () => Math.random() * 0.7 + 0.3);
@@ -190,12 +191,7 @@ const FullPost = ({ post }: { post: Post }) => (
       <Box sx={{ position: "absolute", inset: 0, bgcolor: "divider", opacity: 0.35 }} />
 
       <LikeButton postId={post.id} />
-
-      <Button color="inherit" startIcon={<BookmarkAddRoundedIcon />} size="small">
-        <Typography variant="caption" component="span">
-          收藏該貼文
-        </Typography>
-      </Button>
+      <FavButton postId={post.id} />
 
       <Box sx={{ flex: 1 }} />
 
