@@ -1,42 +1,98 @@
-import { Fragment } from "react";
-import { Divider, List, ListItem, ListItemIcon, ListItemText, Popover } from "@mui/material";
+import { Badge, BottomNavigationAction, List, ListItem, ListItemIcon, ListItemText } from "@mui/material";
+import { Box, Divider, Drawer, IconButton, Typography, Popover, Tooltip } from "@mui/material";
+import type { ListProps } from "@mui/material";
+
+import NotificationsRoundedIcon from "@mui/icons-material/NotificationsRounded";
 import CampaignRoundedIcon from "@mui/icons-material/CampaignRounded";
-import type { PopoverProps } from "@mui/material";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+
+import { Fragment, useState } from "react";
 import { useNotifications } from "@/forum/hooks/notification";
 
-type NotificationMenuProps = {
-  anchorEl: null | HTMLElement;
-  onClose: () => void;
-} & Omit<PopoverProps, "children" | "open" | "onClose">;
-
-const NotificationMenu = ({ anchorEl, onClose, ...props }: NotificationMenuProps) => {
+const NotificationList = (props: ListProps) => {
   const { data } = useNotifications();
   const notifications = data ?? [];
 
   return (
-    <Popover
-      anchorEl={anchorEl}
-      open={Boolean(anchorEl)}
-      onClose={onClose}
-      anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
-      transformOrigin={{ horizontal: "center", vertical: "top" }}
-      {...props}
-    >
-      <List sx={{ maxWidth: 320 }} dense>
-        {notifications.map((notification, i) => (
-          <Fragment key={notification.id}>
-            <ListItem key={notification.id} alignItems="flex-start">
-              <ListItemIcon>
-                <CampaignRoundedIcon />
-              </ListItemIcon>
-              <ListItemText primary={notification.title} secondary={notification.content} />
-            </ListItem>
-            {i < notifications.length - 1 && <Divider component="li" />}
-          </Fragment>
-        ))}
-      </List>
-    </Popover>
+    <List dense {...props}>
+      {notifications.map((notification, i) => (
+        <Fragment key={notification.id}>
+          <ListItem key={notification.id} alignItems="flex-start">
+            <ListItemIcon>
+              <CampaignRoundedIcon />
+            </ListItemIcon>
+            <ListItemText primary={notification.title} secondary={notification.content} />
+          </ListItem>
+          {i < notifications.length - 1 && <Divider component="li" />}
+        </Fragment>
+      ))}
+    </List>
   );
 };
 
-export { NotificationMenu };
+const NotificationMenuDesktop = () => {
+  const { data, isFetching } = useNotifications();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const handleClose = () => setAnchorEl(null);
+  const handleOpen = (e: React.MouseEvent<HTMLButtonElement>) => setAnchorEl(anchorEl ? null : e.currentTarget);
+
+  return (
+    <>
+      <Tooltip title="通知" arrow>
+        <span>
+          <IconButton onClick={handleOpen} loading={isFetching || !data}>
+            <Badge badgeContent={data?.length} color="primary">
+              <NotificationsRoundedIcon fontSize="small" />
+            </Badge>
+          </IconButton>
+        </span>
+      </Tooltip>
+
+      <Popover
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+        anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
+        transformOrigin={{ horizontal: "center", vertical: "top" }}
+      >
+        <NotificationList sx={{ maxWidth: 320 }} />
+      </Popover>
+    </>
+  );
+};
+
+const NotificationMenuMobile = () => {
+  const { data, isFetching } = useNotifications();
+  const [open, setOpen] = useState(false);
+  const handleClose = () => setOpen(false);
+  const handleOpen = () => setOpen(true);
+
+  return (
+    <>
+      <BottomNavigationAction
+        showLabel
+        label="通知"
+        onClick={handleOpen}
+        disabled={isFetching || !data}
+        icon={
+          <Badge badgeContent={data?.length || 0} color="primary">
+            <NotificationsRoundedIcon />
+          </Badge>
+        }
+      />
+
+      <Drawer anchor="left" open={open} onClose={handleClose}>
+        <Box sx={{ p: 3, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <Typography variant="h6">通知</Typography>
+          <IconButton onClick={handleClose}>
+            <CloseRoundedIcon />
+          </IconButton>
+        </Box>
+
+        <NotificationList />
+      </Drawer>
+    </>
+  );
+};
+
+export { NotificationMenuDesktop, NotificationMenuMobile };
