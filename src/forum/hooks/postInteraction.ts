@@ -1,59 +1,68 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "./session";
 import { posts } from "../utils/data";
+import { useRef } from "react";
 
 // ----------------------------------------
 // 假資料與模擬 API
 // ----------------------------------------
 
-const fakeInteractionMap = new Map<string, boolean>();
+type InteractionType = "like" | "favorite";
 
-// 獲取一個文章的互動數據
-const fakeFetchInteractionsByPostId = async (postId: number) => {
-  await new Promise<void>((resolve) => {
-    setTimeout(() => resolve(), Math.random() * 1000);
-  });
+interface FetchInteractionParams {
+  type?: InteractionType;
+  postId: number;
+}
+
+interface UpdateInteractionParams {
+  type: InteractionType;
+  postId: number;
+  value: boolean;
+}
+
+const fakeInteractionMap = new Map<string, boolean>();
+const latestRequestIds = new Map<string, number>();
+
+// 建立互動鍵值的輔助函數
+const createInteractionKey = (postId: number, userId: number, type: InteractionType) => `${postId}:${userId}:${type}`;
+
+// 獲取互動數量
+const fakeFetchInteractions = async ({ postId, type = "like" }: FetchInteractionParams) => {
+  await new Promise<void>((res) => setTimeout(res, Math.random() * 1000));
+
+  // 使用假定的用戶 ID 1 作為預設 (之後應該用 cookie 或 session)
+  const key = createInteractionKey(postId, 1, type);
 
   const baseLikes = posts.find((post) => post.id === postId)?.likeCount || 0;
-  const key = `${postId}:1`;
-  const likes = fakeInteractionMap.has(key) ? baseLikes + (fakeInteractionMap.get(key)! ? 1 : 0) : baseLikes;
+  const count = fakeInteractionMap.has(key) ? baseLikes + (fakeInteractionMap.get(key)! ? 1 : 0) : baseLikes;
 
-  return likes;
+  return count;
 };
 
-// 獲取一個互動數據本身
-const fakeFetchInteractions = async (postId: number, userId: number) => {
-  await new Promise<void>((resolve) => {
-    setTimeout(() => resolve(), Math.random() * 1000);
-  });
+// 獲取單個互動狀態
+const fakeFetchInteractionStatus = async ({ postId, type = "like" }: FetchInteractionParams) => {
+  await new Promise<void>((res) => setTimeout(res, Math.random() * 1000));
 
-  // 從 Map 中取得使用者的互動狀態
-  const key = `${postId}:${userId}`;
-  const liked = fakeInteractionMap.has(key) ? fakeInteractionMap.get(key)! : Math.random() < 0.5;
+  // 使用假定的用戶 ID 1 作為預設 (之後應該用 cookie 或 session)
+  const key = createInteractionKey(postId, 1, type);
+  const state = fakeInteractionMap.has(key) ? fakeInteractionMap.get(key)! : Math.random() < 0.5;
 
-  // 如果是第一次查詢，儲存隨機生成的狀態
-  if (!fakeInteractionMap.has(key)) {
-    fakeInteractionMap.set(key, liked);
-  }
+  if (!fakeInteractionMap.has(key)) fakeInteractionMap.set(key, state);
 
-  return liked;
+  return state;
 };
 
-// 追蹤每個貼文與用戶組合的最新請求 ID
-const latestRequestIds = new Map<string, number>();
-const fakePostInteraction = async (postId: number, userId: number, liked: boolean) => {
-  const key = `${postId}:${userId}`;
+// 更新互動狀態
+const fakeUpdateInteraction = async ({ postId, type, value }: UpdateInteractionParams) => {
+  await new Promise<void>((res) => setTimeout(res, Math.random() * 1000));
+
+  // 使用假定的用戶 ID 1 作為預設 (之後應該用 cookie 或 session)
+  const key = createInteractionKey(postId, 1, type);
   const requestId = Date.now();
   latestRequestIds.set(key, requestId);
 
-  await new Promise<void>((resolve) => {
-    setTimeout(() => resolve(), Math.random() * 1000);
-  });
-
   // 只有當這是最新請求時才更新互動狀態
-  if (latestRequestIds.get(key) === requestId) {
-    fakeInteractionMap.set(key, liked);
-  }
+  if (latestRequestIds.get(key) === requestId) fakeInteractionMap.set(key, value);
 };
 
 // ----------------------------------------
@@ -62,97 +71,65 @@ const fakePostInteraction = async (postId: number, userId: number, liked: boolea
 
 const staleTime = 0;
 
-const useLikeCounts = (postId: number) => {
-  const { data, isLoading } = useQuery({
-    queryKey: ["postLikeCounts", postId],
-    queryFn: () => fakeFetchInteractionsByPostId(postId),
-    staleTime,
-  });
-
-  const likeCount = data ?? 0;
-  return { likeCount, isLoading };
-};
-
-const useIsLiked = (postId: number) => {
+const useLikeStatus = (postId: number) => {
   const { user, authenticated, loading: isLoadingSession } = useSession();
+  const fallback = { isLiked: false, likeCount: 0 };
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["userIsLiked", postId, user?.id],
-    queryFn: () => {
-      if (!user?.id) throw new Error("使用者未登入");
-      return fakeFetchInteractions(postId, user.id);
-    },
-    enabled: !isLoadingSession && authenticated && !!user?.id,
     staleTime,
+    queryKey: ["likeStatus", postId, user?.id],
+    enabled: !isLoadingSession,
+    queryFn: async () => {
+      let result: { isLiked: boolean; likeCount: number } = fallback;
+      result.likeCount = await fakeFetchInteractions({ postId, type: "like" });
+      if (authenticated) result.isLiked = await fakeFetchInteractionStatus({ postId, type: "like" });
+      return result;
+    },
   });
 
-  const isLiked = data ?? false;
-  return { isLiked, isLoading: isLoading || isLoadingSession || isError };
+  const { isLiked, likeCount } = data ?? fallback;
+  return { isLiked, likeCount, isLoading: isLoading || isLoadingSession || isError };
 };
 
-const useLikeMutation = (postId: number) => {
+const usePostLikeButton = (postId: number) => {
   const queryClient = useQueryClient();
   const { user, authenticated, loading: isLoadingSession } = useSession();
+  const { isLiked, likeCount, isLoading: loading } = useLikeStatus(postId);
 
-  const isReady = authenticated && !!user?.id && !isLoadingSession;
+  // 是否已經準備好發送互動請求
+  const disabled = !authenticated || isLoadingSession || loading || user?.id === undefined;
 
+  // 使用 useMutation 處理點讚操作
+  const lastCalled = useRef(0);
   const { mutate } = useMutation({
-    mutationFn: async ({ postId }: { postId: number }) => {
-      if (!user?.id) throw new Error("使用者未登入");
-      // 這時的 optimisticLiked 是已由 onMutate 更新過的狀態，因此是目標值
-      const optimisticLiked = queryClient.getQueryData(["userIsLiked", postId, user?.id]);
-      return fakePostInteraction(postId, user.id, Boolean(optimisticLiked));
+    mutationFn: async (isLiked: boolean) => fakeUpdateInteraction({ postId, type: "like", value: isLiked }),
+    onMutate: () => {
+      lastCalled.current++;
+      return lastCalled.current;
     },
-    onMutate: async ({ postId }) => {
-      // 取消相關查詢，避免競態條件
-      await queryClient.cancelQueries({ queryKey: ["userIsLiked", postId, user?.id] });
-      await queryClient.cancelQueries({ queryKey: ["postLikeCounts", postId] });
-
-      // 儲存舊的狀態以便回滾
-      const previousLiked = queryClient.getQueryData(["userIsLiked", postId, user?.id]);
-      const previousCount = queryClient.getQueryData(["postLikeCounts", postId]) as number;
-
-      // Optimistic 更新
-      queryClient.setQueryData(["userIsLiked", postId, user?.id], (previousLiked: boolean) => {
-        queryClient.setQueryData(["postLikeCounts", postId], (previousCount: number) => {
-          return previousLiked ? previousCount - 1 : previousCount + 1;
-        });
-        return !previousLiked;
-      });
-
-      return { previousLiked, previousCount };
-    },
-    onError: (_, { postId }, context) => {
-      // 發生錯誤時回滾到先前的狀態
-      if (context) {
-        queryClient.setQueryData(["userIsLiked", postId, user?.id], context.previousLiked);
-        queryClient.setQueryData(["postLikeCounts", postId], context.previousCount);
-      }
-    },
-    onSettled: (_, __, { postId }) => {
-      // 請求完成後，使相關查詢失效以獲取最新資料
-      queryClient.invalidateQueries({ queryKey: ["userIsLiked", postId, user?.id] });
-      queryClient.invalidateQueries({ queryKey: ["postLikeCounts", postId] });
+    onSettled: (_, __, ___, context) => {
+      if (context === lastCalled.current) queryClient.invalidateQueries({ queryKey: ["likeStatus", postId, user?.id] });
     },
   });
 
-  const handleLike = () => {
-    if (!isReady) return;
-    mutate({ postId });
-  };
+  const handleLike = disabled
+    ? () => {}
+    : async () => {
+        // 取消相關查詢，避免競態條件
+        await queryClient.cancelQueries({ queryKey: ["likeStatus", postId, user?.id] });
 
-  return { handleLike, isReady };
+        // 樂觀更新 + 發送請求
+        queryClient.setQueryData(
+          ["likeStatus", postId, user?.id],
+          (prevStatus: { isLiked: boolean; likeCount: number }) => {
+            const isLiked = !prevStatus.isLiked;
+            mutate(isLiked);
+            return { isLiked, likeCount: prevStatus.likeCount + (isLiked ? 1 : -1) };
+          }
+        );
+      };
+
+  return { isLiked, likeCount, handleLike, loading, disabled };
 };
 
-const usePostLike = (postId: number) => {
-  const { likeCount, isLoading: isFetchingCounts } = useLikeCounts(postId);
-  const { isLiked, isLoading: isLoadingLiked } = useIsLiked(postId);
-  const { handleLike, isReady } = useLikeMutation(postId);
-
-  const disabled = !isReady;
-  const isLoading = isFetchingCounts || isLoadingLiked;
-
-  return { likeCount, isLiked, handleLike, isLoading, disabled };
-};
-
-export { usePostLike };
+export { usePostLikeButton };
