@@ -92,7 +92,7 @@ const AppbarMobile = ({ sx, ...props }: ToolbarProps) => {
         <AccountMenuMobile />
       </BottomNavigation>
 
-      <ThemeDrawer open={themeOpen} onClose={handleThemeClose} />
+      <ThemeDrawer open={themeOpen} onClose={handleThemeClose} onOpen={handleThemeOpen} />
     </>
   );
 };
