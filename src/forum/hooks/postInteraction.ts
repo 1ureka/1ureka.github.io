@@ -132,4 +132,49 @@ const usePostLikeButton = (postId: number) => {
   return { isLiked, likeCount, handleLike, loading, disabled };
 };
 
-export { usePostLikeButton };
+const usePostFavButton = (postId: number) => {
+  const queryClient = useQueryClient();
+  const { user, authenticated, loading: isLoadingSession } = useSession();
+  const { data, isLoading, isError } = useQuery({
+    staleTime,
+    queryKey: ["favoriteStatus", postId, user?.id],
+    enabled: !isLoadingSession && authenticated,
+    queryFn: async () => fakeFetchInteractionStatus({ postId, type: "favorite" }),
+  });
+
+  const isFavorited = data ?? false;
+  const loading = isLoading || isLoadingSession || isError;
+  const disabled = !authenticated || loading || user?.id === undefined;
+
+  // 使用 useMutation 處理收藏操作
+  const lastCalled = useRef(0);
+  const { mutate } = useMutation({
+    mutationFn: async (isFavorited: boolean) => fakeUpdateInteraction({ postId, type: "favorite", value: isFavorited }),
+    onMutate: () => {
+      lastCalled.current++;
+      return lastCalled.current;
+    },
+    onSettled: (_, __, ___, context) => {
+      if (context === lastCalled.current)
+        queryClient.invalidateQueries({ queryKey: ["favoriteStatus", postId, user?.id] });
+    },
+  });
+
+  const handleFavorite = disabled
+    ? () => {}
+    : async () => {
+        // 取消相關查詢，避免競態條件
+        await queryClient.cancelQueries({ queryKey: ["favoriteStatus", postId, user?.id] });
+
+        // 樂觀更新 + 發送請求
+        queryClient.setQueryData(["favoriteStatus", postId, user?.id], (prev: boolean) => {
+          const isFavorited = !prev;
+          mutate(isFavorited);
+          return isFavorited;
+        });
+      };
+
+  return { isFavorited, handleFavorite, loading, disabled };
+};
+
+export { usePostLikeButton, usePostFavButton };
