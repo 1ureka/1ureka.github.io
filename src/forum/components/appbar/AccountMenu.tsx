@@ -12,8 +12,10 @@ import { useState } from "react";
 import { useSession, useSessionActions } from "@/forum/hooks/session";
 
 const AccountMenuList = ({ onItemClick }: { onItemClick: () => void }) => {
+  const [loading, setLoading] = useState(false);
   const { logout } = useSessionActions();
   const handleLogout = () => {
+    setLoading(true);
     logout();
     onItemClick();
   };
@@ -38,11 +40,11 @@ const AccountMenuList = ({ onItemClick }: { onItemClick: () => void }) => {
 
       <Divider />
 
-      <MenuItem onClick={handleLogout}>
+      <MenuItem onClick={handleLogout} disabled={loading}>
         <ListItemIcon>
           <LogoutRoundedIcon />
         </ListItemIcon>
-        登出
+        {loading ? "登出中..." : "登出"}
       </MenuItem>
     </MenuList>
   );
@@ -119,6 +121,7 @@ const AccountMenuMobile = () => {
     <>
       {authenticated ? (
         <BottomNavigationAction
+          showLabel
           label={user.name}
           onClick={handleOpen}
           icon={
@@ -126,7 +129,6 @@ const AccountMenuMobile = () => {
               {user.name.slice(0, 1).toUpperCase()}
             </Avatar>
           }
-          showLabel
         />
       ) : (
         <BottomNavigationAction
