@@ -3,7 +3,7 @@ import ThumbUpRoundedIcon from "@mui/icons-material/ThumbUpRounded";
 import { usePostLike } from "@/forum/hooks/postInteraction";
 
 const LikeButton = ({ postId }: { postId: number }) => {
-  const { isLiked, liked, handleLike, isLoading, disabled } = usePostLike(postId);
+  const { isLiked, likeCount, handleLike, isLoading, disabled } = usePostLike(postId);
 
   return (
     <Tooltip title={isLiked ? "取消喜歡" : "喜歡"} arrow placement="left">
@@ -17,7 +17,7 @@ const LikeButton = ({ postId }: { postId: number }) => {
           loading={isLoading}
         >
           <Typography variant="caption" component="span">
-            {`${liked} 個讚`}
+            {`${likeCount} 個讚`}
           </Typography>
         </Button>
       </span>
