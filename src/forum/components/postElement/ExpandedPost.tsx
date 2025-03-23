@@ -5,6 +5,7 @@ import AttachFileRoundedIcon from "@mui/icons-material/AttachFileRounded";
 import ThumbUpRoundedIcon from "@mui/icons-material/ThumbUpRounded";
 
 import { LikeButton } from "./shared/LikeButton";
+import { FavButton } from "./shared/FavButton";
 import { TopicTags } from "./shared/TopicTags";
 import { LoadingPostHeader, PostHeader } from "./shared/PostHeader";
 import { usePostById } from "@/forum/hooks/post";
@@ -45,6 +46,7 @@ const ExpandedLoadingPost = () => {
           alignItems: "center",
           position: "relative",
           color: "text.secondary",
+          flexWrap: "wrap",
         }}
       >
         <Box sx={{ position: "absolute", inset: 0, bgcolor: "divider", opacity: 0.35 }} />
@@ -220,11 +222,13 @@ const ExpandedPost = ({ postId }: { postId: number }) => {
           alignItems: "center",
           position: "relative",
           color: "text.secondary",
+          flexWrap: "wrap",
         }}
       >
         <Box sx={{ position: "absolute", inset: 0, bgcolor: "divider", opacity: 0.35 }} />
 
         <LikeButton postId={post.id} />
+        <FavButton postId={post.id} />
 
         <Button
           color="inherit"
