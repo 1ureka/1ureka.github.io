@@ -80,7 +80,7 @@ const useLikeStatus = (postId: number) => {
     queryKey: ["likeStatus", postId, user?.id],
     enabled: !isLoadingSession,
     queryFn: async () => {
-      let result: { isLiked: boolean; likeCount: number } = fallback;
+      const result: { isLiked: boolean; likeCount: number } = fallback;
       result.likeCount = await fakeFetchInteractions({ postId, type: "like" });
       if (authenticated) result.isLiked = await fakeFetchInteractionStatus({ postId, type: "like" });
       return result;

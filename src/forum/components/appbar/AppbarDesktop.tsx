@@ -1,17 +1,13 @@
-import { useState } from "react";
-import { Badge, Box, ButtonBase, Container, IconButton, type ToolbarProps } from "@mui/material";
+import { Box, ButtonBase, Container, IconButton, type ToolbarProps } from "@mui/material";
 import { Toolbar, Tooltip, Typography } from "@mui/material";
 
 import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
-import ChatRoundedIcon from "@mui/icons-material/ChatRounded";
-import NotificationsRoundedIcon from "@mui/icons-material/NotificationsRounded";
 import ForumRoundedIcon from "@mui/icons-material/ForumRounded";
 
 import { ThemeMenuWithButton } from "../ThemeMenu";
-import { AccountMenu } from "./AccountMenu";
+import { AccountMenuDesktop } from "./AccountMenu";
 import { SearchBar } from "./SearchBar";
-import { NotificationMenu } from "./NotificationMenu";
-import { useNotifications } from "@/forum/hooks/notification";
+import { NotificationMenuDesktop } from "./NotificationMenu";
 
 const Title = () => (
   <Tooltip title="返回首頁" arrow>
@@ -36,32 +32,6 @@ const Title = () => (
     </ButtonBase>
   </Tooltip>
 );
-
-const NotificationIconButton = () => {
-  const { data, isFetching } = useNotifications();
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const handleNotificationClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(anchorEl ? null : event.currentTarget);
-  };
-  const handleNotificationClose = () => {
-    setAnchorEl(null);
-  };
-
-  return (
-    <>
-      <Tooltip title="通知" arrow>
-        <span>
-          <IconButton onClick={handleNotificationClick} loading={isFetching || !data}>
-            <Badge badgeContent={data?.length} color="primary">
-              <NotificationsRoundedIcon fontSize="small" />
-            </Badge>
-          </IconButton>
-        </span>
-      </Tooltip>
-      <NotificationMenu anchorEl={anchorEl} onClose={handleNotificationClose} />
-    </>
-  );
-};
 
 const DesktopSx = {
   position: "sticky",
@@ -94,17 +64,9 @@ const AppbarDesktop = ({ sx, ...props }: ToolbarProps) => {
             </IconButton>
           </Tooltip>
 
-          <Tooltip title="訊息" arrow>
-            <IconButton>
-              <Badge badgeContent={1} color="primary">
-                <ChatRoundedIcon fontSize="small" />
-              </Badge>
-            </IconButton>
-          </Tooltip>
+          <NotificationMenuDesktop />
 
-          <NotificationIconButton />
-
-          <AccountMenu />
+          <AccountMenuDesktop />
         </Box>
       </Container>
     </Toolbar>
