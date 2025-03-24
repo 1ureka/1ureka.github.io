@@ -36,7 +36,9 @@ const LoadingDisplay = () => {
 const AuthorDisplay = ({ name, description }: { name: string; description: string }) => {
   return (
     <>
-      <Avatar sx={{ bgcolor: "primary.main", width: "2rem", height: "2rem" }}>{name.slice(0, 1).toUpperCase()}</Avatar>
+      <Avatar sx={{ bgcolor: "primary.main", width: "2rem", height: "2rem" }}>
+        <Typography sx={{ translate: "0px -6%" }}>{name.slice(0, 1).toUpperCase()}</Typography>
+      </Avatar>
       <Box>
         <Typography
           variant="subtitle1"

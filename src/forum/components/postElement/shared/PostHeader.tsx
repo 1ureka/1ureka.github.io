@@ -6,7 +6,7 @@ const PostHeader = ({ post, sx, ...props }: { post: Post } & BoxProps) => {
   return (
     <Box sx={{ display: "flex", gap: 1.5, mb: 2, alignItems: "center", ...sx }} {...props}>
       <Avatar sx={{ bgcolor: "primary.main", width: "2rem", height: "2rem" }}>
-        {post.author.slice(0, 1).toUpperCase()}
+        <Typography sx={{ translate: "0px -6%" }}>{post.author.slice(0, 1).toUpperCase()}</Typography>
       </Avatar>
       <Typography
         variant="subtitle1"
