@@ -18,6 +18,11 @@ const fakeFetchAuthors = async () => {
   return authors;
 };
 
+const fakeFetchUserByName = async (userName: string) => {
+  await new Promise((resolve) => setTimeout(resolve, Math.random() * 1000));
+  return authors.find((author) => author.name === userName) || null;
+};
+
 // ----------------------------------------
 // 實際 Hook
 // ----------------------------------------
@@ -46,4 +51,18 @@ const useAuthors = () => {
   });
 };
 
-export { useUsers, useAuthors };
+/**
+ * 根據使用者名稱獲取使用者
+ */
+const useUser = (name?: string | null) => {
+  return useQuery({
+    queryKey: ["user", name],
+    queryFn: () => {
+      if (name === null || name === undefined) return null;
+      return fakeFetchUserByName(name);
+    },
+    staleTime,
+  });
+};
+
+export { useUsers, useAuthors, useUser };
