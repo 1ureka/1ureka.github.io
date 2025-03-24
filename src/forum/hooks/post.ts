@@ -56,6 +56,19 @@ const fakeFetchPosts = async ({
   };
 };
 
+const fakeFetchPostStats = async ({ author, topic }: QueryPostsOptions = {}) => {
+  await new Promise((resolve) => setTimeout(resolve, Math.random() * 1000));
+
+  let filteredPosts = posts;
+  if (author) filteredPosts = filteredPosts.filter((post) => post.author === author);
+  if (topic) filteredPosts = filteredPosts.filter((post) => post.tags.includes(topic));
+
+  const totalLikes = filteredPosts.reduce((acc, post) => acc + post.likeCount, 0);
+  const totalViews = filteredPosts.reduce((acc, post) => acc + post.viewCount, 0);
+
+  return { totalPosts: filteredPosts.length, totalLikes, totalViews };
+};
+
 const fakeFetchPostById = async (postId: number) => {
   await new Promise((resolve) => setTimeout(resolve, Math.random() * 1000));
   return posts.find((post) => post.id === postId) ?? null;
@@ -133,6 +146,14 @@ const useInfinitePosts = ({ limit = 6, topic, orderBy, order }: QueryPostsOption
   return { data, isLoading, isFetchingNextPage };
 };
 
+const usePostStats = (options: QueryPostsOptions = {}) => {
+  return useQuery({
+    queryKey: ["postStats", options.author, options.topic],
+    queryFn: () => fakeFetchPostStats(options),
+    staleTime,
+  });
+};
+
 const useTags = () => {
   return useQuery({
     queryKey: ["tags"],
@@ -153,4 +174,4 @@ const usePostById = (postId: number | undefined) => {
   });
 };
 
-export { usePosts, usePostCounts, useInfinitePosts, useTags, usePostById };
+export { usePosts, usePostCounts, useInfinitePosts, usePostStats, useTags, usePostById };
