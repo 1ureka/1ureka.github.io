@@ -67,7 +67,7 @@ const Comment = ({ commentId, nestedLevel, sx, ...props }: CommentProps & BoxPro
               variant="subtitle2"
               component="a"
               sx={{ "&:hover": { textDecoration: "underline" }, color: "text.primary" }}
-              href={`/src/forum/pages/users/index.html?user=${comment.userId}`}
+              href={`/src/forum/pages/users/index.html?userId=${comment.userId}`}
               rel="noopener noreferrer"
               target="_blank"
             >
