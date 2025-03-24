@@ -355,7 +355,15 @@ Tailwind 與 MUI 各有優缺點，關鍵在於專案需求與團隊技能。甚
   },
 ];
 
-const comments: Comment[] = [
+const generateCommentUser = (userId: number) => {
+  return {
+    authorId: authors[userId - 2].id,
+    author: authors[userId - 2].name,
+    authorDescription: authors[userId - 2].description,
+  };
+};
+
+const _comments = [
   {
     id: 1,
     postId: 1,
@@ -940,5 +948,10 @@ const comments: Comment[] = [
     updatedAt: new Date("2024-03-22T16:50:00"),
   },
 ];
+
+const comments: Comment[] = _comments.map((comment) => ({
+  ...comment,
+  ...generateCommentUser(comment.userId),
+}));
 
 export { notifications, authors, user, posts, comments };
