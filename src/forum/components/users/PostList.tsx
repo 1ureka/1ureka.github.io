@@ -1,6 +1,8 @@
-import { useInfinitePosts } from "@/forum/hooks/post";
 import { Stack, Typography } from "@mui/material";
 import { ExpandedLoadingPost, ExpandedPost } from "../postElement/ExpandedPost";
+import { useInfinitePosts } from "@/forum/hooks/post";
+import { useUser } from "@/forum/hooks/user";
+import { UserNotFound } from "./UserNotFound";
 
 const PostList = ({ author }: { author: string }) => {
   const { data, isLoading, isFetchingNextPage } = useInfinitePosts({
@@ -43,14 +45,23 @@ const PostList = ({ author }: { author: string }) => {
 
 const PostListWrapper = () => {
   const urlParams = new URLSearchParams(window.location.search);
-  const author = urlParams.get("user");
+  const { data: user, isFetching } = useUser(urlParams.get("user"));
 
-  if (!author) {
-    window.location.replace("/404");
-    return null;
+  if (!isFetching && user === null) {
+    return <UserNotFound />;
   }
 
-  return <PostList author={author} />;
+  if (isFetching || !user) {
+    return (
+      <Stack sx={{ alignItems: "stretch" }}>
+        {[...Array(3)].map((_, i) => (
+          <ExpandedLoadingPost key={i} />
+        ))}
+      </Stack>
+    );
+  }
+
+  return <PostList author={user.name} />;
 };
 
 export { PostListWrapper as PostList };
