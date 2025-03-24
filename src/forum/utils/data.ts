@@ -110,11 +110,19 @@ const generateRandomFile = (): File => {
   });
 };
 
+const generateAuthor = (index: number) => {
+  return {
+    authorId: authors[index].id,
+    author: authors[index].name,
+    authorDescription: authors[index].description,
+  };
+};
+
 const posts: Post[] = [
   {
     id: 1,
     title: "React 18 的並發模式值得升級嗎？",
-    author: "Alice Johnson",
+    ...generateAuthor(0),
     content: `React 18 帶來了並發模式，這是一個讓 UI 更新更流暢的重要變革。
 
     並發模式的核心在於讓 React 可以中斷與恢復渲染，這樣在處理大型應用時，不會因為一次性渲染過多內容而導致畫面卡頓。例如，使用 startTransition 來標記較低優先級的更新，React 會在有閒置時間時處理這些更新，而不會影響高優先級的操作，如用戶輸入。這不僅提升了用戶體驗，也讓開發者可以更靈活地管理狀態更新。
@@ -134,7 +142,7 @@ const posts: Post[] = [
   {
     id: 2,
     title: "Tailwind CSS vs. MUI：哪個適合你的專案？",
-    author: "Bob Smith",
+    ...generateAuthor(1),
     content: `在前端開發中，選擇適合的 UI 框架會直接影響專案的成敗。Tailwind CSS 和 MUI 是目前兩個熱門選項，但各有特色，適用於不同場景。
 
 Tailwind CSS：自由與靈活
@@ -167,7 +175,7 @@ Tailwind 與 MUI 各有優缺點，關鍵在於專案需求與團隊技能。甚
   {
     id: 3,
     title: "Vite 為何比 Webpack 更快？",
-    author: "Charlie Brown",
+    ...generateAuthor(2),
     content:
       "Vite 採用了原生 ES 模組與即時編譯技術，大幅提升開發速度。傳統的 Webpack 需要在開發時先進行整個專案的打包，這可能導致冷啟動時間過長，尤其是專案規模變大時。而 Vite 則透過 ES 模組的 import 方式，僅在瀏覽器需要時載入對應的模組，避免了不必要的打包過程。此外，Vite 內建的 HMR（熱模組替換）機制，使得開發者可以即時看到代碼變更的效果，減少重新整理的時間。這使 Vite 在開發體驗上遠優於 Webpack，特別是對於大型前端專案而言。",
     tags: ["Vite", "Webpack", "效能", "前端工具"],
@@ -180,7 +188,7 @@ Tailwind 與 MUI 各有優缺點，關鍵在於專案需求與團隊技能。甚
   {
     id: 4,
     title: "Next.js 14 有哪些新特性值得關注？",
-    author: "David Lee",
+    ...generateAuthor(3),
     content: `Next.js 14 帶來了多項重要更新，包括 Server Actions、App Router 以及更優化的效能提升。
 
     Server Actions 讓開發者可以在伺服器端直接執行處理邏輯，減少 API 請求的成本，而 App Router 則進一步加強了應用的組織結構，使開發更具彈性。
@@ -197,7 +205,7 @@ Tailwind 與 MUI 各有優缺點，關鍵在於專案需求與團隊技能。甚
   {
     id: 5,
     title: "前端開發中的 JWT 與 Session 安全性探討",
-    author: "Eve Walker",
+    ...generateAuthor(4),
     content: "JWT 與 Session 各有優缺點，如何確保應用程式的安全性？",
     tags: ["JWT", "Session", "身份驗證", "安全性"],
     viewCount: 1780,
@@ -209,7 +217,7 @@ Tailwind 與 MUI 各有優缺點，關鍵在於專案需求與團隊技能。甚
   {
     id: 6,
     title: "如何使用 Zustand 管理 React 狀態？",
-    author: "Frank Harris",
+    ...generateAuthor(5),
     content: "Zustand 是一個輕量級的狀態管理工具，比 Redux 更簡單，適合小型專案。",
     tags: ["React", "Zustand", "狀態管理", "前端開發"],
     photos: [{ name: "test", url: "test" }],
@@ -223,7 +231,7 @@ Tailwind 與 MUI 各有優缺點，關鍵在於專案需求與團隊技能。甚
   {
     id: 7,
     title: "為什麼你應該考慮使用 shadcn/ui？",
-    author: "Grace Miller",
+    ...generateAuthor(6),
     content: "shadcn/ui 提供了可擴展的 UI 元件，適合喜歡 Tailwind CSS 的開發者。",
     tags: ["shadcn/ui", "Tailwind", "React", "UI 元件"],
     viewCount: 890,
@@ -235,7 +243,7 @@ Tailwind 與 MUI 各有優缺點，關鍵在於專案需求與團隊技能。甚
   {
     id: 8,
     title: "Server Components 是未來嗎？",
-    author: "Henry Wilson",
+    ...generateAuthor(7),
     content: `React Server Components（RSC）是 React 的一項重要新技術，它允許部分組件在伺服器端渲染，並將結果傳遞給前端。這種方式可以顯著減少瀏覽器端的 JavaScript 負擔，提升效能並減少加載時間。
     例如，某些不需要用戶互動的組件可以完全由伺服器處理，避免前端處理不必要的渲染。
     雖然目前 RSC 仍然在發展中，但它提供了一種全新的開發模式，未來可能會成為大型應用的標準解決方案。`,
@@ -250,7 +258,7 @@ Tailwind 與 MUI 各有優缺點，關鍵在於專案需求與團隊技能。甚
   {
     id: 9,
     title: "如何使用 Supabase 建立完整的後端？",
-    author: "Isabella Carter",
+    ...generateAuthor(8),
     content: `Supabase 是一個開源的 Firebase 替代方案，提供即時資料庫、身份驗證與存儲功能。
 
     使用 Supabase，可以快速建立一個完整的後端，無需自行管理伺服器。例如，透過 Supabase 的 Postgres 資料庫，可以輕鬆建立關聯式數據表，並使用 RLS（Row-Level Security）確保數據安全。此外，Supabase 內建的 WebSocket 支援讓前端能夠即時監聽資料變更，實現即時更新的功能。對於希望減少後端開發成本的前端工程師來說，Supabase 是一個非常理想的選擇。`,
@@ -264,7 +272,7 @@ Tailwind 與 MUI 各有優缺點，關鍵在於專案需求與團隊技能。甚
   {
     id: 10,
     title: "React Query vs. SWR：哪個資料請求庫更好？",
-    author: "Jack Anderson",
+    ...generateAuthor(9),
     content: "React Query 和 SWR 都是處理 API 資料請求的強大工具，各有優勢。",
     tags: ["React", "React Query", "SWR", "API 處理"],
     photos: [
@@ -280,7 +288,7 @@ Tailwind 與 MUI 各有優缺點，關鍵在於專案需求與團隊技能。甚
   {
     id: 11,
     title: "如何讓你的 Web 應用跑得更快？",
-    author: "Karen Martinez",
+    ...generateAuthor(10),
     content: "透過代碼分割、預載資源和使用 CDN，可以讓 Web 應用加速。",
     tags: ["效能優化", "Web 開發", "CDN", "前端最佳化"],
     photos: [
@@ -297,7 +305,7 @@ Tailwind 與 MUI 各有優缺點，關鍵在於專案需求與團隊技能。甚
   {
     id: 12,
     title: "為什麼 Bun 可能會取代 Node.js？",
-    author: "Liam Rodriguez",
+    ...generateAuthor(11),
     content: "Bun 具備更快的運行速度、更好的原生支援，成為 Node.js 的強勁對手。",
     tags: ["Bun", "Node.js", "JavaScript", "後端開發"],
     viewCount: 2025,
@@ -309,7 +317,7 @@ Tailwind 與 MUI 各有優缺點，關鍵在於專案需求與團隊技能。甚
   {
     id: 13,
     title: "WebAssembly (WASM) 能提升前端效能嗎？",
-    author: "Mia Thompson",
+    ...generateAuthor(12),
     content: "WASM 可以執行高效能程式碼，讓 Web 應用運行更快。",
     tags: ["WASM", "效能", "Web 開發", "JavaScript"],
     viewCount: 1350,
@@ -321,7 +329,7 @@ Tailwind 與 MUI 各有優缺點，關鍵在於專案需求與團隊技能。甚
   {
     id: 14,
     title: "2025 年前端趨勢：你應該學哪些技術？",
-    author: "Noah White",
+    ...generateAuthor(13),
     content: "探索 2025 年最值得學習的前端技術，包括 React Server Components、Edge Functions 等。",
     tags: ["前端趨勢", "新技術", "Web 開發", "React"],
     photos: Array.from({ length: 10 }, (_, i) => ({ name: `test${i}`, url: "test" })),
@@ -335,7 +343,7 @@ Tailwind 與 MUI 各有優缺點，關鍵在於專案需求與團隊技能。甚
   {
     id: 15,
     title: "如何使用 Turbopack 加速你的前端專案？",
-    author: "Olivia Lewis",
+    ...generateAuthor(14),
     content: "Turbopack 作為 Webpack 的接班人，能讓前端開發更快速。",
     tags: ["Turbopack", "Webpack", "前端工具", "效能提升"],
     attachments: [generateRandomFile(), generateRandomFile()],

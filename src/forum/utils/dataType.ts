@@ -16,16 +16,22 @@ type Photo = {
 };
 
 type Post = {
+  // 實際來自關聯查詢的 User
+  authorId: User["id"];
+  author: User["name"];
+  authorDescription: User["description"];
+
+  // 實際來自快取視圖 post_interaction_counts, post_comments_count
+  likeCount: number;
+  replyCount: number;
+
   id: number;
   title: string;
-  author: string; // 作者名稱(英文)
   content: string;
   tags: string[]; // 盡量超過 3 個
   photos?: Photo[]; // 照片連結
   attachments?: File[]; // 附件連結
   viewCount: number;
-  likeCount: number;
-  replyCount: number;
   createdAt: Date;
   updatedAt: Date;
 };
