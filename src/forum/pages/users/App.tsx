@@ -14,6 +14,7 @@ import { UserIntro } from "@/forum/components/users/UserIntro";
 import { UserAvatar } from "@/forum/components/users/UserAvatar";
 import { FollowButton } from "@/forum/components/users/FollowButton";
 import { UserStats } from "@/forum/components/users/UserStats";
+import { PostList } from "@/forum/components/users/PostList";
 
 function App() {
   const { isMd } = useResponsiveFontSize();
@@ -86,9 +87,7 @@ function App() {
             <Divider />
 
             <Box>
-              <Typography sx={{ textAlign: "center", mt: 9, mb: 6, color: "text.secondary" }}>
-                他/她還沒有發布過任何文章
-              </Typography>
+              <PostList />
             </Box>
           </Paper>
         </Container>
