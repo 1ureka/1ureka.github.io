@@ -115,10 +115,10 @@ const usePostCounts = ({ topic }: { topic?: string } = {}) => {
   });
 };
 
-const useInfinitePosts = ({ limit = 6, topic, orderBy, order }: QueryPostsOptions = {}) => {
+const useInfinitePosts = ({ limit = 6, topic, author, orderBy, order }: QueryPostsOptions = {}) => {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery({
-    queryKey: ["infinitePosts", limit, topic, orderBy, order],
-    queryFn: ({ pageParam }) => fakeFetchPosts({ pageParam, limit, topic, orderBy, order }),
+    queryKey: ["infinitePosts", limit, topic, author, orderBy, order],
+    queryFn: ({ pageParam }) => fakeFetchPosts({ pageParam, limit, topic, author, orderBy, order }),
     initialPageParam: 0,
     getNextPageParam: (lastPage) => lastPage.nextPage,
     staleTime,
