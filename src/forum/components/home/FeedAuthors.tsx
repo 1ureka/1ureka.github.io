@@ -35,7 +35,7 @@ const AuthorDisplay = ({ name, description }: { name: string; description: strin
   return (
     <>
       <Avatar sx={{ bgcolor: "primary.main", width: "2rem", height: "2rem" }}>
-        <Typography sx={{ translate: "0px -6%" }}>{name.slice(0, 1).toUpperCase()}</Typography>
+        <Typography sx={{ translate: "0px 5%" }}>{name.slice(0, 1).toUpperCase()}</Typography>
       </Avatar>
       <Box>
         <Typography
