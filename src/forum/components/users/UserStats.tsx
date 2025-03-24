@@ -52,11 +52,6 @@ const UserStatsWrapper = () => {
   const urlParams = new URLSearchParams(window.location.search);
   const { data: user, isFetching } = useUser(urlParams.get("user"));
 
-  if (!isFetching && user === null) {
-    window.location.replace("/404");
-    return null;
-  }
-
   if (isFetching || user === undefined || user === null) {
     return <LoadingDisplay />;
   }

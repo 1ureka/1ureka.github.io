@@ -1,37 +1,34 @@
 import { useUser } from "@/forum/hooks/user";
 import { Avatar, Box, CircularProgress, Skeleton, Typography } from "@mui/material";
 
-const LoadingAvatar = () => (
+const LoadingAvatar = ({ showProgress }: { showProgress: boolean }) => (
   <>
     <Skeleton
       variant="circular"
       sx={{ position: "absolute", bottom: 0, width: 1, height: "auto", aspectRatio: 1 }}
       animation="wave"
     />
-    <Box
-      sx={{
-        position: "absolute",
-        bottom: 0,
-        width: 1,
-        height: "auto",
-        aspectRatio: 1,
-        display: "grid",
-        placeItems: "center",
-      }}
-    >
-      <CircularProgress />
-    </Box>
+    {showProgress && (
+      <Box
+        sx={{
+          position: "absolute",
+          bottom: 0,
+          width: 1,
+          height: "auto",
+          aspectRatio: 1,
+          display: "grid",
+          placeItems: "center",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    )}
   </>
 );
 
 const UserAvatar = ({ size = 6, borderSize = 0.8 }: { size?: number; borderSize?: number }) => {
   const urlParams = new URLSearchParams(window.location.search);
   const { data: user, isFetching } = useUser(urlParams.get("user"));
-
-  if (!isFetching && user === null) {
-    window.location.replace("/404");
-    return null;
-  }
 
   return (
     <Box
@@ -73,7 +70,7 @@ const UserAvatar = ({ size = 6, borderSize = 0.8 }: { size?: number; borderSize?
           </Typography>
         </Avatar>
       ) : (
-        <LoadingAvatar />
+        <LoadingAvatar showProgress={isFetching} />
       )}
     </Box>
   );

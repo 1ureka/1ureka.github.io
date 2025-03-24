@@ -10,8 +10,18 @@ const FollowButton = () => {
   const { user: userSession, loading: isLoadingSession } = useSession();
 
   if (!isFetching && user === null) {
-    window.location.replace("/404");
-    return null;
+    return (
+      <Button
+        variant="contained"
+        color="primary"
+        size="large"
+        startIcon={<NotificationAddRoundedIcon />}
+        disabled
+        sx={{ borderRadius: 99, transition: "all 0.2s ease", boxShadow: 3, scale: "1.001" }}
+      >
+        追蹤
+      </Button>
+    );
   }
 
   if (isLoadingSession || isFetching || !user || !userSession) {
