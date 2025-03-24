@@ -68,14 +68,14 @@ export const NumberInput = ({
         </Typography>
         <Box sx={{ display: "flex", alignItems: "center" }}>
           <Box sx={{ display: "flex" }}>
-            <Tooltip title="-100">
+            <Tooltip title="-100" arrow>
               <span>
                 <IconButton size="small" onClick={() => adjustValue(-100)} disabled={value < 1}>
                   <KeyboardDoubleArrowLeftRoundedIcon fontSize="small" />
                 </IconButton>
               </span>
             </Tooltip>
-            <Tooltip title="-1">
+            <Tooltip title="-1" arrow>
               <span>
                 <IconButton size="small" onClick={() => adjustValue(-1)} disabled={value < 1}>
                   <KeyboardArrowLeftRoundedIcon fontSize="small" />
@@ -113,14 +113,14 @@ export const NumberInput = ({
           </Box>
 
           <Box sx={{ display: "flex" }}>
-            <Tooltip title="+1">
+            <Tooltip title="+1" arrow>
               <span>
                 <IconButton size="small" onClick={() => adjustValue(1)}>
                   <KeyboardArrowRightRoundedIcon fontSize="small" />
                 </IconButton>
               </span>
             </Tooltip>
-            <Tooltip title="+100">
+            <Tooltip title="+100" arrow>
               <span>
                 <IconButton size="small" onClick={() => adjustValue(100)}>
                   <KeyboardDoubleArrowRightRoundedIcon fontSize="small" />
