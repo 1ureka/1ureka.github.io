@@ -1,4 +1,5 @@
-import { Skeleton, Stack, Typography } from "@mui/material";
+import { Box, Skeleton, Stack, Typography } from "@mui/material";
+import SentimentDissatisfiedRoundedIcon from "@mui/icons-material/SentimentDissatisfiedRounded";
 import { useInfinitePosts, usePostCounts } from "@/forum/hooks/post";
 import { ExpandedPost, ExpandedLoadingPost } from "../postElement/ExpandedPost";
 import { useUrl } from "@/forum/hooks/url";
@@ -30,9 +31,12 @@ const PostList = () => {
 
   if (data.pages[0].items.length === 0) {
     return (
-      <Typography variant="body1" component="p" sx={{ color: "text.secondary", textAlign: "center", mt: 3 }}>
-        沒有符合條件的貼文
-      </Typography>
+      <Box sx={{ py: 6, display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
+        <SentimentDissatisfiedRoundedIcon sx={{ fontSize: "6rem", color: "action.disabled" }} />
+        <Typography variant="body1" component="p" sx={{ color: "text.secondary", textAlign: "center" }}>
+          沒有符合條件的貼文
+        </Typography>
+      </Box>
     );
   }
 
