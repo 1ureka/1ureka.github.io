@@ -1,6 +1,5 @@
 import { Box, Button, Container, Divider, Paper, Typography } from "@mui/material";
 import PeopleRoundedIcon from "@mui/icons-material/PeopleRounded";
-import BarChartRoundedIcon from "@mui/icons-material/BarChartRounded";
 import ArrowBackIosRoundedIcon from "@mui/icons-material/ArrowBackIosRounded";
 
 import "@/forum/app.css";
@@ -14,6 +13,7 @@ import { UserTitle } from "@/forum/components/users/UserTitle";
 import { UserIntro } from "@/forum/components/users/UserIntro";
 import { UserAvatar } from "@/forum/components/users/UserAvatar";
 import { FollowButton } from "@/forum/components/users/FollowButton";
+import { UserStats } from "@/forum/components/users/UserStats";
 
 function App() {
   const { isMd } = useResponsiveFontSize();
@@ -62,13 +62,7 @@ function App() {
                 <Button variant="outlined" startIcon={<ArrowBackIosRoundedIcon />} size="small" sx={{ mr: 1 }} href="/">
                   {isMd ? "返回首頁" : "首頁"}
                 </Button>
-
-                <BarChartRoundedIcon fontSize="small" color="inherit" />
-                <Typography variant="body2">{isMd ? "發布了 0 篇文章" : "0 篇文章"}</Typography>
-                <Typography variant="body2">·</Typography>
-                <Typography variant="body2">{isMd ? "獲得了 0 次讚" : "0 次讚"}</Typography>
-                <Typography variant="body2">·</Typography>
-                <Typography variant="body2">{isMd ? "文章總瀏覽次數 0 次" : "0 次瀏覽"}</Typography>
+                <UserStats />
               </Box>
 
               <Box sx={{ display: "flex", gap: 1, alignItems: "center", color: "text.secondary" }}>
