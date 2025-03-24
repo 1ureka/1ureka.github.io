@@ -16,8 +16,6 @@ const LoadingDisplay = () => {
               textDecoration: "none",
               "&:hover": { textDecoration: "underline" },
             }}
-            component="a"
-            href={`/src/forum/pages/users/index.html?user=${name}`}
           >
             作者名稱
           </Typography>
