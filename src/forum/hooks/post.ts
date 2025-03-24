@@ -23,6 +23,7 @@ const fakeFetchPosts = async ({
   pageParam = 0, // 頁面參數
   limit = 10, // 默認每頁 10 條
   topic,
+  author,
   orderBy,
   order = "asc",
 }: QueryPostsOptions & { pageParam?: number } = {}) => {
@@ -31,6 +32,8 @@ const fakeFetchPosts = async ({
   // 如果提供了 topic，按標籤篩選
   let filteredPosts = posts;
   if (topic) filteredPosts = posts.filter((post) => post.tags.includes(topic));
+  // 如果提供了 author，按作者篩選
+  if (author) filteredPosts = filteredPosts.filter((post) => post.author === author);
 
   // 如果提供了排序條件，進行排序
   if (orderBy && Object.keys(posts[0]).includes(orderBy)) {
@@ -70,17 +73,18 @@ const fakeFetchTags = async () => {
 type QueryPostsOptions = {
   limit?: number;
   topic?: string;
+  author?: string;
   orderBy?: string;
   order?: "asc" | "desc";
 };
 
 const staleTime = 1 * 60 * 1000;
 
-const usePosts = ({ limit, topic, orderBy, order }: QueryPostsOptions = {}) => {
+const usePosts = ({ limit, topic, author, orderBy, order }: QueryPostsOptions = {}) => {
   return useQuery({
-    queryKey: ["posts", limit, topic, orderBy, order],
+    queryKey: ["posts", limit, topic, author, orderBy, order],
     queryFn: async () => {
-      const result = await fakeFetchPosts({ pageParam: 0, limit, topic, orderBy, order });
+      const result = await fakeFetchPosts({ pageParam: 0, limit, topic, author, orderBy, order });
       return result.items;
     },
     staleTime,
