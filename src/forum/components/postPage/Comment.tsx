@@ -5,7 +5,6 @@ import ReplyRoundedIcon from "@mui/icons-material/ReplyRounded";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
 
-import { authors } from "@/forum/utils/data";
 import { useCommentById, useCommentsByCommentId } from "@/forum/hooks/comment";
 import { Replies } from "./Comments";
 import { NewComment } from "./NewComment";
@@ -41,8 +40,6 @@ const Comment = ({ commentId, nestedLevel, sx, ...props }: CommentProps & BoxPro
     return <LoadingComment nestedLevel={nestedLevel} sx={sx} {...props} />;
   }
 
-  const author = authors.find((user) => user.id === comment.userId) || { name: "未知的使用者" };
-
   return (
     <Box
       sx={{
@@ -58,7 +55,7 @@ const Comment = ({ commentId, nestedLevel, sx, ...props }: CommentProps & BoxPro
     >
       <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1.5 }}>
         <Avatar sx={{ bgcolor: "primary.main", width: "2rem", height: "2rem", mt: 1 }}>
-          {author.name.slice(0, 1).toUpperCase()}
+          {comment.author.slice(0, 1).toUpperCase()}
         </Avatar>
 
         <Box sx={{ flex: 1 }}>
@@ -67,11 +64,9 @@ const Comment = ({ commentId, nestedLevel, sx, ...props }: CommentProps & BoxPro
               variant="subtitle2"
               component="a"
               sx={{ "&:hover": { textDecoration: "underline" }, color: "text.primary" }}
-              href={`/src/forum/pages/users/index.html?userId=${comment.userId}`}
-              rel="noopener noreferrer"
-              target="_blank"
+              href={`/src/forum/pages/users/index.html?user=${comment.author}`}
             >
-              {author.name}
+              {comment.author}
             </Typography>
 
             <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
