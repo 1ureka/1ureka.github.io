@@ -24,7 +24,7 @@ const AppFooter = () => {
   const isBetweenSm = useMediaQuery((theme) => theme.breakpoints.between("xs", "md"));
   const isBelowSm = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   const [error, setError] = useState(false);
-  if (error) throw new Error("測試目的的錯誤");
+  if (error) throw new Error("測試目的的錯誤，請忽略");
 
   return (
     <Box

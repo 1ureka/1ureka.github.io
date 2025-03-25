@@ -11,7 +11,7 @@ import { AppWrapper } from "@/forum/components/AppWrapper";
 import { ScrollArea } from "@/forum/components/ScrollArea";
 import { useResponsiveFontSize } from "@/forum/utils/theme";
 import { ThemeMenuWithButton } from "@/forum/components/ThemeMenu";
-import { NotSupportPage } from "@/forum/components/NotSupportPage";
+import { NotSupportPage } from "@/forum/components/AppError";
 import { routes } from "@/forum/utils/routes";
 
 const TOTAL_USRS = 1202;
