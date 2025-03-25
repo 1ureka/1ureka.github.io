@@ -47,6 +47,7 @@ const Input = (props: InputProps) => {
         freeSolo={type === "add"}
         disabled={isFetching}
         options={options}
+        noOptionsText="無相符標籤"
         value={value}
         onChange={handleChange}
         renderInput={(params) => (

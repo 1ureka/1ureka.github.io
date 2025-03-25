@@ -3,7 +3,7 @@ import { IconButton, InputAdornment, TextField, Tooltip } from "@mui/material";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 
 const SEARCH_PAGE = "/src/forum/pages/search/index.html?";
-const SEARCH_QUERY = "q=";
+const SEARCH_QUERY = "all=";
 
 const SearchBar = () => {
   const [search, setSearch] = useState("");

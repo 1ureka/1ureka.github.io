@@ -19,6 +19,7 @@ export const NumberInput = ({
   value,
   onChange,
   fullWidth = false,
+  error,
   ...props
 }: CustomNumberInputProps) => {
   const [inputValue, setInputValue] = useState(value.toString());
@@ -63,7 +64,7 @@ export const NumberInput = ({
           bgcolor: "FilledInput.bg",
         }}
       >
-        <Typography variant="caption" sx={{ ml: 1, color: "text.secondary" }}>
+        <Typography variant="caption" sx={{ ml: 1, color: error ? "error.main" : "text.secondary" }}>
           {label}
         </Typography>
         <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -133,8 +134,10 @@ export const NumberInput = ({
             sx={{
               position: "absolute",
               inset: "auto 0 0 0",
-              borderBottom:
-                "1px solid rgba(var(--mui-palette-common-onBackgroundChannel) / var(--mui-opacity-inputUnderline))",
+              borderBottom: "1px solid",
+              borderBottomColor: error
+                ? "error.main"
+                : "rgba(var(--mui-palette-common-onBackgroundChannel) / var(--mui-opacity-inputUnderline))",
               transition: "border-bottom-color 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
               pointerEvents: "none",
             }}
