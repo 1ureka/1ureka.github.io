@@ -5,7 +5,7 @@ import { fileURLToPath } from "url";
 // src 目錄的相對路徑
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const srcDir = join(__dirname, "src");
+const srcDir = join(__dirname);
 
 // 允許的文件副檔名白名單（只統計這些類型的文件）
 const allowedExtensions = [

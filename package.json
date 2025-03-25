@@ -7,6 +7,7 @@
     "dev": "vite --port 3000",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
+    "stat": "node src/stat.js",
     "preview": "vite preview"
   },
   "dependencies": {
