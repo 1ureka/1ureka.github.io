@@ -83,17 +83,9 @@ function App() {
           }}
         >
           <ProjectCard
-            title="第一次作業"
-            description="這是第一次作業的描述，第一次作業是一個簡單的網頁，用來練習 HTML 與 CSS。"
-            href="/src/hw1/index.html"
-            colors={["rgb(94, 144, 164)", "#222", "#ccc"]}
-            iconUrl={defaultSvg}
-            isIconWhiteOrBlack
-          />
-          <ProjectCard
             title="論壇樣板"
             description="這是一個論壇樣板，用來練習 RWD 與 React。"
-            href="/src/forum/index.html"
+            href="/src/forum/pages/index.html"
             colors={["#FF772E", "#075056", "#222", "#fff"]}
             iconUrl={forumSvg}
           />

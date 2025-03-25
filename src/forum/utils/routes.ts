@@ -12,7 +12,7 @@ type Routes = {
 };
 
 const dev: Routes = {
-  home: "/src/forum/index.html",
+  home: "/src/forum/pages/index.html",
 
   login: "/src/forum/pages/login/index.html",
   register: "/src/forum/pages/register/index.html",

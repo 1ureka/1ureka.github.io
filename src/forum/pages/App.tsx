@@ -1,18 +1,18 @@
 import { Box, Button, Container, Divider, Paper, Stack } from "@mui/material";
 import ArrowRightAltRoundedIcon from "@mui/icons-material/ArrowRightAltRounded";
 
-import { AppWrapper } from "./components/AppWrapper";
-import { AppbarDesktop } from "./components/appbar/AppbarDesktop";
-import { AppbarMobile } from "./components/appbar/AppbarMobile";
-import { ScrollArea } from "./components/ScrollArea";
+import { AppWrapper } from "@/forum/components/AppWrapper";
+import { AppbarDesktop } from "@/forum/components/appbar/AppbarDesktop";
+import { AppbarMobile } from "@/forum/components/appbar/AppbarMobile";
+import { ScrollArea } from "@/forum/components/ScrollArea";
 import { AppFooter } from "@/forum/components/appbar/AppFooter";
 
-import { routes } from "./utils/routes";
-import { useResponsiveFontSize } from "./utils/theme";
-import { NewPost } from "./components/postElement/NewPost";
-import { FeedDesktop } from "./components/home/FeedDesktop";
-import { FeedMobile } from "./components/home/FeedMobile";
-import { PostList } from "./components/home/PostList";
+import { routes } from "@/forum/utils/routes";
+import { useResponsiveFontSize } from "@/forum/utils/theme";
+import { NewPost } from "@/forum/components/postElement/NewPost";
+import { FeedDesktop } from "@/forum/components/home/FeedDesktop";
+import { FeedMobile } from "@/forum/components/home/FeedMobile";
+import { PostList } from "@/forum/components/home/PostList";
 
 function App() {
   const { isMd } = useResponsiveFontSize();
