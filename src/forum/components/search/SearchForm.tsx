@@ -98,6 +98,7 @@ const SearchForm = () => {
                 }}
                 children={(field) => (
                   <TextField
+                    required
                     name={field.name}
                     label="所有"
                     error={field.state.meta.errors.length > 0}
