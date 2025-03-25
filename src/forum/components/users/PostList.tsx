@@ -1,8 +1,11 @@
-import { Stack, Typography } from "@mui/material";
+import { Divider, Stack, Typography } from "@mui/material";
 import { ExpandedLoadingPost, ExpandedPost } from "../postElement/ExpandedPost";
+import { UserNotFound } from "./UserNotFound";
+import { NewPost } from "../postElement/NewPost";
+
 import { useInfinitePosts } from "@/forum/hooks/post";
 import { useUser } from "@/forum/hooks/user";
-import { UserNotFound } from "./UserNotFound";
+import { useSession } from "@/forum/hooks/session";
 
 const PostList = ({ author }: { author: string }) => {
   const { data, isLoading, isFetchingNextPage } = useInfinitePosts({
@@ -46,6 +49,7 @@ const PostList = ({ author }: { author: string }) => {
 const PostListWrapper = () => {
   const urlParams = new URLSearchParams(window.location.search);
   const { data: user, isFetching } = useUser(urlParams.get("user"));
+  const { user: userSession } = useSession();
 
   if (!isFetching && user === null) {
     return <UserNotFound />;
@@ -61,7 +65,18 @@ const PostListWrapper = () => {
     );
   }
 
-  return <PostList author={user.name} />;
+  return (
+    <>
+      {userSession && userSession.name === user.name && (
+        <>
+          <Stack sx={{ p: 1 }} />
+          <NewPost />
+          <Divider sx={{ mb: 2 }} />
+        </>
+      )}
+      <PostList author={user.name} />
+    </>
+  );
 };
 
 export { PostListWrapper as PostList };
