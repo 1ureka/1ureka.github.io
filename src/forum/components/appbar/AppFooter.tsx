@@ -1,4 +1,4 @@
-import { Box, Container, Link, Typography, Divider, Paper, Stack, useMediaQuery } from "@mui/material";
+import { Box, Container, Link, Typography, Divider, Stack, useMediaQuery } from "@mui/material";
 import ErrorRoundedIcon from "@mui/icons-material/ErrorRounded";
 import SearchOffRoundedIcon from "@mui/icons-material/SearchOffRounded";
 import PersonOffRoundedIcon from "@mui/icons-material/PersonOffRounded";
@@ -27,19 +27,25 @@ const AppFooter = () => {
   if (error) throw new Error("測試目的的錯誤");
 
   return (
-    <Paper
+    <Box
       component="footer"
-      square
       sx={{
         position: "relative",
         mt: "auto",
         py: 3,
-        bgcolor: "action.hover",
+        bgcolor: "background.paper",
         borderTop: 1,
         borderColor: "divider",
+        "&::before": {
+          bgcolor: "action.hover",
+          content: '""',
+          position: "absolute",
+          inset: 0,
+          pointerEvents: "none",
+        },
       }}
     >
-      <Container maxWidth="lg">
+      <Container maxWidth="lg" sx={{ position: "relative" }}>
         <Stack sx={{ display: "flex", gap: 3, alignItems: "center" }}>
           <Stack sx={{ alignItems: "center" }}>
             <Typography variant="h6" gutterBottom>
@@ -117,7 +123,7 @@ const AppFooter = () => {
           © {new Date().getFullYear()} 論壇樣板 by 1ureka
         </Typography>
       </Container>
-    </Paper>
+    </Box>
   );
 };
 
