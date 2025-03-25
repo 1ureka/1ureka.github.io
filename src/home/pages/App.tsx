@@ -1,17 +1,20 @@
-import { Box, Container, createTheme, CssBaseline, ThemeProvider, Typography } from "@mui/material";
-import type { BoxProps } from "@mui/material";
-import { Toaster } from "@/components/Toast";
-import { ThemeMenu } from "./components/ThemeMenu";
 import { useEffect } from "react";
-import "./app.css";
-import { ProjectCard } from "./components/ProjectCard";
-import defaultSvg from "../assets/icon/icon.svg";
-import forumSvg from "../assets/icon/forum.svg";
+import type { BoxProps } from "@mui/material";
+import { Box, Container, createTheme, CssBaseline, ThemeProvider, Typography } from "@mui/material";
+
+import "@/home/utils/app.css";
+import iconSvg from "@/assets/icon/icon.svg";
+import forumSvg from "@/assets/icon/forum.svg";
+
+import { routes } from "@/routes";
+import { Toaster } from "@/components/Toast";
+import { ThemeMenu } from "@/home/components/ThemeMenu";
+import { ProjectCard } from "@/home/components/ProjectCard";
 
 const theme = createTheme({
   cssVariables: { colorSchemeSelector: ".mode-%s" },
   typography: {
-    fontFamily: `"timemachine-wa", "NOTO SANS TC"`,
+    fontFamily: `"timemachine-wa", "Noto Sans TC"`,
   },
   colorSchemes: {
     light: {
@@ -62,7 +65,7 @@ function App() {
       <ScrollArea>
         <Container maxWidth="xl" sx={{ display: "flex", alignItems: "center", gap: 2, py: 5 }}>
           <img
-            src={defaultSvg}
+            src={iconSvg}
             alt="icon"
             style={{ width: "4.5rem", height: "4.5rem", mixBlendMode: "exclusion", opacity: 0.9 }}
           />
@@ -85,7 +88,7 @@ function App() {
           <ProjectCard
             title="論壇樣板"
             description="這是一個論壇樣板，用來練習 RWD 與 React。"
-            href="/src/forum/pages/index.html"
+            href={routes.forum_home}
             colors={["#FF772E", "#075056", "#222", "#fff"]}
             iconUrl={forumSvg}
           />

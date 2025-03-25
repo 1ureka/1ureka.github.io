@@ -1,7 +1,7 @@
 /* timemachine-wa */
 @font-face {
   font-family: "timemachine-wa";
-  src: url("../assets/fonts/timemachine-wa.ttf") format("truetype");
+  src: url("../../assets/fonts/timemachine-wa.ttf") format("truetype");
   font-weight: 900;
   font-style: normal;
   font-display: swap;
@@ -10,7 +10,7 @@
 /* NotoSansTC-VariableFont_wght */
 @font-face {
   font-family: "Noto Sans TC";
-  src: url("../assets/fonts/NotoSansTC-VariableFont_wght.ttf") format("truetype");
+  src: url("../../assets/fonts/NotoSansTC-VariableFont_wght.ttf") format("truetype");
   font-weight: 300;
   font-style: normal;
   font-display: swap;
