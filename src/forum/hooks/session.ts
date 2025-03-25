@@ -1,6 +1,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { user as mockUser } from "../utils/data";
+import { users } from "../utils/data";
 import type { User } from "../utils/dataType";
+const mockUser = users.find((user) => user.name === "1ureka") || users[0];
 
 export type Session =
   | {

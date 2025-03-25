@@ -5,22 +5,22 @@
 // ----------------------------------------
 
 import { useQuery } from "@tanstack/react-query";
-import { authors } from "../utils/data";
+import { users } from "../utils/data";
 
 const fakeFetchUsers = async () => {
   await new Promise((resolve) => setTimeout(resolve, Math.random() * 1000));
-  return authors;
+  return users;
 };
 
 // TODO: 到時這個api應該 query 有 post 的 users
 const fakeFetchAuthors = async () => {
   await new Promise((resolve) => setTimeout(resolve, Math.random() * 2500));
-  return authors;
+  return users;
 };
 
 const fakeFetchUserByName = async (userName: string) => {
   await new Promise((resolve) => setTimeout(resolve, Math.random() * 1000));
-  return authors.find((author) => author.name === userName) || null;
+  return users.find((author) => author.name === userName) || null;
 };
 
 // ----------------------------------------

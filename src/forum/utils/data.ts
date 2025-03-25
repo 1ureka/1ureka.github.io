@@ -18,7 +18,7 @@ const notifications: Notification[] = [
   },
 ];
 
-const authors: User[] = [
+const users: User[] = [
   {
     id: 2,
     name: "Alice Johnson",
@@ -94,13 +94,12 @@ const authors: User[] = [
     name: "Olivia Lewis",
     description: "前端開發者和 Turbopack 使用者。",
   },
+  {
+    id: 1,
+    name: "1ureka",
+    description: "",
+  },
 ];
-
-const user: User = {
-  id: 1,
-  name: "1ureka",
-  description: "",
-};
 
 const generateRandomFile = (): File => {
   const randomSize = Math.floor(Math.random() * 1000) + 1000;
@@ -112,9 +111,9 @@ const generateRandomFile = (): File => {
 
 const generateAuthor = (index: number) => {
   return {
-    authorId: authors[index].id,
-    author: authors[index].name,
-    authorDescription: authors[index].description,
+    authorId: users[index].id,
+    author: users[index].name,
+    authorDescription: users[index].description,
   };
 };
 
@@ -357,9 +356,9 @@ Tailwind 與 MUI 各有優缺點，關鍵在於專案需求與團隊技能。甚
 
 const generateCommentUser = (userId: number) => {
   return {
-    authorId: authors[userId - 2].id,
-    author: authors[userId - 2].name,
-    authorDescription: authors[userId - 2].description,
+    authorId: users[userId - 2].id,
+    author: users[userId - 2].name,
+    authorDescription: users[userId - 2].description,
   };
 };
 
@@ -954,4 +953,4 @@ const comments: Comment[] = _comments.map((comment) => ({
   ...generateCommentUser(comment.userId),
 }));
 
-export { notifications, authors, user, posts, comments };
+export { notifications, users, posts, comments };
