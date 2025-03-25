@@ -23,6 +23,9 @@ const theme = createTheme({
       },
     },
   },
+  components: {
+    MuiInputBase: { defaultProps: { sx: { "&.Mui-disabled::before": { borderBottomStyle: "solid" } } } },
+  },
   spacing: "0.5rem",
 });
 
