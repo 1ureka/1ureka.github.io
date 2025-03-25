@@ -1,14 +1,53 @@
-import { Box, Button, Container, Paper } from "@mui/material";
-import ArrowRightAltRoundedIcon from "@mui/icons-material/ArrowRightAltRounded";
+import { Box, Button, Container, Paper, Stack, Typography, useMediaQuery } from "@mui/material";
+import ArrowBackIosRoundedIcon from "@mui/icons-material/ArrowBackIosRounded";
+import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 
 import "@/forum/app.css";
 import { AppWrapper } from "@/forum/components/AppWrapper";
 import { AppbarDesktop } from "@/forum/components/appbar/AppbarDesktop";
 import { AppbarMobile } from "@/forum/components/appbar/AppbarMobile";
 import { ScrollArea } from "@/forum/components/ScrollArea";
-import { useResponsiveFontSize } from "@/forum/utils/theme";
+import { theme, useResponsiveFontSize } from "@/forum/utils/theme";
+import { SearchForm } from "@/forum/components/search/SearchForm";
 
-// TODO: 上方有 tabs ，可以切換搜尋結果是 "文章" 或 "用戶" 或 "標籤"
+const Header = () => {
+  const isMd = useMediaQuery(theme.breakpoints.up("md"));
+
+  return (
+    <>
+      <Stack sx={{ alignItems: "flex-start", flex: 1 }}>
+        <Button href="/" startIcon={<ArrowBackIosRoundedIcon />} variant="outlined" sx={{ textWrap: "nowrap" }}>
+          {isMd ? "返回首頁" : "首頁"}
+        </Button>
+      </Stack>
+
+      <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+        <SearchRoundedIcon
+          className="mode-light"
+          sx={{
+            fontSize: 48,
+            mr: 1,
+            bgcolor: "primary.main",
+            borderRadius: 1,
+            color: "background.default",
+            p: 1,
+            opacity: 0.8,
+          }}
+        />
+        <Typography variant="h5" component="h2">
+          搜尋結果
+        </Typography>
+      </Box>
+
+      <Stack sx={{ alignItems: "flex-end", flex: 1 }}>
+        <Typography variant="body2" component="span" sx={{ color: "text.secondary" }}>
+          共 10 篇
+        </Typography>
+      </Stack>
+    </>
+  );
+};
+
 function App() {
   const { isMd } = useResponsiveFontSize();
 
@@ -21,10 +60,14 @@ function App() {
 
         <Container maxWidth="lg" sx={{ position: "relative", my: 10 }}>
           <Paper sx={{ py: 3, borderRadius: 3, border: "1px solid", borderColor: "divider" }} elevation={1}>
-            <Box sx={{ mx: 1.5 }}>
-              <Button variant="outlined" color="primary" fullWidth endIcon={<ArrowRightAltRoundedIcon />}>
-                查看更多
-              </Button>
+            <Box sx={{ display: "flex", gap: 1, alignItems: "center", pr: { xs: 3, md: 5 }, pl: 2 }}>
+              <Header />
+            </Box>
+
+            <Box sx={{ position: "relative", mt: 2 }}>
+              <SearchForm />
+
+              <Box sx={{ position: "absolute", inset: 0, bgcolor: "divider", opacity: 0.35, pointerEvents: "none" }} />
             </Box>
           </Paper>
         </Container>
