@@ -1,0 +1,10 @@
+{
+  "home": "/",
+  "login": "/login",
+  "register": "/register",
+  "verify": "/verify",
+  "post": "/post",
+  "posts": "/posts",
+  "search": "/search",
+  "users": "/users"
+}

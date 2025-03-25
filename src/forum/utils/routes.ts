@@ -1,3 +1,13 @@
+import routesJson from "./routes.json";
+
+function fromEntries<K extends PropertyKey, V>(entries: [K, V][]): Record<K, V> {
+  return Object.fromEntries(entries) as Record<K, V>;
+}
+
+function toEntries<T extends Record<PropertyKey, unknown>>(obj: T): [keyof T, T[keyof T]][] {
+  return Object.entries(obj) as [keyof T, T[keyof T]][];
+}
+
 type Routes = {
   readonly home: string;
 
@@ -11,30 +21,8 @@ type Routes = {
   readonly users: string;
 };
 
-const dev: Routes = {
-  home: "/src/forum/pages/index.html",
-
-  login: "/src/forum/pages/login/index.html",
-  register: "/src/forum/pages/register/index.html",
-  verify: "/src/forum/pages/verify/index.html",
-
-  post: "/src/forum/pages/post/index.html",
-  posts: "/src/forum/pages/posts/index.html",
-  search: "/src/forum/pages/search/index.html",
-  users: "/src/forum/pages/users/index.html",
-};
-
-const prod: Routes = {
-  home: "/",
-
-  login: "/login",
-  register: "/register",
-  verify: "/verify",
-
-  post: "/post",
-  posts: "/posts",
-  search: "/search",
-  users: "/users",
-};
+const entries = toEntries(routesJson);
+const dev: Routes = fromEntries(entries.map(([key, value]) => [key, `/src/forum/pages${value}/index.html`]));
+const prod: Routes = routesJson;
 
 export const routes = import.meta.env.PROD ? prod : dev;
