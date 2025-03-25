@@ -4,7 +4,7 @@ import { Toolbar, Tooltip, Typography } from "@mui/material";
 import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
 import ForumRoundedIcon from "@mui/icons-material/ForumRounded";
 
-import { routes } from "@/forum/utils/routes";
+import { routes } from "@/routes";
 import { ThemeMenuWithButton } from "../ThemeMenu";
 import { AccountMenuDesktop } from "./AccountMenu";
 import { SearchBar } from "./SearchBar";
@@ -13,7 +13,7 @@ import { NotificationMenuDesktop } from "./NotificationMenu";
 const Title = () => (
   <Tooltip title="返回首頁" arrow>
     <ButtonBase
-      href={routes.home}
+      href={routes.forum_home}
       sx={{
         display: "flex",
         gap: 1.5,

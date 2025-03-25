@@ -8,7 +8,7 @@ import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 
 import { useEffect, useRef, useState } from "react";
-import { routes } from "@/forum/utils/routes";
+import { routes } from "@/routes";
 import { ThemeDrawer } from "../ThemeMenu";
 import { AccountMenuMobile } from "./AccountMenu";
 import { NotificationMenuMobile } from "./NotificationMenu";
@@ -65,7 +65,7 @@ const AppbarMobile = ({ sx, ...props }: ToolbarProps) => {
           </Box>
 
           <Button
-            href={routes.search}
+            href={routes.forum_search}
             startIcon={<SearchRoundedIcon />}
             variant="outlined"
             color="inherit"
@@ -89,7 +89,7 @@ const AppbarMobile = ({ sx, ...props }: ToolbarProps) => {
             <Fab
               color="primary"
               size="large"
-              href={routes.home}
+              href={routes.forum_home}
               component="a"
               sx={{
                 position: "absolute",

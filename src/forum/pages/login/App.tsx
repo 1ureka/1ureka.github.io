@@ -13,7 +13,7 @@ import { ThemeMenuWithButton } from "@/forum/components/ThemeMenu";
 import { NotSupportPage } from "@/forum/components/AppError";
 import { useSessionActions } from "@/forum/hooks/session";
 import { useState } from "react";
-import { routes } from "@/forum/utils/routes";
+import { routes } from "@/routes";
 
 const TOTAL_USRS = 1202;
 const TOTAL_POSTS = 239;
@@ -31,7 +31,7 @@ const LoginForm = () => {
     const username = formData.get("username") as string;
     const password = formData.get("password") as string;
     await login({ username, password });
-    window.location.href = routes.home;
+    window.location.href = routes.forum_home;
   };
 
   return (
@@ -106,7 +106,7 @@ function App() {
                   <Box sx={{ mb: 2, p: 2 }}>
                     <Button
                       sx={{ textWrap: "nowrap", width: "fit-content" }}
-                      href={routes.home}
+                      href={routes.forum_home}
                       startIcon={<ArrowBackIosNewRoundedIcon />}
                     >
                       返回首頁
@@ -118,7 +118,7 @@ function App() {
                   <Box sx={{ mt: 3, p: 2 }}>
                     <Typography variant="caption" gutterBottom>
                       還沒有帳號？
-                      <Button href={routes.register} variant="outlined" size="small" sx={{ ml: 1 }}>
+                      <Button href={routes.forum_register} variant="outlined" size="small" sx={{ ml: 1 }}>
                         註冊
                       </Button>
                     </Typography>

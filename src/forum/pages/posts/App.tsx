@@ -8,7 +8,7 @@ import { AppbarMobile } from "@/forum/components/appbar/AppbarMobile";
 import { ScrollArea } from "@/forum/components/ScrollArea";
 import { AppFooter } from "@/forum/components/appbar/AppFooter";
 
-import { routes } from "@/forum/utils/routes";
+import { routes } from "@/routes";
 import { useResponsiveFontSize } from "@/forum/utils/theme";
 import { OrderTabs } from "@/forum/components/posts/OrderTabs";
 import { TopicSelect } from "@/forum/components/posts/TopicSelect";
@@ -31,7 +31,7 @@ function App() {
             <Box sx={{ display: "flex", gap: 1, alignItems: "center", pr: { xs: 3, md: 5 }, pl: 2 }}>
               <Stack sx={{ alignItems: "flex-start", flex: 1 }}>
                 <Button
-                  href={routes.home}
+                  href={routes.forum_home}
                   startIcon={<ArrowBackIosRoundedIcon />}
                   variant="outlined"
                   sx={{ textWrap: "nowrap" }}

@@ -3,7 +3,7 @@ import ErrorRoundedIcon from "@mui/icons-material/ErrorRounded";
 import SearchOffRoundedIcon from "@mui/icons-material/SearchOffRounded";
 import PersonOffRoundedIcon from "@mui/icons-material/PersonOffRounded";
 import DisabledByDefaultRoundedIcon from "@mui/icons-material/DisabledByDefaultRounded";
-import { routes } from "@/forum/utils/routes";
+import { routes } from "@/routes";
 import { useState } from "react";
 
 const linkSx = {
@@ -98,7 +98,7 @@ const AppFooter = () => {
             </Stack>
 
             <Stack sx={linkBlockSx(isBelowSm)}>
-              <Link href={`${routes.users}?user=`} variant="body2" color="primary" sx={linkSx} underline="hover">
+              <Link href={`${routes.forum_users}?user=`} variant="body2" color="primary" sx={linkSx} underline="hover">
                 <PersonOffRoundedIcon fontSize="small" />
                 使用者不存在
               </Link>
@@ -108,7 +108,7 @@ const AppFooter = () => {
             </Stack>
 
             <Stack sx={linkBlockSx(true)}>
-              <Link href={`${routes.post}?postId=`} variant="body2" color="primary" sx={linkSx} underline="hover">
+              <Link href={`${routes.forum_post}?postId=`} variant="body2" color="primary" sx={linkSx} underline="hover">
                 <DisabledByDefaultRoundedIcon fontSize="small" />
                 貼文不存在
               </Link>

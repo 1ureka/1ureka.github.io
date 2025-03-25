@@ -11,7 +11,7 @@ import { ScrollArea } from "@/forum/components/ScrollArea";
 import { useResponsiveFontSize } from "@/forum/utils/theme";
 import { ThemeMenuWithButton } from "@/forum/components/ThemeMenu";
 import { NotSupportPage } from "@/forum/components/AppError";
-import { routes } from "@/forum/utils/routes";
+import { routes } from "@/routes";
 
 const TOTAL_USRS = 1202;
 const TOTAL_POSTS = 239;
@@ -40,7 +40,7 @@ function App() {
                   <Box sx={{ mb: 2, p: 2 }}>
                     <Button
                       sx={{ textWrap: "nowrap", width: "fit-content" }}
-                      href={routes.home}
+                      href={routes.forum_home}
                       startIcon={<ArrowBackIosNewRoundedIcon />}
                     >
                       返回首頁
@@ -101,7 +101,7 @@ function App() {
                   <Box sx={{ mt: 3, p: 2 }}>
                     <Typography variant="caption" gutterBottom>
                       已經有帳號？
-                      <Button href={routes.login} variant="outlined" size="small" sx={{ ml: 1 }}>
+                      <Button href={routes.forum_login} variant="outlined" size="small" sx={{ ml: 1 }}>
                         登入
                       </Button>
                     </Typography>

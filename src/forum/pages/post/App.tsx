@@ -7,7 +7,7 @@ import { AppbarMobile } from "@/forum/components/appbar/AppbarMobile";
 import { ScrollArea } from "@/forum/components/ScrollArea";
 import { AppFooter } from "@/forum/components/appbar/AppFooter";
 
-import { routes } from "@/forum/utils/routes";
+import { routes } from "@/routes";
 import { useResponsiveFontSize } from "@/forum/utils/theme";
 import { NextPostNav, PrevPostNav } from "@/forum/components/postPage/PrevNextPostNav";
 import { PostBlock } from "@/forum/components/postPage/PostBlock";
@@ -26,7 +26,7 @@ function App() {
           <Paper sx={{ pb: 3, borderRadius: 3, border: "1px solid", borderColor: "divider" }} elevation={1}>
             <Box sx={{ display: "flex", justifyContent: "center", mt: 2, mx: 2 }}>
               <Button
-                href={routes.home}
+                href={routes.forum_home}
                 startIcon={<ArrowBackIosRoundedIcon />}
                 variant="outlined"
                 sx={{ textWrap: "nowrap" }}

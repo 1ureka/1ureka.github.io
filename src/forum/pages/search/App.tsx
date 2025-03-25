@@ -8,7 +8,7 @@ import { AppbarMobile } from "@/forum/components/appbar/AppbarMobile";
 import { ScrollArea } from "@/forum/components/ScrollArea";
 import { AppFooter } from "@/forum/components/appbar/AppFooter";
 
-import { routes } from "@/forum/utils/routes";
+import { routes } from "@/routes";
 import { theme, useResponsiveFontSize } from "@/forum/utils/theme";
 import { SearchForm } from "@/forum/components/search/SearchForm";
 
@@ -19,7 +19,7 @@ const Header = () => {
     <>
       <Stack sx={{ alignItems: "flex-start", flex: 1 }}>
         <Button
-          href={routes.home}
+          href={routes.forum_home}
           startIcon={<ArrowBackIosRoundedIcon />}
           variant="outlined"
           sx={{ textWrap: "nowrap" }}

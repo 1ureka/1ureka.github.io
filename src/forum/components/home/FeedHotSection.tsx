@@ -1,7 +1,7 @@
 import { Button, Divider, Skeleton, Stack, Typography } from "@mui/material";
 import ArrowRightAltRoundedIcon from "@mui/icons-material/ArrowRightAltRounded";
 import { usePostById, usePosts } from "@/forum/hooks/post";
-import { routes } from "@/forum/utils/routes";
+import { routes } from "@/routes";
 
 const LoadingDisplay = () => {
   return (
@@ -49,7 +49,7 @@ const PostDisplay = ({ postId }: { postId: number }) => {
       <Button
         endIcon={<ArrowRightAltRoundedIcon />}
         sx={{ width: "fit-content" }}
-        href={`${routes.post}?postId=${post.id}`}
+        href={`${routes.forum_post}?postId=${post.id}`}
       >
         查看更多
       </Button>

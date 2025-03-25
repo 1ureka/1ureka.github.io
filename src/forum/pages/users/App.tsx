@@ -9,7 +9,7 @@ import { ScrollArea } from "@/forum/components/ScrollArea";
 import { AppFooter } from "@/forum/components/appbar/AppFooter";
 
 import { useResponsiveFontSize } from "@/forum/utils/theme";
-import { routes } from "@/forum/utils/routes";
+import { routes } from "@/routes";
 import { UserTitle } from "@/forum/components/users/UserTitle";
 import { UserIntro } from "@/forum/components/users/UserIntro";
 import { UserAvatar } from "@/forum/components/users/UserAvatar";
@@ -66,7 +66,7 @@ function App() {
                   startIcon={<ArrowBackIosRoundedIcon />}
                   size="small"
                   sx={{ mr: 1 }}
-                  href={routes.home}
+                  href={routes.forum_home}
                 >
                   {isMd ? "返回首頁" : "首頁"}
                 </Button>

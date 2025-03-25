@@ -1,5 +1,5 @@
 import type { Post } from "@/forum/utils/dataType";
-import { routes } from "@/forum/utils/routes";
+import { routes } from "@/routes";
 import { Avatar, Box, BoxProps, Skeleton, Tooltip, Typography } from "@mui/material";
 
 const PostHeader = ({ post, sx, ...props }: { post: Post } & BoxProps) => {
@@ -12,7 +12,7 @@ const PostHeader = ({ post, sx, ...props }: { post: Post } & BoxProps) => {
       <Typography
         variant="subtitle1"
         component="a"
-        href={`${routes.users}?user=${post.author}`}
+        href={`${routes.forum_users}?user=${post.author}`}
         sx={{
           color: "text.secondary",
           textDecoration: "none",

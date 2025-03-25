@@ -9,7 +9,7 @@ import { FavButton } from "./shared/FavButton";
 import { TopicTags } from "./shared/TopicTags";
 import { LoadingPostHeader, PostHeader } from "./shared/PostHeader";
 import { usePostById } from "@/forum/hooks/post";
-import { routes } from "@/forum/utils/routes";
+import { routes } from "@/routes";
 
 const ExpandedLoadingPost = () => {
   return (
@@ -86,7 +86,7 @@ const ExpandedPost = ({ postId }: { postId: number }) => {
   }
 
   const handleNavigateToPost = () => {
-    window.location.href = `${routes.post}?postId=${post.id}`;
+    window.location.href = `${routes.forum_post}?postId=${post.id}`;
   };
 
   return (
@@ -235,7 +235,7 @@ const ExpandedPost = ({ postId }: { postId: number }) => {
           color="inherit"
           startIcon={<CommentRoundedIcon />}
           size="small"
-          href={`${routes.post}?postId=${post.id}`}
+          href={`${routes.forum_post}?postId=${post.id}`}
         >
           <Typography variant="caption" component="span">
             {post.replyCount} 則回覆

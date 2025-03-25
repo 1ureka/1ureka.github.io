@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { IconButton, InputAdornment, TextField, Tooltip } from "@mui/material";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
-import { routes } from "@/forum/utils/routes";
+import { routes } from "@/routes";
 
-const SEARCH_PAGE = routes.search;
+const SEARCH_PAGE = routes.forum_search;
 const SEARCH_QUERY = "?all=";
 
 const SearchBar = () => {

@@ -7,7 +7,7 @@ import { AppbarMobile } from "@/forum/components/appbar/AppbarMobile";
 import { ScrollArea } from "@/forum/components/ScrollArea";
 import { AppFooter } from "@/forum/components/appbar/AppFooter";
 
-import { routes } from "@/forum/utils/routes";
+import { routes } from "@/routes";
 import { useResponsiveFontSize } from "@/forum/utils/theme";
 import { NewPost } from "@/forum/components/postElement/NewPost";
 import { FeedDesktop } from "@/forum/components/home/FeedDesktop";
@@ -47,7 +47,7 @@ function App() {
                   variant="outlined"
                   color="primary"
                   fullWidth
-                  href={routes.posts}
+                  href={routes.forum_posts}
                   endIcon={<ArrowRightAltRoundedIcon />}
                 >
                   查看更多

@@ -1,0 +1,38 @@
+{
+  "home": {
+    "dev": "/index.html",
+    "prod": "/"
+  },
+  "forum_home": {
+    "dev": "/src/forum/pages/index.html",
+    "prod": "/forum"
+  },
+  "forum_login": {
+    "dev": "/src/forum/pages/login/index.html",
+    "prod": "/forum/login"
+  },
+  "forum_register": {
+    "dev": "/src/forum/pages/register/index.html",
+    "prod": "/forum/register"
+  },
+  "forum_verify": {
+    "dev": "/src/forum/pages/verify/index.html",
+    "prod": "/forum/verify"
+  },
+  "forum_post": {
+    "dev": "/src/forum/pages/post/index.html",
+    "prod": "/forum/post"
+  },
+  "forum_posts": {
+    "dev": "/src/forum/pages/posts/index.html",
+    "prod": "/forum/posts"
+  },
+  "forum_search": {
+    "dev": "/src/forum/pages/search/index.html",
+    "prod": "/forum/search"
+  },
+  "forum_users": {
+    "dev": "/src/forum/pages/users/index.html",
+    "prod": "/forum/users"
+  }
+}

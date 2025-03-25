@@ -10,7 +10,7 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
 import { useState } from "react";
 import { useSession, useSessionActions } from "@/forum/hooks/session";
-import { routes } from "@/forum/utils/routes";
+import { routes } from "@/routes";
 
 const AccountMenuList = ({ onItemClick, userName }: { onItemClick: () => void; userName: string }) => {
   const [loading, setLoading] = useState(false);
@@ -23,7 +23,7 @@ const AccountMenuList = ({ onItemClick, userName }: { onItemClick: () => void; u
 
   return (
     <MenuList dense>
-      <MenuItem href={`${routes.users}?user=${userName}`} component="a">
+      <MenuItem href={`${routes.forum_users}?user=${userName}`} component="a">
         <ListItemIcon>
           <PersonRoundedIcon />
         </ListItemIcon>
@@ -71,7 +71,7 @@ const AccountMenuDesktop = () => {
           {user.name}
         </Button>
       ) : (
-        <Button variant="outlined" color="inherit" startIcon={<LoginRoundedIcon />} href={routes.login}>
+        <Button variant="outlined" color="inherit" startIcon={<LoginRoundedIcon />} href={routes.forum_login}>
           登入
         </Button>
       )}
@@ -128,7 +128,7 @@ const AccountMenuMobile = () => {
           }
         />
       ) : (
-        <BottomNavigationAction showLabel label="登入" icon={<LoginRoundedIcon />} href={routes.login} />
+        <BottomNavigationAction showLabel label="登入" icon={<LoginRoundedIcon />} href={routes.forum_login} />
       )}
 
       {authenticated && (

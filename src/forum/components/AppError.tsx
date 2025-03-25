@@ -5,7 +5,7 @@ import ForumRoundedIcon from "@mui/icons-material/ForumRounded";
 import ErrorOutlineRoundedIcon from "@mui/icons-material/ErrorOutlineRounded";
 import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 import { theme } from "@/forum/utils/theme";
-import { routes } from "../utils/routes";
+import { routes } from "@/routes";
 import type { FallbackProps } from "react-error-boundary";
 
 const TOTAL_USRS = 1202;
@@ -54,7 +54,7 @@ const NotSupportPage = () => {
         <Typography variant="body1" color="text.secondary">
           請使用電腦訪問以獲得最佳體驗
         </Typography>
-        <Button variant="contained" href={routes.home} startIcon={<ArrowBackIosNewRoundedIcon />} sx={{ mt: 2 }}>
+        <Button variant="contained" href={routes.forum_home} startIcon={<ArrowBackIosNewRoundedIcon />} sx={{ mt: 2 }}>
           返回首頁
         </Button>
       </Paper>
@@ -118,7 +118,7 @@ const ErrorPage = ({ error, resetErrorBoundary }: FallbackProps) => {
           很抱歉，頁面載入時發生問題，請稍後再試
         </Typography>
         <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
-          <Button variant="contained" href={routes.home} startIcon={<ArrowBackIosNewRoundedIcon />}>
+          <Button variant="contained" href={routes.forum_home} startIcon={<ArrowBackIosNewRoundedIcon />}>
             返回首頁
           </Button>
           <Button variant="outlined" onClick={() => resetErrorBoundary()} startIcon={<RefreshRoundedIcon />}>
