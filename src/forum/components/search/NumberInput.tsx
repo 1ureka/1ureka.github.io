@@ -20,6 +20,7 @@ export const NumberInput = ({
   onChange,
   fullWidth = false,
   error,
+  sx,
   ...props
 }: CustomNumberInputProps) => {
   const [inputValue, setInputValue] = useState(value.toString());
@@ -52,7 +53,7 @@ export const NumberInput = ({
   };
 
   return (
-    <Box sx={{ width: fullWidth ? 1 : "auto" }}>
+    <Box sx={{ width: fullWidth ? 1 : "auto", ...sx }}>
       <Box
         sx={{
           position: "relative",
