@@ -9,7 +9,9 @@ const FollowButton = () => {
   const { data: user, isFetching } = useUser(urlParams.get("user"));
   const { user: userSession, loading: isLoadingSession } = useSession();
 
-  if (!isFetching && user === null) {
+  const isLogout = !isLoadingSession && userSession === null;
+  const isUserNotFound = !isFetching && user === null;
+  if (isLogout || isUserNotFound) {
     return (
       <Button
         variant="contained"
