@@ -1,6 +1,7 @@
 import { Avatar, Box, Chip, Divider, Skeleton, Typography } from "@mui/material";
 import SentimentDissatisfiedRoundedIcon from "@mui/icons-material/SentimentDissatisfiedRounded";
 import { useAuthors } from "@/forum/hooks/user";
+import { routes } from "@/forum/utils/routes";
 
 const LoadingDisplay = () => {
   return (
@@ -49,7 +50,7 @@ const AuthorDisplay = ({ name, description }: { name: string; description: strin
             "&:hover": { textDecoration: "underline" },
           }}
           component="a"
-          href={`/src/forum/pages/users/index.html?user=${name}`}
+          href={`${routes.users}?user=${name}`}
         >
           {name}
         </Typography>

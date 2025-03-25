@@ -7,6 +7,8 @@ import { AppWrapper } from "@/forum/components/AppWrapper";
 import { AppbarDesktop } from "@/forum/components/appbar/AppbarDesktop";
 import { AppbarMobile } from "@/forum/components/appbar/AppbarMobile";
 import { ScrollArea } from "@/forum/components/ScrollArea";
+
+import { routes } from "@/forum/utils/routes";
 import { useResponsiveFontSize } from "@/forum/utils/theme";
 import { OrderTabs } from "@/forum/components/posts/OrderTabs";
 import { TopicSelect } from "@/forum/components/posts/TopicSelect";
@@ -28,7 +30,12 @@ function App() {
           <Paper sx={{ py: 3, borderRadius: 3, border: "1px solid", borderColor: "divider" }} elevation={1}>
             <Box sx={{ display: "flex", gap: 1, alignItems: "center", pr: { xs: 3, md: 5 }, pl: 2 }}>
               <Stack sx={{ alignItems: "flex-start", flex: 1 }}>
-                <Button href="/" startIcon={<ArrowBackIosRoundedIcon />} variant="outlined" sx={{ textWrap: "nowrap" }}>
+                <Button
+                  href={routes.home}
+                  startIcon={<ArrowBackIosRoundedIcon />}
+                  variant="outlined"
+                  sx={{ textWrap: "nowrap" }}
+                >
                   {isMd ? "返回首頁" : "首頁"}
                 </Button>
               </Stack>

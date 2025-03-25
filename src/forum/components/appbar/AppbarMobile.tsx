@@ -6,6 +6,7 @@ import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 
 import { useState } from "react";
+import { routes } from "@/forum/utils/routes";
 import { ThemeDrawer } from "../ThemeMenu";
 import { AccountMenuMobile } from "./AccountMenu";
 import { SearchBar } from "./SearchBar";
@@ -66,7 +67,7 @@ const AppbarMobile = ({ sx, ...props }: ToolbarProps) => {
             <Fab
               color="primary"
               size="large"
-              href="/"
+              href={routes.home}
               component="a"
               sx={{
                 position: "absolute",

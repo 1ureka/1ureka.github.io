@@ -3,6 +3,7 @@ import MonitorRoundedIcon from "@mui/icons-material/MonitorRounded";
 import ArrowBackIosNewRoundedIcon from "@mui/icons-material/ArrowBackIosNewRounded";
 import ForumRoundedIcon from "@mui/icons-material/ForumRounded";
 import { theme } from "@/forum/utils/theme";
+import { routes } from "../utils/routes";
 
 const TOTAL_USRS = 1202;
 
@@ -51,7 +52,7 @@ const NotSupportPage = () => {
         <Typography variant="body1" color="text.secondary">
           請使用電腦訪問以獲得最佳體驗
         </Typography>
-        <Button variant="contained" href="/" startIcon={<ArrowBackIosNewRoundedIcon />} sx={{ mt: 2 }}>
+        <Button variant="contained" href={routes.home} startIcon={<ArrowBackIosNewRoundedIcon />} sx={{ mt: 2 }}>
           返回首頁
         </Button>
       </Paper>

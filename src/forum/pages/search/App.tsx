@@ -7,6 +7,8 @@ import { AppWrapper } from "@/forum/components/AppWrapper";
 import { AppbarDesktop } from "@/forum/components/appbar/AppbarDesktop";
 import { AppbarMobile } from "@/forum/components/appbar/AppbarMobile";
 import { ScrollArea } from "@/forum/components/ScrollArea";
+
+import { routes } from "@/forum/utils/routes";
 import { theme, useResponsiveFontSize } from "@/forum/utils/theme";
 import { SearchForm } from "@/forum/components/search/SearchForm";
 
@@ -16,7 +18,12 @@ const Header = () => {
   return (
     <>
       <Stack sx={{ alignItems: "flex-start", flex: 1 }}>
-        <Button href="/" startIcon={<ArrowBackIosRoundedIcon />} variant="outlined" sx={{ textWrap: "nowrap" }}>
+        <Button
+          href={routes.home}
+          startIcon={<ArrowBackIosRoundedIcon />}
+          variant="outlined"
+          sx={{ textWrap: "nowrap" }}
+        >
           {isMd ? "返回首頁" : "首頁"}
         </Button>
       </Stack>

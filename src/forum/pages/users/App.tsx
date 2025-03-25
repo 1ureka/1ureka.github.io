@@ -9,6 +9,7 @@ import { AppbarMobile } from "@/forum/components/appbar/AppbarMobile";
 import { ScrollArea } from "@/forum/components/ScrollArea";
 import { useResponsiveFontSize } from "@/forum/utils/theme";
 
+import { routes } from "@/forum/utils/routes";
 import { UserTitle } from "@/forum/components/users/UserTitle";
 import { UserIntro } from "@/forum/components/users/UserIntro";
 import { UserAvatar } from "@/forum/components/users/UserAvatar";
@@ -60,7 +61,13 @@ function App() {
               <Box sx={{ position: "absolute", inset: 0, bgcolor: "divider", opacity: 0.35, pointerEvents: "none" }} />
 
               <Box sx={{ display: "flex", gap: 1, alignItems: "center", color: "text.secondary" }}>
-                <Button variant="outlined" startIcon={<ArrowBackIosRoundedIcon />} size="small" sx={{ mr: 1 }} href="/">
+                <Button
+                  variant="outlined"
+                  startIcon={<ArrowBackIosRoundedIcon />}
+                  size="small"
+                  sx={{ mr: 1 }}
+                  href={routes.home}
+                >
                   {isMd ? "返回首頁" : "首頁"}
                 </Button>
                 <UserStats />

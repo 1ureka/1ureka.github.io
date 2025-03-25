@@ -6,6 +6,8 @@ import { AppWrapper } from "@/forum/components/AppWrapper";
 import { AppbarDesktop } from "@/forum/components/appbar/AppbarDesktop";
 import { AppbarMobile } from "@/forum/components/appbar/AppbarMobile";
 import { ScrollArea } from "@/forum/components/ScrollArea";
+
+import { routes } from "@/forum/utils/routes";
 import { useResponsiveFontSize } from "@/forum/utils/theme";
 import { NextPostNav, PrevPostNav } from "@/forum/components/postPage/PrevNextPostNav";
 import { PostBlock } from "@/forum/components/postPage/PostBlock";
@@ -23,7 +25,12 @@ function App() {
         <Container maxWidth="lg" sx={{ position: "relative", my: 10 }}>
           <Paper sx={{ pb: 3, borderRadius: 3, border: "1px solid", borderColor: "divider" }} elevation={1}>
             <Box sx={{ display: "flex", justifyContent: "center", mt: 2, mx: 2 }}>
-              <Button href="/" startIcon={<ArrowBackIosRoundedIcon />} variant="outlined" sx={{ textWrap: "nowrap" }}>
+              <Button
+                href={routes.home}
+                startIcon={<ArrowBackIosRoundedIcon />}
+                variant="outlined"
+                sx={{ textWrap: "nowrap" }}
+              >
                 {isMd ? "返回首頁" : "首頁"}
               </Button>
 

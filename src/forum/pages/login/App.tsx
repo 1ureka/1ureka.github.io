@@ -32,7 +32,7 @@ const LoginForm = () => {
     const username = formData.get("username") as string;
     const password = formData.get("password") as string;
     await login({ username, password });
-    window.location.href = "/src/forum/index.html";
+    window.location.href = routes.home;
   };
 
   return (
@@ -107,7 +107,7 @@ function App() {
                   <Box sx={{ mb: 2, p: 2 }}>
                     <Button
                       sx={{ textWrap: "nowrap", width: "fit-content" }}
-                      href="/"
+                      href={routes.home}
                       startIcon={<ArrowBackIosNewRoundedIcon />}
                     >
                       返回首頁

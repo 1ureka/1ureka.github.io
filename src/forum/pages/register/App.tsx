@@ -41,7 +41,7 @@ function App() {
                   <Box sx={{ mb: 2, p: 2 }}>
                     <Button
                       sx={{ textWrap: "nowrap", width: "fit-content" }}
-                      href="/"
+                      href={routes.home}
                       startIcon={<ArrowBackIosNewRoundedIcon />}
                     >
                       返回首頁
