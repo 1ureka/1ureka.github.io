@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { tryCatch } from "../utils/tryCatch";
+import { tryCatch } from "@/utils/tryCatch";
 import { users } from "../utils/data";
 import type { User } from "../utils/dataType";
 
