@@ -32,7 +32,7 @@ const UserIntro = () => {
         {user.name}
       </Typography>
       <Typography variant="body2" color="text.secondary">
-        {user.description}
+        {user.description || "這個使用者很懶，什麼都沒寫"}
       </Typography>
     </Box>
   );
