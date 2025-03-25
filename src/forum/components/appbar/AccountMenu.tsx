@@ -12,7 +12,7 @@ import { useState } from "react";
 import { useSession, useSessionActions } from "@/forum/hooks/session";
 import { routes } from "@/forum/utils/routes";
 
-const AccountMenuList = ({ onItemClick }: { onItemClick: () => void }) => {
+const AccountMenuList = ({ onItemClick, userName }: { onItemClick: () => void; userName: string }) => {
   const [loading, setLoading] = useState(false);
   const { logout } = useSessionActions();
   const handleLogout = () => {
@@ -23,8 +23,7 @@ const AccountMenuList = ({ onItemClick }: { onItemClick: () => void }) => {
 
   return (
     <MenuList dense>
-      {/* 之後改為 anchor ，直接導航 */}
-      <MenuItem onClick={onItemClick}>
+      <MenuItem href={`${routes.users}?user=${userName}`} component="a">
         <ListItemIcon>
           <PersonRoundedIcon />
         </ListItemIcon>
@@ -77,15 +76,17 @@ const AccountMenuDesktop = () => {
         </Button>
       )}
 
-      <Popover
-        anchorEl={anchorEl}
-        anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
-        transformOrigin={{ horizontal: "center", vertical: "top" }}
-        open={Boolean(anchorEl)}
-        onClose={handleClose}
-      >
-        <AccountMenuList onItemClick={handleClose} />
-      </Popover>
+      {authenticated && (
+        <Popover
+          anchorEl={anchorEl}
+          anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
+          transformOrigin={{ horizontal: "center", vertical: "top" }}
+          open={Boolean(anchorEl)}
+          onClose={handleClose}
+        >
+          <AccountMenuList onItemClick={handleClose} userName={user.name} />
+        </Popover>
+      )}
     </>
   );
 };
@@ -130,24 +131,26 @@ const AccountMenuMobile = () => {
         <BottomNavigationAction showLabel label="登入" icon={<LoginRoundedIcon />} href={routes.login} />
       )}
 
-      <SwipeableDrawer
-        anchor="right"
-        open={open}
-        onClose={handleClose}
-        onOpen={handleOpen}
-        slotProps={{ paper: { sx: { width: 240 } } }}
-      >
-        <Puller />
+      {authenticated && (
+        <SwipeableDrawer
+          anchor="right"
+          open={open}
+          onClose={handleClose}
+          onOpen={handleOpen}
+          slotProps={{ paper: { sx: { width: 240 } } }}
+        >
+          <Puller />
 
-        <Box sx={{ p: 3, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <Typography variant="h6">帳戶</Typography>
-          <IconButton onClick={handleClose}>
-            <CloseRoundedIcon />
-          </IconButton>
-        </Box>
+          <Box sx={{ p: 3, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <Typography variant="h6">帳戶</Typography>
+            <IconButton onClick={handleClose}>
+              <CloseRoundedIcon />
+            </IconButton>
+          </Box>
 
-        <AccountMenuList onItemClick={handleClose} />
-      </SwipeableDrawer>
+          <AccountMenuList onItemClick={handleClose} userName={user.name} />
+        </SwipeableDrawer>
+      )}
     </>
   );
 };
