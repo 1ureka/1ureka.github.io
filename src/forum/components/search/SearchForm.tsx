@@ -10,7 +10,6 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { type Dayjs } from "dayjs";
 import "dayjs/locale/zh-tw";
 
-import "@/forum/app.css";
 import { NumberInput } from "@/forum/components/search/NumberInput";
 import { useUrl } from "@/forum/hooks/url";
 import { useAuthors } from "@/forum/hooks/user";
