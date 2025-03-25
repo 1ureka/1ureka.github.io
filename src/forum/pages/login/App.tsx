@@ -14,6 +14,7 @@ import { ThemeMenuWithButton } from "@/forum/components/ThemeMenu";
 import { NotSupportPage } from "@/forum/components/NotSupportPage";
 import { useSessionActions } from "@/forum/hooks/session";
 import { useState } from "react";
+import { routes } from "@/forum/utils/routes";
 
 const TOTAL_USRS = 1202;
 const TOTAL_POSTS = 239;
@@ -118,12 +119,7 @@ function App() {
                   <Box sx={{ mt: 3, p: 2 }}>
                     <Typography variant="caption" gutterBottom>
                       還沒有帳號？
-                      <Button
-                        href="/src/forum/pages/register/index.html"
-                        variant="outlined"
-                        size="small"
-                        sx={{ ml: 1 }}
-                      >
+                      <Button href={routes.register} variant="outlined" size="small" sx={{ ml: 1 }}>
                         註冊
                       </Button>
                     </Typography>

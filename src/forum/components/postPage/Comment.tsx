@@ -8,6 +8,7 @@ import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownR
 import { useCommentById, useCommentsByCommentId } from "@/forum/hooks/comment";
 import { Replies } from "./Comments";
 import { NewComment } from "./NewComment";
+import { routes } from "@/forum/utils/routes";
 
 interface CommentProps {
   commentId: number;
@@ -64,7 +65,7 @@ const Comment = ({ commentId, nestedLevel, sx, ...props }: CommentProps & BoxPro
               variant="subtitle2"
               component="a"
               sx={{ "&:hover": { textDecoration: "underline" }, color: "text.primary" }}
-              href={`/src/forum/pages/users/index.html?user=${comment.author}`}
+              href={`${routes.users}?user=${comment.author}`}
             >
               {comment.author}
             </Typography>

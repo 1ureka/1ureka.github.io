@@ -10,6 +10,7 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
 import { useState } from "react";
 import { useSession, useSessionActions } from "@/forum/hooks/session";
+import { routes } from "@/forum/utils/routes";
 
 const AccountMenuList = ({ onItemClick }: { onItemClick: () => void }) => {
   const [loading, setLoading] = useState(false);
@@ -71,12 +72,7 @@ const AccountMenuDesktop = () => {
           {user.name}
         </Button>
       ) : (
-        <Button
-          variant="outlined"
-          color="inherit"
-          startIcon={<LoginRoundedIcon />}
-          href="/src/forum/pages/login/index.html"
-        >
+        <Button variant="outlined" color="inherit" startIcon={<LoginRoundedIcon />} href={routes.login}>
           登入
         </Button>
       )}
@@ -131,12 +127,7 @@ const AccountMenuMobile = () => {
           }
         />
       ) : (
-        <BottomNavigationAction
-          showLabel
-          label="登入"
-          icon={<LoginRoundedIcon />}
-          href="/src/forum/pages/login/index.html"
-        />
+        <BottomNavigationAction showLabel label="登入" icon={<LoginRoundedIcon />} href={routes.login} />
       )}
 
       <SwipeableDrawer

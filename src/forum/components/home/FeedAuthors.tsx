@@ -1,4 +1,5 @@
 import { useAuthors } from "@/forum/hooks/user";
+import { routes } from "@/forum/utils/routes";
 import { Avatar, Box, Chip, Skeleton, Typography } from "@mui/material";
 
 const LoadingDisplay = () => {
@@ -48,7 +49,7 @@ const AuthorDisplay = ({ name, description }: { name: string; description: strin
             "&:hover": { textDecoration: "underline" },
           }}
           component="a"
-          href={`/src/forum/pages/users/index.html?user=${name}`}
+          href={`${routes.users}?user=${name}`}
         >
           {name}
         </Typography>

@@ -11,6 +11,7 @@ import { FeedMobile } from "./components/home/FeedMobile";
 import { ScrollArea } from "./components/ScrollArea";
 import { useResponsiveFontSize } from "./utils/theme";
 import { PostList } from "./components/home/PostList";
+import { routes } from "./utils/routes";
 
 function App() {
   const { isMd } = useResponsiveFontSize();
@@ -45,7 +46,7 @@ function App() {
                   variant="outlined"
                   color="primary"
                   fullWidth
-                  href="/src/forum/pages/posts/index.html"
+                  href={routes.posts}
                   endIcon={<ArrowRightAltRoundedIcon />}
                 >
                   查看更多

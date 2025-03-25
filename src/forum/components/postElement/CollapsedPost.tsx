@@ -7,6 +7,7 @@ import { usePostById } from "@/forum/hooks/post";
 import { LikeButton } from "./shared/LikeButton";
 import { TopicTags } from "./shared/TopicTags";
 import { LoadingPostHeader, PostHeader } from "./shared/PostHeader";
+import { routes } from "@/forum/utils/routes";
 
 const CollapsedLoadingPost = () => {
   return (
@@ -80,7 +81,7 @@ const CollapsedPost = ({ postId }: { postId: number }) => {
   }
 
   const handleNavigateToPost = () => {
-    window.location.href = `/src/forum/pages/post/index.html?postId=${post.id}`;
+    window.location.href = `${routes.post}?postId=${post.id}`;
   };
 
   return (
@@ -146,7 +147,7 @@ const CollapsedPost = ({ postId }: { postId: number }) => {
           color="inherit"
           startIcon={<CommentRoundedIcon />}
           size="small"
-          href={`/src/forum/pages/post/index.html?postId=${post.id}`}
+          href={`${routes.post}?postId=${post.id}`}
         >
           <Typography variant="caption" component="span">
             {post.replyCount} 則回覆
