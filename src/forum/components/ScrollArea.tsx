@@ -1,4 +1,5 @@
 import { Box, type BoxProps } from "@mui/material";
+import { AppFooter } from "./appbar/AppFooter";
 
 const overflowSx: BoxProps["sx"] = {
   position: "relative",
@@ -6,6 +7,8 @@ const overflowSx: BoxProps["sx"] = {
   overflow: "auto",
   scrollbarWidth: "thin",
   scrollbarColor: "gray transparent",
+  display: "flex",
+  flexDirection: "column",
 };
 
 /**
@@ -24,6 +27,7 @@ const ScrollArea = ({ children, ...props }: BoxProps) => (
     {...props}
   >
     {children}
+    <AppFooter />
   </Box>
 );
 
