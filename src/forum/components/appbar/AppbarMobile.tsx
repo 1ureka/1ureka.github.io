@@ -1,15 +1,16 @@
-import { BottomNavigation, BottomNavigationAction, Box, Container, Fab } from "@mui/material";
+import { BottomNavigation, BottomNavigationAction, Box, Button, Container, Fab } from "@mui/material";
 import { Toolbar, Typography, type ToolbarProps } from "@mui/material";
 
+import ForumRoundedIcon from "@mui/icons-material/ForumRounded";
 import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
 import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
+import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 
 import { useEffect, useRef, useState } from "react";
 import { routes } from "@/forum/utils/routes";
 import { ThemeDrawer } from "../ThemeMenu";
 import { AccountMenuMobile } from "./AccountMenu";
-import { SearchBar } from "./SearchBar";
 import { NotificationMenuMobile } from "./NotificationMenu";
 
 const TopSx = {
@@ -56,15 +57,22 @@ const AppbarMobile = ({ sx, ...props }: ToolbarProps) => {
     <>
       <Toolbar className="mode-dark" disableGutters sx={{ ...TopSx, ...sx }} {...props}>
         <Container sx={{ display: "flex", alignItems: "center", gap: 1, color: "text.primary" }} maxWidth="xl">
-          <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+          <Box sx={{ display: "flex", gap: 1, alignItems: "center", flex: 1 }}>
+            <ForumRoundedIcon fontSize="large" color="primary" />
             <Typography variant="h4" component="h1" sx={{ mr: 1, fontFamily: `"timemachine-wa"` }}>
               論壇樣板
             </Typography>
           </Box>
 
-          <Box sx={{ display: "flex", gap: 1, alignItems: "center", justifyContent: "center", flex: 1 }}>
-            <SearchBar />
-          </Box>
+          <Button
+            href={routes.search}
+            startIcon={<SearchRoundedIcon />}
+            variant="outlined"
+            color="inherit"
+            size="large"
+          >
+            搜尋
+          </Button>
         </Container>
       </Toolbar>
 
