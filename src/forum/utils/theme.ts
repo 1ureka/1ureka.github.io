@@ -1,5 +1,6 @@
 import { createTheme, useMediaQuery } from "@mui/material";
 import { useEffect } from "react";
+import "@/forum/utils/app.css";
 
 const theme = createTheme({
   cssVariables: { colorSchemeSelector: ".mode-%s" },

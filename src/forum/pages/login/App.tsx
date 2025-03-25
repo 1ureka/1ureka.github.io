@@ -6,7 +6,6 @@ import CommentRoundedIcon from "@mui/icons-material/CommentRounded";
 import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
 import PersonAddRoundedIcon from "@mui/icons-material/PersonAddRounded";
 
-import "@/forum/app.css";
 import { AppWrapper } from "@/forum/components/AppWrapper";
 import { ScrollArea } from "@/forum/components/ScrollArea";
 import { useResponsiveFontSize } from "@/forum/utils/theme";

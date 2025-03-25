@@ -2,7 +2,6 @@ import { Box, Button, Paper, TextField, Typography } from "@mui/material";
 import ForumRoundedIcon from "@mui/icons-material/ForumRounded";
 import EmailRoundedIcon from "@mui/icons-material/EmailRounded";
 
-import "@/forum/app.css";
 import { AppWrapper } from "@/forum/components/AppWrapper";
 import { ScrollArea } from "@/forum/components/ScrollArea";
 import { useResponsiveFontSize } from "@/forum/utils/theme";

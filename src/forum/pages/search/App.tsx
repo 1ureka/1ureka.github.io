@@ -2,7 +2,6 @@ import { Box, Button, Container, Paper, Stack, Typography, useMediaQuery } from 
 import ArrowBackIosRoundedIcon from "@mui/icons-material/ArrowBackIosRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 
-import "@/forum/app.css";
 import { AppWrapper } from "@/forum/components/AppWrapper";
 import { AppbarDesktop } from "@/forum/components/appbar/AppbarDesktop";
 import { AppbarMobile } from "@/forum/components/appbar/AppbarMobile";

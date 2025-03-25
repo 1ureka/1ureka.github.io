@@ -1,7 +1,6 @@
 import { Box, Button, Container, Divider, Paper, Stack } from "@mui/material";
 import ArrowRightAltRoundedIcon from "@mui/icons-material/ArrowRightAltRounded";
 
-import "./app.css";
 import { AppWrapper } from "./components/AppWrapper";
 import { AppbarDesktop } from "./components/appbar/AppbarDesktop";
 import { AppbarMobile } from "./components/appbar/AppbarMobile";
