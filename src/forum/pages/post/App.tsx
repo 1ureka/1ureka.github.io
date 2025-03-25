@@ -6,6 +6,7 @@ import { AppWrapper } from "@/forum/components/AppWrapper";
 import { AppbarDesktop } from "@/forum/components/appbar/AppbarDesktop";
 import { AppbarMobile } from "@/forum/components/appbar/AppbarMobile";
 import { ScrollArea } from "@/forum/components/ScrollArea";
+import { AppFooter } from "@/forum/components/appbar/AppFooter";
 
 import { routes } from "@/forum/utils/routes";
 import { useResponsiveFontSize } from "@/forum/utils/theme";
@@ -45,6 +46,8 @@ function App() {
             <PostBlock />
           </Paper>
         </Container>
+
+        <AppFooter />
       </ScrollArea>
     </AppWrapper>
   );

@@ -7,8 +7,9 @@ import { AppWrapper } from "@/forum/components/AppWrapper";
 import { AppbarDesktop } from "@/forum/components/appbar/AppbarDesktop";
 import { AppbarMobile } from "@/forum/components/appbar/AppbarMobile";
 import { ScrollArea } from "@/forum/components/ScrollArea";
-import { useResponsiveFontSize } from "@/forum/utils/theme";
+import { AppFooter } from "@/forum/components/appbar/AppFooter";
 
+import { useResponsiveFontSize } from "@/forum/utils/theme";
 import { routes } from "@/forum/utils/routes";
 import { UserTitle } from "@/forum/components/users/UserTitle";
 import { UserIntro } from "@/forum/components/users/UserIntro";
@@ -98,6 +99,8 @@ function App() {
             </Box>
           </Paper>
         </Container>
+
+        <AppFooter />
       </ScrollArea>
     </AppWrapper>
   );

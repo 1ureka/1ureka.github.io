@@ -1,5 +1,4 @@
 import { Box, type BoxProps } from "@mui/material";
-import { AppFooter } from "./appbar/AppFooter";
 
 const overflowSx: BoxProps["sx"] = {
   position: "relative",
@@ -27,7 +26,6 @@ const ScrollArea = ({ children, ...props }: BoxProps) => (
     {...props}
   >
     {children}
-    <AppFooter />
   </Box>
 );
 

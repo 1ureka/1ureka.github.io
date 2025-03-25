@@ -5,13 +5,15 @@ import "./app.css";
 import { AppWrapper } from "./components/AppWrapper";
 import { AppbarDesktop } from "./components/appbar/AppbarDesktop";
 import { AppbarMobile } from "./components/appbar/AppbarMobile";
+import { ScrollArea } from "./components/ScrollArea";
+import { AppFooter } from "@/forum/components/appbar/AppFooter";
+
+import { routes } from "./utils/routes";
+import { useResponsiveFontSize } from "./utils/theme";
 import { NewPost } from "./components/postElement/NewPost";
 import { FeedDesktop } from "./components/home/FeedDesktop";
 import { FeedMobile } from "./components/home/FeedMobile";
-import { ScrollArea } from "./components/ScrollArea";
-import { useResponsiveFontSize } from "./utils/theme";
 import { PostList } from "./components/home/PostList";
-import { routes } from "./utils/routes";
 
 function App() {
   const { isMd } = useResponsiveFontSize();
@@ -59,6 +61,8 @@ function App() {
             {isMd ? <FeedDesktop /> : <FeedMobile />}
           </Stack>
         </Container>
+
+        <AppFooter />
       </ScrollArea>
     </AppWrapper>
   );
