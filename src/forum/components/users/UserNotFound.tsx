@@ -111,7 +111,7 @@ const UserNotFound = () => (
     <Box sx={{ position: "relative" }}>
       <Box sx={{ position: "absolute", inset: 0, bgcolor: "divider", opacity: 0.35, pointerEvents: "none" }} />
       <Typography variant="subtitle1" sx={{ p: 2 }}>
-        我們找不到這位使用者...但這些是其他活躍的使用者！
+        我們找不到這位使用者...這裡有其他活躍的使用者供你參考！
       </Typography>
     </Box>
 
