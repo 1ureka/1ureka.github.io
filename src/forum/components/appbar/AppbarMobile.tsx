@@ -5,7 +5,7 @@ import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
 import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { routes } from "@/forum/utils/routes";
 import { ThemeDrawer } from "../ThemeMenu";
 import { AccountMenuMobile } from "./AccountMenu";
@@ -38,6 +38,20 @@ const AppbarMobile = ({ sx, ...props }: ToolbarProps) => {
   const handleThemeOpen = () => setThemeOpen(true);
   const handleThemeClose = () => setThemeOpen(false);
 
+  const bottomRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!bottomRef.current) return;
+    const scrollContiainer = document.getElementById("scroll-area");
+    if (!scrollContiainer) return;
+
+    // 為底部預留空間
+    const bottomHeight = bottomRef.current.clientHeight;
+    scrollContiainer.style.paddingBottom = `${bottomHeight}px`;
+    return () => {
+      scrollContiainer.style.paddingBottom = "0px";
+    };
+  }, [bottomRef]);
+
   return (
     <>
       <Toolbar className="mode-dark" disableGutters sx={{ ...TopSx, ...sx }} {...props}>
@@ -55,7 +69,7 @@ const AppbarMobile = ({ sx, ...props }: ToolbarProps) => {
       </Toolbar>
 
       {/* 底部導航 */}
-      <BottomNavigation className="mode-dark" value={2} showLabels sx={BottomSx}>
+      <BottomNavigation className="mode-dark" value={2} showLabels sx={BottomSx} ref={bottomRef}>
         <NotificationMenuMobile />
 
         <BottomNavigationAction label="主題" icon={<DarkModeRoundedIcon />} onClick={handleThemeOpen} />
