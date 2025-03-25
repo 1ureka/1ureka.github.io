@@ -45,3 +45,11 @@ a {
   text-decoration: none;
   color: unset;
 }
+
+.text-ellipsis-toast > div[role="status"] {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

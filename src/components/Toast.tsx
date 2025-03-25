@@ -40,6 +40,7 @@ const useToaster = () => {
 };
 
 const styledToasterOptions: ToasterProps["toastOptions"] = {
+  className: "text-ellipsis-toast",
   style: {
     background: "var(--mui-palette-background-paper)",
     color: "var(--mui-palette-text-primary)",
