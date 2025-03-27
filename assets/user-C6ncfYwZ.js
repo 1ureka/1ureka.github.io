@@ -1,0 +1,1 @@
+import{a as s,e as t}from"./session-xflZUqIh.js";const n=async()=>(await new Promise(e=>setTimeout(e,Math.random()*2500)),t),a=async e=>(await new Promise(r=>setTimeout(r,Math.random()*1e3)),t.find(r=>r.name===e)||null),u=1*60*1e3,i=()=>s({queryKey:["authors"],queryFn:n,staleTime:u}),y=e=>s({queryKey:["user",e],queryFn:()=>e==null?null:a(e),staleTime:u});export{y as a,i as u};
