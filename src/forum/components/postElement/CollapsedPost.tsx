@@ -141,7 +141,7 @@ const CollapsedPost = ({ postId }: { postId: number }) => {
       >
         <Box sx={{ position: "absolute", inset: 0, bgcolor: "divider", opacity: 0.35 }} />
 
-        <LikeButton postId={post.id} />
+        <LikeButton postId={post.id} likeCount={post.likeCount} />
 
         <Button
           color="inherit"
