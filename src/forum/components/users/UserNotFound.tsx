@@ -1,6 +1,6 @@
 import { Avatar, Box, Chip, Divider, Skeleton, Typography } from "@mui/material";
 import SentimentDissatisfiedRoundedIcon from "@mui/icons-material/SentimentDissatisfiedRounded";
-import { useAuthors } from "@/forum/hooks/user";
+import { useUsers } from "@/forum/hooks/user";
 import { routes } from "@/routes";
 
 const LoadingDisplay = () => {
@@ -64,8 +64,8 @@ const AuthorDisplay = ({ name, description }: { name: string; description: strin
 };
 
 const FeedAuthors = ({ length }: { length: number }) => {
-  const { data, isFetching } = useAuthors();
-  const authors = data ? data.slice(0, length) : null;
+  const { data, isFetching } = useUsers({ limit: length, orderBy: "postCount", order: "desc" });
+  const authors = data ? (data.pages[0] ? data.pages[0].users : null) : null;
 
   return (
     <Box

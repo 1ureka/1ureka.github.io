@@ -1,4 +1,4 @@
-import { useAuthors } from "@/forum/hooks/user";
+import { useUsers } from "@/forum/hooks/user";
 import { routes } from "@/routes";
 import { Avatar, Box, Chip, Skeleton, Typography } from "@mui/material";
 
@@ -63,8 +63,8 @@ const AuthorDisplay = ({ name, description }: { name: string; description: strin
 };
 
 const FeedAuthors = ({ length }: { length: number }) => {
-  const { data, isFetching } = useAuthors();
-  const authors = data ? data.slice(0, length) : null;
+  const { data, isFetching } = useUsers({ limit: length, orderBy: "followerCount", order: "desc" });
+  const authors = data ? (data.pages[0] ? data.pages[0].users : []) : [];
 
   return (
     <>

@@ -12,7 +12,7 @@ import "dayjs/locale/zh-tw";
 
 import { NumberInput } from "@/forum/components/search/NumberInput";
 import { useUrl } from "@/forum/hooks/url";
-import { useAuthors } from "@/forum/hooks/user";
+import { useUsers } from "@/forum/hooks/user";
 import { useForm } from "@tanstack/react-form";
 
 type FormField = {
@@ -52,7 +52,7 @@ const SearchForm = () => {
     },
   });
 
-  const { data: authors, isFetching } = useAuthors();
+  const { data, isFetching } = useUsers({ limit: 150, orderBy: "name", order: "asc" });
 
   return (
     <Accordion
@@ -162,7 +162,7 @@ const SearchForm = () => {
                   <Autocomplete
                     value={field.state.value === "all" ? null : field.state.value}
                     onChange={(_, newValue) => field.handleChange(newValue === null ? "all" : newValue)}
-                    options={authors?.map((author) => author.name) || []}
+                    options={data?.pages[0].users?.map((author) => author.name) || []}
                     loading={isFetching}
                     renderInput={(params) => (
                       <TextField
