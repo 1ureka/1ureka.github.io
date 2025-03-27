@@ -1,5 +1,4 @@
-import { Box, Button, Container, Divider, Paper, Typography } from "@mui/material";
-import PeopleRoundedIcon from "@mui/icons-material/PeopleRounded";
+import { Box, Button, Container, Divider, Paper } from "@mui/material";
 import ArrowBackIosRoundedIcon from "@mui/icons-material/ArrowBackIosRounded";
 
 import { AppWrapper } from "@/forum/components/AppWrapper";
@@ -14,8 +13,9 @@ import { UserTitle } from "@/forum/components/users/UserTitle";
 import { UserIntro } from "@/forum/components/users/UserIntro";
 import { UserAvatar } from "@/forum/components/users/UserAvatar";
 import { FollowButton } from "@/forum/components/users/FollowButton";
-import { UserStats } from "@/forum/components/users/UserStats";
 import { PostList } from "@/forum/components/users/PostList";
+import { UserStats } from "@/forum/components/users/UserStats";
+import { UserStatsFollow } from "@/forum/components/users/UserStatsFollow";
 
 function App() {
   const { isMd } = useResponsiveFontSize();
@@ -74,20 +74,7 @@ function App() {
               </Box>
 
               <Box sx={{ display: "flex", gap: 1, alignItems: "center", color: "text.secondary" }}>
-                <PeopleRoundedIcon fontSize="small" color="inherit" />
-                <Typography
-                  variant="body2"
-                  sx={{ "&:hover": { textDecoration: "underline", cursor: "pointer", color: "text.primary" } }}
-                >
-                  2 位追蹤者
-                </Typography>
-                <Typography variant="body2">·</Typography>
-                <Typography
-                  variant="body2"
-                  sx={{ "&:hover": { textDecoration: "underline", cursor: "pointer", color: "text.primary" } }}
-                >
-                  正在追蹤 1 人
-                </Typography>
+                <UserStatsFollow />
               </Box>
             </Box>
 
