@@ -1,22 +1,11 @@
-// TODO: 根據 user id 獲取其公開資訊, 根據 user id 獲取其 post id array, 根據 user id 獲取其 comment id array, 根據 user id 獲取其 follower user id array
-
 // ----------------------------------------
 // 假資料與模擬 API
 // ----------------------------------------
 
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { users } from "../utils/data";
-
-const fakeFetchUsers = async () => {
-  await new Promise((resolve) => setTimeout(resolve, Math.random() * 1000));
-  return users;
-};
-
-// TODO: 到時這個api應該 query 有 post 的 users
-const fakeFetchAuthors = async () => {
-  await new Promise((resolve) => setTimeout(resolve, Math.random() * 2500));
-  return users;
-};
+import { fetchUsers, fetchUserStats } from "../data/user";
+import type { FetchUsersParams } from "../data/user";
 
 const fakeFetchUserByName = async (userName: string) => {
   await new Promise((resolve) => setTimeout(resolve, Math.random() * 1000));
@@ -32,21 +21,12 @@ const staleTime = 1 * 60 * 1000;
 /**
  * 獲取所有使用者
  */
-const useUsers = () => {
-  return useQuery({
-    queryKey: ["users"],
-    queryFn: fakeFetchUsers,
-    staleTime,
-  });
-};
-
-/**
- * 獲取所有作者 (有發布過文章的使用者)
- */
-const useAuthors = () => {
-  return useQuery({
-    queryKey: ["authors"],
-    queryFn: fakeFetchAuthors,
+const useUsers = ({ page = 0, limit, isAuthor = true, orderBy, order }: FetchUsersParams = {}) => {
+  return useInfiniteQuery({
+    queryKey: ["users", page, limit, isAuthor, orderBy, order],
+    queryFn: async ({ pageParam: page }) => fetchUsers({ page, limit, isAuthor, orderBy, order }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) => lastPage.nextPage,
     staleTime,
   });
 };
@@ -65,4 +45,15 @@ const useUser = (name?: string | null) => {
   });
 };
 
-export { useUsers, useAuthors, useUser };
+/**
+ * 根據使用者 ID 獲取使用者統計
+ */
+const useUserStats = (userId: number) => {
+  return useQuery({
+    queryKey: ["userStats", userId],
+    queryFn: () => fetchUserStats({ userId }),
+    staleTime,
+  });
+};
+
+export { useUsers, useUser, useUserStats };
