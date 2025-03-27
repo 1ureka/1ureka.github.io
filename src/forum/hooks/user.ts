@@ -1,20 +1,6 @@
-// ----------------------------------------
-// 假資料與模擬 API
-// ----------------------------------------
-
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { users } from "../utils/data";
-import { fetchUsers, fetchUserStats } from "../data/user";
+import { fetchUserByName, fetchUsers, fetchUserStats } from "../data/user";
 import type { FetchUsersParams } from "../data/user";
-
-const fakeFetchUserByName = async (userName: string) => {
-  await new Promise((resolve) => setTimeout(resolve, Math.random() * 1000));
-  return users.find((author) => author.name === userName) || null;
-};
-
-// ----------------------------------------
-// 實際 Hook
-// ----------------------------------------
 
 const staleTime = 1 * 60 * 1000;
 
@@ -39,7 +25,7 @@ const useUser = (name?: string | null) => {
     queryKey: ["user", name],
     queryFn: () => {
       if (name === null || name === undefined) return null;
-      return fakeFetchUserByName(name);
+      return fetchUserByName({ name });
     },
     staleTime,
   });

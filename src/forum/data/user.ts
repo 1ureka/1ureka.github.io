@@ -75,6 +75,37 @@ const fetchUsers: FetchUsers = async ({
 };
 
 // ----------------------------
+// 查詢使用者名稱、描述、id (根據使用者名稱)
+// ----------------------------
+
+type FetchUserByNameParams = {
+  name: string;
+};
+
+type FetchUserByName = (params: FetchUserByNameParams) => Promise<{
+  id: number;
+  name: string;
+  description: string;
+} | null>;
+
+const fetchUserByName: FetchUserByName = async ({ name }) => {
+  const sql = `
+      SELECT id, name, description
+      FROM users
+      WHERE name = $name
+      LIMIT 1
+    `;
+
+  const results = await SQLiteClient.exec(sql, { $name: name });
+
+  if (results.length === 0) {
+    return null;
+  }
+
+  return results[0] as unknown as ReturnType<FetchUserByName>;
+};
+
+// ----------------------------
 // 查詢使用者統計
 // ----------------------------
 
@@ -111,5 +142,5 @@ const fetchUserStats: FetchUserStats = async ({ userId }) => {
 // 匯出
 // ----------------------------
 
-export { fetchUsers, fetchUserStats };
-export type { FetchUsersParams, FetchUserStatsParams };
+export { fetchUsers, fetchUserByName, fetchUserStats };
+export type { FetchUsersParams, FetchUserByNameParams, FetchUserStatsParams };
