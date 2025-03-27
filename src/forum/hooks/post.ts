@@ -5,69 +5,8 @@
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { posts } from "../utils/data";
 import { useEffect } from "react";
-
-const sortObjectArray = <T extends object>(array: T[], orderBy: keyof T, order: "asc" | "desc" = "asc"): T[] => {
-  return [...array].sort((a, b) => {
-    const valueA = a[orderBy];
-    const valueB = b[orderBy];
-
-    if (valueA === valueB) return 0;
-
-    // 升序或降序排列
-    const comparison = valueA < valueB ? -1 : 1;
-    return order === "asc" ? comparison : -comparison;
-  });
-};
-
-const fakeFetchPosts = async ({
-  pageParam = 0, // 頁面參數
-  limit = 10, // 默認每頁 10 條
-  topic,
-  author,
-  orderBy,
-  order = "asc",
-}: QueryPostsOptions & { pageParam?: number } = {}) => {
-  await new Promise((resolve) => setTimeout(resolve, Math.random() * 1000));
-
-  // 如果提供了 topic，按標籤篩選
-  let filteredPosts = posts;
-  if (topic) filteredPosts = posts.filter((post) => post.tags.includes(topic));
-  // 如果提供了 author，按作者篩選
-  if (author) filteredPosts = filteredPosts.filter((post) => post.author === author);
-
-  // 如果提供了排序條件，進行排序
-  if (orderBy && Object.keys(posts[0]).includes(orderBy)) {
-    filteredPosts = sortObjectArray(filteredPosts, orderBy as keyof (typeof posts)[0], order);
-  }
-
-  const postIds = filteredPosts.map(({ id }) => id);
-
-  // 計算當前頁面的資料
-  const startIndex = pageParam * limit;
-  const endIndex = startIndex + limit;
-  const paginatedIds = postIds.slice(startIndex, endIndex);
-
-  // 返回需要的資料結構
-  return {
-    items: paginatedIds,
-    nextPage: endIndex < postIds.length ? pageParam + 1 : null, // 如果還有下一頁，返回下一頁的頁碼
-    totalItems: postIds.length,
-    totalPages: Math.ceil(postIds.length / limit),
-  };
-};
-
-const fakeFetchPostStats = async ({ author, topic }: QueryPostsOptions = {}) => {
-  await new Promise((resolve) => setTimeout(resolve, Math.random() * 1000));
-
-  let filteredPosts = posts;
-  if (author) filteredPosts = filteredPosts.filter((post) => post.author === author);
-  if (topic) filteredPosts = filteredPosts.filter((post) => post.tags.includes(topic));
-
-  const totalLikes = filteredPosts.reduce((acc, post) => acc + post.likeCount, 0);
-  const totalViews = filteredPosts.reduce((acc, post) => acc + post.viewCount, 0);
-
-  return { totalPosts: filteredPosts.length, totalLikes, totalViews };
-};
+import type { FetchPostsParams } from "@/forum/data/post";
+import { fetchPostCounts, fetchPosts } from "@/forum/data/post";
 
 const fakeFetchPostById = async (postId: number) => {
   await new Promise((resolve) => setTimeout(resolve, Math.random() * 1000));
@@ -83,22 +22,14 @@ const fakeFetchTags = async () => {
 // 實際 Hook
 // ----------------------------------------
 
-type QueryPostsOptions = {
-  limit?: number;
-  topic?: string;
-  author?: string;
-  orderBy?: string;
-  order?: "asc" | "desc";
-};
-
 const staleTime = 1 * 60 * 1000;
 
-const usePosts = ({ limit, topic, author, orderBy, order }: QueryPostsOptions = {}) => {
+const usePosts = ({ limit, topic, userId, orderBy, order }: FetchPostsParams = {}) => {
   return useQuery({
-    queryKey: ["posts", limit, topic, author, orderBy, order],
+    queryKey: ["posts", limit, topic, userId, orderBy, order],
     queryFn: async () => {
-      const result = await fakeFetchPosts({ pageParam: 0, limit, topic, author, orderBy, order });
-      return result.items;
+      const result = await fetchPosts({ page: 0, limit, topic, userId, orderBy, order });
+      return result.posts;
     },
     staleTime,
   });
@@ -107,18 +38,15 @@ const usePosts = ({ limit, topic, author, orderBy, order }: QueryPostsOptions = 
 const usePostCounts = ({ topic }: { topic?: string } = {}) => {
   return useQuery({
     queryKey: ["postCounts", topic],
-    queryFn: async () => {
-      const result = await fakeFetchPosts({ pageParam: 0, topic, limit: 1 });
-      return result.totalItems;
-    },
+    queryFn: () => fetchPostCounts({ topic }),
     staleTime,
   });
 };
 
-const useInfinitePosts = ({ limit = 6, topic, author, orderBy, order }: QueryPostsOptions = {}) => {
+const useInfinitePosts = ({ limit = 6, topic, userId, orderBy, order }: FetchPostsParams = {}) => {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery({
-    queryKey: ["infinitePosts", limit, topic, author, orderBy, order],
-    queryFn: ({ pageParam }) => fakeFetchPosts({ pageParam, limit, topic, author, orderBy, order }),
+    queryKey: ["infinitePosts", limit, topic, userId, orderBy, order],
+    queryFn: ({ pageParam: page }) => fetchPosts({ page, limit, topic, userId, orderBy, order }),
     initialPageParam: 0,
     getNextPageParam: (lastPage) => lastPage.nextPage,
     staleTime,
@@ -132,7 +60,7 @@ const useInfinitePosts = ({ limit = 6, topic, author, orderBy, order }: QueryPos
       const scrollHeight = scrollContainer.scrollHeight;
       const scrollTop = scrollContainer.scrollTop;
       const clientHeight = scrollContainer.clientHeight;
-      const margin = 100;
+      const margin = 200;
 
       if (scrollTop + clientHeight >= scrollHeight - margin && hasNextPage && !isFetchingNextPage) {
         fetchNextPage();
@@ -143,15 +71,7 @@ const useInfinitePosts = ({ limit = 6, topic, author, orderBy, order }: QueryPos
     return () => scrollContainer.removeEventListener("scroll", scrollHandler);
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
-  return { data, isLoading, isFetchingNextPage };
-};
-
-const usePostStats = (options: QueryPostsOptions = {}) => {
-  return useQuery({
-    queryKey: ["postStats", options.author, options.topic],
-    queryFn: () => fakeFetchPostStats(options),
-    staleTime,
-  });
+  return { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage };
 };
 
 const useTags = () => {
@@ -174,4 +94,4 @@ const usePostById = (postId: number | undefined) => {
   });
 };
 
-export { usePosts, usePostCounts, useInfinitePosts, usePostStats, useTags, usePostById };
+export { usePosts, usePostCounts, useInfinitePosts, useTags, usePostById };
