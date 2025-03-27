@@ -3,7 +3,7 @@ import { CollapsedLoadingPost, CollapsedPost } from "../postElement/CollapsedPos
 import { usePosts } from "@/forum/hooks/post";
 
 const PostList = () => {
-  const { data, isFetching } = usePosts({ limit: 5 });
+  const { data, isFetching } = usePosts({ limit: 5, orderBy: "createdAt", order: "desc" });
 
   if (isFetching || !data) {
     return (
