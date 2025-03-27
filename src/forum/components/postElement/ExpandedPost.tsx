@@ -157,7 +157,9 @@ const ExpandedPost = ({ postId }: { postId: number }) => {
                     <Box
                       sx={{ position: "absolute", inset: "auto 0 0 0", pb: 1, display: "grid", placeItems: "center" }}
                     >
-                      <Chip label={name} size="small" />
+                      <Box sx={{ maxWidth: 90 }}>
+                        <Chip label={name} size="small" />
+                      </Box>
                     </Box>
                   </ButtonBase>
 

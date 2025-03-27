@@ -121,7 +121,9 @@ const FullPost = ({ post }: { post: FetchPostByIdResult }) => (
                 {/* <img src={""} style={{ display: "block", position: "absolute", inset: 0 }} /> */}
 
                 <Box sx={{ position: "absolute", inset: "auto 0 0 0", pb: 1, display: "grid", placeItems: "center" }}>
-                  <Chip label={name} size="small" />
+                  <Box sx={{ maxWidth: 150 }}>
+                    <Chip label={name} size="small" />
+                  </Box>
                 </Box>
               </ButtonBase>
 
