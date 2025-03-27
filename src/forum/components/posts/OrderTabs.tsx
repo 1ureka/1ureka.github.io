@@ -2,9 +2,10 @@ import { Box, Stack, Tab, Tabs, Tooltip, Typography } from "@mui/material";
 import SortRoundedIcon from "@mui/icons-material/SortRounded";
 import ArrowUpwardRoundedIcon from "@mui/icons-material/ArrowUpwardRounded";
 import { useUrl } from "@/forum/hooks/url";
-import type { Post } from "@/forum/utils/dataType";
+import type { FetchPostsParams } from "@/forum/data/post";
 
-const orders: (keyof Post)[] = ["title", "createdAt", "updatedAt", "replyCount", "viewCount", "likeCount"];
+type OrderBy = NonNullable<FetchPostsParams["orderBy"]>;
+const orders: OrderBy[] = ["title", "createdAt", "updatedAt", "commentCount", "viewCount", "likeCount"];
 const ordersTC = ["標題", "建立時間", "更新時間", "回覆數", "瀏覽數", "讚數"];
 
 const OrderTabs = () => {
