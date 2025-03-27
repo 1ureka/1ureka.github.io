@@ -98,7 +98,13 @@ const AppFooter = () => {
             </Stack>
 
             <Stack sx={linkBlockSx(isBelowSm)}>
-              <Link href={`${routes.forum_users}?user=`} variant="body2" color="primary" sx={linkSx} underline="hover">
+              <Link
+                href={`${routes.forum_users}?user=I_think_this_wont_be_an_username`}
+                variant="body2"
+                color="primary"
+                sx={linkSx}
+                underline="hover"
+              >
                 <PersonOffRoundedIcon fontSize="small" />
                 使用者不存在
               </Link>
@@ -108,7 +114,13 @@ const AppFooter = () => {
             </Stack>
 
             <Stack sx={linkBlockSx(true)}>
-              <Link href={`${routes.forum_post}?postId=`} variant="body2" color="primary" sx={linkSx} underline="hover">
+              <Link
+                href={`${routes.forum_post}?postId=-99`}
+                variant="body2"
+                color="primary"
+                sx={linkSx}
+                underline="hover"
+              >
                 <DisabledByDefaultRoundedIcon fontSize="small" />
                 貼文不存在
               </Link>
