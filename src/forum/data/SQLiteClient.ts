@@ -31,6 +31,7 @@ export class SQLiteClient {
       return this.parse([]);
     }
 
+    // 執行 SQL 查詢
     const result = await tryCatch(
       (async () => {
         const result = db.exec(sql, params);
@@ -39,6 +40,7 @@ export class SQLiteClient {
       })()
     );
 
+    // 處理錯誤
     if (result.error !== null) {
       console.error("Failed to execute SQL query", result.error);
       return this.parse([]);

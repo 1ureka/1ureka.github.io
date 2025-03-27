@@ -38,7 +38,7 @@ const oddBeforeSx = {
   mr: -2,
 } as const;
 
-const Comments = () => {
+const Comments = ({ totalComments }: { totalComments: number }) => {
   const { searchParams, updateSearchParams } = useUrl();
   const param = searchParams.get("postId");
   const postId = param && /^\d+$/.test(param) && Number(param) > 0 ? Number(param) : -1;
@@ -97,7 +97,7 @@ const Comments = () => {
     <>
       <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
         <Typography variant="subtitle1" component="h3" sx={{ px: 2 }}>
-          {comments.length} 則留言
+          {totalComments} 則留言
         </Typography>
 
         <Divider flexItem orientation="vertical" variant="middle" />

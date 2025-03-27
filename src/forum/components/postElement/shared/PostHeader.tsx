@@ -1,25 +1,25 @@
-import type { Post } from "@/forum/utils/dataType";
+import type { FetchPostByIdResult } from "@/forum/data/post";
 import { routes } from "@/routes";
 import { Avatar, Box, BoxProps, Skeleton, Tooltip, Typography } from "@mui/material";
 
-const PostHeader = ({ post, sx, ...props }: { post: Post } & BoxProps) => {
+const PostHeader = ({ post, sx, ...props }: { post: FetchPostByIdResult } & BoxProps) => {
   const isUpdated = Math.abs(post.updatedAt.getTime() - post.createdAt.getTime()) > 1000;
   return (
     <Box sx={{ display: "flex", gap: 1.5, mb: 2, alignItems: "center", ...sx }} {...props}>
       <Avatar sx={{ bgcolor: "primary.main", width: "2rem", height: "2rem" }}>
-        <Typography sx={{ translate: "0px 5%" }}>{post.author.slice(0, 1).toUpperCase()}</Typography>
+        <Typography sx={{ translate: "0px 5%" }}>{post.userName.slice(0, 1).toUpperCase()}</Typography>
       </Avatar>
       <Typography
         variant="subtitle1"
         component="a"
-        href={`${routes.forum_users}?user=${post.author}`}
+        href={`${routes.forum_users}?user=${post.userName}`}
         sx={{
           color: "text.secondary",
           textDecoration: "none",
           "&:hover": { textDecoration: "underline", color: "text.primary" },
         }}
       >
-        by {post.author}
+        by {post.userName}
       </Typography>
       <Box sx={{ flex: 1 }} />
       {isUpdated ? (

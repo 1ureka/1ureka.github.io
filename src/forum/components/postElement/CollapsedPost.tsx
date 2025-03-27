@@ -74,7 +74,7 @@ const CollapsedLoadingPost = () => {
 };
 
 const CollapsedPost = ({ postId }: { postId: number }) => {
-  const { data: post, isFetching } = usePostById(postId);
+  const { data: post, isFetching } = usePostById({ postId });
 
   if (isFetching || !post) {
     return <CollapsedLoadingPost />;
@@ -150,7 +150,7 @@ const CollapsedPost = ({ postId }: { postId: number }) => {
           href={`${routes.forum_post}?postId=${post.id}`}
         >
           <Typography variant="caption" component="span">
-            {post.replyCount} 則回覆
+            {post.commentCount} 則回覆
           </Typography>
         </Button>
 

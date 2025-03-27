@@ -17,7 +17,7 @@ const PrevPostNav = () => {
   const { searchParams, updateSearchParams } = useUrl();
   const param = searchParams.get("postId");
   const postId = param && /^\d+$/.test(param) && Number(param) > 0 ? Number(param) : -1;
-  const { data: post, isFetching } = usePostById(postId - 1);
+  const { data: post, isFetching } = usePostById({ postId: postId - 1 });
 
   if (isFetching && !post) {
     return (
@@ -55,7 +55,7 @@ const NextPostNav = () => {
   const { searchParams, updateSearchParams } = useUrl();
   const param = searchParams.get("postId");
   const postId = param && /^\d+$/.test(param) && Number(param) > 0 ? Number(param) : -1;
-  const { data: post, isFetching } = usePostById(postId + 1);
+  const { data: post, isFetching } = usePostById({ postId: postId + 1 });
 
   if (isFetching && !post) {
     return (

@@ -1,9 +1,9 @@
-import type { Post } from "@/forum/utils/dataType";
+import type { FetchPostByIdResult } from "@/forum/data/post";
 import { routes } from "@/routes";
 import { Chip } from "@mui/material";
 
 type TopicTagsProps = {
-  post: Post;
+  post: FetchPostByIdResult;
   displayCount?: number;
 };
 
