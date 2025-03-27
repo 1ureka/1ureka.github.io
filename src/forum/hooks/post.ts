@@ -1,22 +1,7 @@
-// ----------------------------------------
-// 假資料與模擬 API
-// ----------------------------------------
-
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { posts } from "../utils/data";
 import { useEffect } from "react";
-import type { FetchPostsParams } from "@/forum/data/post";
-import { fetchPostCounts, fetchPosts } from "@/forum/data/post";
-
-const fakeFetchPostById = async (postId: number) => {
-  await new Promise((resolve) => setTimeout(resolve, Math.random() * 1000));
-  return posts.find((post) => post.id === postId) ?? null;
-};
-
-const fakeFetchTags = async () => {
-  await new Promise((resolve) => setTimeout(resolve, Math.random() * 1000));
-  return [...new Set(posts.flatMap((post) => post.tags))];
-};
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { fetchPostCounts, fetchPosts, fetchPostById, fetchTags } from "@/forum/data/post";
+import type { FetchPostsParams, FetchPostCountsParams, FetchPostByIdParams } from "@/forum/data/post";
 
 // ----------------------------------------
 // 實際 Hook
@@ -35,7 +20,7 @@ const usePosts = ({ limit, topic, userId, orderBy, order }: FetchPostsParams = {
   });
 };
 
-const usePostCounts = ({ topic }: { topic?: string } = {}) => {
+const usePostCounts = ({ topic }: FetchPostCountsParams = {}) => {
   return useQuery({
     queryKey: ["postCounts", topic],
     queryFn: () => fetchPostCounts({ topic }),
@@ -77,17 +62,17 @@ const useInfinitePosts = ({ limit = 6, topic, userId, orderBy, order }: FetchPos
 const useTags = () => {
   return useQuery({
     queryKey: ["tags"],
-    queryFn: fakeFetchTags,
+    queryFn: fetchTags,
     staleTime,
   });
 };
 
-const usePostById = (postId: number | undefined) => {
+const usePostById = ({ postId, incrementViewCount }: FetchPostByIdParams) => {
   return useQuery({
     queryKey: ["post", postId],
     queryFn: () => {
       if (postId === undefined || Number.isNaN(postId)) return null;
-      return fakeFetchPostById(postId);
+      return fetchPostById({ postId, incrementViewCount });
     },
     enabled: postId !== undefined && !Number.isNaN(postId) && postId >= 0, // 確保有效的 postId
     staleTime,
