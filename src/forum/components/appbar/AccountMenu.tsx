@@ -1,5 +1,5 @@
 import { IconButton, ListItemIcon, MenuItem, MenuList, Popover, styled, Typography } from "@mui/material";
-import { Avatar, BottomNavigationAction, Box, Button, CircularProgress, Divider, SwipeableDrawer } from "@mui/material";
+import { BottomNavigationAction, Box, Button, CircularProgress, Divider, SwipeableDrawer } from "@mui/material";
 
 import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 import ManageAccountsRoundedIcon from "@mui/icons-material/ManageAccountsRounded";
@@ -11,6 +11,7 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { useState } from "react";
 import { useSession, useSessionActions } from "@/forum/hooks/session";
 import { routes } from "@/routes";
+import { UserAvatar } from "../userElement/UserAvatar";
 
 const AccountMenuList = ({ onItemClick, userName }: { onItemClick: () => void; userName: string }) => {
   const [loading, setLoading] = useState(false);
@@ -121,11 +122,7 @@ const AccountMenuMobile = () => {
           showLabel
           label={user.name}
           onClick={handleOpen}
-          icon={
-            <Avatar sx={{ bgcolor: "primary.main", width: "2rem", height: "2rem", color: "primary.contrastText" }}>
-              {user.name.slice(0, 1).toUpperCase()}
-            </Avatar>
-          }
+          icon={<UserAvatar name={user.name} sx={{ color: "primary.contrastText" }} />}
         />
       ) : (
         <BottomNavigationAction showLabel label="登入" icon={<LoginRoundedIcon />} href={routes.forum_login} />

@@ -1,14 +1,13 @@
 import type { FetchPostByIdResult } from "@/forum/data/post";
 import { routes } from "@/routes";
-import { Avatar, Box, BoxProps, Skeleton, Tooltip, Typography } from "@mui/material";
+import { Box, BoxProps, Skeleton, Tooltip, Typography } from "@mui/material";
+import { UserAvatar } from "../../userElement/UserAvatar";
 
 const PostHeader = ({ post, sx, ...props }: { post: FetchPostByIdResult } & BoxProps) => {
   const isUpdated = Math.abs(post.updatedAt.getTime() - post.createdAt.getTime()) > 1000;
   return (
     <Box sx={{ display: "flex", gap: 1.5, mb: 2, alignItems: "center", ...sx }} {...props}>
-      <Avatar sx={{ bgcolor: "primary.main", width: "2rem", height: "2rem" }}>
-        <Typography sx={{ translate: "0px 5%" }}>{post.userName.slice(0, 1).toUpperCase()}</Typography>
-      </Avatar>
+      <UserAvatar name={post.userName} />
       <Typography
         variant="subtitle1"
         component="a"

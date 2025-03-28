@@ -1,12 +1,13 @@
-import { Avatar, Box, Chip, Skeleton, Typography } from "@mui/material";
+import { Box, Chip, Skeleton, Typography } from "@mui/material";
 import type { FetchUserByNameResult } from "@/forum/data/user";
 import { SmallFollowButton } from "./FollowButton";
 import { routes } from "@/routes";
+import { UserAvatar, UserAvatarSkeleton } from "./UserAvatar";
 
 const AuthorLoadingDisplay = () => {
   return (
     <>
-      <Skeleton variant="circular" width="2rem" height="2rem" animation="wave" />
+      <UserAvatarSkeleton />
       <Box>
         <Skeleton variant="rounded" animation="wave">
           <Typography
@@ -44,9 +45,7 @@ const ellipsisSx = {
 const AuthorDisplay = ({ id, name, description, ellipsis }: { ellipsis?: boolean } & FetchUserByNameResult) => {
   return (
     <>
-      <Avatar sx={{ bgcolor: "primary.main", width: "2rem", height: "2rem" }}>
-        <Typography sx={{ translate: "0px 5%" }}>{name.slice(0, 1).toUpperCase()}</Typography>
-      </Avatar>
+      <UserAvatar name={name} />
       <Box>
         <Typography
           variant="subtitle1"

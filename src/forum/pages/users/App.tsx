@@ -11,11 +11,11 @@ import { useResponsiveFontSize } from "@/forum/utils/theme";
 import { routes } from "@/routes";
 import { UserTitle } from "@/forum/components/users/UserTitle";
 import { UserIntro } from "@/forum/components/users/UserIntro";
-import { UserAvatar } from "@/forum/components/users/UserAvatar";
 import { PostList } from "@/forum/components/users/PostList";
 import { UserStats } from "@/forum/components/users/UserStats";
 import { UserStatsFollow } from "@/forum/components/users/UserStatsFollow";
 import { PrimaryFollowButton } from "@/forum/components/userElement/FollowButton";
+import { PrimaryUserAvatar } from "@/forum/components/userElement/UserAvatar";
 
 function App() {
   const { isMd } = useResponsiveFontSize();
@@ -35,7 +35,7 @@ function App() {
               sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", px: 3, flexWrap: "wrap" }}
             >
               <Box sx={{ display: "flex", alignItems: "center" }}>
-                <UserAvatar />
+                <PrimaryUserAvatar />
                 <UserIntro />
               </Box>
 

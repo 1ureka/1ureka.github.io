@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Button, Typography, Avatar, IconButton, Tooltip, BoxProps, Skeleton } from "@mui/material";
+import { Box, Button, Typography, IconButton, Tooltip, BoxProps, Skeleton } from "@mui/material";
 import ThumbUpRoundedIcon from "@mui/icons-material/ThumbUpRounded";
 import ReplyRoundedIcon from "@mui/icons-material/ReplyRounded";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -9,6 +9,7 @@ import { useCommentById, useCommentsByParentId } from "@/forum/hooks/comment";
 import { Replies } from "./Comments";
 import { NewComment } from "./NewComment";
 import { routes } from "@/routes";
+import { UserAvatar } from "../userElement/UserAvatar";
 
 interface CommentProps {
   commentId: number;
@@ -55,9 +56,7 @@ const Comment = ({ commentId, nestedLevel, sx, ...props }: CommentProps & BoxPro
       {...props}
     >
       <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1.5 }}>
-        <Avatar sx={{ bgcolor: "primary.main", width: "2rem", height: "2rem", mt: 1 }}>
-          {comment.userName.slice(0, 1).toUpperCase()}
-        </Avatar>
+        <UserAvatar name={comment.userName} sx={{ mt: 1 }} />
 
         <Box sx={{ flex: 1 }}>
           <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>

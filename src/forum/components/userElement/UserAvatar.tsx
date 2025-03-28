@@ -1,7 +1,20 @@
 import { useUser } from "@/forum/hooks/user";
 import { Avatar, Box, CircularProgress, Skeleton, Typography } from "@mui/material";
+import type { AvatarProps, SkeletonProps } from "@mui/material";
 
-const LoadingAvatar = ({ showProgress }: { showProgress: boolean }) => (
+const UserAvatarSkeleton = (props: SkeletonProps) => (
+  <Skeleton variant="circular" width="2rem" height="2rem" animation="wave" {...props} />
+);
+
+const UserAvatar = ({ name, sx, ...props }: { name: string } & AvatarProps) => {
+  return (
+    <Avatar sx={{ bgcolor: "primary.main", width: "2rem", height: "2rem", ...sx }} {...props}>
+      <Typography sx={{ translate: "0px 5%" }}>{name.slice(0, 1).toUpperCase()}</Typography>
+    </Avatar>
+  );
+};
+
+const PrimaryLoadingAvatar = ({ showProgress }: { showProgress: boolean }) => (
   <>
     <Skeleton
       variant="circular"
@@ -26,7 +39,7 @@ const LoadingAvatar = ({ showProgress }: { showProgress: boolean }) => (
   </>
 );
 
-const UserAvatar = ({ size = 6, borderSize = 0.8 }: { size?: number; borderSize?: number }) => {
+const PrimaryUserAvatar = ({ size = 6, borderSize = 0.8 }: { size?: number; borderSize?: number }) => {
   const urlParams = new URLSearchParams(window.location.search);
   const { data: user, isFetching } = useUser(urlParams.get("user"));
 
@@ -70,10 +83,10 @@ const UserAvatar = ({ size = 6, borderSize = 0.8 }: { size?: number; borderSize?
           </Typography>
         </Avatar>
       ) : (
-        <LoadingAvatar showProgress={isFetching} />
+        <PrimaryLoadingAvatar showProgress={isFetching} />
       )}
     </Box>
   );
 };
 
-export { UserAvatar };
+export { PrimaryUserAvatar, UserAvatar, UserAvatarSkeleton };
