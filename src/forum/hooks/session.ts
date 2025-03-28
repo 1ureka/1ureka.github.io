@@ -1,11 +1,10 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { tryCatch } from "@/utils/tryCatch";
-import { users } from "../utils/data";
-import type { User } from "../utils/dataType";
+import type { FetchUserByNameResult } from "../data/user";
 
 // localStorage key 常數
 const SESSION_STORAGE_KEY = "forum_session";
-const mockUser = users.find((user) => user.name === "1ureka") || users[0];
+const mockUser = { id: 1, name: "1ureka", description: "" };
 
 // 從 localStorage 獲取儲存的會話資訊
 const getStoredSession = async () => {
@@ -30,7 +29,7 @@ const storeSession = async (session: Session): Promise<void> => {
 export type Session =
   | {
       authenticated: true;
-      user: User;
+      user: FetchUserByNameResult;
       loading: boolean;
       error: string | null;
     }

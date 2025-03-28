@@ -1,7 +1,7 @@
 import { useUser } from "@/forum/hooks/user";
 import { Skeleton, Typography, useMediaQuery } from "@mui/material";
 import BarChartRoundedIcon from "@mui/icons-material/BarChartRounded";
-import type { User } from "@/forum/utils/dataType";
+import type { FetchUserByNameResult } from "@/forum/data/user";
 import { theme } from "@/forum/utils/theme";
 import { useUserStats } from "@/forum/hooks/user";
 
@@ -26,7 +26,7 @@ const LoadingDisplay = () => {
   );
 };
 
-const UserStats = ({ user }: { user: User }) => {
+const UserStats = ({ user }: { user: FetchUserByNameResult }) => {
   const isMd = useMediaQuery(theme.breakpoints.up("md"));
   const { data, isFetching } = useUserStats(user.id);
 

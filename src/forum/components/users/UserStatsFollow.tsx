@@ -1,6 +1,6 @@
 import { Skeleton, Typography } from "@mui/material";
 import PeopleRoundedIcon from "@mui/icons-material/PeopleRounded";
-import type { User } from "@/forum/utils/dataType";
+import type { FetchUserByNameResult } from "@/forum/data/user";
 import { useUser, useUserStats } from "@/forum/hooks/user";
 
 const LoadingDisplay = () => (
@@ -16,7 +16,7 @@ const LoadingDisplay = () => (
   </>
 );
 
-const UserStatsFollow = ({ user }: { user: User }) => {
+const UserStatsFollow = ({ user }: { user: FetchUserByNameResult }) => {
   const { data, isFetching } = useUserStats(user.id);
 
   if (data === undefined || isFetching) {

@@ -98,11 +98,13 @@ type FetchUserByNameParams = {
   name: string;
 };
 
-type FetchUserByName = (params: FetchUserByNameParams) => Promise<{
+type FetchUserByNameResult = {
   id: number;
   name: string;
   description: string;
-} | null>;
+};
+
+type FetchUserByName = (params: FetchUserByNameParams) => Promise<FetchUserByNameResult | null>;
 
 const fetchUserByName: FetchUserByName = async ({ name }) => {
   const sql = `
@@ -159,4 +161,4 @@ const fetchUserStats: FetchUserStats = async ({ userId }) => {
 // ----------------------------
 
 export { fetchUserCount, fetchUsers, fetchUserByName, fetchUserStats };
-export type { FetchUsersParams, FetchUserByNameParams, FetchUserStatsParams };
+export type { FetchUsersParams, FetchUserByNameParams, FetchUserStatsParams, FetchUserByNameResult };
