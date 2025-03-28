@@ -1,10 +1,11 @@
-import { Button } from "@mui/material";
+import { Button, Chip, CircularProgress } from "@mui/material";
 import NotificationAddRoundedIcon from "@mui/icons-material/NotificationAddRounded";
 import EditNoteRoundedIcon from "@mui/icons-material/EditNoteRounded";
 import { useUser } from "@/forum/hooks/user";
 import { useSession } from "@/forum/hooks/session";
+import { useUserFollowButton } from "@/forum/hooks/userInteraction";
 
-const FollowButton = () => {
+const PrimaryFollowButton = () => {
   const urlParams = new URLSearchParams(window.location.search);
   const { data: user, isFetching } = useUser(urlParams.get("user"));
   const { user: userSession, loading: isLoadingSession } = useSession();
@@ -82,4 +83,26 @@ const FollowButton = () => {
   );
 };
 
-export { FollowButton };
+const SmallFollowButton = ({ targetId }: { targetId: number }) => {
+  const { isFollowed, handleFollow, disabled, loading } = useUserFollowButton(targetId);
+
+  if (loading) {
+    return <Chip variant="outlined" clickable disabled label={<CircularProgress size="1rem" />} />;
+  }
+
+  if (disabled) {
+    return <Chip variant="outlined" label="追蹤" clickable disabled />;
+  }
+
+  return (
+    <Chip
+      variant="outlined"
+      label={isFollowed ? "已追蹤" : "追蹤"}
+      clickable
+      onClick={handleFollow}
+      color={isFollowed ? "primary" : "default"}
+    />
+  );
+};
+
+export { PrimaryFollowButton, SmallFollowButton };
