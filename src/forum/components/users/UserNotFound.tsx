@@ -16,23 +16,24 @@ const FeedAuthors = ({ length }: { length: number }) => {
         alignItems: "center",
         gap: 2,
         p: 2,
+        "& > *:nth-of-type(6n - 3)": {
+          "&::after": {
+            content: '""',
+            position: "absolute",
+            display: { xs: "none", md: "block" },
+            inset: 0,
+            pointerEvents: "none",
+            borderRight: "1px solid",
+            borderColor: "divider",
+            mr: -1,
+            my: -2.1,
+          },
+        },
       }}
     >
       {isFetching || !authors
         ? [...Array(length)].map((_, i) => <AuthorLoadingDisplay key={i} />)
-        : authors.map(({ name, description }) => <AuthorDisplay key={name} name={name} description={description} />)}
-
-      <Box
-        sx={{
-          position: "absolute",
-          inset: 0,
-          pointerEvents: "none",
-          display: { xs: "none", md: "flex" },
-          justifyContent: "center",
-        }}
-      >
-        <Divider orientation="vertical" flexItem variant="middle" />
-      </Box>
+        : authors.map((user) => <AuthorDisplay key={user.id} {...user} />)}
     </Box>
   );
 };

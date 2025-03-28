@@ -18,6 +18,19 @@ const usersContainerSx = {
   gridTemplateColumns: "auto 1fr auto auto 1fr auto",
   alignItems: "center",
   gap: 2,
+  "& > *:nth-of-type(6n - 3)": {
+    "&::after": {
+      content: '""',
+      position: "absolute",
+      display: { xs: "none", md: "block" },
+      inset: 0,
+      pointerEvents: "none",
+      borderRight: "1px solid",
+      borderColor: "divider",
+      mr: -1,
+      my: -2.1,
+    },
+  },
 } as const;
 
 const FavoriteUsers = ({ userId }: { userId: number }) => {
@@ -46,7 +59,7 @@ const FavoriteUsers = ({ userId }: { userId: number }) => {
   return (
     <Box sx={usersContainerSx}>
       {data.map((user) => (
-        <AuthorDisplay key={user.id} name={user.name} description={user.description} ellipsis />
+        <AuthorDisplay key={user.id} {...user} ellipsis />
       ))}
     </Box>
   );
