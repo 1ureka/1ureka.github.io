@@ -3,10 +3,6 @@ import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { fetchPostCounts, fetchPosts, fetchPostById, fetchTags } from "@/forum/data/post";
 import type { FetchPostsParams, FetchPostCountsParams, FetchPostByIdParams } from "@/forum/data/post";
 
-// ----------------------------------------
-// 實際 Hook
-// ----------------------------------------
-
 const staleTime = 1 * 60 * 1000;
 
 const usePosts = ({ limit, topic, userId, orderBy, order }: FetchPostsParams = {}) => {
@@ -45,7 +41,7 @@ const useInfinitePosts = ({ limit = 6, topic, userId, orderBy, order }: FetchPos
       const scrollHeight = scrollContainer.scrollHeight;
       const scrollTop = scrollContainer.scrollTop;
       const clientHeight = scrollContainer.clientHeight;
-      const margin = 200;
+      const margin = 350;
 
       if (scrollTop + clientHeight >= scrollHeight - margin && hasNextPage && !isFetchingNextPage) {
         fetchNextPage();
