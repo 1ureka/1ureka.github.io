@@ -2,6 +2,8 @@ import { Skeleton, Typography } from "@mui/material";
 import PeopleRoundedIcon from "@mui/icons-material/PeopleRounded";
 import type { FetchUserByNameResult } from "@/forum/data/user";
 import { useUser, useUserStats } from "@/forum/hooks/user";
+import { useState } from "react";
+import { UserFollowDialog } from "./UserFollowDialog";
 
 const LoadingDisplay = () => (
   <>
@@ -17,6 +19,8 @@ const LoadingDisplay = () => (
 );
 
 const UserStatsFollow = ({ user }: { user: FetchUserByNameResult }) => {
+  const [openFollowers, setOpenFollowers] = useState(false);
+  const [openFollowing, setOpenFollowing] = useState(false);
   const { data, isFetching } = useUserStats(user.id);
 
   if (data === undefined || isFetching) {
@@ -31,6 +35,7 @@ const UserStatsFollow = ({ user }: { user: FetchUserByNameResult }) => {
       <Typography
         variant="body2"
         sx={{ "&:hover": { textDecoration: "underline", cursor: "pointer", color: "text.primary" } }}
+        onClick={() => setOpenFollowers(true)}
       >
         {`${followerCount} 位追蹤者`}
       </Typography>
@@ -38,9 +43,23 @@ const UserStatsFollow = ({ user }: { user: FetchUserByNameResult }) => {
       <Typography
         variant="body2"
         sx={{ "&:hover": { textDecoration: "underline", cursor: "pointer", color: "text.primary" } }}
+        onClick={() => setOpenFollowing(true)}
       >
         {`正在追蹤 ${followingCount} 人`}
       </Typography>
+
+      <UserFollowDialog
+        open={openFollowers}
+        onClose={() => setOpenFollowers(false)}
+        type="followers"
+        counts={followerCount}
+      />
+      <UserFollowDialog
+        open={openFollowing}
+        onClose={() => setOpenFollowing(false)}
+        type="following"
+        counts={followingCount}
+      />
     </>
   );
 };
