@@ -14,7 +14,7 @@ const FeedAuthors = ({ length }: { length: number }) => {
       <Box sx={{ display: "grid", gridTemplateColumns: "auto 1fr auto", alignItems: "center", gap: 2 }}>
         {isFetching || !authors
           ? [...Array(length)].map((_, i) => <AuthorLoadingDisplay key={i} />)
-          : authors.map(({ name, description }) => <AuthorDisplay key={name} name={name} description={description} />)}
+          : authors.map((user) => <AuthorDisplay key={user.id} {...user} />)}
       </Box>
     </>
   );

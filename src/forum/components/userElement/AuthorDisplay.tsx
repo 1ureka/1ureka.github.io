@@ -1,5 +1,7 @@
-import { routes } from "@/routes";
 import { Avatar, Box, Chip, Skeleton, Typography } from "@mui/material";
+import type { FetchUserByNameResult } from "@/forum/data/user";
+import { SmallFollowButton } from "./FollowButton";
+import { routes } from "@/routes";
 
 const AuthorLoadingDisplay = () => {
   return (
@@ -39,7 +41,7 @@ const ellipsisSx = {
   textOverflow: "ellipsis",
 } as const;
 
-const AuthorDisplay = ({ name, description, ellipsis }: { name: string; description: string; ellipsis?: boolean }) => {
+const AuthorDisplay = ({ id, name, description, ellipsis }: { ellipsis?: boolean } & FetchUserByNameResult) => {
   return (
     <>
       <Avatar sx={{ bgcolor: "primary.main", width: "2rem", height: "2rem" }}>
@@ -64,7 +66,7 @@ const AuthorDisplay = ({ name, description, ellipsis }: { name: string; descript
           {description || "這個使用者很懶，什麼都沒寫"}
         </Typography>
       </Box>
-      <Chip variant="outlined" label="追蹤" clickable />
+      <SmallFollowButton targetId={id} />
     </>
   );
 };
