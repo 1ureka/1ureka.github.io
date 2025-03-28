@@ -6,8 +6,7 @@ import { AppWrapper } from "@/forum/components/AppWrapper";
 import { ScrollArea } from "@/forum/components/ScrollArea";
 import { useResponsiveFontSize } from "@/forum/utils/theme";
 import { useState } from "react";
-
-const TOTAL_USRS = 1202;
+import { UserCounts } from "@/forum/components/auth/UserCount";
 
 function App() {
   useResponsiveFontSize();
@@ -75,13 +74,7 @@ function App() {
             </Typography>
           </Paper>
 
-          <Typography className="mode-dark" variant="body2" sx={{ mt: 4, color: "text.secondary" }}>
-            與其他
-            <Typography component="span" variant="body2" sx={{ color: "primary.light" }}>
-              {` ${TOTAL_USRS} `}
-            </Typography>
-            位使用者一同加入我們
-          </Typography>
+          <UserCounts />
         </Box>
       </ScrollArea>
     </AppWrapper>
