@@ -1,6 +1,22 @@
 import { SQLiteClient } from "./SQLiteClient";
 
 // ----------------------------
+// 查詢總使用者數
+// ----------------------------
+
+type FetchUserCount = () => Promise<number>;
+
+const fetchUserCount: FetchUserCount = async () => {
+  const sql = `
+      SELECT COUNT(*) as count
+      FROM users
+    `;
+
+  const result = (await SQLiteClient.exec(sql)) as { count: number }[];
+  return result[0]?.count || 0;
+};
+
+// ----------------------------
 // 查詢使用者列表
 // ----------------------------
 
@@ -142,5 +158,5 @@ const fetchUserStats: FetchUserStats = async ({ userId }) => {
 // 匯出
 // ----------------------------
 
-export { fetchUsers, fetchUserByName, fetchUserStats };
+export { fetchUserCount, fetchUsers, fetchUserByName, fetchUserStats };
 export type { FetchUsersParams, FetchUserByNameParams, FetchUserStatsParams };

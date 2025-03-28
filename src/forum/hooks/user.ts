@@ -1,12 +1,17 @@
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { fetchUserByName, fetchUsers, fetchUserStats } from "../data/user";
+import { fetchUserByName, fetchUserCount, fetchUsers, fetchUserStats } from "../data/user";
 import type { FetchUsersParams } from "../data/user";
 
 const staleTime = 1 * 60 * 1000;
 
-/**
- * 獲取所有使用者
- */
+const useUserCounts = () => {
+  return useQuery({
+    queryKey: ["userCounts"],
+    queryFn: fetchUserCount,
+    staleTime,
+  });
+};
+
 const useUsers = ({ page = 0, limit, isAuthor = true, orderBy, order }: FetchUsersParams = {}) => {
   return useInfiniteQuery({
     queryKey: ["users", page, limit, isAuthor, orderBy, order],
@@ -17,9 +22,6 @@ const useUsers = ({ page = 0, limit, isAuthor = true, orderBy, order }: FetchUse
   });
 };
 
-/**
- * 根據使用者名稱獲取使用者
- */
 const useUser = (name?: string | null) => {
   return useQuery({
     queryKey: ["user", name],
@@ -31,9 +33,6 @@ const useUser = (name?: string | null) => {
   });
 };
 
-/**
- * 根據使用者 ID 獲取使用者統計
- */
 const useUserStats = (userId: number) => {
   return useQuery({
     queryKey: ["userStats", userId],
@@ -42,4 +41,4 @@ const useUserStats = (userId: number) => {
   });
 };
 
-export { useUsers, useUser, useUserStats };
+export { useUsers, useUser, useUserStats, useUserCounts };
