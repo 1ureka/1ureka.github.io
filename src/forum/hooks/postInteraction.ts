@@ -1,7 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "./session";
 import { useRef } from "react";
-import { fetchPostInteractionFav, fetchPostInteractionLike, updatePostInteraction } from "../data/postInteraction";
+
+import { fetchPostInteractionFav, fetchPostInteractionLike, fetchUserFavPosts } from "../data/postInteraction";
+import { updatePostInteraction } from "../data/postInteraction";
 
 const staleTime = 0;
 
@@ -89,4 +91,17 @@ const usePostFavButton = (postId: number) => {
   return { isFavorited, handleFavorite, disabled };
 };
 
-export { usePostLikeButton, usePostFavButton };
+const useUserFavPosts = () => {
+  const { user, authenticated, loading: isLoadingSession } = useSession();
+  const { data, isFetching } = useQuery({
+    staleTime,
+    queryKey: ["favoritePosts", user?.id],
+    queryFn: () => fetchUserFavPosts({ userId: user!.id }),
+    enabled: !isLoadingSession && authenticated && user?.id !== undefined,
+  });
+
+  const loading = isLoadingSession || isFetching || data === undefined;
+  return { data, loading };
+};
+
+export { usePostLikeButton, usePostFavButton, useUserFavPosts };

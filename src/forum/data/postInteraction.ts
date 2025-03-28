@@ -143,10 +143,29 @@ type FetchUserFavPostsParams = {
 
 type FetchUserFavPostsResult = number[];
 
-// TODO: 實作 fetchUserFavPosts
+type FetchUserFavPosts = (params: FetchUserFavPostsParams) => Promise<FetchUserFavPostsResult>;
+
+const fetchUserFavPosts: FetchUserFavPosts = async ({ userId }) => {
+  // 查詢使用者收藏的所有貼文 ID
+  const favPostsSql = `
+    SELECT postId
+    FROM post_interactions
+    WHERE userId = $userId
+      AND type = 'favorite'
+    ORDER BY createdAt DESC
+  `;
+
+  // 執行查詢
+  const favPostsResult = await SQLiteClient.exec(favPostsSql, {
+    $userId: userId,
+  });
+
+  // 處理結果：將查詢結果轉換為貼文 ID 陣列
+  return favPostsResult.map((row) => row.postId as number);
+};
 
 // ----------------------------
 // 匯出
 // ----------------------------
 
-export { fetchPostInteractionLike, fetchPostInteractionFav, updatePostInteraction };
+export { fetchPostInteractionLike, fetchPostInteractionFav, updatePostInteraction, fetchUserFavPosts };
