@@ -1,7 +1,5 @@
-import { Box, ButtonBase, Container, IconButton, type ToolbarProps } from "@mui/material";
+import { Box, ButtonBase, Container, type ToolbarProps } from "@mui/material";
 import { Toolbar, Tooltip, Typography } from "@mui/material";
-
-import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
 import ForumRoundedIcon from "@mui/icons-material/ForumRounded";
 
 import { routes } from "@/routes";
@@ -9,6 +7,7 @@ import { ThemeMenuWithButton } from "../ThemeMenu";
 import { AccountMenuDesktop } from "./AccountMenu";
 import { SearchBar } from "./SearchBar";
 import { NotificationMenuDesktop } from "./NotificationMenu";
+import { FavroitePostsDesktop } from "./FavoritePosts";
 
 const Title = () => (
   <Tooltip title="返回首頁" arrow>
@@ -59,14 +58,8 @@ const AppbarDesktop = ({ sx, ...props }: ToolbarProps) => {
 
         <Box sx={{ display: "flex", gap: 1, alignItems: "center", justifyContent: "flex-end", flex: 1 }}>
           <ThemeMenuWithButton />
-          <Tooltip title="收藏與追蹤" arrow>
-            <IconButton>
-              <FavoriteRoundedIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-
+          <FavroitePostsDesktop />
           <NotificationMenuDesktop />
-
           <AccountMenuDesktop />
         </Box>
       </Container>
