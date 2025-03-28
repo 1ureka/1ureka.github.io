@@ -7,7 +7,7 @@ import { ThemeMenuWithButton } from "../ThemeMenu";
 import { AccountMenuDesktop } from "./AccountMenu";
 import { SearchBar } from "./SearchBar";
 import { NotificationMenuDesktop } from "./NotificationMenu";
-import { FavroitePostsDesktop } from "./FavoritePosts";
+import { FavroitesDesktop } from "./Favorites";
 
 const Title = () => (
   <Tooltip title="返回首頁" arrow>
@@ -58,7 +58,7 @@ const AppbarDesktop = ({ sx, ...props }: ToolbarProps) => {
 
         <Box sx={{ display: "flex", gap: 1, alignItems: "center", justifyContent: "flex-end", flex: 1 }}>
           <ThemeMenuWithButton />
-          <FavroitePostsDesktop />
+          <FavroitesDesktop />
           <NotificationMenuDesktop />
           <AccountMenuDesktop />
         </Box>
