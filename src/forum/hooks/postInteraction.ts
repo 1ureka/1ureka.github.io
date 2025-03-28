@@ -5,12 +5,15 @@ import { fetchPostInteractionFav, fetchPostInteractionLike, updatePostInteractio
 
 const staleTime = 0;
 
-const usePostInteractionMutation = (postId: number, userId: number, type: "like" | "favorite") => {
+const usePostInteractionMutation = (postId: number, userId: number | undefined, type: "like" | "favorite") => {
   const queryClient = useQueryClient();
   const lastCalled = useRef(0);
 
   return useMutation({
-    mutationFn: (value: boolean) => updatePostInteraction({ postId, userId, type, value }),
+    mutationFn: (value: boolean) => {
+      if (userId === undefined) throw new Error("未登錄");
+      return updatePostInteraction({ postId, userId, type, value });
+    },
     onMutate: () => {
       lastCalled.current++;
       return lastCalled.current;
@@ -43,7 +46,7 @@ const usePostLikeButton = (postId: number) => {
   const likeCount = data?.likeCount ?? null;
 
   // 樂觀更新 + 發送請求
-  const { mutate } = usePostInteractionMutation(postId, user!.id, "like");
+  const { mutate } = usePostInteractionMutation(postId, user?.id, "like");
   const handleLike = async () => {
     if (disabled) return;
     await queryClient.cancelQueries({ queryKey: ["likeStatus", postId, user.id] });
@@ -72,7 +75,7 @@ const usePostFavButton = (postId: number) => {
   const isFavorited = data?.fav ?? false;
 
   // 樂觀更新 + 發送請求
-  const { mutate } = usePostInteractionMutation(postId, user!.id, "favorite");
+  const { mutate } = usePostInteractionMutation(postId, user?.id, "favorite");
   const handleFavorite = async () => {
     if (disabled) return;
     await queryClient.cancelQueries({ queryKey: ["favoriteStatus", postId, user.id] });
