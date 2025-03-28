@@ -4,7 +4,7 @@ import { usePostFavButton } from "@/forum/hooks/postInteraction";
 
 const FavButton = ({ postId }: { postId: number }) => {
   const isSm = useMediaQuery((theme) => theme.breakpoints.down("sm"));
-  const { isFavorited, handleFavorite, loading, disabled } = usePostFavButton(postId);
+  const { isFavorited, handleFavorite, disabled } = usePostFavButton(postId);
 
   return (
     <Button
@@ -13,7 +13,6 @@ const FavButton = ({ postId }: { postId: number }) => {
       size="small"
       onClick={handleFavorite}
       disabled={disabled}
-      loading={loading}
     >
       <Typography variant="caption" component="span">
         {isSm ? (isFavorited ? "取消" : "收藏") : isFavorited ? "取消收藏" : "收藏該貼文"}
