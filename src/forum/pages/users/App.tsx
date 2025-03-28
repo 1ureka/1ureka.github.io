@@ -12,10 +12,10 @@ import { routes } from "@/routes";
 import { UserTitle } from "@/forum/components/users/UserTitle";
 import { UserIntro } from "@/forum/components/users/UserIntro";
 import { UserAvatar } from "@/forum/components/users/UserAvatar";
-import { FollowButton } from "@/forum/components/users/FollowButton";
 import { PostList } from "@/forum/components/users/PostList";
 import { UserStats } from "@/forum/components/users/UserStats";
 import { UserStatsFollow } from "@/forum/components/users/UserStatsFollow";
+import { PrimaryFollowButton } from "@/forum/components/userElement/FollowButton";
 
 function App() {
   const { isMd } = useResponsiveFontSize();
@@ -40,7 +40,7 @@ function App() {
               </Box>
 
               <Box sx={{ m: 2 }}>
-                <FollowButton />
+                <PrimaryFollowButton />
               </Box>
             </Box>
 
