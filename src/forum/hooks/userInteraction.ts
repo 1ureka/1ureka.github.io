@@ -45,6 +45,7 @@ const useUserFollowButton = (targetId: number) => {
   const loading = isLoadingSession || isFetching;
   const disabled = !authenticated || data === undefined || targetId === user?.id;
   const isFollowed = data?.follow ?? false;
+  const isSelf = targetId === user?.id;
 
   // 樂觀更新 + 發送請求
   const { mutate } = useUserInteractionMutation(targetId, user?.id);
@@ -58,7 +59,7 @@ const useUserFollowButton = (targetId: number) => {
     });
   };
 
-  return { isFollowed, handleFollow, disabled, loading };
+  return { isFollowed, handleFollow, disabled, loading, isSelf };
 };
 
 const useFollowers = ({ userId }: { userId: number }) => {

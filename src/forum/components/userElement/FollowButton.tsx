@@ -1,48 +1,27 @@
-import { Button, Chip, CircularProgress } from "@mui/material";
+import { Button, ButtonProps, Chip, CircularProgress } from "@mui/material";
 import NotificationAddRoundedIcon from "@mui/icons-material/NotificationAddRounded";
 import EditNoteRoundedIcon from "@mui/icons-material/EditNoteRounded";
 import { useUser } from "@/forum/hooks/user";
-import { useSession } from "@/forum/hooks/session";
 import { useUserFollowButton } from "@/forum/hooks/userInteraction";
 
-const PrimaryFollowButton = () => {
-  const urlParams = new URLSearchParams(window.location.search);
-  const { data: user, isFetching } = useUser(urlParams.get("user"));
-  const { user: userSession, loading: isLoadingSession } = useSession();
+const primaryButtonProps: ButtonProps = {
+  variant: "contained",
+  color: "primary",
+  size: "large",
+  startIcon: <NotificationAddRoundedIcon />,
+};
 
-  const isLogout = !isLoadingSession && userSession === null;
-  const isUserNotFound = !isFetching && user === null;
-  if (isLogout || isUserNotFound) {
-    return (
-      <Button
-        variant="contained"
-        color="primary"
-        size="large"
-        startIcon={<NotificationAddRoundedIcon />}
-        disabled
-        sx={{ borderRadius: 99, transition: "all 0.2s ease", boxShadow: 3, scale: "1.001" }}
-      >
-        追蹤
-      </Button>
-    );
-  }
+const primaryButtonSx: ButtonProps["sx"] = {
+  borderRadius: 99,
+  transition: "all 0.2s ease",
+  boxShadow: 3,
+  scale: "1.001",
+} as const;
 
-  if (isLoadingSession || isFetching || !user || !userSession) {
-    return (
-      <Button
-        variant="contained"
-        color="primary"
-        size="large"
-        startIcon={<NotificationAddRoundedIcon />}
-        loading
-        sx={{ borderRadius: 99, transition: "all 0.2s ease", boxShadow: 3, scale: "1.001" }}
-      >
-        追蹤
-      </Button>
-    );
-  }
+const PrimaryFollowButton = ({ targetId }: { targetId: number }) => {
+  const { isFollowed, handleFollow, disabled, loading, isSelf } = useUserFollowButton(targetId);
 
-  if (userSession.name === user.name) {
+  if (isSelf) {
     return (
       <Button
         variant="contained"
@@ -50,10 +29,7 @@ const PrimaryFollowButton = () => {
         size="large"
         startIcon={<EditNoteRoundedIcon />}
         sx={{
-          borderRadius: 99,
-          transition: "all 0.2s ease",
-          boxShadow: 3,
-          scale: "1.001",
+          ...primaryButtonSx,
           "&:hover": { bgcolor: "primary.main", scale: "1.05", boxShadow: 3 },
           "&:active": { scale: "0.95" },
         }}
@@ -63,24 +39,59 @@ const PrimaryFollowButton = () => {
     );
   }
 
+  if (disabled) {
+    return (
+      <Button {...primaryButtonProps} disabled sx={primaryButtonSx}>
+        追蹤
+      </Button>
+    );
+  }
+
+  if (loading) {
+    return (
+      <Button {...primaryButtonProps} loading sx={primaryButtonSx}>
+        追蹤
+      </Button>
+    );
+  }
+
   return (
     <Button
-      variant="contained"
-      color="primary"
-      size="large"
-      startIcon={<NotificationAddRoundedIcon />}
+      {...primaryButtonProps}
+      onClick={handleFollow}
       sx={{
-        borderRadius: 99,
-        transition: "all 0.2s ease",
-        boxShadow: 3,
-        scale: "1.001",
+        ...primaryButtonSx,
         "&:hover": { bgcolor: "primary.main", scale: "1.05", boxShadow: 3 },
         "&:active": { scale: "0.95" },
       }}
     >
-      追蹤
+      {isFollowed ? "已追蹤" : "追蹤"}
     </Button>
   );
+};
+
+const PrimaryFollowButtonWrapper = () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const { data: user, isFetching } = useUser(urlParams.get("user"));
+  const isUserNotFound = !isFetching && user === null;
+
+  if (isUserNotFound) {
+    return (
+      <Button {...primaryButtonProps} disabled sx={primaryButtonSx}>
+        追蹤
+      </Button>
+    );
+  }
+
+  if (isFetching || !user) {
+    return (
+      <Button {...primaryButtonProps} loading sx={primaryButtonSx}>
+        追蹤
+      </Button>
+    );
+  }
+
+  return <PrimaryFollowButton targetId={user.id} />;
 };
 
 const SmallFollowButton = ({ targetId }: { targetId: number }) => {
@@ -105,4 +116,4 @@ const SmallFollowButton = ({ targetId }: { targetId: number }) => {
   );
 };
 
-export { PrimaryFollowButton, SmallFollowButton };
+export { PrimaryFollowButtonWrapper as PrimaryFollowButton, SmallFollowButton };
