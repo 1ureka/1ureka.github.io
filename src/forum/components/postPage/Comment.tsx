@@ -5,7 +5,7 @@ import ReplyRoundedIcon from "@mui/icons-material/ReplyRounded";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
 
-import { useCommentById, useCommentsByCommentId } from "@/forum/hooks/comment";
+import { useCommentById, useCommentsByParentId } from "@/forum/hooks/comment";
 import { Replies } from "./Comments";
 import { NewComment } from "./NewComment";
 import { routes } from "@/routes";
@@ -29,7 +29,7 @@ const Comment = ({ commentId, nestedLevel, sx, ...props }: CommentProps & BoxPro
   };
 
   const { data: comment, isFetching } = useCommentById(commentId);
-  const { data: comments, isFetching: isFetchingComments } = useCommentsByCommentId(commentId);
+  const { data: comments, isFetching: isFetchingComments } = useCommentsByParentId(commentId);
 
   const [isShowReplies, setIsShowReplies] = useState(false);
   const handleSwitchReplies = () => setIsShowReplies((prev) => !prev);
@@ -56,7 +56,7 @@ const Comment = ({ commentId, nestedLevel, sx, ...props }: CommentProps & BoxPro
     >
       <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1.5 }}>
         <Avatar sx={{ bgcolor: "primary.main", width: "2rem", height: "2rem", mt: 1 }}>
-          {comment.author.slice(0, 1).toUpperCase()}
+          {comment.userName.slice(0, 1).toUpperCase()}
         </Avatar>
 
         <Box sx={{ flex: 1 }}>
@@ -65,9 +65,9 @@ const Comment = ({ commentId, nestedLevel, sx, ...props }: CommentProps & BoxPro
               variant="subtitle2"
               component="a"
               sx={{ "&:hover": { textDecoration: "underline" }, color: "text.primary" }}
-              href={`${routes.forum_users}?user=${comment.author}`}
+              href={`${routes.forum_users}?user=${comment.userName}`}
             >
-              {comment.author}
+              {comment.userName}
             </Typography>
 
             <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>

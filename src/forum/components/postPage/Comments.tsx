@@ -1,11 +1,11 @@
-import { useCommentsByCommentId, useCommentsByPostId } from "@/forum/hooks/comment";
+import { useCommentsByParentId, useCommentsByPostId } from "@/forum/hooks/comment";
 import { Box, Divider, Skeleton, Tab, Tabs, Typography } from "@mui/material";
 import { Comment, LoadingComment } from "./Comment";
 import { NewComment } from "@/forum/components/postPage/NewComment";
 import { useUrl } from "@/forum/hooks/url";
 
 const Replies = ({ commentId }: { commentId: number }) => {
-  const { data: comments, isFetching } = useCommentsByCommentId(commentId);
+  const { data: comments, isFetching } = useCommentsByParentId(commentId);
 
   if (isFetching)
     return (
