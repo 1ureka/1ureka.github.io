@@ -18,7 +18,7 @@ const SmallLoadingPost = () => (
   </Box>
 );
 
-const SmallPost = ({ postId }: { postId: number }) => {
+const SmallPost = ({ postId, action }: { postId: number; action?: React.ReactNode }) => {
   const { data: post, isFetching } = usePostById({ postId });
 
   if (isFetching || !post) {
@@ -41,7 +41,7 @@ const SmallPost = ({ postId }: { postId: number }) => {
       }}
       onClick={handleNavigateToPost}
     >
-      <Box sx={{ display: "flex", gap: 1.5, mb: 2, alignItems: "center" }}>
+      <Box sx={{ display: "flex", gap: 1.5, mb: 2, alignItems: "center", justifyContent: "space-between" }}>
         <Typography
           variant="body2"
           component="a"
@@ -54,6 +54,8 @@ const SmallPost = ({ postId }: { postId: number }) => {
         >
           by {post.userName}
         </Typography>
+
+        <Box sx={{ color: "text.secondary" }}>{action}</Box>
       </Box>
 
       <Typography
