@@ -42,10 +42,11 @@ const Comments = ({ totalComments }: { totalComments: number }) => {
   const { searchParams, updateSearchParams } = useUrl();
   const param = searchParams.get("postId");
   const postId = param && /^\d+$/.test(param) && Number(param) > 0 ? Number(param) : -1;
-  const { data: comments, isFetching } = useCommentsByPostId(postId);
 
   const orderByParam = searchParams.get("orderBy") || "latest";
   const orderBy = orderByParam === "likes" ? "likes" : "latest";
+
+  const { data: comments, isFetching } = useCommentsByPostId({ postId, orderBy });
   const handleOrderByChange = (_: React.ChangeEvent<unknown>, newValue: number) => {
     updateSearchParams({ orderBy: newValue === 0 ? "latest" : "likes" });
   };

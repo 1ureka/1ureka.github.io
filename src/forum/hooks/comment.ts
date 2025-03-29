@@ -1,12 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchCommentById, fetchComments } from "../data/comment";
+import { fetchCommentById, fetchComments, type CommentOrderBy } from "../data/comment";
 
-const staleTime = 1000 * 60 * 10;
+const staleTime = 1000 * 60 * 1;
 
-const useCommentsByPostId = (postId: number) => {
+const useCommentsByPostId = ({ postId, orderBy }: { postId: number; orderBy: CommentOrderBy }) => {
   return useQuery({
-    queryKey: ["commentsByPost", postId],
-    queryFn: () => fetchComments({ postId }),
+    queryKey: ["commentsByPost", postId, orderBy],
+    queryFn: () => fetchComments({ postId, orderBy }),
     staleTime,
   });
 };
@@ -14,7 +14,7 @@ const useCommentsByPostId = (postId: number) => {
 const useCommentsByParentId = (parentId: number) => {
   return useQuery({
     queryKey: ["commentsByParent", parentId],
-    queryFn: () => fetchComments({ parentId }),
+    queryFn: () => fetchComments({ parentId, orderBy: "latest" }),
     staleTime,
   });
 };

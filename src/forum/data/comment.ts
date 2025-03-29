@@ -4,22 +4,25 @@ import { SQLiteClient } from "./SQLiteClient";
 // 查詢單層留言列表
 // ----------------------------
 
-type FetchCommentsParams = { postId: number; parentId?: never } | { postId?: never; parentId: number };
+type CommentOrderBy = "latest" | "likes";
+
+type FetchCommentsParams =
+  | { postId: number; parentId?: never; orderBy?: CommentOrderBy }
+  | { postId?: never; parentId: number; orderBy?: CommentOrderBy };
 
 type FetchComments = (params: FetchCommentsParams) => Promise<number[]>;
 
 const fetchComments: FetchComments = async (params) => {
   const isPostQuery = params.postId !== undefined;
+  const whereClause = isPostQuery ? "c.postId = $id AND c.parentId IS NULL" : "c.parentId = $id";
+
+  const orderBy = params.orderBy || "latest";
+  const orderClause = orderBy === "latest" ? "c.createdAt DESC" : "COALESCE(cic.likeCount, 0) DESC, c.createdAt DESC";
 
   const sql = `
-      SELECT
-        id
-      FROM
-        comments
-      WHERE
-        ${isPostQuery ? "postId = $id AND parentId IS NULL" : "parentId = $id"}
-      ORDER BY
-        createdAt DESC
+      SELECT c.id FROM comments c
+      LEFT JOIN comment_interaction_counts cic ON c.id = cic.commentId
+      WHERE ${whereClause} ORDER BY ${orderClause}
     `;
 
   const queryParams = { $id: isPostQuery ? params.postId : params.parentId };
@@ -94,4 +97,4 @@ const fetchCommentById: FetchCommentById = async ({ commentId }) => {
 // ----------------------------
 
 export { fetchComments, fetchCommentById };
-export type { FetchCommentByIdResult };
+export type { FetchCommentByIdResult, CommentOrderBy };
