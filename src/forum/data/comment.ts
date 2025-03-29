@@ -17,7 +17,8 @@ const fetchComments: FetchComments = async (params) => {
   const whereClause = isPostQuery ? "c.postId = $id AND c.parentId IS NULL" : "c.parentId = $id";
 
   const orderBy = params.orderBy || "latest";
-  const orderClause = orderBy === "latest" ? "c.createdAt DESC" : "COALESCE(cic.likeCount, 0) DESC, c.createdAt DESC";
+  const orderClause =
+    orderBy === "latest" ? "datetime(c.createdAt) DESC" : "COALESCE(cic.likeCount, 0) DESC, datetime(c.createdAt) DESC";
 
   const sql = `
       SELECT c.id FROM comments c

@@ -79,6 +79,7 @@ const fetchPosts: FetchPosts = async ({
   // 準備排序欄位
   let orderColumn = "p.createdAt";
   if (orderBy === "likeCount" || orderBy === "commentCount") orderColumn = `pic.${orderBy}`;
+  else if (orderBy === "createdAt" || orderBy === "updatedAt") orderColumn = `datetime(p.${orderBy})`;
   else orderColumn = `p.${orderBy}`;
 
   // ----------------------------

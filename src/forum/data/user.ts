@@ -81,7 +81,7 @@ const fetchUsers: FetchUsers = async ({
       FROM users u
       LEFT JOIN user_interaction_counts uic ON u.id = uic.userId
       ${whereClause}
-      ORDER BY ${orderColumn} ${order.toUpperCase()}, u.createdAt DESC
+      ORDER BY ${orderColumn} ${order.toUpperCase()}, datetime(u.createdAt) DESC
       LIMIT $limit OFFSET $offset
     `;
 
