@@ -33,7 +33,7 @@ const formSchema = z.object({
     .refine((val) => val === null || (dayjs.isDayjs(val) && val.isValid()), "必須是有效的日期"),
 });
 
-type FormField = z.infer<typeof formSchema>;
+export type FormField = z.infer<typeof formSchema>;
 
 const isError = (value: unknown[]) => value.length > 0 && value[0] !== null && value[0] !== undefined;
 const getErrorMessage = (value: ({ message: string } | undefined)[]) =>
