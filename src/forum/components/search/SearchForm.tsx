@@ -7,27 +7,51 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { zhTW } from "@mui/x-date-pickers/locales";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import dayjs, { type Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import "dayjs/locale/zh-tw";
 
 import { NumberInput } from "@/forum/components/search/NumberInput";
 import { useUrl } from "@/forum/hooks/url";
 import { useUsers } from "@/forum/hooks/user";
 import { useForm } from "@tanstack/react-form";
+import { z } from "zod";
 
-type FormField = {
-  all: string;
-  title: string;
-  content: string;
-  author: string;
-  likeCounts: number;
-  viewCounts: number;
-  startDate: Dayjs | null;
-  endDate: Dayjs | null;
-};
+const formSchema = z.object({
+  all: z.string().min(1, "請輸入搜尋關鍵字"),
+  title: z.string(),
+  content: z.string(),
+  author: z.string(),
+  likeCounts: z.number().int().nonnegative("請輸入正整數"),
+  viewCounts: z.number().int().nonnegative("請輸入正整數"),
+  startDate: z
+    .any()
+    .nullable()
+    .refine((val) => val === null || (dayjs.isDayjs(val) && val.isValid()), "必須是有效的日期"),
+  endDate: z
+    .any()
+    .nullable()
+    .refine((val) => val === null || (dayjs.isDayjs(val) && val.isValid()), "必須是有效的日期"),
+});
+
+type FormField = z.infer<typeof formSchema>;
+
+const isError = (value: unknown[]) => value.length > 0 && value[0] !== null && value[0] !== undefined;
+const getErrorMessage = (value: ({ message: string } | undefined)[]) =>
+  isError(value)
+    ? value
+        .filter((e) => e !== undefined)
+        .map(({ message }) => message)
+        .join(", ")
+    : null;
 
 const SearchForm = () => {
   const { searchParams, updateSearchParams } = useUrl();
+
+  const getDate = (type: "startDate" | "endDate") => {
+    const date = searchParams.get(type);
+    const dateObj = date ? dayjs(date) : null;
+    return dateObj && dateObj.isValid() ? dateObj : null;
+  };
 
   const defaultValues: FormField = {
     all: searchParams.get("all") || "",
@@ -36,12 +60,13 @@ const SearchForm = () => {
     author: searchParams.get("author") || "all",
     likeCounts: Number(searchParams.get("likeCounts")) || 0,
     viewCounts: Number(searchParams.get("viewCounts")) || 0,
-    startDate: searchParams.get("startDate") ? dayjs(searchParams.get("startDate")) : null,
-    endDate: searchParams.get("endDate") ? dayjs(searchParams.get("endDate")) : null,
+    startDate: getDate("startDate"),
+    endDate: getDate("endDate"),
   };
 
   const form = useForm({
     defaultValues,
+    validators: { onChange: formSchema },
     onSubmit: ({ value }) => {
       updateSearchParams(
         Object.fromEntries(Object.entries(value).map(([key, value]) => [key, value === null ? null : value.toString()]))
@@ -92,20 +117,13 @@ const SearchForm = () => {
             <Stack sx={{ gap: 0.5, mt: 2 }}>
               <form.Field
                 name="all"
-                validators={{
-                  onChange: ({ value }) => (value.trim().length <= 0 ? "請輸入搜尋關鍵字" : undefined),
-                }}
                 children={(field) => (
                   <TextField
                     required
                     name={field.name}
                     label="所有"
-                    error={field.state.meta.errors.length > 0}
-                    helperText={
-                      field.state.meta.errors.length > 0
-                        ? field.state.meta.errors[0]
-                        : "符合文章標題、內容或作者的關鍵字"
-                    }
+                    error={isError(field.state.meta.errors)}
+                    helperText={getErrorMessage(field.state.meta.errors) || "符合文章標題、內容或作者的關鍵字"}
                     variant="filled"
                     fullWidth
                     size="small"
@@ -121,7 +139,8 @@ const SearchForm = () => {
                   <TextField
                     name={field.name}
                     label="標題"
-                    helperText="符合文章標題的關鍵字"
+                    error={isError(field.state.meta.errors)}
+                    helperText={getErrorMessage(field.state.meta.errors) || "符合文章標題的關鍵字"}
                     variant="filled"
                     fullWidth
                     size="small"
@@ -137,7 +156,8 @@ const SearchForm = () => {
                   <TextField
                     name={field.name}
                     label="內容"
-                    helperText="符合文章內容的關鍵字"
+                    error={isError(field.state.meta.errors)}
+                    helperText={getErrorMessage(field.state.meta.errors) || "符合文章內容的關鍵字"}
                     variant="filled"
                     fullWidth
                     size="small"
@@ -184,9 +204,6 @@ const SearchForm = () => {
               <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
                 <form.Field
                   name="likeCounts"
-                  validators={{
-                    onChange: ({ value }) => (value >= 0 ? undefined : "請輸入正整數"),
-                  }}
                   children={(field) => (
                     <NumberInput
                       name={field.name}
@@ -200,9 +217,6 @@ const SearchForm = () => {
                 />
                 <form.Field
                   name="viewCounts"
-                  validators={{
-                    onChange: ({ value }) => (value >= 0 ? undefined : "請輸入正整數"),
-                  }}
                   children={(field) => (
                     <NumberInput
                       name={field.name}
@@ -272,6 +286,26 @@ const SearchForm = () => {
       </AccordionDetails>
 
       <AccordionActions sx={{ mx: 2 }}>
+        <Button
+          size="small"
+          onClick={() =>
+            form.reset(
+              {
+                all: "",
+                title: "",
+                content: "",
+                author: "all",
+                likeCounts: 0,
+                viewCounts: 0,
+                startDate: null,
+                endDate: null,
+              },
+              { keepDefaultValues: true }
+            )
+          }
+        >
+          清空所有條件
+        </Button>
         <Button size="small" type="reset">
           重置至上次搜尋條件
         </Button>
