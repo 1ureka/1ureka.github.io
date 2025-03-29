@@ -3,6 +3,7 @@ import PeopleRoundedIcon from "@mui/icons-material/PeopleRounded";
 import ArrowBackIosRoundedIcon from "@mui/icons-material/ArrowBackIosRounded";
 
 import { AppWrapper } from "@/forum/components/AppWrapper";
+import { AppBackground } from "@/forum/components/AppBackground";
 import { AppbarDesktop } from "@/forum/components/appbar/AppbarDesktop";
 import { AppbarMobile } from "@/forum/components/appbar/AppbarMobile";
 import { ScrollArea } from "@/forum/components/ScrollArea";
@@ -20,8 +21,7 @@ function App() {
   return (
     <AppWrapper>
       <PageTitle />
-
-      <Box sx={{ bgcolor: "secondary.main", height: "35vh", position: "absolute", inset: "0 0 auto 0" }} />
+      <AppBackground />
 
       <ScrollArea>
         {isMd ? <AppbarDesktop /> : <AppbarMobile />}
