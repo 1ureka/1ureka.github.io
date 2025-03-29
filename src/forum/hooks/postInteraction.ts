@@ -65,7 +65,7 @@ const usePostLikeButton = (postId: number) => {
 const usePostFavButton = (postId: number) => {
   const queryClient = useQueryClient();
   const { user, authenticated, loading: isLoadingSession } = useSession();
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     staleTime,
     queryKey: ["favoriteStatus", postId, user?.id],
     enabled: !isLoadingSession && authenticated && user?.id !== undefined,
@@ -73,6 +73,7 @@ const usePostFavButton = (postId: number) => {
   });
 
   // 整理狀態
+  const loading = isLoadingSession || isLoading;
   const disabled = !authenticated || isLoadingSession || data === undefined || data === null;
   const isFavorited = data?.fav ?? false;
 
@@ -88,7 +89,7 @@ const usePostFavButton = (postId: number) => {
     });
   };
 
-  return { isFavorited, handleFavorite, disabled };
+  return { isFavorited, handleFavorite, disabled, loading };
 };
 
 const useUserFavPosts = () => {
