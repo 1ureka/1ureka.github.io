@@ -47,7 +47,7 @@ const DesktopSx = {
 const AppbarDesktop = ({ sx, ...props }: ToolbarProps) => {
   return (
     <Toolbar className="mode-dark" disableGutters sx={{ ...DesktopSx, ...sx }} {...props}>
-      <Container sx={{ display: "flex", alignItems: "center", gap: 1, color: "text.primary" }} maxWidth="xl">
+      <Container sx={{ display: "flex", alignItems: "center", gap: 1, color: "text.primary" }} maxWidth={false}>
         <Box sx={{ display: "flex", justifyContent: "flex-start", flex: { xs: undefined, md: 1 } }}>
           <Title />
         </Box>

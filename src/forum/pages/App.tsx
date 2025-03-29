@@ -25,12 +25,13 @@ function App() {
         {isMd ? <AppbarDesktop /> : <AppbarMobile />}
 
         <Container
-          maxWidth="lg"
+          maxWidth={false}
           sx={{
             position: "relative",
             my: 10,
             display: "flex",
             gap: 4,
+            maxWidth: 1400,
             flexDirection: { xs: "column-reverse", md: "row" },
           }}
         >
