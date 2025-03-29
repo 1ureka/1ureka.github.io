@@ -1,6 +1,5 @@
-import { Box, Button, Dialog, Collapse, Divider, IconButton, Stack, Tooltip, Typography } from "@mui/material";
+import { Box, Dialog, Collapse, Divider, IconButton, Stack, Tooltip, Typography } from "@mui/material";
 import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
-import BookmarkRemoveRoundedIcon from "@mui/icons-material/BookmarkRemoveRounded";
 import CollectionsBookmarkRoundedIcon from "@mui/icons-material/CollectionsBookmarkRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
@@ -11,6 +10,7 @@ import { useUserFavPosts } from "@/forum/hooks/postInteraction";
 import { useFollowing } from "@/forum/hooks/userInteraction";
 import { SmallLoadingPost, SmallPost } from "../postElement/SmallPost";
 import { AuthorDisplay, AuthorLoadingDisplay } from "../userElement/AuthorDisplay";
+import { FavTextButton } from "../postElement/shared/FavButton";
 
 const usersContainerSx = {
   position: "relative",
@@ -99,25 +99,7 @@ const FavroitePosts = () => {
     <Box sx={postsContainerSx}>
       {data.map((postId) => (
         <Box key={postId} sx={{ position: "relative" }}>
-          <SmallPost postId={postId} />
-          <Box
-            sx={{
-              position: "absolute",
-              inset: "0 0 0 auto",
-              m: 1,
-              pointerEvents: "none",
-              color: "text.secondary",
-            }}
-          >
-            <Button
-              size="small"
-              sx={{ pointerEvents: "auto" }}
-              color="inherit"
-              startIcon={<BookmarkRemoveRoundedIcon />}
-            >
-              取消收藏
-            </Button>
-          </Box>
+          <SmallPost postId={postId} action={<FavTextButton postId={postId} />} />
         </Box>
       ))}
     </Box>

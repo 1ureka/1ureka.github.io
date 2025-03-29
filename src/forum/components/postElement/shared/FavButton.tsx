@@ -1,5 +1,6 @@
 import { Button, Typography, useMediaQuery } from "@mui/material";
 import BookmarkAddRoundedIcon from "@mui/icons-material/BookmarkAddRounded";
+import BookmarkRemoveRoundedIcon from "@mui/icons-material/BookmarkRemoveRounded";
 import { usePostFavButton } from "@/forum/hooks/postInteraction";
 
 const FavButton = ({ postId }: { postId: number }) => {
@@ -9,7 +10,7 @@ const FavButton = ({ postId }: { postId: number }) => {
   return (
     <Button
       color={isFavorited ? "primary" : "inherit"}
-      startIcon={<BookmarkAddRoundedIcon />}
+      startIcon={isFavorited ? <BookmarkRemoveRoundedIcon /> : <BookmarkAddRoundedIcon />}
       size="small"
       onClick={handleFavorite}
       disabled={disabled}
@@ -21,4 +22,28 @@ const FavButton = ({ postId }: { postId: number }) => {
   );
 };
 
-export { FavButton };
+const FavTextButton = ({ postId }: { postId: number }) => {
+  const { isFavorited, handleFavorite, disabled, loading } = usePostFavButton(postId);
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    handleFavorite();
+  };
+
+  return (
+    <Button
+      size="small"
+      color="inherit"
+      startIcon={isFavorited ? <BookmarkRemoveRoundedIcon /> : <BookmarkAddRoundedIcon />}
+      onClick={handleClick}
+      disabled={disabled}
+      loading={loading}
+      variant={isFavorited ? "text" : "outlined"}
+    >
+      {isFavorited ? "取消收藏" : "收藏該貼文"}
+    </Button>
+  );
+};
+
+export { FavButton, FavTextButton };
