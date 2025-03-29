@@ -10,24 +10,15 @@ import { Replies } from "./Comments";
 import { NewComment } from "./NewComment";
 import { routes } from "@/routes";
 import { UserAvatar } from "../userElement/UserAvatar";
+import { CommentLikeButton } from "./CommentLikeButton";
 
 interface CommentProps {
   commentId: number;
   nestedLevel: number;
 }
 
-const randomLikeCount = () => Math.floor(Math.random() * 100);
-
 const Comment = ({ commentId, nestedLevel, sx, ...props }: CommentProps & BoxProps) => {
   if (nestedLevel < 0) throw new Error("nestedLevel must be greater than 0");
-
-  const [liked, setLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(randomLikeCount);
-
-  const handleLike = () => {
-    setLiked(!liked);
-    setLikeCount((prev) => (liked ? prev - 1 : prev + 1));
-  };
 
   const { data: comment, isFetching } = useCommentById(commentId);
   const { data: comments, isFetching: isFetchingComments } = useCommentsByParentId(commentId);
@@ -95,15 +86,7 @@ const Comment = ({ commentId, nestedLevel, sx, ...props }: CommentProps & BoxPro
           </Typography>
 
           <Box sx={{ display: "flex", alignItems: "center", mt: 1, gap: 1 }}>
-            <Button
-              size="small"
-              startIcon={<ThumbUpRoundedIcon />}
-              onClick={handleLike}
-              color={liked ? "primary" : "inherit"}
-              sx={{ color: liked ? undefined : "text.secondary" }}
-            >
-              <Typography variant="caption">{likeCount > 0 ? likeCount : "讚"}</Typography>
-            </Button>
+            <CommentLikeButton commentId={commentId} likeCount={comment.likeCount} />
 
             <Button
               size="small"
