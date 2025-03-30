@@ -1,3 +1,4 @@
+import { getSession } from "./session";
 import { SQLiteClient } from "./SQLiteClient";
 
 // ----------------------------
@@ -24,6 +25,7 @@ type FetchUsersParams = {
   page?: number;
   limit?: number;
   isAuthor?: boolean;
+  isUnfollowed?: boolean;
   orderBy?: "name" | "createdAt" | "updatedAt" | "postCount" | "followerCount";
   order?: "asc" | "desc";
 };
@@ -38,9 +40,17 @@ const fetchUsers: FetchUsers = async ({
   page = 0,
   limit = 10,
   isAuthor = false,
+  isUnfollowed = false,
   orderBy = "createdAt",
   order = "desc",
 } = {}) => {
+  // 如果需要篩選未追蹤的使用者，先獲取當前登入的使用者資訊
+  let currentUserId: number | null = null;
+  if (isUnfollowed) {
+    const session = await getSession();
+    currentUserId = session.authenticated ? session.user.id : null;
+  }
+
   // ----------------------------
   // 建立條件子句
   const wheres = [];
@@ -48,6 +58,17 @@ const fetchUsers: FetchUsers = async ({
 
   if (isAuthor) {
     wheres.push("EXISTS (SELECT 1 FROM posts WHERE posts.userId = u.id)");
+  }
+
+  if (isUnfollowed && currentUserId) {
+    wheres.push(`
+      u.id <> $currentUserId AND
+      NOT EXISTS (
+        SELECT 1 FROM user_interactions
+        WHERE followerId = $currentUserId AND followeeId = u.id AND type = 'follow'
+      )
+    `);
+    params.$currentUserId = currentUserId;
   }
 
   const whereClause = wheres.length > 0 ? `WHERE ${wheres.join(" AND ")}` : "";
