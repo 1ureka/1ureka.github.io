@@ -1,0 +1,46 @@
+@font-face {
+  font-family: "Comfortaa";
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: block;
+  src: url("../../assets/fonts/Comfortaa-VariableFont_wght.ttf") format("truetype");
+}
+
+/* timemachine-wa */
+@font-face {
+  font-family: "timemachine-wa";
+  src: url("../../assets/fonts/timemachine-wa.ttf") format("truetype");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* jf-openhuninn-2.1.ttf */
+@font-face {
+  font-family: "jf openhuninn";
+  src: url("../../assets/fonts/jf-openhuninn-2.1.ttf") format("truetype");
+  font-style: normal;
+  font-display: swap;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: gray transparent;
+}
+
+body {
+  overflow: hidden;
+}
+
+a {
+  text-decoration: none;
+  color: unset;
+}
+
+.text-ellipsis-toast > div[role="status"] {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
