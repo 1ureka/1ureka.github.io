@@ -1,3 +1,11 @@
+@font-face {
+  font-family: "Comfortaa";
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: block;
+  src: url("../../assets/fonts/Comfortaa-VariableFont_wght.ttf") format("truetype");
+}
+
 /* timemachine-wa */
 @font-face {
   font-family: "timemachine-wa";
@@ -7,11 +15,10 @@
   font-display: swap;
 }
 
-/* NotoSansTC-VariableFont_wght */
+/* jf-openhuninn-2.1.ttf */
 @font-face {
-  font-family: "Noto Sans TC";
-  src: url("../../assets/fonts/NotoSansTC-VariableFont_wght.ttf") format("truetype");
-  font-weight: 300;
+  font-family: "jf openhuninn";
+  src: url("../../assets/fonts/jf-openhuninn-2.1.ttf") format("truetype");
   font-style: normal;
   font-display: swap;
 }
@@ -19,4 +26,5 @@
 * {
   scrollbar-width: thin;
   scrollbar-color: gray transparent;
+  transition: background-color 0.2s ease-in-out;
 }
