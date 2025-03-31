@@ -4,6 +4,12 @@ import { useEffect } from "react";
 
 const defaultTheme = createTheme();
 
+declare module "@mui/material/styles" {
+  interface BreakpointOverrides {
+    ml: true;
+  }
+}
+
 const theme = createTheme({
   cssVariables: { colorSchemeSelector: ".mode-%s" },
   typography: {
@@ -27,7 +33,8 @@ const theme = createTheme({
   breakpoints: {
     values: {
       ...defaultTheme.breakpoints.values,
-      sm: 650,
+      sm: 700,
+      ml: 1440,
     },
   },
   components: {
