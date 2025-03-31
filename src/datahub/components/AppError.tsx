@@ -126,7 +126,7 @@ function AppError({ error, resetErrorBoundary, isFatal }: Partial<FallbackProps>
 }
 
 const AppNotSupported = () => (
-  <AppError error={{ message: "請使用寬度超過 650px 的裝置或將視窗放大，以使用此應用程式。" }} isFatal />
+  <AppError error={{ message: "請使用寬度超過 700px 的裝置或將視窗放大，以使用此應用程式。" }} isFatal />
 );
 
 export { AppError, AppNotSupported };
