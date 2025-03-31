@@ -2,6 +2,7 @@ import { useSession } from "@/forum/hooks/session";
 import { Avatar, Box, Button, TextField, type BoxProps } from "@mui/material";
 import { useRef, useState } from "react";
 import { EmojiMenu } from "../postElement/shared/EmojiMenu";
+import { UserAvatar } from "../userElement/UserAvatar";
 
 type NewCommentProps = {
   onCancel?: () => void;
@@ -43,9 +44,7 @@ const NewComment = ({ sx, onCancel, ...props }: BoxProps & NewCommentProps) => {
     <Box sx={{ position: "relative", py: 1, px: 2, ...sx }} {...props}>
       <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1.5 }}>
         {authenticated && user ? (
-          <Avatar sx={{ bgcolor: "primary.main", width: "2rem", height: "2rem", mt: 1.5 }}>
-            {user.name.slice(0, 1).toUpperCase()}
-          </Avatar>
+          <UserAvatar name={user.name} sx={{ mt: 1.5 }} />
         ) : (
           <Avatar sx={{ width: "2rem", height: "2rem", mt: 1.5 }} />
         )}

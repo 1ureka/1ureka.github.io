@@ -1,58 +1,65 @@
 import { useEffect } from "react";
-import type { BoxProps } from "@mui/material";
-import { Box, Container, createTheme, CssBaseline, ThemeProvider, Typography } from "@mui/material";
+import { Box, Button, CssBaseline, Divider, Stack, ThemeProvider, Typography, useMediaQuery } from "@mui/material";
+import ForumRoundedIcon from "@mui/icons-material/ForumRounded";
+import DataExplorationRoundedIcon from "@mui/icons-material/DataExplorationRounded";
 
 import "@/home/utils/app.css";
-import iconSvg from "@/assets/icon/icon.svg";
-import forumSvg from "@/assets/icon/forum.svg";
-
-import { routes } from "@/routes";
 import { Toaster } from "@/components/Toast";
-import { ThemeMenu } from "@/home/components/ThemeMenu";
+import { routes } from "@/routes";
+import { theme } from "@/home/utils/theme";
+
 import { ProjectCard } from "@/home/components/ProjectCard";
+import { GithubIcon } from "@/home/components/GithubIcon";
+import { ThemeButtonGroup } from "@/home/components/ThemeButtonGroup";
+import { ListControlBar } from "@/home/components/ListControlBar";
 
-const theme = createTheme({
-  cssVariables: { colorSchemeSelector: ".mode-%s" },
-  typography: {
-    fontFamily: `"timemachine-wa", "Noto Sans TC"`,
-  },
-  colorSchemes: {
-    light: {
-      palette: {
-        text: { primary: "#000" },
-        primary: { main: "#222" },
-        secondary: { main: "#333" },
-      },
-    },
-    dark: {
-      palette: {
-        primary: { main: "#fff" },
-        secondary: { main: "#eee" },
-        background: { default: "#222", paper: "#222" },
-      },
-    },
-  },
-  spacing: "0.5rem",
-});
+const Title = () => (
+  <>
+    <Box sx={{ display: "flex", alignItems: "flex-end" }}>
+      <Typography
+        variant="h2"
+        component="h1"
+        sx={{ fontFamily: "timemachine-wa", "&:first-letter": { color: "primary.main" } }}
+      >
+        1ureka
+      </Typography>
 
-const overflowSx: BoxProps["sx"] = {
-  position: "relative",
-  height: "100dvh",
-  overflow: "auto",
-  scrollbarWidth: "thin",
-  scrollbarColor: "gray transparent",
-};
+      {/* dot */}
+      <Box sx={{ position: "relative", display: "grid", placeItems: "center" }}>
+        <Box sx={{ p: 1, borderRadius: 1, bgcolor: "primary.light", m: 2 }} />
+        <Box
+          sx={{ p: 2, borderRadius: 1, bgcolor: "primary.main", opacity: 0.3, position: "absolute", rotate: "45deg" }}
+        />
+      </Box>
+    </Box>
+    <Typography variant="h2" component="h1" sx={{ fontFamily: "timemachine-wa" }}>
+      Space
+    </Typography>
+  </>
+);
 
-/**
- * 滾動容器
- */
-const ScrollArea = ({ children, ...props }: BoxProps) => (
-  <Box sx={overflowSx} {...props}>
-    {children}
+const Actions = () => (
+  <Box sx={{ color: "text.secondary" }}>
+    <Button
+      color="inherit"
+      variant="outlined"
+      sx={{ borderRadius: 2, display: "flex", alignItems: "center", gap: 1, p: 1.5, mb: 2 }}
+      href="https://github.com/1ureka"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <GithubIcon fontSize="large" />
+      <Typography variant="h6" component="span">
+        GitHub
+      </Typography>
+    </Button>
+
+    <ThemeButtonGroup />
   </Box>
 );
 
 function App() {
+  const isMd = useMediaQuery(theme.breakpoints.up("md"));
   useEffect(() => {
     document.documentElement.style.fontSize = "16px";
   }, []);
@@ -62,42 +69,80 @@ function App() {
       <CssBaseline />
       <Toaster />
 
-      <ScrollArea>
-        <Container maxWidth="xl" sx={{ display: "flex", alignItems: "center", gap: 2, py: 5 }}>
-          <img
-            src={iconSvg}
-            alt="icon"
-            style={{ width: "4.5rem", height: "4.5rem", mixBlendMode: "exclusion", opacity: 0.9 }}
-          />
-          <Typography variant="h2" component="h1">
-            1ureka 的專案
-          </Typography>
-        </Container>
-
-        <Container
-          maxWidth="lg"
+      <Box
+        sx={{
+          p: 5,
+          display: "flex",
+          flexDirection: { xs: "column", md: "row" },
+          height: "100dvh",
+          overflow: "auto",
+          minWidth: 600,
+        }}
+      >
+        <Stack
+          component="aside"
           sx={{
+            flexDirection: { xs: "row", md: "column" },
+            justifyContent: "space-between",
+            height: 1,
+            width: { xs: 1, md: "13rem", lg: "15rem" },
             position: "relative",
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-            gridAutoRows: "200px",
-            gap: 2,
-            my: 2,
           }}
         >
-          <ProjectCard
-            title="論壇樣板"
-            description="這是一個論壇樣板，用來練習 RWD 與 React。"
-            href={routes.forum_home}
-            colors={["#FF772E", "#075056", "#222", "#fff"]}
-            iconUrl={forumSvg}
-          />
-
-          <Box sx={{ position: "fixed", right: 0, top: 0, m: 2 }}>
-            <ThemeMenu />
+          <Box>
+            <Title />
+            {isMd && (
+              <Typography variant="body1" component="p" sx={{ color: "text.primary", mt: 2, opacity: 0.9 }}>
+                這是一個模組化的 UI/UX
+                展示平台，透過各種類型的樣板，探索多種真實場景中的介面開發與使用者流程設計。專案將持續打磨，期盼從視覺層次、結構邏輯到互動細節，逐步走向更完整、細膩且具啟發性的使用體驗。
+              </Typography>
+            )}
           </Box>
-        </Container>
-      </ScrollArea>
+
+          <Actions />
+        </Stack>
+
+        {!isMd && (
+          <Typography variant="body1" component="p" sx={{ color: "text.primary", mt: 2, opacity: 0.9 }}>
+            這是一個模組化的 UI/UX
+            展示平台，透過各種類型的樣板，探索多種真實場景中的介面開發與使用者流程設計。專案將持續打磨，期盼從視覺層次、結構邏輯到互動細節，逐步走向更完整、細膩且具啟發性的使用體驗。
+          </Typography>
+        )}
+
+        {isMd ? (
+          <Divider orientation="vertical" flexItem sx={{ mx: 5 }} />
+        ) : (
+          <Divider orientation="horizontal" flexItem sx={{ my: 5 }} />
+        )}
+
+        <Box component="main" sx={{ flex: 1 }}>
+          <ListControlBar />
+
+          <Box sx={{ mt: 5, display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(500px, 1fr))", gap: 2 }}>
+            <ProjectCard
+              title="資料樣板"
+              description="探索資料結構、互動體驗與儀表板 UX 的設計樣板，結合可視化與開發工具的一站式後台模組"
+              color="#66cccc"
+              icon={<DataExplorationRoundedIcon sx={{ fontSize: "4em", color: "#66cccc" }} />}
+              actionLabel="開始探索"
+              actionHref={routes.datahub_home}
+              actionTarget="_blank"
+              progress={5}
+            />
+
+            <ProjectCard
+              title="論壇樣板"
+              description="模擬真實社群互動平台，展示從發文、留言到通知的完整 UI/UX 流程與資料驅動的體驗"
+              color="#ff9d69"
+              icon={<ForumRoundedIcon sx={{ fontSize: "4em", color: "#ff9d69" }} />}
+              actionLabel="開始探索"
+              actionHref={routes.forum_home}
+              actionTarget="_blank"
+              progress={80}
+            />
+          </Box>
+        </Box>
+      </Box>
     </ThemeProvider>
   );
 }

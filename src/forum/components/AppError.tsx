@@ -7,8 +7,7 @@ import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 import { theme } from "@/forum/utils/theme";
 import { routes } from "@/routes";
 import type { FallbackProps } from "react-error-boundary";
-
-const TOTAL_USRS = 1202;
+import { UserCounts } from "./auth/UserCount";
 
 const NotSupportPage = () => {
   return (
@@ -59,13 +58,7 @@ const NotSupportPage = () => {
         </Button>
       </Paper>
 
-      <Typography className="mode-dark" variant="body2" sx={{ mt: 4, color: "text.secondary" }}>
-        與其他
-        <Typography component="span" variant="body2" sx={{ color: "primary.light" }}>
-          {` ${TOTAL_USRS} `}
-        </Typography>
-        位使用者一同加入我們
-      </Typography>
+      <UserCounts />
     </Box>
   );
 };

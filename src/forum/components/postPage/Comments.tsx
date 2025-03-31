@@ -1,11 +1,11 @@
-import { useCommentsByCommentId, useCommentsByPostId } from "@/forum/hooks/comment";
+import { useCommentsByParentId, useCommentsByPostId } from "@/forum/hooks/comment";
 import { Box, Divider, Skeleton, Tab, Tabs, Typography } from "@mui/material";
 import { Comment, LoadingComment } from "./Comment";
 import { NewComment } from "@/forum/components/postPage/NewComment";
 import { useUrl } from "@/forum/hooks/url";
 
 const Replies = ({ commentId }: { commentId: number }) => {
-  const { data: comments, isFetching } = useCommentsByCommentId(commentId);
+  const { data: comments, isFetching } = useCommentsByParentId(commentId);
 
   if (isFetching)
     return (
@@ -38,14 +38,15 @@ const oddBeforeSx = {
   mr: -2,
 } as const;
 
-const Comments = () => {
+const Comments = ({ totalComments }: { totalComments: number }) => {
   const { searchParams, updateSearchParams } = useUrl();
   const param = searchParams.get("postId");
   const postId = param && /^\d+$/.test(param) && Number(param) > 0 ? Number(param) : -1;
-  const { data: comments, isFetching } = useCommentsByPostId(postId);
 
   const orderByParam = searchParams.get("orderBy") || "latest";
   const orderBy = orderByParam === "likes" ? "likes" : "latest";
+
+  const { data: comments, isFetching } = useCommentsByPostId({ postId, orderBy });
   const handleOrderByChange = (_: React.ChangeEvent<unknown>, newValue: number) => {
     updateSearchParams({ orderBy: newValue === 0 ? "latest" : "likes" });
   };
@@ -97,7 +98,7 @@ const Comments = () => {
     <>
       <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
         <Typography variant="subtitle1" component="h3" sx={{ px: 2 }}>
-          {comments.length} 則留言
+          {totalComments} 則留言
         </Typography>
 
         <Divider flexItem orientation="vertical" variant="middle" />

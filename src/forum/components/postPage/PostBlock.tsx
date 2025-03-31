@@ -32,7 +32,7 @@ const PostBlock = () => {
   const { searchParams } = useUrl();
   const param = searchParams.get("postId");
   const postId = param && /^\d+$/.test(param) && Number(param) > 0 ? Number(param) : -1;
-  const { data: post, isFetching: postIsFetching } = usePostById(postId);
+  const { data: post, isFetching: postIsFetching } = usePostById({ postId, incrementViewCount: true });
 
   if (postIsFetching && !post) {
     return <LoadingFullPost />;
@@ -69,7 +69,7 @@ const PostBlock = () => {
   return (
     <>
       <FullPost post={post} />
-      <Comments />
+      <Comments totalComments={post.commentCount} />
     </>
   );
 };

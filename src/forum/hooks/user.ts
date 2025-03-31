@@ -1,68 +1,44 @@
-// TODO: 根據 user id 獲取其公開資訊, 根據 user id 獲取其 post id array, 根據 user id 獲取其 comment id array, 根據 user id 獲取其 follower user id array
-
-// ----------------------------------------
-// 假資料與模擬 API
-// ----------------------------------------
-
-import { useQuery } from "@tanstack/react-query";
-import { users } from "../utils/data";
-
-const fakeFetchUsers = async () => {
-  await new Promise((resolve) => setTimeout(resolve, Math.random() * 1000));
-  return users;
-};
-
-// TODO: 到時這個api應該 query 有 post 的 users
-const fakeFetchAuthors = async () => {
-  await new Promise((resolve) => setTimeout(resolve, Math.random() * 2500));
-  return users;
-};
-
-const fakeFetchUserByName = async (userName: string) => {
-  await new Promise((resolve) => setTimeout(resolve, Math.random() * 1000));
-  return users.find((author) => author.name === userName) || null;
-};
-
-// ----------------------------------------
-// 實際 Hook
-// ----------------------------------------
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { fetchUserByName, fetchUserCount, fetchUsers, fetchUserStats } from "../data/user";
+import type { FetchUsersParams } from "../data/user";
 
 const staleTime = 1 * 60 * 1000;
 
-/**
- * 獲取所有使用者
- */
-const useUsers = () => {
+const useUserCounts = () => {
   return useQuery({
-    queryKey: ["users"],
-    queryFn: fakeFetchUsers,
+    queryKey: ["userCounts"],
+    queryFn: fetchUserCount,
     staleTime,
   });
 };
 
-/**
- * 獲取所有作者 (有發布過文章的使用者)
- */
-const useAuthors = () => {
-  return useQuery({
-    queryKey: ["authors"],
-    queryFn: fakeFetchAuthors,
+const useUsers = ({ page = 0, limit, isAuthor = true, orderBy, order }: FetchUsersParams = {}) => {
+  return useInfiniteQuery({
+    queryKey: ["users", page, limit, isAuthor, orderBy, order],
+    queryFn: async ({ pageParam: page }) => fetchUsers({ page, limit, isAuthor, orderBy, order }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) => lastPage.nextPage,
     staleTime,
   });
 };
 
-/**
- * 根據使用者名稱獲取使用者
- */
 const useUser = (name?: string | null) => {
   return useQuery({
     queryKey: ["user", name],
     queryFn: () => {
       if (name === null || name === undefined) return null;
-      return fakeFetchUserByName(name);
+      return fetchUserByName({ name });
     },
     staleTime,
   });
 };
 
-export { useUsers, useAuthors, useUser };
+const useUserStats = (userId: number) => {
+  return useQuery({
+    queryKey: ["userStats", userId],
+    queryFn: () => fetchUserStats({ userId }),
+    staleTime,
+  });
+};
+
+export { useUsers, useUser, useUserStats, useUserCounts };

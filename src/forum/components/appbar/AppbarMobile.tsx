@@ -2,7 +2,6 @@ import { BottomNavigation, BottomNavigationAction, Box, Button, Container, Fab }
 import { Toolbar, Typography, type ToolbarProps } from "@mui/material";
 
 import ForumRoundedIcon from "@mui/icons-material/ForumRounded";
-import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
 import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
@@ -12,6 +11,7 @@ import { routes } from "@/routes";
 import { ThemeDrawer } from "../ThemeMenu";
 import { AccountMenuMobile } from "./AccountMenu";
 import { NotificationMenuMobile } from "./NotificationMenu";
+import { FavroitesMobile } from "./Favorites";
 
 const TopSx = {
   position: "sticky",
@@ -110,7 +110,7 @@ const AppbarMobile = ({ sx, ...props }: ToolbarProps) => {
           }
         />
 
-        <BottomNavigationAction label="收藏" icon={<FavoriteRoundedIcon />} />
+        <FavroitesMobile />
 
         <AccountMenuMobile />
       </BottomNavigation>

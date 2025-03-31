@@ -79,7 +79,7 @@ const ExpandedLoadingPost = () => {
 };
 
 const ExpandedPost = ({ postId }: { postId: number }) => {
-  const { data: post, isFetching } = usePostById(postId);
+  const { data: post, isFetching } = usePostById({ postId });
 
   if (isFetching || !post) {
     return <ExpandedLoadingPost />;
@@ -157,7 +157,9 @@ const ExpandedPost = ({ postId }: { postId: number }) => {
                     <Box
                       sx={{ position: "absolute", inset: "auto 0 0 0", pb: 1, display: "grid", placeItems: "center" }}
                     >
-                      <Chip label={name} size="small" />
+                      <Box sx={{ maxWidth: 90 }}>
+                        <Chip label={name} size="small" />
+                      </Box>
                     </Box>
                   </ButtonBase>
 
@@ -228,7 +230,7 @@ const ExpandedPost = ({ postId }: { postId: number }) => {
       >
         <Box sx={{ position: "absolute", inset: 0, bgcolor: "divider", opacity: 0.35 }} />
 
-        <LikeButton postId={post.id} />
+        <LikeButton postId={post.id} likeCount={post.likeCount} />
         <FavButton postId={post.id} />
 
         <Button
@@ -238,7 +240,7 @@ const ExpandedPost = ({ postId }: { postId: number }) => {
           href={`${routes.forum_post}?postId=${post.id}`}
         >
           <Typography variant="caption" component="span">
-            {post.replyCount} 則回覆
+            {post.commentCount} 則回覆
           </Typography>
         </Button>
 

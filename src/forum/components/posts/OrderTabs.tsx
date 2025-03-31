@@ -2,16 +2,17 @@ import { Box, Stack, Tab, Tabs, Tooltip, Typography } from "@mui/material";
 import SortRoundedIcon from "@mui/icons-material/SortRounded";
 import ArrowUpwardRoundedIcon from "@mui/icons-material/ArrowUpwardRounded";
 import { useUrl } from "@/forum/hooks/url";
-import type { Post } from "@/forum/utils/dataType";
+import type { FetchPostsParams } from "@/forum/data/post";
 
-const orders: (keyof Post)[] = ["title", "createdAt", "updatedAt", "replyCount", "viewCount", "likeCount"];
+type OrderBy = NonNullable<FetchPostsParams["orderBy"]>;
+const orders: OrderBy[] = ["title", "createdAt", "updatedAt", "commentCount", "viewCount", "likeCount"];
 const ordersTC = ["標題", "建立時間", "更新時間", "回覆數", "瀏覽數", "讚數"];
 
 const OrderTabs = () => {
   const { searchParams, updateSearchParams } = useUrl();
 
   // 從 URL 獲取排序欄位，如果不存在則使用默認值
-  const orderBy = searchParams.get("orderBy") || orders[1];
+  const orderBy = searchParams.get("orderBy") || orders[0];
   const orderDesc = searchParams.get("orderDesc") === "true";
 
   // 根據 orderBy 找到對應的索引

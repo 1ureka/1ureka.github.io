@@ -1,0 +1,268 @@
+import { Box, Dialog, Collapse, Divider, IconButton, Stack } from "@mui/material";
+import { Tooltip, Typography, BottomNavigationAction, SwipeableDrawer, styled } from "@mui/material";
+import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
+import CollectionsBookmarkRoundedIcon from "@mui/icons-material/CollectionsBookmarkRounded";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
+
+import { useState } from "react";
+import { useSession } from "@/forum/hooks/session";
+import { useUserFavPosts } from "@/forum/hooks/postInteraction";
+import { useFollowing } from "@/forum/hooks/userInteraction";
+import { SmallLoadingPost, SmallPost } from "../postElement/SmallPost";
+import { AuthorDisplay, AuthorLoadingDisplay } from "../userElement/AuthorDisplay";
+import { FavTextButton } from "../postElement/shared/FavButton";
+
+const usersContainerSx = {
+  position: "relative",
+  display: "grid",
+  gridTemplateColumns: { xs: "auto 1fr auto", sm: "auto 1fr auto auto 1fr auto" },
+  alignItems: "center",
+  gap: 2,
+  "& > *:nth-of-type(6n - 3)": {
+    "&::after": {
+      content: '""',
+      position: "absolute",
+      display: { xs: "none", sm: "block" },
+      inset: 0,
+      pointerEvents: "none",
+      borderRight: "1px solid",
+      borderColor: "divider",
+      mr: -1,
+      my: -2.1,
+    },
+  },
+} as const;
+
+const FavoriteUsers = ({ userId }: { userId: number }) => {
+  const { data, isFetching } = useFollowing({ userId });
+
+  if (isFetching) {
+    return (
+      <Box sx={usersContainerSx}>
+        {[...Array(4)].map((_, i) => (
+          <AuthorLoadingDisplay key={i} />
+        ))}
+      </Box>
+    );
+  }
+
+  if (!data || data.length === 0) {
+    return (
+      <Box>
+        <Typography variant="subtitle2" color="text.secondary" align="center">
+          你還沒追蹤任何使用者
+        </Typography>
+      </Box>
+    );
+  }
+
+  return (
+    <Box sx={usersContainerSx}>
+      {data.map((user) => (
+        <AuthorDisplay key={user.id} {...user} ellipsis />
+      ))}
+    </Box>
+  );
+};
+
+const postsContainerSx = {
+  display: "grid",
+  gridTemplateColumns: { xs: "1fr", md: "repeat(2, 1fr)" },
+  gap: 1,
+  "& > *:nth-of-type(4n+2), & > *:nth-of-type(4n+3)": { bgcolor: { xs: "", md: "action.hover" } },
+} as const;
+
+const FavroitePosts = () => {
+  const { data, loading } = useUserFavPosts();
+
+  if (loading) {
+    return (
+      <Box sx={postsContainerSx}>
+        {[...Array(4)].map((_, i) => (
+          <SmallLoadingPost key={i} />
+        ))}
+      </Box>
+    );
+  }
+
+  if (!data || data.length === 0) {
+    return (
+      <Box sx={{ m: 3 }}>
+        <Typography variant="subtitle2" color="text.secondary" align="center">
+          你尚未收藏任何貼文
+        </Typography>
+      </Box>
+    );
+  }
+
+  return (
+    <Box sx={postsContainerSx}>
+      {data.map((postId) => (
+        <Box key={postId} sx={{ position: "relative" }}>
+          <SmallPost postId={postId} action={<FavTextButton postId={postId} />} />
+        </Box>
+      ))}
+    </Box>
+  );
+};
+
+const Favroites = () => {
+  const { user } = useSession();
+  const [usersExpanded, setUsersExpanded] = useState(true);
+  const [postsExpanded, setPostsExpanded] = useState(true);
+  const toggleUsers = () => setUsersExpanded(!usersExpanded);
+  const togglePosts = () => setPostsExpanded(!postsExpanded);
+
+  return (
+    <Stack>
+      <Box sx={{ bgcolor: "action.hover", cursor: "pointer" }} onClick={toggleUsers}>
+        <Divider />
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", px: 3, py: 1 }}>
+          <Typography variant="subtitle1">追蹤的使用者</Typography>
+          <ExpandMoreRoundedIcon
+            sx={{ transform: usersExpanded ? "rotate(180deg)" : "", transition: "all 0.2s ease" }}
+          />
+        </Box>
+        <Divider />
+      </Box>
+
+      <Collapse in={usersExpanded}>
+        <Box sx={{ px: 3, py: 2 }}>
+          {user ? (
+            <FavoriteUsers userId={user.id} />
+          ) : (
+            <Box>
+              <Typography variant="subtitle2" color="error" align="center">
+                出了點問題，請稍後再試
+              </Typography>
+            </Box>
+          )}
+        </Box>
+      </Collapse>
+
+      <Box sx={{ bgcolor: "action.hover", cursor: "pointer" }} onClick={togglePosts}>
+        <Divider />
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", px: 3, py: 1 }}>
+          <Typography variant="subtitle1">收藏的貼文</Typography>
+          <ExpandMoreRoundedIcon
+            sx={{ transform: postsExpanded ? "rotate(180deg)" : "", transition: "all 0.2s ease" }}
+          />
+        </Box>
+        <Divider />
+      </Box>
+
+      <Collapse in={postsExpanded}>
+        <Box sx={{ px: 3, py: 2 }}>
+          <FavroitePosts />
+        </Box>
+      </Collapse>
+    </Stack>
+  );
+};
+
+const FavroitesDesktop = () => {
+  const { authenticated, loading } = useSession();
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  return (
+    <>
+      <Tooltip title="收藏與追蹤" arrow>
+        <span>
+          <IconButton onClick={handleOpen} disabled={!authenticated} loading={loading}>
+            <FavoriteRoundedIcon fontSize="small" />
+          </IconButton>
+        </span>
+      </Tooltip>
+
+      <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
+        <Box
+          sx={{
+            position: "relative",
+            display: "flex",
+            gap: 1,
+            alignItems: "center",
+            p: 2,
+            bgcolor: "background.paper",
+            borderBottom: "1px solid",
+            borderColor: "divider",
+          }}
+        >
+          <Box sx={{ position: "absolute", inset: 0, bgcolor: "action.hover" }} />
+
+          <CollectionsBookmarkRoundedIcon
+            className="mode-light"
+            sx={{ fontSize: 48, mr: 1, bgcolor: "primary.main", borderRadius: 1, color: "background.default", p: 1 }}
+          />
+          <Typography variant="h6" component="h2" sx={{ color: "text.primary" }}>
+            收藏與追蹤
+          </Typography>
+
+          <Box sx={{ flex: 1 }} />
+
+          <Tooltip title="關閉" arrow>
+            <IconButton onClick={handleClose}>
+              <CloseRoundedIcon />
+            </IconButton>
+          </Tooltip>
+        </Box>
+
+        <Favroites />
+      </Dialog>
+    </>
+  );
+};
+
+const Puller = styled("div")(({ theme }) => ({
+  height: 6,
+  width: 30,
+  backgroundColor: theme.palette.divider,
+  borderRadius: 3,
+  position: "absolute",
+  top: 8,
+  left: "calc(50% - 15px)",
+  ...theme.applyStyles("dark", {
+    backgroundColor: theme.palette.divider,
+  }),
+}));
+
+const FavroitesMobile = () => {
+  const { authenticated, loading } = useSession();
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  return (
+    <>
+      <BottomNavigationAction
+        showLabel
+        label={loading ? "載入中..." : "收藏"}
+        icon={<FavoriteRoundedIcon />}
+        disabled={!authenticated || loading}
+        onClick={handleOpen}
+      />
+
+      <SwipeableDrawer anchor="bottom" open={open} onClose={handleClose} onOpen={handleOpen}>
+        <Puller />
+
+        <Box sx={{ p: 2 }}>
+          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1 }}>
+            <Typography variant="h6" component="h2">
+              收藏與追蹤
+            </Typography>
+
+            <IconButton onClick={handleClose}>
+              <CloseRoundedIcon />
+            </IconButton>
+          </Box>
+
+          <Favroites />
+        </Box>
+      </SwipeableDrawer>
+    </>
+  );
+};
+
+export { FavroitesDesktop, FavroitesMobile };

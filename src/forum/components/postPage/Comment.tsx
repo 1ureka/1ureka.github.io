@@ -1,35 +1,27 @@
 import { useState } from "react";
-import { Box, Button, Typography, Avatar, IconButton, Tooltip, BoxProps, Skeleton } from "@mui/material";
+import { Box, Button, Typography, IconButton, Tooltip, BoxProps, Skeleton } from "@mui/material";
 import ThumbUpRoundedIcon from "@mui/icons-material/ThumbUpRounded";
 import ReplyRoundedIcon from "@mui/icons-material/ReplyRounded";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
 
-import { useCommentById, useCommentsByCommentId } from "@/forum/hooks/comment";
+import { useCommentById, useCommentsByParentId } from "@/forum/hooks/comment";
 import { Replies } from "./Comments";
 import { NewComment } from "./NewComment";
 import { routes } from "@/routes";
+import { UserAvatar } from "../userElement/UserAvatar";
+import { CommentLikeButton } from "./CommentLikeButton";
 
 interface CommentProps {
   commentId: number;
   nestedLevel: number;
 }
 
-const randomLikeCount = () => Math.floor(Math.random() * 100);
-
 const Comment = ({ commentId, nestedLevel, sx, ...props }: CommentProps & BoxProps) => {
   if (nestedLevel < 0) throw new Error("nestedLevel must be greater than 0");
 
-  const [liked, setLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(randomLikeCount);
-
-  const handleLike = () => {
-    setLiked(!liked);
-    setLikeCount((prev) => (liked ? prev - 1 : prev + 1));
-  };
-
   const { data: comment, isFetching } = useCommentById(commentId);
-  const { data: comments, isFetching: isFetchingComments } = useCommentsByCommentId(commentId);
+  const { data: comments, isFetching: isFetchingComments } = useCommentsByParentId(commentId);
 
   const [isShowReplies, setIsShowReplies] = useState(false);
   const handleSwitchReplies = () => setIsShowReplies((prev) => !prev);
@@ -55,9 +47,7 @@ const Comment = ({ commentId, nestedLevel, sx, ...props }: CommentProps & BoxPro
       {...props}
     >
       <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1.5 }}>
-        <Avatar sx={{ bgcolor: "primary.main", width: "2rem", height: "2rem", mt: 1 }}>
-          {comment.author.slice(0, 1).toUpperCase()}
-        </Avatar>
+        <UserAvatar name={comment.userName} sx={{ mt: 1 }} />
 
         <Box sx={{ flex: 1 }}>
           <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -65,9 +55,9 @@ const Comment = ({ commentId, nestedLevel, sx, ...props }: CommentProps & BoxPro
               variant="subtitle2"
               component="a"
               sx={{ "&:hover": { textDecoration: "underline" }, color: "text.primary" }}
-              href={`${routes.forum_users}?user=${comment.author}`}
+              href={`${routes.forum_users}?user=${comment.userName}`}
             >
-              {comment.author}
+              {comment.userName}
             </Typography>
 
             <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
@@ -96,15 +86,7 @@ const Comment = ({ commentId, nestedLevel, sx, ...props }: CommentProps & BoxPro
           </Typography>
 
           <Box sx={{ display: "flex", alignItems: "center", mt: 1, gap: 1 }}>
-            <Button
-              size="small"
-              startIcon={<ThumbUpRoundedIcon />}
-              onClick={handleLike}
-              color={liked ? "primary" : "inherit"}
-              sx={{ color: liked ? undefined : "text.secondary" }}
-            >
-              <Typography variant="caption">{likeCount > 0 ? likeCount : "讚"}</Typography>
-            </Button>
+            <CommentLikeButton commentId={commentId} likeCount={comment.likeCount} />
 
             <Button
               size="small"

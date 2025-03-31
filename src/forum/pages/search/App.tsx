@@ -3,6 +3,7 @@ import ArrowBackIosRoundedIcon from "@mui/icons-material/ArrowBackIosRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 
 import { AppWrapper } from "@/forum/components/AppWrapper";
+import { AppBackground } from "@/forum/components/AppBackground";
 import { AppbarDesktop } from "@/forum/components/appbar/AppbarDesktop";
 import { AppbarMobile } from "@/forum/components/appbar/AppbarMobile";
 import { ScrollArea } from "@/forum/components/ScrollArea";
@@ -11,6 +12,8 @@ import { AppFooter } from "@/forum/components/appbar/AppFooter";
 import { routes } from "@/routes";
 import { theme, useResponsiveFontSize } from "@/forum/utils/theme";
 import { SearchForm } from "@/forum/components/search/SearchForm";
+import { PostCounts, PostList } from "@/forum/components/search/PostList";
+import { OrderTabs } from "@/forum/components/search/OrderTabs";
 
 const Header = () => {
   const isMd = useMediaQuery(theme.breakpoints.up("md"));
@@ -47,9 +50,7 @@ const Header = () => {
       </Box>
 
       <Stack sx={{ alignItems: "flex-end", flex: 1 }}>
-        <Typography variant="body2" component="span" sx={{ color: "text.secondary" }}>
-          共 10 篇
-        </Typography>
+        <PostCounts />
       </Stack>
     </>
   );
@@ -60,8 +61,8 @@ function App() {
 
   return (
     <AppWrapper>
-      <Box sx={{ bgcolor: "secondary.main", height: "35vh", position: "absolute", inset: "0 0 auto 0" }} />
-
+      {" "}
+      <AppBackground />
       <ScrollArea>
         {isMd ? <AppbarDesktop /> : <AppbarMobile />}
 
@@ -76,6 +77,12 @@ function App() {
 
               <Box sx={{ position: "absolute", inset: 0, bgcolor: "divider", opacity: 0.35, pointerEvents: "none" }} />
             </Box>
+
+            <Box sx={{ px: 2, borderBottom: 1, borderColor: "divider" }}>
+              <OrderTabs />
+            </Box>
+
+            <PostList />
           </Paper>
         </Container>
 

@@ -1,71 +1,11 @@
-import { Avatar, Box, Chip, Divider, Skeleton, Typography } from "@mui/material";
+import { Box, Divider, Typography } from "@mui/material";
 import SentimentDissatisfiedRoundedIcon from "@mui/icons-material/SentimentDissatisfiedRounded";
-import { useAuthors } from "@/forum/hooks/user";
-import { routes } from "@/routes";
-
-const LoadingDisplay = () => {
-  return (
-    <>
-      <Skeleton variant="circular" width="2rem" height="2rem" animation="wave" />
-      <Box>
-        <Skeleton variant="rounded" animation="wave">
-          <Typography
-            variant="subtitle1"
-            sx={{
-              textWrap: "nowrap",
-              color: "text.primary",
-              cursor: "pointer",
-              textDecoration: "none",
-              "&:hover": { textDecoration: "underline" },
-            }}
-          >
-            作者名稱
-          </Typography>
-        </Skeleton>
-        <Skeleton variant="text" animation="wave">
-          <Typography variant="body2" component="p" sx={{ color: "text.secondary" }}>
-            作者描述載入中...
-          </Typography>
-        </Skeleton>
-      </Box>
-      <Chip variant="outlined" label="追蹤" clickable disabled />
-    </>
-  );
-};
-
-const AuthorDisplay = ({ name, description }: { name: string; description: string }) => {
-  return (
-    <>
-      <Avatar sx={{ bgcolor: "primary.main", width: "2rem", height: "2rem" }}>
-        <Typography sx={{ translate: "0px 5%" }}>{name.slice(0, 1).toUpperCase()}</Typography>
-      </Avatar>
-      <Box>
-        <Typography
-          variant="subtitle1"
-          sx={{
-            textWrap: "nowrap",
-            color: "text.primary",
-            cursor: "pointer",
-            textDecoration: "none",
-            "&:hover": { textDecoration: "underline" },
-          }}
-          component="a"
-          href={`${routes.forum_users}?user=${name}`}
-        >
-          {name}
-        </Typography>
-        <Typography variant="body2" component="p" sx={{ color: "text.secondary" }}>
-          {description}
-        </Typography>
-      </Box>
-      <Chip variant="outlined" label="追蹤" clickable />
-    </>
-  );
-};
+import { useUsers } from "@/forum/hooks/user";
+import { AuthorDisplay, AuthorLoadingDisplay } from "../userElement/AuthorDisplay";
 
 const FeedAuthors = ({ length }: { length: number }) => {
-  const { data, isFetching } = useAuthors();
-  const authors = data ? data.slice(0, length) : null;
+  const { data, isFetching } = useUsers({ limit: length, orderBy: "postCount", order: "desc" });
+  const authors = data ? (data.pages[0] ? data.pages[0].users : null) : null;
 
   return (
     <Box
@@ -76,23 +16,24 @@ const FeedAuthors = ({ length }: { length: number }) => {
         alignItems: "center",
         gap: 2,
         p: 2,
+        "& > *:nth-of-type(6n - 3)": {
+          "&::after": {
+            content: '""',
+            position: "absolute",
+            display: { xs: "none", md: "block" },
+            inset: 0,
+            pointerEvents: "none",
+            borderRight: "1px solid",
+            borderColor: "divider",
+            mr: -1,
+            my: -2.1,
+          },
+        },
       }}
     >
       {isFetching || !authors
-        ? [...Array(length)].map((_, i) => <LoadingDisplay key={i} />)
-        : authors.map(({ name, description }) => <AuthorDisplay key={name} name={name} description={description} />)}
-
-      <Box
-        sx={{
-          position: "absolute",
-          inset: 0,
-          pointerEvents: "none",
-          display: { xs: "none", md: "flex" },
-          justifyContent: "center",
-        }}
-      >
-        <Divider orientation="vertical" flexItem variant="middle" />
-      </Box>
+        ? [...Array(length)].map((_, i) => <AuthorLoadingDisplay key={i} />)
+        : authors.map((user) => <AuthorDisplay key={user.id} {...user} />)}
     </Box>
   );
 };

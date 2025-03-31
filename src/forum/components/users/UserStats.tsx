@@ -1,9 +1,9 @@
 import { useUser } from "@/forum/hooks/user";
 import { Skeleton, Typography, useMediaQuery } from "@mui/material";
 import BarChartRoundedIcon from "@mui/icons-material/BarChartRounded";
-import type { User } from "@/forum/utils/dataType";
+import type { FetchUserByNameResult } from "@/forum/data/user";
 import { theme } from "@/forum/utils/theme";
-import { usePostStats } from "@/forum/hooks/post";
+import { useUserStats } from "@/forum/hooks/user";
 
 const LoadingDisplay = () => {
   const isMd = useMediaQuery(theme.breakpoints.up("md"));
@@ -26,24 +26,24 @@ const LoadingDisplay = () => {
   );
 };
 
-const UserStats = ({ user }: { user: User }) => {
+const UserStats = ({ user }: { user: FetchUserByNameResult }) => {
   const isMd = useMediaQuery(theme.breakpoints.up("md"));
-  const { data, isFetching } = usePostStats({ author: user.name });
+  const { data, isFetching } = useUserStats(user.id);
 
   if (data === undefined || isFetching) {
     return <LoadingDisplay />;
   }
 
-  const { totalPosts, totalLikes, totalViews } = data;
+  const { postCount, likeCount, viewCount } = data;
 
   return (
     <>
       <BarChartRoundedIcon fontSize="small" color="inherit" />
-      <Typography variant="body2">{isMd ? `發布了 ${totalPosts} 篇文章` : `${totalPosts} 篇文章`}</Typography>
+      <Typography variant="body2">{isMd ? `發布了 ${postCount} 篇文章` : `${postCount} 篇文章`}</Typography>
       <Typography variant="body2">·</Typography>
-      <Typography variant="body2">{isMd ? `獲得了 ${totalLikes} 次讚` : `${totalLikes} 次讚`}</Typography>
+      <Typography variant="body2">{isMd ? `獲得了 ${likeCount} 次讚` : `${likeCount} 次讚`}</Typography>
       <Typography variant="body2">·</Typography>
-      <Typography variant="body2">{isMd ? `文章總瀏覽次數 ${totalViews} 次` : `${totalViews} 次瀏覽`}</Typography>
+      <Typography variant="body2">{isMd ? `文章總瀏覽次數 ${viewCount} 次` : `${viewCount} 次瀏覽`}</Typography>
     </>
   );
 };

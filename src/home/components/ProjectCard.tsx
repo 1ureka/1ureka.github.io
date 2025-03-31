@@ -1,138 +1,154 @@
-import { Box, ButtonBase, Typography } from "@mui/material";
+import { Box, Chip, keyframes, LinearProgress, Stack, Typography } from "@mui/material";
+import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
+import HardwareRoundedIcon from "@mui/icons-material/HardwareRounded";
+
+const scrollKeyframes = keyframes`
+  from {
+    translate: -50% 0;
+  }
+  to {
+    translate: 50% 0;
+  }
+`;
+
+const getProgressLabel = (p: number): string => {
+  if (p <= 10) return "剛起步";
+  if (p <= 30) return "初步架構完成";
+  if (p <= 50) return "功能建構中";
+  if (p <= 70) return "進入整合階段";
+  if (p <= 90) return "細節優化中";
+  return "快完成了！";
+};
 
 type ProjectCardProps = {
   title: string;
   description: string;
-  href: string;
-  colors: string[];
-  iconUrl?: string;
-  isIconWhiteOrBlack?: boolean;
+  progress?: number;
+  color: string;
+  icon: React.ReactNode;
+  /** CTA 的文字，例如「開始探索」 */
+  actionLabel?: string;
+  actionHref: string;
+  actionTarget?: React.HTMLAttributeAnchorTarget;
+  /** 預覽圖片的url */
+  images?: string[];
 };
 
-const ProjectCard = ({ title, description, href, colors, iconUrl, isIconWhiteOrBlack }: ProjectCardProps) => {
-  return (
-    <ButtonBase
-      sx={{
-        display: "block",
-        width: 1,
-        height: 1,
-        borderRadius: 2,
-        overflow: "hidden",
-        position: "relative",
-        "&:hover": { scale: "1.02", boxShadow: 6 },
-        "&:active": { scale: "0.97" },
-        transition: "all 0.3s ease",
-        boxShadow: 1,
-        outline: "1px solid",
-        outlineColor: "divider",
-      }}
-      href={href}
-    >
-      <Box
-        sx={{
-          position: "absolute",
-          inset: 0,
-          bgcolor: "gray",
-          opacity: 0.6,
-          transition: "all 0.3s ease",
-          zIndex: -1,
-          "a:hover &": { scale: 1.05 },
-        }}
-      >
-        {/* img */}
+export const ProjectCard = ({
+  title,
+  description,
+  progress = 0,
+  color,
+  icon,
+  actionLabel = "開始探索",
+  actionHref,
+  actionTarget = "_blank",
+  images = [...Array(16)].map(() => ""),
+}: ProjectCardProps) => (
+  <Box sx={{ height: "400px", position: "relative", borderRadius: 2, overflow: "hidden" }}>
+    <Box sx={{ position: "absolute", inset: 0, bgcolor: color, opacity: 0.4, pointerEvents: "none", zIndex: 1 }} />
+
+    <Stack sx={{ height: 1 }}>
+      <Box sx={{ display: "flex", gap: 2, alignItems: "center", p: 2 }}>
+        {icon}
+        <Box sx={{ display: "flex", alignItems: "flex-end", gap: 1 }}>
+          <Typography variant="h4" component="h2" sx={{ fontFamily: "timemachine-wa", textWrap: "nowrap" }}>
+            {title}
+          </Typography>
+          <Typography variant="body2" component="p" sx={{ color: "text.secondary" }}>
+            {description}
+          </Typography>
+        </Box>
       </Box>
 
-      <Box
-        sx={{
-          position: "absolute",
-          bottom: 0,
-          bgcolor: "background.paper",
-          color: "text.primary",
-          transition: "all 0.3s ease",
-          "a:hover &": { height: 0.7 },
-          height: 0.45,
-          width: 1,
-          p: 1,
-          pt: 0,
-        }}
-      >
-        <Box sx={{ position: "absolute", inset: 0, bgcolor: "gray", opacity: 0.1 }} />
-
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "flex-end",
-            justifyContent: "space-between",
-            gap: 1,
-            translate: "0px -50%",
-            px: 2.5,
-          }}
-        >
-          <Box sx={{ display: "flex", gap: 1, alignItems: "flex-end" }}>
-            <Box
-              sx={{ position: "relative", p: iconUrl ? "0px" : "24px", borderRadius: 1, bgcolor: "background.default" }}
-            >
+      <Stack sx={{ alignItems: "center", flex: 1, gap: 1 }}>
+        {[...Array(2)].map((_, index) => (
+          <Box
+            key={index}
+            sx={{ display: "flex", flex: 1 }}
+            onMouseEnter={(e) => {
+              const targets = e.currentTarget.children;
+              Array.from(targets).forEach((e) => {
+                const target = e as HTMLElement;
+                target.style.animationPlayState = "paused";
+              });
+            }}
+            onMouseLeave={(e) => {
+              const targets = e.currentTarget.children;
+              Array.from(targets).forEach((e) => {
+                const target = e as HTMLElement;
+                target.style.animationPlayState = "running";
+              });
+            }}
+          >
+            {[...Array(2)].map((_, i) => (
               <Box
+                key={i}
                 sx={{
-                  position: "absolute",
-                  inset: 0,
-                  borderRadius: 1,
-                  outline: "2px solid",
-                  outlineColor: "primary.main",
-                  opacity: 0.5,
+                  display: "flex",
+                  height: 1,
+                  animation: `${scrollKeyframes} 20s linear infinite`,
+                  animationDirection: index === 1 ? "reverse" : "normal",
                 }}
-              />
-              {iconUrl && (
-                <img
-                  src={iconUrl}
-                  alt={title}
-                  width={48}
-                  style={{ display: "block", padding: 12, mixBlendMode: isIconWhiteOrBlack ? "exclusion" : undefined }}
-                />
-              )}
-            </Box>
-
-            <Typography variant="subtitle1" component="h2" sx={{ lineHeight: 1 }}>
-              {title}
-            </Typography>
-          </Box>
-
-          <Box sx={{ display: "flex", gap: 1.5, alignItems: "flex-end" }}>
-            {colors.map((color, index) => (
-              <Box key={index} sx={{ position: "relative", p: 1, borderRadius: 9, bgcolor: color }}>
-                <Box
-                  sx={{
-                    position: "absolute",
-                    inset: 0,
-                    borderRadius: 9,
-                    outline: "2px solid",
-                    outlineColor: "primary.main",
-                    opacity: 0.5,
-                  }}
-                />
+              >
+                {images.slice(index * 8, index * 8 + 8).map((_, i) => (
+                  <Box key={i} sx={{ position: "relative", aspectRatio: "16/9", height: 1, px: 0.5 }}>
+                    <Box
+                      sx={{
+                        width: 1,
+                        height: 1,
+                        borderRadius: 2,
+                        overflow: "hidden",
+                        bgcolor: "divider",
+                        opacity: 0.7,
+                      }}
+                    >
+                      {/* img */}
+                    </Box>
+                  </Box>
+                ))}
               </Box>
             ))}
           </Box>
+        ))}
+      </Stack>
+
+      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", p: 2 }}>
+        <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+          <HardwareRoundedIcon sx={{ fontSize: "1.5em", color: "text.secondary" }} />
+          <Typography variant="subtitle1" sx={{ opacity: 0.7 }}>
+            {progress === 0 && "準備中"}
+            {progress > 0 && progress < 100 && `目前進度 ${progress}%（${getProgressLabel(progress)}）`}
+            {progress === 100 && "已完成 ✅"}
+          </Typography>
         </Box>
 
-        <Typography
-          variant="caption"
+        <Chip
+          clickable
+          label={actionLabel}
+          variant="filled"
+          icon={<OpenInNewRoundedIcon />}
           sx={{
-            mt: -1,
-            textAlign: "start",
-            display: "-webkit-box",
-            WebkitLineClamp: 1,
-            WebkitBoxOrient: "vertical",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            "a:hover &": { WebkitLineClamp: 3 },
+            p: 1,
+            height: "auto",
+            borderRadius: 99,
+            "&:hover": { scale: "1.05" },
+            scale: "1.001",
+            transition: "all 0.2s ease",
           }}
-        >
-          {description}
-        </Typography>
-      </Box>
-    </ButtonBase>
-  );
-};
+          component="a"
+          href={actionHref}
+          target={actionTarget}
+          rel="noopener noreferrer"
+        />
 
-export { ProjectCard };
+        <LinearProgress
+          sx={{ position: "absolute", inset: "auto 0 0 0", opacity: 0.2 }}
+          variant="determinate"
+          value={progress}
+          color="inherit"
+        />
+      </Box>
+    </Stack>
+  </Box>
+);

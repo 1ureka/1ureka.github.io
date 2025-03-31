@@ -28,7 +28,7 @@ const LoadingDisplay = () => {
 };
 
 const PostDisplay = ({ postId }: { postId: number }) => {
-  const { data: post, isFetching } = usePostById(postId);
+  const { data: post, isFetching } = usePostById({ postId });
 
   if (isFetching || !post) {
     return <LoadingDisplay />;

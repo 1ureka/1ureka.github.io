@@ -1,8 +1,8 @@
-import { Box, Button, Container, Divider, Paper, Typography } from "@mui/material";
-import PeopleRoundedIcon from "@mui/icons-material/PeopleRounded";
+import { Box, Button, Container, Divider, Paper } from "@mui/material";
 import ArrowBackIosRoundedIcon from "@mui/icons-material/ArrowBackIosRounded";
 
 import { AppWrapper } from "@/forum/components/AppWrapper";
+import { AppBackground } from "@/forum/components/AppBackground";
 import { AppbarDesktop } from "@/forum/components/appbar/AppbarDesktop";
 import { AppbarMobile } from "@/forum/components/appbar/AppbarMobile";
 import { ScrollArea } from "@/forum/components/ScrollArea";
@@ -12,10 +12,11 @@ import { useResponsiveFontSize } from "@/forum/utils/theme";
 import { routes } from "@/routes";
 import { UserTitle } from "@/forum/components/users/UserTitle";
 import { UserIntro } from "@/forum/components/users/UserIntro";
-import { UserAvatar } from "@/forum/components/users/UserAvatar";
-import { FollowButton } from "@/forum/components/users/FollowButton";
-import { UserStats } from "@/forum/components/users/UserStats";
 import { PostList } from "@/forum/components/users/PostList";
+import { UserStats } from "@/forum/components/users/UserStats";
+import { UserStatsFollow } from "@/forum/components/users/UserStatsFollow";
+import { PrimaryFollowButton } from "@/forum/components/userElement/FollowButton";
+import { PrimaryUserAvatar } from "@/forum/components/userElement/UserAvatar";
 
 function App() {
   const { isMd } = useResponsiveFontSize();
@@ -23,8 +24,7 @@ function App() {
   return (
     <AppWrapper>
       <UserTitle />
-
-      <Box sx={{ bgcolor: "secondary.main", height: "35vh", position: "absolute", inset: "0 0 auto 0" }} />
+      <AppBackground />
 
       <ScrollArea>
         {isMd ? <AppbarDesktop /> : <AppbarMobile />}
@@ -35,12 +35,12 @@ function App() {
               sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", px: 3, flexWrap: "wrap" }}
             >
               <Box sx={{ display: "flex", alignItems: "center" }}>
-                <UserAvatar />
+                <PrimaryUserAvatar />
                 <UserIntro />
               </Box>
 
               <Box sx={{ m: 2 }}>
-                <FollowButton />
+                <PrimaryFollowButton />
               </Box>
             </Box>
 
@@ -74,20 +74,7 @@ function App() {
               </Box>
 
               <Box sx={{ display: "flex", gap: 1, alignItems: "center", color: "text.secondary" }}>
-                <PeopleRoundedIcon fontSize="small" color="inherit" />
-                <Typography
-                  variant="body2"
-                  sx={{ "&:hover": { textDecoration: "underline", cursor: "pointer", color: "text.primary" } }}
-                >
-                  2 位追蹤者
-                </Typography>
-                <Typography variant="body2">·</Typography>
-                <Typography
-                  variant="body2"
-                  sx={{ "&:hover": { textDecoration: "underline", cursor: "pointer", color: "text.primary" } }}
-                >
-                  正在追蹤 1 人
-                </Typography>
+                <UserStatsFollow />
               </Box>
             </Box>
 

@@ -10,8 +10,8 @@ import SellIcon from "@mui/icons-material/Sell";
 import { LoadingPostHeader, PostHeader } from "./shared/PostHeader";
 import { TopicTags } from "./shared/TopicTags";
 import { LikeButton } from "./shared/LikeButton";
-import type { Post } from "@/forum/utils/dataType";
 import { FavButton } from "./shared/FavButton";
+import type { FetchPostByIdResult } from "@/forum/data/post";
 
 // 用於生成載入中的貼文內容 (每個lenght長度是0~1)
 const randomLengthArray = (length: number) => Array.from({ length }, () => Math.random() * 0.7 + 0.3);
@@ -83,7 +83,7 @@ const LoadingFullPost = () => (
   </Box>
 );
 
-const FullPost = ({ post }: { post: Post }) => (
+const FullPost = ({ post }: { post: FetchPostByIdResult }) => (
   <Box sx={{ pt: 1.5 }}>
     <title>{`論壇樣板 | ${post.title}`}</title>
     <Divider />
@@ -121,7 +121,9 @@ const FullPost = ({ post }: { post: Post }) => (
                 {/* <img src={""} style={{ display: "block", position: "absolute", inset: 0 }} /> */}
 
                 <Box sx={{ position: "absolute", inset: "auto 0 0 0", pb: 1, display: "grid", placeItems: "center" }}>
-                  <Chip label={name} size="small" />
+                  <Box sx={{ maxWidth: 150 }}>
+                    <Chip label={name} size="small" />
+                  </Box>
                 </Box>
               </ButtonBase>
 
@@ -190,7 +192,7 @@ const FullPost = ({ post }: { post: Post }) => (
     >
       <Box sx={{ position: "absolute", inset: 0, bgcolor: "divider", opacity: 0.35 }} />
 
-      <LikeButton postId={post.id} />
+      <LikeButton postId={post.id} likeCount={post.likeCount} />
       <FavButton postId={post.id} />
 
       <Box sx={{ flex: 1 }} />
