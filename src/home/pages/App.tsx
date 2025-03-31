@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Box, Button, CssBaseline, Divider, Stack, ThemeProvider, Typography } from "@mui/material";
+import { Box, Button, CssBaseline, Divider, Stack, ThemeProvider, Typography, useMediaQuery } from "@mui/material";
 import ForumRoundedIcon from "@mui/icons-material/ForumRounded";
 import DataExplorationRoundedIcon from "@mui/icons-material/DataExplorationRounded";
 
@@ -59,6 +59,7 @@ const Actions = () => (
 );
 
 function App() {
+  const isMd = useMediaQuery(theme.breakpoints.up("md"));
   useEffect(() => {
     document.documentElement.style.fontSize = "16px";
   }, []);
@@ -68,23 +69,51 @@ function App() {
       <CssBaseline />
       <Toaster />
 
-      <Box sx={{ p: 5, display: "flex", height: "100dvh" }}>
+      <Box
+        sx={{
+          p: 5,
+          display: "flex",
+          flexDirection: { xs: "column", md: "row" },
+          height: "100dvh",
+          overflow: "auto",
+          minWidth: 600,
+        }}
+      >
         <Stack
           component="aside"
-          sx={{ justifyContent: "space-between", height: 1, width: "15rem", position: "relative" }}
+          sx={{
+            flexDirection: { xs: "row", md: "column" },
+            justifyContent: "space-between",
+            height: 1,
+            width: { xs: 1, md: "13rem", lg: "15rem" },
+            position: "relative",
+          }}
         >
           <Box>
             <Title />
-            <Typography variant="body1" component="p" sx={{ color: "text.primary", mt: 2, opacity: 0.9 }}>
-              這是一個模組化的 UI/UX
-              展示平台，透過各種類型的樣板，探索多種真實場景中的介面開發與使用者流程設計。專案將持續打磨，期盼從視覺層次、結構邏輯到互動細節，逐步走向更完整、細膩且具啟發性的使用體驗。
-            </Typography>
+            {isMd && (
+              <Typography variant="body1" component="p" sx={{ color: "text.primary", mt: 2, opacity: 0.9 }}>
+                這是一個模組化的 UI/UX
+                展示平台，透過各種類型的樣板，探索多種真實場景中的介面開發與使用者流程設計。專案將持續打磨，期盼從視覺層次、結構邏輯到互動細節，逐步走向更完整、細膩且具啟發性的使用體驗。
+              </Typography>
+            )}
           </Box>
 
           <Actions />
         </Stack>
 
-        <Divider orientation="vertical" flexItem sx={{ mx: 5 }} />
+        {!isMd && (
+          <Typography variant="body1" component="p" sx={{ color: "text.primary", mt: 2, opacity: 0.9 }}>
+            這是一個模組化的 UI/UX
+            展示平台，透過各種類型的樣板，探索多種真實場景中的介面開發與使用者流程設計。專案將持續打磨，期盼從視覺層次、結構邏輯到互動細節，逐步走向更完整、細膩且具啟發性的使用體驗。
+          </Typography>
+        )}
+
+        {isMd ? (
+          <Divider orientation="vertical" flexItem sx={{ mx: 5 }} />
+        ) : (
+          <Divider orientation="horizontal" flexItem sx={{ my: 5 }} />
+        )}
 
         <Box component="main" sx={{ flex: 1 }}>
           <ListControlBar />

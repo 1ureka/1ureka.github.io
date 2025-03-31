@@ -15,6 +15,7 @@ export const ThemeButtonGroup = () => {
         onClick={() => setMode("light")}
         color={lightMode ? "primary" : "inherit"}
         variant={lightMode ? "contained" : "outlined"}
+        sx={{ textWrap: "none", whiteSpace: "nowrap" }}
       >
         淺色
       </Button>
@@ -23,6 +24,7 @@ export const ThemeButtonGroup = () => {
         onClick={() => setMode("dark")}
         color={darkMode ? "primary" : "inherit"}
         variant={darkMode ? "contained" : "outlined"}
+        sx={{ textWrap: "none", whiteSpace: "nowrap" }}
       >
         深色
       </Button>

@@ -1,5 +1,7 @@
 import { createTheme } from "@mui/material";
 
+const defaultTheme = createTheme();
+
 const theme = createTheme({
   cssVariables: { colorSchemeSelector: ".mode-%s" },
   typography: { fontFamily: `Comfortaa, "jf openhuninn"` },
@@ -18,6 +20,9 @@ const theme = createTheme({
         background: { default: "#222", paper: "#222" },
       },
     },
+  },
+  breakpoints: {
+    values: { ...defaultTheme.breakpoints.values, md: 1000 },
   },
   spacing: "0.5rem",
 });
