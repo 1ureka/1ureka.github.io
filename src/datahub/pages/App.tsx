@@ -2,6 +2,7 @@ import {
   Box,
   Breadcrumbs,
   Button,
+  ButtonBase,
   Divider,
   Menu,
   MenuItem,
@@ -19,6 +20,8 @@ import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
 import RestartAltRoundedIcon from "@mui/icons-material/RestartAltRounded";
 import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
 import UploadRoundedIcon from "@mui/icons-material/UploadRounded";
+import ArrowDropDownRoundedIcon from "@mui/icons-material/ArrowDropDownRounded";
+import TypeSpecimenRoundedIcon from "@mui/icons-material/TypeSpecimenRounded";
 
 // import { routes } from "@/routes";
 import { AppWrapper } from "@/datahub/components/AppWrapper";
@@ -165,7 +168,7 @@ function App() {
 
                 <Box sx={{ display: "flex", gap: 1.5, color: "text.primary" }}>
                   <Button
-                    startIcon={<UploadRoundedIcon />}
+                    startIcon={<DownloadRoundedIcon />}
                     variant="outlined"
                     color="inherit"
                     sx={{
@@ -178,7 +181,7 @@ function App() {
                     匯入
                   </Button>
                   <Button
-                    startIcon={<DownloadRoundedIcon />}
+                    startIcon={<UploadRoundedIcon />}
                     variant="contained"
                     color="inherit"
                     disableElevation
@@ -321,6 +324,145 @@ function App() {
                     </TileContent>
                   </Stack>
                 </Box>
+              </Box>
+
+              <Box
+                sx={{
+                  position: "relative",
+                  mt: largeSpacing,
+                  display: "grid",
+                  gap: largeSpacing,
+                  gridTemplateColumns: { xs: "1fr", ml: "repeat(2, 1fr)" },
+                  width: 1,
+                }}
+              >
+                <Stack sx={{ aspectRatio: { xs: "2/1", ml: "2/1.2" }, borderTop: "1px solid", borderColor: "divider" }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      gap: smallSpacing,
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      p: smallSpacing,
+                    }}
+                  >
+                    <Typography variant="h5" component="h3">
+                      欄位數
+                    </Typography>
+
+                    <ButtonBase
+                      sx={{
+                        "&:hover": { bgcolor: "action.hover" },
+                        p: 1,
+                        pr: 0,
+                        borderRadius: 1,
+                      }}
+                    >
+                      <Typography sx={{ color: "text.secondary" }}>前 5 筆</Typography>
+                      <ArrowDropDownRoundedIcon sx={{ color: "text.secondary" }} />
+                    </ButtonBase>
+                  </Box>
+
+                  <Box sx={{ flex: 1 }} />
+
+                  <Box
+                    sx={{
+                      display: "flex",
+                      gap: smallSpacing,
+                      p: smallSpacing,
+                      justifyContent: "space-around",
+                      alignItems: "center",
+                    }}
+                  >
+                    {[...Array(5)].map((_, i) => (
+                      <Tooltip key={i} title={<Typography>table_name_{i + 1}</Typography>} followCursor>
+                        <Typography
+                          key={i}
+                          variant="body1"
+                          component="p"
+                          sx={{
+                            color: "text.secondary",
+                            display: "-webkit-box",
+                            WebkitLineClamp: 1,
+                            WebkitBoxOrient: "vertical",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            wordBreak: "break-all",
+                            "&:hover": { textDecoration: "underline" },
+                            cursor: "pointer",
+                          }}
+                        >
+                          table_name_{i + 1}
+                        </Typography>
+                      </Tooltip>
+                    ))}
+                  </Box>
+                </Stack>
+
+                <Stack sx={{ aspectRatio: { xs: "2/1", ml: "2/1.2" }, borderTop: "1px solid", borderColor: "divider" }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      gap: smallSpacing,
+                      justifyContent: "space-between",
+                      alignItems: "flex-start",
+                      p: smallSpacing,
+                    }}
+                  >
+                    <Stack sx={{ gap: 1 }}>
+                      <TileTitle>最常出現的型別</TileTitle>
+                      <TileContent variant="h4" sx={{ textTransform: "uppercase" }}>
+                        text
+                      </TileContent>
+                    </Stack>
+
+                    <TypeSpecimenRoundedIcon
+                      sx={{
+                        color: "background.paper",
+                        bgcolor: "primary.main",
+                        borderRadius: 1,
+                        p: 1,
+                        fontSize: "3rem",
+                      }}
+                    />
+                  </Box>
+
+                  <Box sx={{ flex: 1 }} />
+
+                  <Box
+                    sx={{
+                      display: "flex",
+                      gap: mediumSpacing,
+                      p: smallSpacing,
+                      mx: smallSpacing,
+                      alignItems: "center",
+                    }}
+                  >
+                    {[...Array(3)].map((_, i) => (
+                      <Box sx={{ display: "flex", gap: 1, alignItems: "center" }} key={i}>
+                        <Box sx={{ borderRadius: 99, width: "1rem", height: "1rem", bgcolor: "primary.main" }} />
+                        <Typography
+                          key={i}
+                          variant="body1"
+                          component="p"
+                          sx={{
+                            color: "text.secondary",
+                            display: "-webkit-box",
+                            WebkitLineClamp: 1,
+                            WebkitBoxOrient: "vertical",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            wordBreak: "break-all",
+                          }}
+                        >
+                          type_{i + 1}
+                        </Typography>
+                      </Box>
+                    ))}
+                  </Box>
+                </Stack>
+
+                <Box sx={{ aspectRatio: { xs: "2/1", ml: "2/1.2" } }} />
               </Box>
             </Paper>
           </Stack>
