@@ -30,6 +30,7 @@ import { AppWrapper } from "@/datahub/components/AppWrapper";
 import { useState } from "react";
 import { ThemeMenuWithButton } from "../components/ThemeMenu";
 import { useResponsiveFontSize } from "../utils/theme";
+import { AppNotSupported } from "../components/AppError";
 
 const SearchBar = () => {
   const [search, setSearch] = useState("");
@@ -92,6 +93,13 @@ function App() {
   const handleOpen = (event: React.MouseEvent<HTMLElement>) =>
     setAnchorEl((prev) => (prev ? null : event.currentTarget));
   const handleClose = () => setAnchorEl(null);
+
+  if (!isSm)
+    return (
+      <AppWrapper>
+        <AppNotSupported />
+      </AppWrapper>
+    );
 
   return (
     <AppWrapper>
