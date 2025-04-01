@@ -272,12 +272,122 @@ const LargeTiles = () => {
           <TypeSpecimenRoundedIcon sx={tileIconCommonSx} />
         </Box>
 
-        <Box sx={{ flex: 1 }} />
+        <Box sx={{ flex: 1, position: "relative" }}>
+          <Box sx={{ position: "absolute", inset: "auto 0 0 0", p: 1.5, borderRadius: 9, overflow: "clip" }}>
+            <StripedBackground color1="divider" color2="#fff0" angle={-35} stripeWidth={4} />
+
+            <Box sx={{ position: "absolute", inset: 0, display: "flex", alignItems: "stretch", zIndex: 1 }}>
+              <TileTooltip
+                title={
+                  <TileContent variant="body1" sx={{ textTransform: "uppercase" }}>
+                    text 型別使用了 25 次
+                  </TileContent>
+                }
+              >
+                <Box
+                  sx={{
+                    width: 0.6,
+                    "&:hover": { bgcolor: "divider" },
+                    opacity: 0.9,
+                    transition: "all 0.2s ease-in-out",
+                  }}
+                />
+              </TileTooltip>
+              <TileTooltip
+                title={
+                  <TileContent variant="body1" sx={{ textTransform: "uppercase" }}>
+                    integer 型別使用了 15 次
+                  </TileContent>
+                }
+              >
+                <Box
+                  sx={{
+                    width: 0.3,
+                    "&:hover": { bgcolor: "divider" },
+                    opacity: 0.9,
+                    transition: "all 0.2s ease-in-out",
+                  }}
+                />
+              </TileTooltip>
+              <TileTooltip
+                title={
+                  <TileContent variant="body1" sx={{ textTransform: "uppercase" }}>
+                    real 型別使用了 5 次
+                  </TileContent>
+                }
+              >
+                <Box
+                  sx={{
+                    width: 0.1,
+                    "&:hover": { bgcolor: "divider" },
+                    opacity: 0.9,
+                    transition: "all 0.2s ease-in-out",
+                  }}
+                />
+              </TileTooltip>
+            </Box>
+          </Box>
+
+          <Box sx={{ position: "absolute", inset: "auto 0 0 0", my: 1.5, display: "grid", placeItems: "center" }}>
+            <Box sx={{ position: "absolute", width: 1, display: "flex", alignItems: "center" }}>
+              <Box sx={{ width: 0.6, px: 0.5, pl: 1 }}>
+                <Box sx={{ py: 0.5, borderRadius: 9, bgcolor: "primary.main", filter: "hue-rotate(-10deg)" }} />
+              </Box>
+              <Box sx={{ width: 0.3, px: 0.5 }}>
+                <Box sx={{ py: 0.5, borderRadius: 9, bgcolor: "primary.main", filter: "hue-rotate(-30deg)" }} />
+              </Box>
+              <Box sx={{ width: 0.1, px: 0.5, pr: 1 }}>
+                <Box sx={{ py: 0.5, borderRadius: 9, bgcolor: "primary.main", filter: "hue-rotate(-50deg)" }} />
+              </Box>
+            </Box>
+          </Box>
+
+          <Box sx={{ position: "absolute", inset: 0, display: "flex" }}>
+            <Box sx={{ width: 0.6, height: 1, position: "relative" }}>
+              <Box sx={{ position: "absolute", inset: 0, ml: 1, mb: 3, borderLeft: 4, borderColor: "divider" }}>
+                <Box sx={{ position: "absolute", inset: "0 auto auto 0" }}>
+                  <Typography variant="body2" sx={{ textTransform: "uppercase", color: "text.secondary", ml: 1 }}>
+                    text
+                  </Typography>
+                  <TileContent sx={{ textTransform: "uppercase", opacity: 0.8, ml: 1 }}>60%</TileContent>
+                </Box>
+              </Box>
+            </Box>
+            <Box sx={{ width: 0.3, height: 1, position: "relative" }}>
+              <Box sx={{ position: "absolute", inset: 0, mb: 3, borderLeft: 4, borderColor: "divider" }}>
+                <Box sx={{ position: "absolute", inset: "0 auto auto 0" }}>
+                  <Typography variant="body2" sx={{ textTransform: "uppercase", color: "text.secondary", ml: 1 }}>
+                    integer
+                  </Typography>
+                  <TileContent sx={{ textTransform: "uppercase", opacity: 0.8, ml: 1 }}>30%</TileContent>
+                </Box>
+              </Box>
+            </Box>
+            <Box sx={{ width: 0.1, height: 1, position: "relative" }}>
+              <Box sx={{ position: "absolute", inset: 0, mb: 3, borderLeft: 4, borderColor: "divider" }}>
+                <Box sx={{ position: "absolute", inset: "0 auto auto 0" }}>
+                  <Typography variant="body2" sx={{ textTransform: "uppercase", color: "text.secondary", ml: 1 }}>
+                    real
+                  </Typography>
+                  <TileContent sx={{ textTransform: "uppercase", opacity: 0.8, ml: 1 }}>10%</TileContent>
+                </Box>
+              </Box>
+            </Box>
+          </Box>
+        </Box>
 
         <Box sx={{ display: "flex", gap: mdSpace, p: smSpace, mx: smSpace, alignItems: "center" }}>
           {[...Array(3)].map((_, i) => (
             <Box sx={{ display: "flex", gap: 1, alignItems: "center" }} key={i}>
-              <Box sx={{ borderRadius: 99, width: "1rem", height: "1rem", bgcolor: "primary.main" }} />
+              <Box
+                sx={{
+                  borderRadius: 99,
+                  width: "1rem",
+                  height: "1rem",
+                  bgcolor: "primary.main",
+                  filter: `hue-rotate(-${(i + 1) * 20}deg)`,
+                }}
+              />
               <Typography variant="body1" component="p" sx={{ color: "text.secondary", ...ellipsisSx }}>
                 type_{i + 1}
               </Typography>
