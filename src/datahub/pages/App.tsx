@@ -1,72 +1,325 @@
 import {
   Box,
-  Breadcrumbs,
-  Button,
   ButtonBase,
   Divider,
-  Menu,
-  MenuItem,
+  FormControlLabel,
+  FormHelperText,
   Paper,
   Stack,
+  Switch,
   Tooltip,
   Typography,
-  TypographyProps,
 } from "@mui/material";
-import DnsRoundedIcon from "@mui/icons-material/DnsRounded";
+import type { BoxProps, IconProps, TooltipProps } from "@mui/material";
 import BackupTableRoundedIcon from "@mui/icons-material/BackupTableRounded";
 import SummarizeRoundedIcon from "@mui/icons-material/SummarizeRounded";
 import HealthAndSafetyRoundedIcon from "@mui/icons-material/HealthAndSafetyRounded";
 import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
-import RestartAltRoundedIcon from "@mui/icons-material/RestartAltRounded";
-import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
-import UploadRoundedIcon from "@mui/icons-material/UploadRounded";
 import ArrowDropDownRoundedIcon from "@mui/icons-material/ArrowDropDownRounded";
 import TypeSpecimenRoundedIcon from "@mui/icons-material/TypeSpecimenRounded";
 
 // import { routes } from "@/routes";
 import { AppWrapper } from "@/datahub/components/AppWrapper";
-import { useState } from "react";
 import { useResponsiveFontSize } from "../utils/theme";
 import { AppNotSupported } from "../components/AppError";
 import { Appbar, APPBAR_HEIGHT } from "../components/appbar/Appbar";
 import { Sidebar } from "../components/sidebar/Sidebar";
+import { Header } from "../components/home/Header";
+import { TileContent, TileTitle } from "../components/home/TileText";
+import { StripedBackground } from "../components/home/StripedBackground";
 
-const TileTitle = ({ children, sx, ...props }: { children: React.ReactNode } & TypographyProps) => (
-  <Typography variant="subtitle1" component="h3" sx={{ color: "text.secondary", textWrap: "nowrap", ...sx }} {...props}>
-    {children}
-  </Typography>
-);
+const lgSpace = { xs: 4, md: 6, xl: 8 };
+const mdSpace = { xs: 3, md: 4, xl: 5 };
+const smSpace = { xs: 1, md: 2, xl: 3 };
+const noSpace = { xs: 0, md: 0, xl: 0 };
 
-const TileContent = ({ children, sx, ...props }: { children: React.ReactNode } & TypographyProps) => (
-  <Typography
-    variant="h5"
-    component="p"
-    sx={{
-      display: "-webkit-box",
-      WebkitLineClamp: 1,
-      WebkitBoxOrient: "vertical",
-      overflow: "hidden",
-      textOverflow: "ellipsis",
-      wordBreak: "break-all",
-      ...sx,
-    }}
-    {...props}
-  >
-    {children}
-  </Typography>
-);
+const tileIconCommonSx: IconProps["sx"] = {
+  color: "background.paper",
+  bgcolor: "primary.main",
+  borderRadius: 1,
+  p: 1,
+  fontSize: "3rem",
+};
 
-const largeSpacing = { xs: 4, md: 6, xl: 8 };
-const mediumSpacing = { xs: 3, md: 4, xl: 5 };
-const smallSpacing = { xs: 1, md: 2, xl: 3 };
+const smallTileCommonSx: BoxProps["sx"] = {
+  display: "flex",
+  alignItems: "center",
+  gap: mdSpace,
+} as const;
+
+const ellipsisSx: BoxProps["sx"] = {
+  display: "-webkit-box",
+  WebkitLineClamp: 1,
+  WebkitBoxOrient: "vertical",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  wordBreak: "break-all",
+} as const;
+
+const underlineSx: BoxProps["sx"] = {
+  "&:hover": { textDecoration: "underline" },
+  cursor: "pointer",
+} as const;
+
+const TileTooltip = ({ children, ...props }: TooltipProps) => {
+  return (
+    <Tooltip followCursor slotProps={{ transition: { timeout: { appear: 250, enter: 250, exit: 0 } } }} {...props}>
+      {children}
+    </Tooltip>
+  );
+};
+
+const SmallTiles = () => {
+  return (
+    <Box
+      sx={{
+        position: "relative",
+        display: "grid",
+        gap: lgSpace,
+        gridTemplateColumns: { xs: "repeat(6, 1fr)", lg: "repeat(3, 1fr)" },
+      }}
+    >
+      <Box sx={{ gridColumn: { xs: "span 4", lg: "auto" }, ...smallTileCommonSx }}>
+        <BackupTableRoundedIcon sx={tileIconCommonSx} />
+
+        <Box sx={{ display: "flex", gap: smSpace }}>
+          <Stack sx={{ alignItems: "flex-start" }}>
+            <TileTitle>資料庫大小</TileTitle>
+            <TileContent sx={{ textWrap: "nowrap" }}>1,234 Bytes</TileContent>
+          </Stack>
+
+          <Divider flexItem orientation="vertical" />
+
+          <Stack sx={{ alignItems: "flex-start" }}>
+            <TileTitle>資料表總數</TileTitle>
+            <TileContent>8</TileContent>
+          </Stack>
+
+          <Divider flexItem orientation="vertical" />
+
+          <Stack sx={{ alignItems: "flex-start" }}>
+            <TileTitle>檢視表總數</TileTitle>
+            <TileContent>6</TileContent>
+          </Stack>
+        </Box>
+      </Box>
+
+      <Box sx={{ gridColumn: { xs: "1 / span 4", lg: "auto" }, ...smallTileCommonSx }}>
+        <SummarizeRoundedIcon sx={tileIconCommonSx} />
+
+        <Box sx={{ display: "flex", gap: smSpace }}>
+          <Stack sx={{ alignItems: "flex-start" }}>
+            <TileTitle>總紀錄數</TileTitle>
+            <TileContent sx={{ textWrap: "nowrap" }}>1,234</TileContent>
+          </Stack>
+
+          <Divider flexItem orientation="vertical" />
+
+          <Stack sx={{ alignItems: "flex-start" }}>
+            <TileTitle>最多紀錄的資料表</TileTitle>
+            <TileTooltip title={<Typography>comments_interactions</Typography>}>
+              <TileContent sx={underlineSx}>comments_interactions</TileContent>
+            </TileTooltip>
+          </Stack>
+        </Box>
+      </Box>
+
+      <Box
+        sx={{ gridRow: { xs: "1", lg: "auto" }, gridColumn: { xs: "5 / span 2", lg: "auto" }, ...smallTileCommonSx }}
+      >
+        <HealthAndSafetyRoundedIcon sx={tileIconCommonSx} />
+
+        <Stack sx={{ alignItems: "flex-start" }}>
+          <TileTitle>潛在問題</TileTitle>
+          <TileContent sx={{ textWrap: "nowrap", color: "warning.main", display: "inline-block", ...underlineSx }}>
+            2
+            <OpenInNewRoundedIcon fontSize="small" sx={{ verticalAlign: "middle", ml: 0.5 }} />
+          </TileContent>
+        </Stack>
+      </Box>
+    </Box>
+  );
+};
+
+const recordsPercents = [81.6, 46.9, 40.8, 25.5, 5.1]; // 相對於前五筆總數的百分比 * 2
+
+const LargeTiles = () => {
+  return (
+    <Box
+      sx={{
+        position: "relative",
+        mt: lgSpace,
+        display: "grid",
+        gap: lgSpace,
+        gridTemplateColumns: { xs: "1fr", ml: "repeat(2, 1fr)" },
+        width: 1,
+      }}
+    >
+      {/* Chart 1 */}
+      <Stack sx={{ aspectRatio: { xs: "2/1", ml: "2/1.2" }, borderTop: "1px solid", borderColor: "divider" }}>
+        <Box sx={{ display: "flex", gap: smSpace, justifyContent: "space-between", alignItems: "center", p: smSpace }}>
+          <Typography variant="h5" component="h3">
+            紀錄數
+          </Typography>
+
+          <ButtonBase sx={{ "&:hover": { bgcolor: "action.hover" }, p: 1, pr: 0, borderRadius: 1 }}>
+            <Typography sx={{ color: "text.secondary" }}>前 5 筆</Typography>
+            <ArrowDropDownRoundedIcon sx={{ color: "text.secondary" }} />
+          </ButtonBase>
+        </Box>
+
+        <Box
+          sx={{
+            position: "relative",
+            flex: 1,
+            display: "flex",
+            gap: smSpace,
+            p: smSpace,
+            py: noSpace,
+            justifyContent: "space-around",
+            alignItems: "stretch",
+          }}
+        >
+          {[...Array(5)].map((_, i) => (
+            <TileTooltip
+              key={i}
+              title={
+                <Box>
+                  <Typography variant="subtitle2">table_name_{i + 1}</Typography>
+                  <Typography>{Math.round((recordsPercents[i] * 100) / 20)} 筆紀錄</Typography>
+                </Box>
+              }
+            >
+              <Box
+                sx={{
+                  position: "relative",
+                  flex: 1,
+                  borderRadius: 2,
+                  overflow: "clip",
+                  transition: "all 0.2s ease-in-out",
+                  "&:hover": { bgcolor: "action.hover", "& .bar-content": { opacity: 1 } },
+                }}
+              >
+                <StripedBackground color1="divider" color2="#fff0" angle={-20} stripeWidth={5} />
+                <Box
+                  sx={{
+                    position: "absolute",
+                    inset: `${100 - recordsPercents[i]}% 0 0 0`,
+                    borderRadius: 2,
+                    overflow: "hidden",
+                    bgcolor: "background.paper",
+                  }}
+                >
+                  <Box
+                    className="bar-content"
+                    sx={{
+                      position: "absolute",
+                      inset: 0,
+                      bgcolor: "primary.main",
+                      opacity: i === 0 ? 0.9 : 0.65,
+                      transition: "all 0.2s ease-in-out",
+                    }}
+                  />
+                </Box>
+              </Box>
+            </TileTooltip>
+          ))}
+          <Box
+            sx={{
+              position: "absolute",
+              inset: `0 0 ${recordsPercents.reduce((a, b) => a + b, 0) / recordsPercents.length}% 0`,
+              borderBottom: "4px dashed",
+              borderColor: "divider",
+              pointerEvents: "none",
+              mx: smSpace,
+              scale: "1.02 1",
+              "&:before": {
+                content: '"平均 136"',
+                position: "absolute",
+                right: 0,
+                bottom: 0,
+                fontSize: "1rem",
+                color: "text.secondary",
+                opacity: 0.75,
+              },
+            }}
+          />
+        </Box>
+
+        <Box sx={{ display: "flex", gap: smSpace, p: smSpace, justifyContent: "space-around", alignItems: "center" }}>
+          {[...Array(5)].map((_, i) => (
+            <TileTooltip key={i} title={<Typography>table_name_{i + 1}</Typography>}>
+              <Typography variant="body1" component="p" sx={{ color: "text.secondary", ...underlineSx, ...ellipsisSx }}>
+                table_name_{i + 1}
+              </Typography>
+            </TileTooltip>
+          ))}
+        </Box>
+      </Stack>
+
+      {/* Chart 2 */}
+      <Stack sx={{ aspectRatio: { xs: "2/1", ml: "2/1.2" }, borderTop: "1px solid", borderColor: "divider" }}>
+        <Box
+          sx={{ display: "flex", gap: smSpace, justifyContent: "space-between", alignItems: "flex-start", p: smSpace }}
+        >
+          <Stack sx={{ gap: 1 }}>
+            <TileTitle>最常使用的型別</TileTitle>
+            <TileContent variant="h4" sx={{ textTransform: "uppercase" }}>
+              text
+            </TileContent>
+          </Stack>
+
+          <TypeSpecimenRoundedIcon sx={tileIconCommonSx} />
+        </Box>
+
+        <Box sx={{ flex: 1 }} />
+
+        <Box sx={{ display: "flex", gap: mdSpace, p: smSpace, mx: smSpace, alignItems: "center" }}>
+          {[...Array(3)].map((_, i) => (
+            <Box sx={{ display: "flex", gap: 1, alignItems: "center" }} key={i}>
+              <Box sx={{ borderRadius: 99, width: "1rem", height: "1rem", bgcolor: "primary.main" }} />
+              <Typography variant="body1" component="p" sx={{ color: "text.secondary", ...ellipsisSx }}>
+                type_{i + 1}
+              </Typography>
+            </Box>
+          ))}
+        </Box>
+      </Stack>
+
+      {/* Chart 3 */}
+      <Box sx={{ aspectRatio: { xs: "2/1", ml: "2/1.2" }, borderTop: "1px solid", borderColor: "divider" }} />
+
+      {/* Chart 4 */}
+      <Stack sx={{ aspectRatio: { xs: "2/1", ml: "2/1.2" }, borderTop: "1px solid", borderColor: "divider" }}>
+        <Box
+          sx={{ display: "flex", gap: smSpace, justifyContent: "space-between", alignItems: "flex-start", p: smSpace }}
+        >
+          <Typography variant="h5" component="h3">
+            使用的欄位名稱
+          </Typography>
+
+          <Stack sx={{ alignItems: "flex-end" }}>
+            <FormControlLabel
+              control={<Switch />}
+              labelPlacement="start"
+              label={
+                <Typography variant="body1" sx={{ opacity: 0.9 }}>
+                  包含系統欄位
+                </Typography>
+              }
+            />
+            <FormHelperText>(id, createdAt, updatedAt, ...)</FormHelperText>
+          </Stack>
+        </Box>
+
+        <Box sx={{ flex: 1 }} />
+      </Stack>
+    </Box>
+  );
+};
 
 function App() {
   const { isSm } = useResponsiveFontSize();
-
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const handleOpen = (event: React.MouseEvent<HTMLElement>) =>
-    setAnchorEl((prev) => (prev ? null : event.currentTarget));
-  const handleClose = () => setAnchorEl(null);
 
   if (!isSm)
     return (
@@ -86,384 +339,11 @@ function App() {
 
         <Box sx={{ position: "relative", flex: 1, height: 1, overflow: "auto" }}>
           <Stack sx={{ minHeight: 1, gap: 3, px: 6, pb: 3 }}>
-            <Box
-              sx={{
-                position: "relative",
-                p: 5,
-                overflow: "hidden",
-                borderRadius: 4,
-                borderTopLeftRadius: 0,
-                borderTopRightRadius: 0,
-              }}
-            >
-              <Box
-                sx={{
-                  position: "absolute",
-                  inset: 0,
-                  pointerEvents: "none",
-                  overflow: "hidden",
-                  display: "flex",
-                  justifyContent: "center",
-                }}
-              >
-                <Box
-                  sx={{
-                    position: "relative",
-                    maskImage: "radial-gradient(circle at 50% 25%, #0003 0%, #000a 100%)",
-                    bgcolor: "primary.main",
-                    fill: "var(--mui-palette-background-paper)",
-                    fillOpacity: 0.375,
-                    width: 1,
-                    minWidth: 1200,
-                    height: 1,
-                  }}
-                >
-                  <svg
-                    style={{ scale: "1.01 -1" }}
-                    width="100%"
-                    height="200"
-                    viewBox="0 0 1920 300"
-                    xmlns="http://www.w3.org/2000/svg"
-                    preserveAspectRatio="none"
-                  >
-                    <path d="M0,160 C160,180 320,140 480,160 C640,180 800,120 960,150 C1120,180 1280,130 1440,160 C1600,190 1760,150 1920,170 L1920,300 L0,300 Z" />
-                    <path d="M0,190 C120,210 240,160 360,190 C480,220 600,140 720,180 C840,220 960,130 1080,180 C1200,230 1320,160 1440,200 C1560,240 1740,180 1920,210 L1920,300 L0,300 Z" />
-                    <path d="M0,230 C160,250 320,190 480,230 C640,270 800,180 960,220 C1120,260 1280,170 1440,210 C1600,250 1760,200 1920,230 L1920,300 L0,300 Z" />
-                  </svg>
-                </Box>
-              </Box>
+            <Header />
 
-              <Box
-                sx={{ position: "relative", display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}
-              >
-                <Box>
-                  <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-                    <DnsRoundedIcon fontSize="small" sx={{ color: "text.secondary" }} />
-                    <Breadcrumbs>
-                      <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                        資料庫
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        sx={{ "&:hover": { textDecoration: "underline" }, cursor: "pointer", color: "text.primary" }}
-                        onClick={handleOpen}
-                      >
-                        論壇資料庫
-                      </Typography>
-                    </Breadcrumbs>
-
-                    <Menu open={Boolean(anchorEl)} anchorEl={anchorEl} onClose={handleClose}>
-                      <MenuItem onClick={handleClose} selected>
-                        <Typography variant="body2" sx={{ color: "text.primary" }}>
-                          論壇資料庫
-                        </Typography>
-                      </MenuItem>
-                    </Menu>
-                  </Box>
-
-                  <Typography variant="h4" component="h2" sx={{ pt: 1.5 }}>
-                    概覽
-                  </Typography>
-                </Box>
-
-                <Box sx={{ display: "flex", gap: 1.5, color: "text.primary" }}>
-                  <Button
-                    startIcon={<DownloadRoundedIcon />}
-                    variant="outlined"
-                    color="inherit"
-                    sx={{
-                      scale: "1.001",
-                      "&:hover": { scale: "1.05" },
-                      "&:active": { scale: "0.95" },
-                      transition: "all 0.2s ease",
-                    }}
-                  >
-                    匯入
-                  </Button>
-                  <Button
-                    startIcon={<UploadRoundedIcon />}
-                    variant="contained"
-                    color="inherit"
-                    disableElevation
-                    sx={{
-                      bgcolor: "background.paper",
-                      scale: "1.001",
-                      "&:hover": { scale: "1.05" },
-                      "&:active": { scale: "0.95" },
-                      transition: "all 0.2s ease",
-                    }}
-                  >
-                    匯出
-                  </Button>
-                  <Tooltip
-                    title={<Typography variant="body2">從伺服器複製一份副本取代目前資料</Typography>}
-                    placement="bottom"
-                    arrow
-                  >
-                    <Button
-                      startIcon={<RestartAltRoundedIcon />}
-                      variant="contained"
-                      color="error"
-                      disableElevation
-                      sx={{
-                        cursor: "help",
-                        scale: "1.001",
-                        "&:hover": { scale: "1.05" },
-                        "&:active": { scale: "0.95" },
-                        transition: "all 0.2s ease",
-                        pr: 2.5,
-                      }}
-                    >
-                      重置
-                    </Button>
-                  </Tooltip>
-                </Box>
-              </Box>
-            </Box>
-
-            <Paper sx={{ borderRadius: 4, boxShadow: "none", flex: 1, p: mediumSpacing }}>
-              <Box
-                sx={{
-                  position: "relative",
-                  display: "grid",
-                  gap: largeSpacing,
-                  gridTemplateColumns: { xs: "repeat(6, 1fr)", lg: "repeat(3, 1fr)" },
-                }}
-              >
-                <Box
-                  sx={{
-                    gridColumn: { xs: "span 4", lg: "auto" },
-                    display: "flex",
-                    alignItems: "center",
-                    gap: mediumSpacing,
-                  }}
-                >
-                  <BackupTableRoundedIcon
-                    sx={{ color: "background.paper", bgcolor: "primary.main", borderRadius: 1, p: 1, fontSize: "3rem" }}
-                  />
-
-                  <Box sx={{ display: "flex", gap: smallSpacing }}>
-                    <Stack sx={{ alignItems: "flex-start" }}>
-                      <TileTitle>資料庫大小</TileTitle>
-                      <TileContent sx={{ textWrap: "nowrap" }}>1,234 Bytes</TileContent>
-                    </Stack>
-
-                    <Divider flexItem orientation="vertical" />
-
-                    <Stack sx={{ alignItems: "flex-start" }}>
-                      <TileTitle>資料表總數</TileTitle>
-                      <TileContent>8</TileContent>
-                    </Stack>
-
-                    <Divider flexItem orientation="vertical" />
-
-                    <Stack sx={{ alignItems: "flex-start" }}>
-                      <TileTitle>檢視表總數</TileTitle>
-                      <TileContent>6</TileContent>
-                    </Stack>
-                  </Box>
-                </Box>
-
-                <Box
-                  sx={{
-                    gridColumn: { xs: "1 / span 4", lg: "auto" },
-                    display: "flex",
-                    alignItems: "center",
-                    gap: mediumSpacing,
-                  }}
-                >
-                  <SummarizeRoundedIcon
-                    sx={{ color: "background.paper", bgcolor: "primary.main", borderRadius: 1, p: 1, fontSize: "3rem" }}
-                  />
-
-                  <Box sx={{ display: "flex", gap: smallSpacing }}>
-                    <Stack sx={{ alignItems: "flex-start" }}>
-                      <TileTitle>總紀錄數</TileTitle>
-                      <TileContent sx={{ textWrap: "nowrap" }}>1,234</TileContent>
-                    </Stack>
-
-                    <Divider flexItem orientation="vertical" />
-
-                    <Stack sx={{ alignItems: "flex-start" }}>
-                      <TileTitle>最多紀錄的資料表</TileTitle>
-                      <Tooltip title={<Typography>comments_interactions</Typography>} followCursor>
-                        <TileContent sx={{ cursor: "pointer", "&:hover": { textDecoration: "underline" } }}>
-                          comments_interactions
-                        </TileContent>
-                      </Tooltip>
-                    </Stack>
-                  </Box>
-                </Box>
-
-                <Box
-                  sx={{
-                    gridRow: { xs: "1", lg: "auto" },
-                    gridColumn: { xs: "5 / span 2", lg: "auto" },
-                    display: "flex",
-                    alignItems: "center",
-                    gap: mediumSpacing,
-                  }}
-                >
-                  <HealthAndSafetyRoundedIcon
-                    sx={{ color: "background.paper", bgcolor: "primary.main", borderRadius: 1, p: 1, fontSize: "3rem" }}
-                  />
-
-                  <Stack sx={{ alignItems: "flex-start" }}>
-                    <TileTitle>潛在問題</TileTitle>
-                    <TileContent
-                      sx={{
-                        textWrap: "nowrap",
-                        color: "warning.main",
-                        display: "inline-block",
-                        "&:hover": { textDecoration: "underline" },
-                        cursor: "pointer",
-                      }}
-                    >
-                      2
-                      <OpenInNewRoundedIcon fontSize="small" sx={{ verticalAlign: "middle", ml: 0.5 }} />
-                    </TileContent>
-                  </Stack>
-                </Box>
-              </Box>
-
-              <Box
-                sx={{
-                  position: "relative",
-                  mt: largeSpacing,
-                  display: "grid",
-                  gap: largeSpacing,
-                  gridTemplateColumns: { xs: "1fr", ml: "repeat(2, 1fr)" },
-                  width: 1,
-                }}
-              >
-                <Stack sx={{ aspectRatio: { xs: "2/1", ml: "2/1.2" }, borderTop: "1px solid", borderColor: "divider" }}>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      gap: smallSpacing,
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      p: smallSpacing,
-                    }}
-                  >
-                    <Typography variant="h5" component="h3">
-                      欄位數
-                    </Typography>
-
-                    <ButtonBase
-                      sx={{
-                        "&:hover": { bgcolor: "action.hover" },
-                        p: 1,
-                        pr: 0,
-                        borderRadius: 1,
-                      }}
-                    >
-                      <Typography sx={{ color: "text.secondary" }}>前 5 筆</Typography>
-                      <ArrowDropDownRoundedIcon sx={{ color: "text.secondary" }} />
-                    </ButtonBase>
-                  </Box>
-
-                  <Box sx={{ flex: 1 }} />
-
-                  <Box
-                    sx={{
-                      display: "flex",
-                      gap: smallSpacing,
-                      p: smallSpacing,
-                      justifyContent: "space-around",
-                      alignItems: "center",
-                    }}
-                  >
-                    {[...Array(5)].map((_, i) => (
-                      <Tooltip key={i} title={<Typography>table_name_{i + 1}</Typography>} followCursor>
-                        <Typography
-                          key={i}
-                          variant="body1"
-                          component="p"
-                          sx={{
-                            color: "text.secondary",
-                            display: "-webkit-box",
-                            WebkitLineClamp: 1,
-                            WebkitBoxOrient: "vertical",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            wordBreak: "break-all",
-                            "&:hover": { textDecoration: "underline" },
-                            cursor: "pointer",
-                          }}
-                        >
-                          table_name_{i + 1}
-                        </Typography>
-                      </Tooltip>
-                    ))}
-                  </Box>
-                </Stack>
-
-                <Stack sx={{ aspectRatio: { xs: "2/1", ml: "2/1.2" }, borderTop: "1px solid", borderColor: "divider" }}>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      gap: smallSpacing,
-                      justifyContent: "space-between",
-                      alignItems: "flex-start",
-                      p: smallSpacing,
-                    }}
-                  >
-                    <Stack sx={{ gap: 1 }}>
-                      <TileTitle>最常出現的型別</TileTitle>
-                      <TileContent variant="h4" sx={{ textTransform: "uppercase" }}>
-                        text
-                      </TileContent>
-                    </Stack>
-
-                    <TypeSpecimenRoundedIcon
-                      sx={{
-                        color: "background.paper",
-                        bgcolor: "primary.main",
-                        borderRadius: 1,
-                        p: 1,
-                        fontSize: "3rem",
-                      }}
-                    />
-                  </Box>
-
-                  <Box sx={{ flex: 1 }} />
-
-                  <Box
-                    sx={{
-                      display: "flex",
-                      gap: mediumSpacing,
-                      p: smallSpacing,
-                      mx: smallSpacing,
-                      alignItems: "center",
-                    }}
-                  >
-                    {[...Array(3)].map((_, i) => (
-                      <Box sx={{ display: "flex", gap: 1, alignItems: "center" }} key={i}>
-                        <Box sx={{ borderRadius: 99, width: "1rem", height: "1rem", bgcolor: "primary.main" }} />
-                        <Typography
-                          key={i}
-                          variant="body1"
-                          component="p"
-                          sx={{
-                            color: "text.secondary",
-                            display: "-webkit-box",
-                            WebkitLineClamp: 1,
-                            WebkitBoxOrient: "vertical",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            wordBreak: "break-all",
-                          }}
-                        >
-                          type_{i + 1}
-                        </Typography>
-                      </Box>
-                    ))}
-                  </Box>
-                </Stack>
-
-                <Box sx={{ aspectRatio: { xs: "2/1", ml: "2/1.2" } }} />
-              </Box>
+            <Paper sx={{ borderRadius: 4, boxShadow: "none", flex: 1, p: mdSpace }}>
+              <SmallTiles />
+              <LargeTiles />
             </Paper>
           </Stack>
         </Box>
