@@ -1,4 +1,5 @@
 import { Typography, type TypographyProps } from "@mui/material";
+import { ellipsisSx } from "./commonSx";
 
 const TileTitle = ({ children, sx, ...props }: { children: React.ReactNode } & TypographyProps) => (
   <Typography variant="subtitle1" component="h3" sx={{ color: "text.secondary", textWrap: "nowrap", ...sx }} {...props}>
@@ -7,20 +8,7 @@ const TileTitle = ({ children, sx, ...props }: { children: React.ReactNode } & T
 );
 
 const TileContent = ({ children, sx, ...props }: { children: React.ReactNode } & TypographyProps) => (
-  <Typography
-    variant="h5"
-    component="p"
-    sx={{
-      display: "-webkit-box",
-      WebkitLineClamp: 1,
-      WebkitBoxOrient: "vertical",
-      overflow: "hidden",
-      textOverflow: "ellipsis",
-      wordBreak: "break-all",
-      ...sx,
-    }}
-    {...props}
-  >
+  <Typography variant="h5" component="p" sx={{ ...ellipsisSx, ...sx }} {...props}>
     {children}
   </Typography>
 );
