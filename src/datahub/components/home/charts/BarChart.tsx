@@ -1,7 +1,7 @@
 import { Box, ButtonBase, MenuItem, MenuList, Popover, Stack, Typography } from "@mui/material";
 import ArrowDropDownRoundedIcon from "@mui/icons-material/ArrowDropDownRounded";
 import { TileTooltip } from "../TileTooltip";
-import { StripedBackground } from "../StripedBackground";
+import { StripedBackground } from "./StripedBackground";
 import { ellipsisSx, noSpace, smSpace, underlineSx } from "../commonSx";
 import { useState } from "react";
 

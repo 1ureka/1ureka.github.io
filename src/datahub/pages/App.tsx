@@ -10,7 +10,7 @@ import { Sidebar } from "../components/sidebar/Sidebar";
 
 import { Header } from "../components/home/Header";
 import { TileContent, TileTitle } from "../components/home/TileText";
-import { StripedBackground } from "../components/home/StripedBackground";
+import { StripedBackground } from "../components/home/charts/StripedBackground";
 import { TileTooltip } from "../components/home/TileTooltip";
 import { SmallTiles } from "../components/home/SmallTiles";
 import { BarChart } from "../components/home/charts/BarChart";
