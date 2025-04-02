@@ -1,31 +1,38 @@
 import { useSQLiteStore } from "../hooks/useSQLiteStore";
 
-function getClient() {
+const getClient = () => {
   const { client } = useSQLiteStore.getState();
   if (!client) throw new Error("SQLite client is not initialized.");
   return client;
-}
+};
 
-async function getDbBytes(): Promise<number> {
+const getDbBytes = async () => {
   const client = getClient();
   const bytes = await client.getDatabaseSize();
   return bytes;
-}
+};
 
-async function getTables(): Promise<string[]> {
+type SQLiteObjectType = "table" | "view" | "index" | "trigger";
+
+const getObjectsByTypes = async (
+  types: SQLiteObjectType[] = ["table"]
+): Promise<{ type: SQLiteObjectType; name: string }[]> => {
   const client = getClient();
-  const rows = await client.exec("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%';");
+  const results: { type: SQLiteObjectType; name: string }[] = [];
 
-  const data = rows.map((r) => r.name).filter((name) => typeof name === "string");
-  return data;
-}
+  await Promise.all(
+    types.map(async (type) => {
+      const sql = `SELECT name FROM sqlite_master WHERE type = $type AND name NOT LIKE 'sqlite_%';`;
+      const rows = await client.exec(sql, { $type: type });
 
-async function getViews(): Promise<string[]> {
-  const client = getClient();
-  const rows = await client.exec("SELECT name FROM sqlite_master WHERE type='view' AND name NOT LIKE 'sqlite_%';");
+      rows.forEach((row) => {
+        if (typeof row.name === "string") results.push({ type, name: row.name });
+      });
+    })
+  );
 
-  const data = rows.map((r) => r.name).filter((name) => typeof name === "string");
-  return data;
-}
+  return results;
+};
 
-export { getDbBytes, getTables, getViews };
+export { getDbBytes, getObjectsByTypes };
+export type { SQLiteObjectType };
