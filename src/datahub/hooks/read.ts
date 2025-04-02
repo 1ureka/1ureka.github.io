@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getDbBytes, getObjectsByTypes } from "../data/read";
+import { getDbBytes, getObjectsByTypes, getTotalRowCount } from "../data/read";
 import type { SQLiteObjectType } from "../data/read";
 
 const staleTime = 1 * 60 * 1000;
@@ -20,4 +20,12 @@ const useObjects = ({ types }: { types: SQLiteObjectType[] }) => {
   });
 };
 
-export { useDbBytes, useObjects };
+const useRowCounts = ({ types }: { types: Exclude<SQLiteObjectType, "index" | "trigger">[] }) => {
+  return useQuery({
+    queryKey: ["rowCounts", ...types.toSorted()],
+    queryFn: () => getTotalRowCount(types),
+    staleTime,
+  });
+};
+
+export { useDbBytes, useObjects, useRowCounts };

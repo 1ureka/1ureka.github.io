@@ -1,3 +1,4 @@
+import { tryCatch } from "@/utils/tryCatch";
 import { useSQLiteStore } from "../hooks/useSQLiteStore";
 
 const getClient = () => {
@@ -14,9 +15,7 @@ const getDbBytes = async () => {
 
 type SQLiteObjectType = "table" | "view" | "index" | "trigger";
 
-const getObjectsByTypes = async (
-  types: SQLiteObjectType[] = ["table"]
-): Promise<{ type: SQLiteObjectType; name: string }[]> => {
+const getObjectsByTypes = async (types: SQLiteObjectType[]) => {
   const client = getClient();
   const results: { type: SQLiteObjectType; name: string }[] = [];
 
@@ -34,5 +33,33 @@ const getObjectsByTypes = async (
   return results;
 };
 
-export { getDbBytes, getObjectsByTypes };
+const getTotalRowCount = async (types: Exclude<SQLiteObjectType, "index" | "trigger">[]) => {
+  const client = getClient();
+  const results: { [table: string]: number } = {};
+
+  // 獲取所有指定類型的物件
+  const objects = await getObjectsByTypes(types);
+
+  // 對每個物件執行 COUNT(*) 查詢
+  await Promise.all(
+    objects.map(async ({ name }) => {
+      const sql = `SELECT COUNT(*) as count FROM ${name};`;
+      const result = await tryCatch(client.exec(sql));
+
+      if (result.error) {
+        console.error(`Error counting rows in ${name}:`, result.error);
+        results[name] = 0;
+        return;
+      }
+
+      const rows = result.data;
+      if (rows.length > 0) results[name] = Number(rows[0].count ?? 0);
+      else results[name] = 0;
+    })
+  );
+
+  return results;
+};
+
+export { getDbBytes, getObjectsByTypes, getTotalRowCount };
 export type { SQLiteObjectType };
