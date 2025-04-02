@@ -15,6 +15,8 @@ import { FlatDonutBar } from "../components/home/charts/FlatDonutBar";
 import { FlatBarChart } from "../components/home/charts/FlatBarChart";
 import { ellipsisSx, lgSpace, mdSpace, noSpace, smSpace } from "../components/home/commonSx";
 
+import { useSqliteInitializer } from "../hooks/useSQLiteInitializer";
+
 const LargeTiles = () => {
   return (
     <Box
@@ -91,6 +93,7 @@ const LargeTiles = () => {
 
 function App() {
   const { isSm } = useResponsiveFontSize();
+  useSqliteInitializer();
 
   if (!isSm)
     return (
