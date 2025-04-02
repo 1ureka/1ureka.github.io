@@ -1,9 +1,12 @@
-import { Box, ButtonBase, MenuItem, MenuList, Popover, Stack, Typography } from "@mui/material";
+import { Box, ButtonBase, CircularProgress, MenuItem, MenuList } from "@mui/material";
+import { Popover, Skeleton, Stack, Typography } from "@mui/material";
 import ArrowDropDownRoundedIcon from "@mui/icons-material/ArrowDropDownRounded";
+
+import { useState } from "react";
+import { useRowCounts } from "@/datahub/hooks/read";
 import { TileTooltip } from "../TileTooltip";
 import { StripedBackground } from "./StripedBackground";
 import { ellipsisSx, noSpace, smSpace, underlineSx } from "../commonSx";
-import { useState } from "react";
 
 type DisplayCounts = 3 | 5 | 7;
 
@@ -51,42 +54,45 @@ const Title = ({ value, onClick }: { value: DisplayCounts; onClick: (displayCoun
   );
 };
 
-const BarChart = () => {
-  const [displayCounts, setDisplayCounts] = useState<DisplayCounts>(5);
+// 整理成可用於顯示的數據格式
+const parseData = (data: { [table: string]: number } | null, displayCounts: DisplayCounts) => {
+  if (data === null) {
+    return {
+      dataArray: [...Array(displayCounts)].map((_, i) => ({ label: "載入中" + i, records: 0, percentage: 0 })),
+      averageAmount: 0,
+      averagePercentages: 0,
+    };
+  }
 
-  // 假資料，實際上應該從 API 獲取且排序好
-  const data: { [table: string]: number } = {
-    comment_interactions: 560,
-    post_interactions: 256,
-    user_interactions: 96,
-    comments: 68,
-    comment_interaction_counts: 68,
-    users: 16,
-    user_interaction_counts: 16,
-    posts: 15,
-    post_interaction_counts: 15,
-    comment_stats: 1,
-  };
+  const sortedData = Object.entries(data)
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, displayCounts);
 
-  // 為了了讓條形圖的長度更明顯，所定義的乘數
-  const visualMultiplier = 1.75;
+  const sortedKeys = sortedData.map(([key]) => key);
+  const sortedValues = sortedData.map(([, value]) => value);
 
-  const totalAmount = Object.values(data).reduce((a, b) => a + b, 0);
+  const visualMultiplier = 1.75; // 為了了讓條形圖的長度更明顯，所定義的乘數
+
+  const totalAmount = Object.values(sortedValues).reduce((a, b) => a + b, 0);
   const averageAmount = Math.round(totalAmount / displayCounts);
   const averagePercentages = Math.round((averageAmount / totalAmount) * 100 * visualMultiplier);
+  const percentages = sortedValues.map((value) => Math.round((value / totalAmount) * 100 * visualMultiplier));
 
-  const labels = Object.keys(data);
-  const values = Object.values(data);
-  const percentages = values.map((value) => Math.round((value / totalAmount) * 100 * visualMultiplier));
+  const dataArray = sortedKeys.map((label, i) => ({
+    label,
+    records: sortedValues[i],
+    percentage: percentages[i],
+  }));
 
-  // 整理成可用於顯示的數據格式
-  const dataArray = labels
-    .map((label, index) => ({
-      label,
-      records: values[index],
-      percentage: percentages[index],
-    }))
-    .slice(0, displayCounts);
+  return { dataArray: dataArray.slice(0, displayCounts), averageAmount, averagePercentages };
+};
+
+const chartChangeTransition = "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)";
+
+const BarChart = () => {
+  const [displayCounts, setDisplayCounts] = useState<DisplayCounts>(5);
+  const { data, isFetching } = useRowCounts({ types: ["table", "view"] });
+  const { dataArray, averageAmount, averagePercentages } = parseData(data ?? null, displayCounts);
 
   return (
     <Stack sx={{ aspectRatio: { xs: "2/1", ml: "2/1.2" }, borderTop: "1px solid", borderColor: "divider" }}>
@@ -106,12 +112,14 @@ const BarChart = () => {
       >
         {dataArray.map(({ label, records, percentage }, i) => (
           <TileTooltip
-            key={label}
+            key={i}
             title={
-              <Box>
-                <Typography variant="subtitle2">{label}</Typography>
-                <Typography>{records} 筆紀錄</Typography>
-              </Box>
+              !isFetching && records > 0 ? (
+                <Box>
+                  <Typography variant="subtitle2">{label}</Typography>
+                  <Typography>{records} 筆紀錄</Typography>
+                </Box>
+              ) : null
             }
           >
             <Box
@@ -128,10 +136,11 @@ const BarChart = () => {
               <Box
                 sx={{
                   position: "absolute",
-                  inset: `${Math.max(0, 100 - percentage)}% 0 0 0`,
+                  inset: `${isFetching ? 100 : Math.max(0, 100 - percentage)}% 0 0 0`,
                   borderRadius: 2,
                   overflow: "hidden",
                   bgcolor: "background.paper",
+                  transition: chartChangeTransition,
                 }}
               >
                 <Box
@@ -152,14 +161,15 @@ const BarChart = () => {
         <Box
           sx={{
             position: "absolute",
-            inset: `0 0 ${averagePercentages}% 0`,
+            inset: `0 0 ${isFetching ? 0 : averagePercentages}% 0`,
             borderBottom: "4px dashed",
             borderColor: "divider",
             pointerEvents: "none",
             mx: smSpace,
             scale: "1.02 1",
+            transition: chartChangeTransition,
             "&:before": {
-              content: `"平均 ${averageAmount} 筆"`,
+              content: `"平均 ${isFetching ? 0 : averageAmount} 筆"`,
               position: "absolute",
               right: 0,
               bottom: 0,
@@ -169,20 +179,40 @@ const BarChart = () => {
             },
           }}
         />
+
+        {isFetching && (
+          <Box sx={{ position: "absolute", inset: 0, display: "grid", placeItems: "center", pointerEvents: "none" }}>
+            <CircularProgress />
+          </Box>
+        )}
+
+        {/* {!isFetching && dataArray.every(({ records }) => records === 0) && (
+            <Typography variant="body1" sx={{ color: "text.secondary" }}>
+              沒有任何紀錄
+            </Typography>
+          )} */}
       </Box>
 
       <Box sx={{ display: "flex", gap: smSpace, p: smSpace, justifyContent: "space-around", alignItems: "center" }}>
-        {dataArray.map(({ label }) => (
-          <TileTooltip key={label} title={<Typography>{label}</Typography>}>
-            <Typography
-              variant="body1"
-              component="p"
-              sx={{ flex: 1, color: "text.secondary", ...underlineSx, ...ellipsisSx, textAlign: "center" }}
-            >
-              {label}
-            </Typography>
-          </TileTooltip>
-        ))}
+        {dataArray.map(({ label }, i) =>
+          isFetching ? (
+            <Skeleton key={i} variant="rounded" animation="wave">
+              <Typography variant="body1" component="p" sx={{ flex: 1, textAlign: "center" }}>
+                載入中
+              </Typography>
+            </Skeleton>
+          ) : (
+            <TileTooltip key={i} title={<Typography>{label}</Typography>}>
+              <Typography
+                variant="body1"
+                component="p"
+                sx={{ flex: 1, color: "text.secondary", ...underlineSx, ...ellipsisSx, textAlign: "center" }}
+              >
+                {label}
+              </Typography>
+            </TileTooltip>
+          )
+        )}
       </Box>
     </Stack>
   );
