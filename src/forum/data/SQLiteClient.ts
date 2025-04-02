@@ -4,7 +4,7 @@ import { get, set, del } from "idb-keyval";
 import { tryCatch } from "@/utils/tryCatch";
 
 const TEST_DELAY = 500; // 最短等待時間，模擬網絡延遲
-const DB_KEY = "sqlite-db";
+const DB_KEY = "sqlite-db-forum";
 import DB_PATH from "@/assets/db/forum.db?url";
 
 export class SQLiteClient {
