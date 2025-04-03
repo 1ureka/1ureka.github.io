@@ -6,6 +6,7 @@ import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
 import UploadRoundedIcon from "@mui/icons-material/UploadRounded";
 import { useState } from "react";
 import { useResetDatabase } from "@/datahub/hooks/update";
+import { useUrl } from "@/datahub/hooks/url";
 
 const buttonVaraintMap = {
   outlined: { variant: "outlined", color: "inherit" },
@@ -98,6 +99,12 @@ const Header = () => {
     setResetAnchorEl(null);
   };
 
+  const { updateSearchParams } = useUrl();
+  const createHandleDbClick = (dbName: string) => () => {
+    updateSearchParams({ db: dbName });
+    setAnchorEl(null);
+  };
+
   return (
     <Box
       sx={{
@@ -130,7 +137,7 @@ const Header = () => {
 
             <Menu open={Boolean(anchorEl)} anchorEl={anchorEl} onClose={handleClose}>
               <MenuItem onClick={handleClose} selected>
-                <Typography variant="body2" sx={{ color: "text.primary" }}>
+                <Typography variant="body2" sx={{ color: "text.primary" }} onClick={createHandleDbClick("forum")}>
                   論壇資料庫
                 </Typography>
               </MenuItem>
