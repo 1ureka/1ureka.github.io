@@ -6,7 +6,7 @@ import { useState } from "react";
 import { useRowCounts } from "@/datahub/hooks/read";
 import { TileTooltip } from "../TileTooltip";
 import { StripedBackground } from "./StripedBackground";
-import { ellipsisSx, noSpace, smSpace, underlineSx } from "../commonSx";
+import { chartChangeTransition, ellipsisSx, noSpace, smSpace, underlineSx } from "../commonSx";
 
 type DisplayCounts = 3 | 5 | 7;
 
@@ -86,8 +86,6 @@ const parseData = (data: { [table: string]: number } | null, displayCounts: Disp
 
   return { dataArray: dataArray.slice(0, displayCounts), averageAmount, averagePercentages };
 };
-
-const chartChangeTransition = "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)";
 
 const BarChart = () => {
   const [displayCounts, setDisplayCounts] = useState<DisplayCounts>(5);

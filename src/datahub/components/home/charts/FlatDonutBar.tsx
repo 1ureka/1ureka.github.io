@@ -5,7 +5,7 @@ import TypeSpecimenRoundedIcon from "@mui/icons-material/TypeSpecimenRounded";
 import { StripedBackground } from "./StripedBackground";
 import { TileContent, TileTitle } from "../TileText";
 import { TileTooltip } from "../TileTooltip";
-import { ellipsisSx, mdSpace, smSpace, tileIconCommonSx } from "../commonSx";
+import { chartChangeTransition, ellipsisSx, mdSpace, smSpace, tileIconCommonSx } from "../commonSx";
 
 import { useTableInfo } from "@/datahub/hooks/read";
 import { useMemo } from "react";
@@ -24,8 +24,6 @@ type DataArray = {
   count: number;
   percentage: number;
 }[];
-
-const chartChangeTransition = "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)";
 
 const FlatDonutBar = () => {
   const { data: tableInfo, isFetching } = useTableInfo({ types: ["table", "view"] });

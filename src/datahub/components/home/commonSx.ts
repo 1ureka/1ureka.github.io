@@ -24,3 +24,5 @@ export const ellipsisSx = {
   textOverflow: "ellipsis",
   wordBreak: "break-all",
 } as const;
+
+export const chartChangeTransition = "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)";
