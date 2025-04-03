@@ -10,6 +10,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import "dayjs/locale/zh-tw";
 
+import { getFormErrorHelperText, getFormIsError } from "@/forum/utils/form";
 import { NumberInput } from "@/forum/components/search/NumberInput";
 import { useUrl } from "@/forum/hooks/url";
 import { useUsers } from "@/forum/hooks/user";
@@ -34,15 +35,6 @@ const formSchema = z.object({
 });
 
 export type FormField = z.infer<typeof formSchema>;
-
-const isError = (value: unknown[]) => value.length > 0 && value[0] !== null && value[0] !== undefined;
-const getErrorMessage = (value: ({ message: string } | undefined)[]) =>
-  isError(value)
-    ? value
-        .filter((e) => e !== undefined)
-        .map(({ message }) => message)
-        .join(", ")
-    : null;
 
 const SearchForm = () => {
   const { searchParams, updateSearchParams } = useUrl();
@@ -122,8 +114,8 @@ const SearchForm = () => {
                     required
                     name={field.name}
                     label="所有"
-                    error={isError(field.state.meta.errors)}
-                    helperText={getErrorMessage(field.state.meta.errors) || "符合文章標題、內容或作者的關鍵字"}
+                    error={getFormIsError(field.state.meta.errors)}
+                    helperText={getFormErrorHelperText(field.state.meta.errors) || "符合文章標題、內容或作者的關鍵字"}
                     variant="filled"
                     fullWidth
                     size="small"
@@ -139,8 +131,8 @@ const SearchForm = () => {
                   <TextField
                     name={field.name}
                     label="標題"
-                    error={isError(field.state.meta.errors)}
-                    helperText={getErrorMessage(field.state.meta.errors) || "符合文章標題的關鍵字"}
+                    error={getFormIsError(field.state.meta.errors)}
+                    helperText={getFormErrorHelperText(field.state.meta.errors) || "符合文章標題的關鍵字"}
                     variant="filled"
                     fullWidth
                     size="small"
@@ -156,8 +148,8 @@ const SearchForm = () => {
                   <TextField
                     name={field.name}
                     label="內容"
-                    error={isError(field.state.meta.errors)}
-                    helperText={getErrorMessage(field.state.meta.errors) || "符合文章內容的關鍵字"}
+                    error={getFormIsError(field.state.meta.errors)}
+                    helperText={getFormErrorHelperText(field.state.meta.errors) || "符合文章內容的關鍵字"}
                     variant="filled"
                     fullWidth
                     size="small"
