@@ -112,19 +112,11 @@ const fetchUsers: FetchUsers = async ({
 };
 
 // ----------------------------
-// 查詢使用者名稱、描述、id (根據使用者名稱)
+// 查詢使用者名稱、描述、id
 // ----------------------------
 
-type FetchUserByNameParams = {
-  name: string;
-};
-
-type FetchUserByNameResult = {
-  id: number;
-  name: string;
-  description: string;
-};
-
+type FetchUserByNameParams = { name: string };
+type FetchUserByNameResult = { id: number; name: string; description: string };
 type FetchUserByName = (params: FetchUserByNameParams) => Promise<FetchUserByNameResult | null>;
 
 const fetchUserByName: FetchUserByName = async ({ name }) => {
@@ -136,12 +128,40 @@ const fetchUserByName: FetchUserByName = async ({ name }) => {
     `;
 
   const results = await SQLiteClient.exec(sql, { $name: name });
-
-  if (results.length === 0) {
-    return null;
-  }
-
+  if (results.length === 0) return null;
   return results[0] as unknown as ReturnType<FetchUserByName>;
+};
+
+type FetchUserByEmailParams = { email: string };
+type FetchUserByEmail = (params: FetchUserByEmailParams) => Promise<FetchUserByNameResult | null>;
+
+const fetchUserByEmail: FetchUserByEmail = async ({ email }) => {
+  const sql = `
+        SELECT id, name, description
+        FROM users
+        WHERE email = $email
+        LIMIT 1
+      `;
+
+  const results = await SQLiteClient.exec(sql, { $email: email });
+  if (results.length === 0) return null;
+  return results[0] as unknown as ReturnType<FetchUserByEmail>;
+};
+
+type FetchUserByIdParams = { id: number };
+type FetchUserById = (params: FetchUserByIdParams) => Promise<FetchUserByNameResult | null>;
+
+const fetchUserById: FetchUserById = async ({ id }) => {
+  const sql = `
+        SELECT id, name, description
+        FROM users
+        WHERE id = $id
+        LIMIT 1
+      `;
+
+  const results = await SQLiteClient.exec(sql, { $id: id });
+  if (results.length === 0) return null;
+  return results[0] as unknown as ReturnType<FetchUserById>;
 };
 
 // ----------------------------
@@ -181,5 +201,5 @@ const fetchUserStats: FetchUserStats = async ({ userId }) => {
 // 匯出
 // ----------------------------
 
-export { fetchUserCount, fetchUsers, fetchUserByName, fetchUserStats };
+export { fetchUserCount, fetchUsers, fetchUserByName, fetchUserByEmail, fetchUserById, fetchUserStats };
 export type { FetchUsersParams, FetchUserByNameParams, FetchUserStatsParams, FetchUserByNameResult };
