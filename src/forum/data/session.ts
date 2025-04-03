@@ -1,5 +1,5 @@
 import { SQLiteClient } from "./SQLiteClient";
-import { fetchUserByName, type FetchUserByNameResult } from "./user";
+import { fetchUserByEmail, fetchUserByName, type FetchUserByNameResult } from "./user";
 
 // 在伺服器中，應該使用更安全的方法，例如 bcrypt 或 PBKDF2
 async function hashPassword(password: string): Promise<string> {
@@ -117,8 +117,61 @@ const logout: Logout = async () => {
 // 註冊
 // ----------------------------
 
+type RegisterParams = {
+  username: string;
+  password: string;
+  email: string;
+  description?: string;
+};
+type Register = (params: RegisterParams) => Promise<Session>;
+
+const register: Register = async ({ username, password, email, description = "" }) => {
+  // 檢查用戶名是否已存在
+  const existingUser = await fetchUserByName({ name: username });
+  if (existingUser) {
+    return { authenticated: false, user: null, loading: false, error: "使用者名稱已存在" };
+  }
+
+  // 檢查電子郵件是否已存在
+  const existingEmail = await fetchUserByEmail({ email });
+  if (existingEmail) {
+    return { authenticated: false, user: null, loading: false, error: "電子郵件已被使用" };
+  }
+
+  // 建立新使用者
+  const hashedPassword = await hashPassword(password);
+  const now = new Date().toISOString();
+
+  const sql = `
+      INSERT INTO users (name, email, hashedPassword, description, createdAt, updatedAt)
+      VALUES ($name, $email, $hashedPassword, $description, $createdAt, $updatedAt)
+      RETURNING id, name, description
+    `;
+
+  const result = await SQLiteClient.exec(sql, {
+    $name: username,
+    $email: email,
+    $hashedPassword: hashedPassword,
+    $description: description,
+    $createdAt: now,
+    $updatedAt: now,
+  });
+
+  if (!result || result.length === 0) {
+    return { authenticated: false, user: null, loading: false, error: "註冊失敗" };
+  }
+
+  // 自動登入
+  const user = result[0] as FetchUserByNameResult;
+  const session: Session = { authenticated: true, user, loading: false, error: null };
+  const storedSession: StoredSession = { ...session, timestamp: Date.now() };
+  localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(storedSession));
+
+  return session;
+};
+
 // ----------------------------
 // 匯出
 // ----------------------------
 
-export { login, getSession, logout };
+export { login, getSession, logout, register };
