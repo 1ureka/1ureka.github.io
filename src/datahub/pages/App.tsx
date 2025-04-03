@@ -91,9 +91,13 @@ const LargeTiles = () => {
   );
 };
 
+const SqlInitializer = () => {
+  useSqliteInitializer();
+  return null;
+};
+
 function App() {
   const { isSm } = useResponsiveFontSize();
-  useSqliteInitializer();
 
   if (!isSm)
     return (
@@ -104,6 +108,8 @@ function App() {
 
   return (
     <AppWrapper>
+      <SqlInitializer />
+
       <Appbar />
 
       <Box component="main" sx={{ position: "relative", display: "flex", height: `calc(100dvh - ${APPBAR_HEIGHT}px)` }}>
