@@ -1,61 +1,15 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { tryCatch } from "@/utils/tryCatch";
-import type { FetchUserByNameResult } from "../data/user";
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
+import { getSession, login, logout, register } from "../data/session";
+import type { Session } from "../data/session";
 
-// localStorage key 常數
-const SESSION_STORAGE_KEY = "forum_session";
-const mockUser = { id: 1, name: "1ureka", description: "" };
+const staleTime = 1000 * 60 * 5; // 5分鐘
 
-// 從 localStorage 獲取儲存的會話資訊
-const getStoredSession = async () => {
-  const storedSession = localStorage.getItem(SESSION_STORAGE_KEY);
-  if (!storedSession) return null;
-
-  const result = await tryCatch(Promise.resolve(JSON.parse(storedSession)));
-  if (result.error) {
-    console.error("讀取儲存的會話資訊失敗", result.error);
-    return null;
-  }
-  return result.data as Session;
-};
-
-// 將會話資訊儲存到 localStorage
-const storeSession = async (session: Session): Promise<void> => {
-  const result = await tryCatch(Promise.resolve(localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(session))));
-
-  if (result.error) console.error("儲存會話資訊失敗", result.error);
-};
-
-export type Session =
-  | {
-      authenticated: true;
-      user: FetchUserByNameResult;
-      loading: boolean;
-      error: string | null;
-    }
-  | {
-      authenticated: false;
-      user: null;
-      loading: boolean;
-      error: string | null;
-    };
-
-// 模擬 API 呼叫來獲取會話資訊
-const fetchSession = async (): Promise<Session> => {
-  await new Promise((res) => setTimeout(res, Math.random() * 1000));
-
-  const storedSession = await getStoredSession();
-  if (storedSession && storedSession.authenticated) return storedSession;
-
-  return { authenticated: false, user: null, loading: false, error: null };
-};
-
-// 會話管理 Hook
+// 會話管理
 export const useSession = (): Session => {
   const { data, isFetching, error } = useQuery({
     queryKey: ["session"],
-    queryFn: fetchSession,
-    staleTime: 1000 * 60 * 5,
+    queryFn: getSession,
+    staleTime,
   });
 
   if (isFetching) {
@@ -74,35 +28,35 @@ export const useSession = (): Session => {
   return data || { authenticated: false, user: null, loading: false, error: null };
 };
 
-// 登入/登出功能
-export const useSessionActions = () => {
+// 登入功能
+export const useLogin = () => {
   const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: login,
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["session"] });
+    },
+  });
+};
 
-  // 實際環境中這裡應該呼叫 API
-  const login = async (credentials: { username: string; password: string }) => {
-    await new Promise((res) => setTimeout(res, 1000));
+// 登出功能
+export const useLogout = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: logout,
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["session"] });
+    },
+  });
+};
 
-    if (credentials.username && credentials.password) {
-      const sessionData: Session = { authenticated: true, user: mockUser, loading: false, error: null };
-      await storeSession(sessionData);
-      queryClient.setQueryData(["session"], sessionData);
-    } else {
-      console.error("帳號或密碼未輸入");
-    }
-  };
-
-  // 實際環境中這裡應該呼叫 API
-  const logout = async () => {
-    await new Promise((res) => setTimeout(res, 1000));
-
-    const sessionData: Session = { authenticated: false, user: null, loading: false, error: null };
-    localStorage.removeItem(SESSION_STORAGE_KEY);
-    queryClient.setQueryData(["session"], sessionData);
-  };
-
-  const refreshSession = () => {
-    queryClient.invalidateQueries({ queryKey: ["session"] });
-  };
-
-  return { login, logout, refreshSession };
+// 註冊功能
+export const useRegister = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: register,
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["session"] });
+    },
+  });
 };
