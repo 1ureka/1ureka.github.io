@@ -34,6 +34,7 @@ function App() {
             gap: 4,
             maxWidth: 1400,
             flexDirection: { xs: "column-reverse", md: "row" },
+            px: 0,
           }}
         >
           <Box sx={{ flex: 1 }}>

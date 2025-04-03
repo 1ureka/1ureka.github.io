@@ -23,7 +23,7 @@ function App() {
       <ScrollArea>
         {isMd ? <AppbarDesktop /> : <AppbarMobile />}
 
-        <Container maxWidth="lg" sx={{ position: "relative", my: 10 }}>
+        <Container maxWidth="lg" sx={{ position: "relative", my: 10, px: 0 }}>
           <Paper sx={{ pb: 3, borderRadius: 3, border: "1px solid", borderColor: "divider" }} elevation={1}>
             <Box sx={{ display: "flex", justifyContent: "center", mt: 2, mx: 2 }}>
               <Button

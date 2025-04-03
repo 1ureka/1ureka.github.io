@@ -37,8 +37,7 @@ const useResponsiveFontSize = () => {
 
   useEffect(() => {
     if (isLg) document.documentElement.style.fontSize = "16px";
-    else if (isMd) document.documentElement.style.fontSize = "14px";
-    else if (isSm) document.documentElement.style.fontSize = "13px";
+    else if (isSm) document.documentElement.style.fontSize = "15px";
     else document.documentElement.style.fontSize = "13px";
   }, [isLg, isMd, isSm]);
 
