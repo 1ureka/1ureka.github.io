@@ -15,6 +15,7 @@ const buttonVaraintMap = {
 const HeaderButton = ({
   variant,
   sx,
+  children,
   ...props
 }: { variant: "outlined" | "main" | "danger" } & Omit<ButtonProps, "variant">) => {
   return (
@@ -30,7 +31,7 @@ const HeaderButton = ({
       }}
       {...props}
     >
-      匯入
+      {children}
     </Button>
   );
 };
