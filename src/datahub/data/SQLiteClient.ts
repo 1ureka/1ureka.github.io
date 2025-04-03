@@ -72,7 +72,17 @@ export class SQLiteClient {
    * 重置數據庫到初始狀態
    */
   async reset(): Promise<void> {
-    await del(this.storageKey);
+    const startTime = Date.now(); // 計時
+
+    const { error } = await tryCatch(del(this.storageKey));
+    const elapsedTime = Date.now() - startTime;
+    if (elapsedTime < TEST_DELAY) {
+      await new Promise((resolve) => setTimeout(resolve, TEST_DELAY - elapsedTime));
+    }
+
+    if (error) console.error("刪除本地資料庫失敗");
+    else console.log("刪除本地資料庫成功");
+
     this.dbPromise = this.loadDatabase();
   }
 
@@ -80,6 +90,7 @@ export class SQLiteClient {
    * 獲取資料庫大小
    */
   async getDatabaseSize(): Promise<number> {
+    await this.ready(); // 確保資料庫已載入
     const { data: cached, error } = await tryCatch(get<Uint8Array>(this.storageKey));
     if (error) {
       console.error("Failed to get database size", error);
