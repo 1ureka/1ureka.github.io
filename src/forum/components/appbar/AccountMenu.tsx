@@ -12,30 +12,39 @@ import { useState } from "react";
 import { useSession, useLogout } from "@/forum/hooks/session";
 import { routes } from "@/routes";
 import { UserAvatar } from "../userElement/UserAvatar";
+import type { FetchUserByNameResult } from "@/forum/data/user";
+import { AccountSettings } from "./AccountSettings";
 
-const AccountMenuList = ({ onItemClick, userName }: { onItemClick: () => void; userName: string }) => {
+const AccountMenuList = ({ onItemClick, user }: { onItemClick: () => void; user: FetchUserByNameResult }) => {
   const { mutate: logout, isPending } = useLogout();
   const handleLogout = () => {
     logout();
     onItemClick();
   };
 
+  const [openDialog, setOpenDialog] = useState(false);
+  const handleOpenDialog = () => setOpenDialog(true);
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    onItemClick();
+  };
+
   return (
     <MenuList dense>
-      <MenuItem href={`${routes.forum_users}?user=${userName}`} component="a">
+      <MenuItem href={`${routes.forum_users}?user=${user.name}`} component="a">
         <ListItemIcon>
           <PersonRoundedIcon />
         </ListItemIcon>
         個人檔案
       </MenuItem>
 
-      {/* 之後會打開 dialog */}
-      <MenuItem onClick={onItemClick}>
+      <MenuItem onClick={handleOpenDialog}>
         <ListItemIcon>
           <ManageAccountsRoundedIcon />
         </ListItemIcon>
         設定
       </MenuItem>
+      <AccountSettings open={openDialog} user={{ email: "", ...user }} onClose={handleCloseDialog} />
 
       <Divider />
 
@@ -83,7 +92,7 @@ const AccountMenuDesktop = () => {
           open={Boolean(anchorEl)}
           onClose={handleClose}
         >
-          <AccountMenuList onItemClick={handleClose} userName={user.name} />
+          <AccountMenuList onItemClick={handleClose} user={user} />
         </Popover>
       )}
     </>
@@ -143,7 +152,7 @@ const AccountMenuMobile = () => {
             </IconButton>
           </Box>
 
-          <AccountMenuList onItemClick={handleClose} userName={user.name} />
+          <AccountMenuList onItemClick={handleClose} user={user} />
         </SwipeableDrawer>
       )}
     </>
