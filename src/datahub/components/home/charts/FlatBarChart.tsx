@@ -31,6 +31,8 @@ type DataArray = {
   noData: boolean;
 }[];
 
+const visualMultiplier = 1.375; // 視覺化的比例因子
+
 const FlatBarChart = () => {
   const [isSystemFieldVisible, setIsSystemFieldVisible] = useState(false);
   const { data: tableInfo, isFetching } = useTableInfo({ types: ["table", "view"] });
@@ -55,13 +57,12 @@ const FlatBarChart = () => {
       .slice(0, 5);
 
     const total = filteredEntries.reduce((sum, [_, count]) => sum + count, 0);
-    const visualMultiplier = 1.375; // 視覺化的比例因子
 
     // 轉換為顯示用的數據格式
     const result = filteredEntries.map(([field, count]) => ({
       field,
       count,
-      percentage: (count / total) * visualMultiplier,
+      percentage: count / total,
       loading: false,
       noData: false,
     }));
@@ -190,7 +191,7 @@ const FlatBarChart = () => {
                   <Box
                     sx={{
                       position: "absolute",
-                      width: percentage,
+                      width: Math.max(0, Math.min(percentage * visualMultiplier, 1)),
                       height: 1,
                       borderRadius: 9,
                       overflow: "clip",
