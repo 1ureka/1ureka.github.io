@@ -9,15 +9,13 @@ import LoginRoundedIcon from "@mui/icons-material/LoginRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
 import { useState } from "react";
-import { useSession, useSessionActions } from "@/forum/hooks/session";
+import { useSession, useLogout } from "@/forum/hooks/session";
 import { routes } from "@/routes";
 import { UserAvatar } from "../userElement/UserAvatar";
 
 const AccountMenuList = ({ onItemClick, userName }: { onItemClick: () => void; userName: string }) => {
-  const [loading, setLoading] = useState(false);
-  const { logout } = useSessionActions();
+  const { mutate: logout, isPending } = useLogout();
   const handleLogout = () => {
-    setLoading(true);
     logout();
     onItemClick();
   };
@@ -41,11 +39,11 @@ const AccountMenuList = ({ onItemClick, userName }: { onItemClick: () => void; u
 
       <Divider />
 
-      <MenuItem onClick={handleLogout} disabled={loading}>
+      <MenuItem onClick={handleLogout} disabled={isPending}>
         <ListItemIcon>
           <LogoutRoundedIcon />
         </ListItemIcon>
-        {loading ? "登出中..." : "登出"}
+        {isPending ? "登出中..." : "登出"}
       </MenuItem>
     </MenuList>
   );

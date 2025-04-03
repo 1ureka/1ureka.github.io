@@ -1,0 +1,133 @@
+import { Box, Button, Stack, TextField, Typography } from "@mui/material";
+import { useRegister } from "@/forum/hooks/session";
+import { routes } from "@/routes";
+
+import { useForm } from "@tanstack/react-form";
+import { z } from "zod";
+import { getFormErrorHelperText, getFormIsError } from "@/forum/utils/form";
+
+const formSchema = z.object({
+  email: z.string().trim().email("請輸入有效的電子郵件地址").max(100, "電子郵件地址過長"),
+  username: z
+    .string()
+    .trim()
+    .min(4, "使用者名稱至少 4 個字元")
+    .max(20, "使用者名稱最多 20 個字元")
+    .regex(/^[a-zA-Z0-9]+$/, "使用者名稱只能包含英文字母與數字"),
+  password: z.string().trim().min(1, "密碼不能為空"),
+});
+
+const RegisterForm = () => {
+  const { mutateAsync: register, isPending } = useRegister();
+
+  const form = useForm({
+    defaultValues: { email: "", username: "", password: "" },
+    validators: { onBlur: formSchema },
+    onSubmit: async ({ value }) => {
+      if (isPending) return;
+      const { email, username, password } = value;
+      const result = await register({ email, username, password });
+      if (result.authenticated) window.location.href = routes.forum_home;
+      if (result.error) console.error(result.error);
+    },
+    onSubmitInvalid: () => {
+      console.error("請檢查表單是否填寫正確");
+    },
+  });
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!form.state.canSubmit) return console.error("請檢查表單是否填寫正確");
+    form.handleSubmit();
+  };
+
+  return (
+    <Stack component="form" sx={{ p: 6, flex: 1, justifyContent: "center" }} onSubmit={handleSubmit}>
+      <Box sx={{ display: "grid", placeItems: "center", mb: 2 }}>
+        <Typography variant="h4" component="h2" gutterBottom sx={{ textAlign: "center" }}>
+          加入我們
+        </Typography>
+      </Box>
+
+      <form.Field
+        name="email"
+        children={(field) => (
+          <TextField
+            required
+            name={field.name}
+            type="email"
+            fullWidth
+            size="small"
+            variant="filled"
+            sx={{ mb: 0.5 }}
+            label="電子郵件"
+            error={getFormIsError(field.state.meta.errors)}
+            helperText={getFormErrorHelperText(field.state.meta.errors)}
+            value={field.state.value}
+            onChange={(e) => field.handleChange(e.target.value)}
+            onBlur={field.handleBlur}
+          />
+        )}
+      />
+      <form.Field
+        name="username"
+        children={(field) => (
+          <TextField
+            required
+            name={field.name}
+            type="text"
+            fullWidth
+            size="small"
+            variant="filled"
+            sx={{ mb: 0.5 }}
+            label="使用者名稱"
+            error={getFormIsError(field.state.meta.errors)}
+            helperText={getFormErrorHelperText(field.state.meta.errors)}
+            value={field.state.value}
+            onChange={(e) => field.handleChange(e.target.value)}
+            onBlur={field.handleBlur}
+          />
+        )}
+      />
+      <form.Field
+        name="password"
+        children={(field) => (
+          <TextField
+            required
+            name={field.name}
+            type="password"
+            fullWidth
+            size="small"
+            variant="filled"
+            sx={{ mb: 0.5 }}
+            label="密碼"
+            error={getFormIsError(field.state.meta.errors)}
+            helperText={getFormErrorHelperText(field.state.meta.errors)}
+            value={field.state.value}
+            onChange={(e) => field.handleChange(e.target.value)}
+            onBlur={field.handleBlur}
+          />
+        )}
+      />
+
+      <Button
+        type="submit"
+        variant="contained"
+        loading={isPending}
+        sx={{
+          mt: 1.5,
+          width: 0.8,
+          alignSelf: "center",
+          borderRadius: 99,
+          "&:hover": { bgcolor: "primary.light", scale: 1.02 },
+          "&:active": { scale: 0.98 },
+          transition: "all 0.2s ease",
+        }}
+      >
+        註冊
+      </Button>
+    </Stack>
+  );
+};
+
+export { RegisterForm };
