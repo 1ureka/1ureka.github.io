@@ -1,11 +1,13 @@
 import { readFileSync, readdirSync, existsSync } from "fs";
-import { join, extname, dirname } from "path";
+import { join, extname, dirname, relative } from "path";
 import { fileURLToPath } from "url";
 
 // src 目錄的相對路徑
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const srcDir = join(__dirname);
+// 專案根目錄（假設是 src 的上一層）
+const rootDir = join(__dirname, "..");
 
 // 允許的文件副檔名白名單（只統計這些類型的文件）
 const allowedExtensions = [
@@ -68,6 +70,8 @@ function countLinesInDirectory(dir) {
 
     for (const entry of entries) {
       const fullPath = join(dir, entry.name);
+      // 取得相對於根目錄的路徑
+      const relativePath = relative(rootDir, fullPath);
 
       if (entry.isDirectory()) {
         // 如果是目錄，則遞歸處理
@@ -80,7 +84,7 @@ function countLinesInDirectory(dir) {
         // 如果是文件，檢查是否在白名單中
         if (isAllowedFile(fullPath)) {
           const { lines, nonEmptyChars } = countLinesAndCharsInFile(fullPath);
-          console.log(`${fullPath}: ${lines} 行, ${nonEmptyChars} 非空字元`);
+          console.log(`${relativePath}: ${lines} 行, ${nonEmptyChars} 非空字元`);
           totalLines += lines;
           totalNonEmptyChars += nonEmptyChars;
           fileCount += 1;
