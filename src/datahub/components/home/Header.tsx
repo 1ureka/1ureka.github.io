@@ -1,10 +1,11 @@
-import { Box, Breadcrumbs, Button, Menu, MenuItem, Tooltip, Typography } from "@mui/material";
+import { Box, Breadcrumbs, Button, Menu, MenuItem, Popover, Tooltip, Typography } from "@mui/material";
 import type { ButtonProps } from "@mui/material";
 import DnsRoundedIcon from "@mui/icons-material/DnsRounded";
 import RestartAltRoundedIcon from "@mui/icons-material/RestartAltRounded";
 import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
 import UploadRoundedIcon from "@mui/icons-material/UploadRounded";
 import { useState } from "react";
+import { useResetDatabase } from "@/datahub/hooks/update";
 
 const buttonVaraintMap = {
   outlined: { variant: "outlined", color: "inherit" },
@@ -81,6 +82,22 @@ const Header = () => {
     setAnchorEl((prev) => (prev ? null : event.currentTarget));
   const handleClose = () => setAnchorEl(null);
 
+  const { status, mutate } = useResetDatabase();
+  const [resetAnchorEl, setResetAnchorEl] = useState<null | HTMLElement>(null);
+  const handleResetClick = (event: React.MouseEvent<HTMLElement>) => {
+    if (status === "pending") return;
+    setResetAnchorEl(event.currentTarget);
+  };
+
+  const handleResetConfirm = () => {
+    mutate();
+    setResetAnchorEl(null);
+  };
+
+  const handleResetCancel = () => {
+    setResetAnchorEl(null);
+  };
+
   return (
     <Box
       sx={{
@@ -144,15 +161,52 @@ const Header = () => {
             placement="bottom"
             arrow
           >
-            <HeaderButton
-              startIcon={<RestartAltRoundedIcon />}
-              variant="danger"
-              disableElevation
-              sx={{ cursor: "help", pr: 2.5 }}
-            >
-              重置
-            </HeaderButton>
+            <span>
+              <HeaderButton
+                startIcon={<RestartAltRoundedIcon />}
+                variant="danger"
+                disableElevation
+                sx={{ cursor: "help", pr: 2.5 }}
+                loading={status === "pending"}
+                onClick={handleResetClick}
+              >
+                重置
+              </HeaderButton>
+            </span>
           </Tooltip>
+
+          <Popover
+            open={Boolean(resetAnchorEl)}
+            anchorEl={resetAnchorEl}
+            onClose={handleResetCancel}
+            anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+            transformOrigin={{ vertical: "top", horizontal: "center" }}
+            elevation={3}
+          >
+            <Box sx={{ p: 2, maxWidth: 300 }}>
+              <Typography variant="subtitle1" sx={{ mb: 1 }}>
+                確認重置資料庫
+              </Typography>
+              <Typography variant="body2" sx={{ mb: 2, color: "text.secondary" }}>
+                此操作將從伺服器複製一份新的資料庫，所有本地修改將被覆蓋。確定要繼續嗎？
+              </Typography>
+              <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 1 }}>
+                <Button variant="outlined" size="small" onClick={handleResetCancel} color="inherit">
+                  取消
+                </Button>
+                <Button
+                  variant="contained"
+                  color="error"
+                  size="small"
+                  onClick={handleResetConfirm}
+                  disabled={status === "pending"}
+                  disableElevation
+                >
+                  確認重置
+                </Button>
+              </Box>
+            </Box>
+          </Popover>
         </Box>
       </Box>
     </Box>
