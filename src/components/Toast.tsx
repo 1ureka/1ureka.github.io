@@ -1,6 +1,16 @@
 import { Toaster as T, type ToasterProps } from "react-hot-toast";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
+import { Box, Button, Typography } from "@mui/material";
+
+const ellipsisSx = {
+  display: "-webkit-box",
+  WebkitLineClamp: 3,
+  WebkitBoxOrient: "vertical",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  wordBreak: "break-all",
+} as const;
 
 /**
  * 用 hot-toast 顯示 console.log、console.error 和 console.warn 的訊息
@@ -20,7 +30,19 @@ const useToaster = () => {
 
     // 重寫 console.error
     console.error = (...args: unknown[]) => {
-      toast.error(`${args.join(" ")}`);
+      toast.error(
+        (t) => (
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <Typography variant="body2" sx={{ flex: 1, ...ellipsisSx }}>
+              {`${args.join(" ")}`}
+            </Typography>
+            <Button size="small" variant="outlined" color="error" sx={{ ml: 1 }} onClick={() => toast.dismiss(t.id)}>
+              關閉
+            </Button>
+          </Box>
+        ),
+        { duration: Infinity }
+      );
       originalError(...args);
     };
 
