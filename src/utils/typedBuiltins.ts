@@ -6,4 +6,8 @@ function toEntries<T extends Record<PropertyKey, unknown>>(obj: T): [keyof T, T[
   return Object.entries(obj) as [keyof T, T[keyof T]][];
 }
 
-export { fromEntries, toEntries };
+function toKeys<T extends Record<PropertyKey, unknown>>(obj: T): (keyof T)[] {
+  return Object.keys(obj) as (keyof T)[];
+}
+
+export { fromEntries, toEntries, toKeys };
