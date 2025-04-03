@@ -116,12 +116,12 @@ const fetchUsers: FetchUsers = async ({
 // ----------------------------
 
 type FetchUserByNameParams = { name: string };
-type FetchUserByNameResult = { id: number; name: string; description: string };
+type FetchUserByNameResult = { id: number; name: string; description: string; email?: string };
 type FetchUserByName = (params: FetchUserByNameParams) => Promise<FetchUserByNameResult | null>;
 
 const fetchUserByName: FetchUserByName = async ({ name }) => {
   const sql = `
-      SELECT id, name, description
+      SELECT id, name, description, email
       FROM users
       WHERE name = $name
       LIMIT 1
@@ -137,7 +137,7 @@ type FetchUserByEmail = (params: FetchUserByEmailParams) => Promise<FetchUserByN
 
 const fetchUserByEmail: FetchUserByEmail = async ({ email }) => {
   const sql = `
-        SELECT id, name, description
+        SELECT id, name, description, email
         FROM users
         WHERE email = $email
         LIMIT 1
@@ -153,7 +153,7 @@ type FetchUserById = (params: FetchUserByIdParams) => Promise<FetchUserByNameRes
 
 const fetchUserById: FetchUserById = async ({ id }) => {
   const sql = `
-        SELECT id, name, description
+        SELECT id, name, description, email
         FROM users
         WHERE id = $id
         LIMIT 1

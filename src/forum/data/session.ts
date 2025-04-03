@@ -79,7 +79,7 @@ const getSession: GetSession = async () => {
 
   // 獲取使用者資訊
   const sql = `
-    SELECT id, name, description
+    SELECT id, name, description, email
     FROM users
     WHERE id = $userId
     LIMIT 1
