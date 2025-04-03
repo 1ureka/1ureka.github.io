@@ -1,22 +1,43 @@
 import { Box, Button, Stack, TextField, Typography } from "@mui/material";
-import { useSessionActions } from "@/forum/hooks/session";
-import { useState } from "react";
+import { useLogin } from "@/forum/hooks/session";
 import { routes } from "@/routes";
 
+import { useForm } from "@tanstack/react-form";
+import { z } from "zod";
+import { getFormErrorHelperText, getFormIsError } from "@/forum/utils/form";
+
+const formSchema = z.object({
+  username: z
+    .string()
+    .trim()
+    .min(4, "使用者名稱至少 4 個字元")
+    .max(20, "使用者名稱最多 20 個字元")
+    .regex(/^[a-zA-Z0-9]+$/, "使用者名稱只能包含英文字母與數字"),
+  password: z.string().trim().min(1, "密碼不能為空"),
+});
+
 const LoginForm = () => {
-  const { login } = useSessionActions();
-  const [loading, setLoading] = useState(false);
+  const { mutateAsync: login, isPending } = useLogin();
+
+  const form = useForm({
+    defaultValues: { username: "", password: "" },
+    validators: { onBlur: formSchema },
+    onSubmit: async ({ value }) => {
+      if (isPending) return;
+      const { username, password } = value;
+      const result = await login({ username, password });
+      if (result.authenticated) window.location.href = routes.forum_home;
+      if (result.error) console.error(result.error);
+    },
+    onSubmitInvalid: () => {
+      console.error("請檢查表單是否填寫正確");
+    },
+  });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    // TODO: 應該要先 validate 表單
     e.preventDefault();
-    if (loading) return;
-    setLoading(true);
-    const formData = new FormData(e.currentTarget);
-    const username = formData.get("username") as string;
-    const password = formData.get("password") as string;
-    await login({ username, password });
-    window.location.href = routes.forum_home;
+    if (!form.state.canSubmit) return console.error("請檢查表單是否填寫正確");
+    form.handleSubmit();
   };
 
   return (
@@ -27,30 +48,50 @@ const LoginForm = () => {
         </Typography>
       </Box>
 
-      <TextField
-        required
+      <form.Field
         name="username"
-        type="text"
-        fullWidth
-        size="small"
-        variant="filled"
-        label="使用者名稱"
-        sx={{ mb: 0.5 }}
+        children={(field) => (
+          <TextField
+            required
+            name={field.name}
+            type="text"
+            fullWidth
+            size="small"
+            variant="filled"
+            sx={{ mb: 0.5 }}
+            label="使用者名稱"
+            error={getFormIsError(field.state.meta.errors)}
+            helperText={getFormErrorHelperText(field.state.meta.errors)}
+            value={field.state.value}
+            onChange={(e) => field.handleChange(e.target.value)}
+            onBlur={field.handleBlur}
+          />
+        )}
       />
-      <TextField
-        required
+      <form.Field
         name="password"
-        type="password"
-        fullWidth
-        size="small"
-        variant="filled"
-        label="密碼"
-        sx={{ mb: 0.5 }}
+        children={(field) => (
+          <TextField
+            required
+            name={field.name}
+            type="password"
+            fullWidth
+            size="small"
+            variant="filled"
+            label="密碼"
+            sx={{ mb: 0.5 }}
+            error={getFormIsError(field.state.meta.errors)}
+            helperText={getFormErrorHelperText(field.state.meta.errors)}
+            value={field.state.value}
+            onChange={(e) => field.handleChange(e.target.value)}
+            onBlur={field.handleBlur}
+          />
+        )}
       />
       <Button
         type="submit"
         variant="contained"
-        loading={loading}
+        loading={isPending}
         sx={{
           mt: 1.5,
           width: 0.8,
