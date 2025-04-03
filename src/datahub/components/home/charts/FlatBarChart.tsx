@@ -1,4 +1,5 @@
-import { Box, FormControlLabel, FormHelperText, Skeleton, Stack, Switch, Typography } from "@mui/material";
+import { Skeleton, Stack, Switch, Typography } from "@mui/material";
+import { Box, CircularProgress, FormControlLabel, FormHelperText } from "@mui/material";
 import type { SkeletonProps } from "@mui/material";
 import { Fragment, useMemo, useState } from "react";
 import { useTableInfo } from "@/datahub/hooks/read";
@@ -223,6 +224,12 @@ const FlatBarChart = () => {
             </Fragment>
           ))}
         </Box>
+
+        {isFetching && (
+          <Box sx={{ position: "absolute", inset: 0, display: "grid", placeItems: "center", pointerEvents: "none" }}>
+            <CircularProgress />
+          </Box>
+        )}
       </Box>
     </Stack>
   );

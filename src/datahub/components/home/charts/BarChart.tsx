@@ -54,11 +54,25 @@ const Title = ({ value, onClick }: { value: DisplayCounts; onClick: (displayCoun
   );
 };
 
+type DataArray = {
+  label: string;
+  records: number;
+  percentage: number;
+  loading: boolean;
+  noData: boolean;
+}[];
+
 // 整理成可用於顯示的數據格式
 const parseData = (data: { [table: string]: number } | null, displayCounts: DisplayCounts) => {
   if (data === null) {
     return {
-      dataArray: [...Array(displayCounts)].map((_, i) => ({ label: "載入中" + i, records: 0, percentage: 0 })),
+      dataArray: [...Array(displayCounts)].map((_, i) => ({
+        label: "載入中" + i,
+        records: 0,
+        percentage: 0,
+        loading: true,
+        noData: false,
+      })),
       averageAmount: 0,
       averagePercentages: 0,
     };
@@ -78,19 +92,34 @@ const parseData = (data: { [table: string]: number } | null, displayCounts: Disp
   const averagePercentages = Math.round((averageAmount / totalAmount) * 100 * visualMultiplier);
   const percentages = sortedValues.map((value) => Math.round((value / totalAmount) * 100 * visualMultiplier));
 
-  const dataArray = sortedKeys.map((label, i) => ({
+  const result: DataArray = sortedKeys.map((label, i) => ({
     label,
     records: sortedValues[i],
     percentage: percentages[i],
+    loading: false,
+    noData: false,
   }));
 
-  return { dataArray: dataArray.slice(0, displayCounts), averageAmount, averagePercentages };
+  // 補充不足的元素至長度為 displayCounts
+  if (result.length < displayCounts) {
+    const emptyItems: DataArray = [...Array(displayCounts - result.length)].map(() => ({
+      label: "",
+      records: 0,
+      percentage: 0,
+      loading: false,
+      noData: true,
+    }));
+
+    return { dataArray: [...result, ...emptyItems], averageAmount, averagePercentages };
+  }
+
+  return { dataArray: result, averageAmount, averagePercentages };
 };
 
 const BarChart = () => {
   const [displayCounts, setDisplayCounts] = useState<DisplayCounts>(5);
   const { data, isFetching } = useRowCounts({ types: ["table", "view"] });
-  const { dataArray, averageAmount, averagePercentages } = parseData(data ?? null, displayCounts);
+  const { dataArray, averageAmount, averagePercentages } = parseData(isFetching ? null : data ?? null, displayCounts);
 
   return (
     <Stack sx={{ aspectRatio: { xs: "2/1", ml: "2/1.2" }, borderTop: "1px solid", borderColor: "divider" }}>
@@ -108,16 +137,16 @@ const BarChart = () => {
           alignItems: "stretch",
         }}
       >
-        {dataArray.map(({ label, records, percentage }, i) => (
+        {dataArray.map(({ label, records, percentage, loading, noData }, i) => (
           <TileTooltip
             key={i}
             title={
-              !isFetching && records > 0 ? (
+              loading || noData ? null : (
                 <Box>
                   <Typography variant="subtitle2">{label}</Typography>
                   <Typography>{records} 筆紀錄</Typography>
                 </Box>
-              ) : null
+              )
             }
           >
             <Box
@@ -134,7 +163,7 @@ const BarChart = () => {
               <Box
                 sx={{
                   position: "absolute",
-                  inset: `${isFetching ? 100 : Math.max(0, 100 - percentage)}% 0 0 0`,
+                  inset: `${loading || noData ? 100 : Math.max(0, 100 - percentage)}% 0 0 0`,
                   borderRadius: 2,
                   overflow: "hidden",
                   bgcolor: "background.paper",
@@ -183,22 +212,25 @@ const BarChart = () => {
             <CircularProgress />
           </Box>
         )}
-
-        {/* {!isFetching && dataArray.every(({ records }) => records === 0) && (
-            <Typography variant="body1" sx={{ color: "text.secondary" }}>
-              沒有任何紀錄
-            </Typography>
-          )} */}
       </Box>
 
       <Box sx={{ display: "flex", gap: smSpace, p: smSpace, justifyContent: "space-around", alignItems: "center" }}>
-        {dataArray.map(({ label }, i) =>
-          isFetching ? (
+        {dataArray.map(({ label, loading, noData }, i) =>
+          loading ? (
             <Skeleton key={i} variant="rounded" animation="wave">
               <Typography variant="body1" component="p" sx={{ flex: 1, textAlign: "center" }}>
                 載入中
               </Typography>
             </Skeleton>
+          ) : noData ? (
+            <Typography
+              key={i}
+              variant="body1"
+              component="p"
+              sx={{ flex: 1, color: "text.secondary", ...ellipsisSx, textAlign: "center" }}
+            >
+              ---
+            </Typography>
           ) : (
             <TileTooltip key={i} title={<Typography>{label}</Typography>}>
               <Typography
