@@ -195,7 +195,7 @@ const Header = () => {
                 確認重置資料庫
               </Typography>
               <Typography variant="body2" sx={{ mb: 2, color: "text.secondary" }}>
-                此操作將從伺服器複製一份新的資料庫，所有本地修改將被覆蓋。確定要繼續嗎？
+                此操作將從伺服器複製一份新的資料庫，並覆蓋所有本地修改。為避免資料庫不一致，請先關閉所有本網站的分頁再繼續。確定要繼續嗎？
               </Typography>
               <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 1 }}>
                 <Button variant="outlined" size="small" onClick={handleResetCancel} color="inherit">
