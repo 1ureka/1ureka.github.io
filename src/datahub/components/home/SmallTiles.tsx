@@ -34,7 +34,7 @@ const Tile1 = () => {
         <TileTitle>資料庫大小</TileTitle>
         {size === undefined || isFetchingSize ? (
           <SkeletonWrapper>
-            <TileContent sx={{ textWrap: "nowrap" }}>載入中 Bytes</TileContent>
+            <TileContent sx={{ textWrap: "nowrap" }}>載入中</TileContent>
           </SkeletonWrapper>
         ) : (
           <TileContent sx={{ textWrap: "nowrap" }}>{formatFileSize(size)}</TileContent>
