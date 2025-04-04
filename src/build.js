@@ -53,3 +53,30 @@ if (fs.existsSync(srcDir)) {
   fs.rmSync(srcDir, { recursive: true, force: true });
   console.log("🧹 清除: /dist/src");
 }
+
+// 清空 /deploy 資料夾
+const deployDir = path.resolve("deploy");
+if (fs.existsSync(deployDir)) {
+  // 讀取 deploy 目錄中除了 .git 之外的所有檔案和資料夾
+  const items = fs.readdirSync(deployDir);
+
+  // 刪除每個非 .git 的項目
+  for (const item of items) {
+    if (item !== ".git") {
+      const itemPath = path.join(deployDir, item);
+      fs.rmSync(itemPath, { recursive: true, force: true });
+      console.log(`🧹 清除: /deploy/${item}`);
+    }
+  }
+} else {
+  fs.mkdirSync(deployDir, { recursive: true });
+  console.log(`📁 創建: /deploy 資料夾`);
+}
+
+// 移動 /dist 資料夾內容到 /deploy 資料夾
+fs.mkdirSync(deployDir, { recursive: true });
+if (fs.existsSync(distRoot)) {
+  // 複製所有檔案到 deploy 資料夾
+  fs.cpSync(distRoot, deployDir, { recursive: true });
+  console.log(`📦 複製: /dist ➜ /deploy`);
+}
