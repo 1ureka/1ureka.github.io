@@ -13,7 +13,7 @@ const formSchema = z.object({
     .trim()
     .min(4, "使用者名稱至少 4 個字元")
     .max(20, "使用者名稱最多 20 個字元")
-    .regex(/^[a-zA-Z0-9]+$/, "使用者名稱只能包含英文字母與數字"),
+    .regex(/^[a-zA-Z0-9 ]+$/, "使用者名稱只能包含英文字母與數字"),
   password: z.string().trim().min(1, "密碼不能為空"),
 });
 
@@ -26,9 +26,9 @@ const RegisterForm = () => {
     onSubmit: async ({ value }) => {
       if (isPending) return;
       const { email, username, password } = value;
-      const result = await register({ email, username, password });
+      const result = await register({ email, username: username.trim(), password });
+      if (result.error) return console.error(result.error);
       if (result.authenticated) window.location.href = routes.forum_home;
-      if (result.error) console.error(result.error);
     },
     onSubmitInvalid: () => {
       console.error("請檢查表單是否填寫正確");
