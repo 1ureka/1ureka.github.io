@@ -81,13 +81,12 @@ export function useUrl() {
     window.history.pushState({}, "", url);
   }, []);
 
-  // 用於更新 hash 的函數 (預設不保留 searchParams)
-  const updateHash = useCallback((newHash: string, options?: { preserveSearch?: boolean }) => {
+  // 用於更新 hash 的函數
+  const updateHash = useCallback((newHash: string) => {
     const url = new URL(window.location.href);
 
     // 更新 URL 但不重新加載頁面
     url.hash = ensureLeadingSlash(newHash); // 確保 hash 是乾淨的
-    if (!options?.preserveSearch) url.search = "";
     window.history.pushState({}, "", url);
   }, []);
 
