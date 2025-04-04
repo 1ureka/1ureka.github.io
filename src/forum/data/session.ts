@@ -218,7 +218,7 @@ const editProfile: EditProfile = async ({ userId, username, email, description }
 
   // 準備更新欄位
   const updateFields: string[] = [];
-  const params: Record<string, any> = { $userId: userId };
+  const params: Record<string, string | number> = { $userId: userId };
 
   if (username) {
     updateFields.push("name = $username");
@@ -321,8 +321,49 @@ const changePassword: ChangePassword = async ({ userId, currentPassword, newPass
 // 刪除帳號 (刪除整個 record)
 // ----------------------------
 
+type DeleteAccountParams = {
+  userId: number;
+  //   password: string;
+};
+type DeleteAccount = (params: DeleteAccountParams) => Promise<{ success: boolean; error: string | null }>;
+
+const deleteAccount: DeleteAccount = async ({ userId }) => {
+  // 取得目前的登入狀態
+  const currentSession = await getSession();
+  if (!currentSession.authenticated || currentSession.user.id !== userId) {
+    return { success: false, error: "未登入或無權限" };
+  }
+
+  // 驗證密碼 (若需要更高安全性的可選項)
+  //   const hashedPassword = await hashPassword(password);
+  //   const verifyPasswordSql = `
+  //       SELECT id
+  //       FROM users
+  //       WHERE id = $userId AND hashedPassword = $hashedPassword
+  //     `;
+
+  //   const verifyResult = await SQLiteClient.exec(verifyPasswordSql, {
+  //     $userId: userId,
+  //     $hashedPassword: hashedPassword,
+  //   });
+
+  //   if (verifyResult.length === 0) {
+  //     return { success: false, error: "密碼錯誤" };
+  //   }
+
+  // 刪除帳號
+  const deleteSql = `
+      DELETE FROM users
+      WHERE id = $userId
+    `;
+
+  await SQLiteClient.exec(deleteSql, { $userId: userId });
+  await logout();
+  return { success: true, error: null };
+};
+
 // ----------------------------
 // 匯出
 // ----------------------------
 
-export { login, getSession, logout, register, editProfile, changePassword };
+export { login, getSession, logout, register, editProfile, changePassword, deleteAccount };
