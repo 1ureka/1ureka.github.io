@@ -1,6 +1,8 @@
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
-import { getSession, login, logout, register, editProfile, changePassword } from "../data/session";
+import { getSession, login, logout, register } from "../data/session";
+import { editProfile, changePassword, deleteAccount } from "../data/session";
 import type { Session } from "../data/session";
+import { routes } from "@/routes";
 
 const staleTime = 1000 * 60 * 5; // 5分鐘
 
@@ -77,6 +79,20 @@ export const useChangePassword = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: changePassword,
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["session"] });
+    },
+  });
+};
+
+// 刪除帳戶
+export const useDeleteAccount = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: deleteAccount,
+    onSuccess: () => {
+      window.location.href = routes.forum_home;
+    },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["session"] });
     },
