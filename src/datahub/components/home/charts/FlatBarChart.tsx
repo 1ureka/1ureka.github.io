@@ -57,6 +57,7 @@ const FlatBarChart = () => {
       .toSorted((a, b) => b[1] - a[1])
       .slice(0, 5);
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const total = filteredEntries.reduce((sum, [_, count]) => sum + count, 0);
 
     // 轉換為顯示用的數據格式

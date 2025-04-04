@@ -66,7 +66,7 @@ const AccountSettings = ({ onClose, user, ...props }: AccountSettingsProps) => {
               </Stack>
               <Stack sx={{ gap: smSpace, flex: 1, justifyContent: "space-between" }}>
                 <Box>
-                  <PasswordChangeSettings />
+                  <PasswordChangeSettings userId={user.id} />
                   <Divider flexItem sx={{ mt: smSpace }} />
                 </Box>
                 <DeleteAccountSettings />
@@ -79,7 +79,7 @@ const AccountSettings = ({ onClose, user, ...props }: AccountSettingsProps) => {
             <Divider flexItem sx={{ mt: smSpace }} />
             <BasicAccountSettings user={user} />
             <Divider flexItem />
-            <PasswordChangeSettings />
+            <PasswordChangeSettings userId={user.id} />
             <Divider flexItem sx={{ mb: smSpace }} />
             <DeleteAccountSettings />
           </>
