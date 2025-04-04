@@ -13,7 +13,7 @@ import { useSession, useLogout } from "@/forum/hooks/session";
 import { routes } from "@/routes";
 import { UserAvatar } from "../userElement/UserAvatar";
 import type { FetchUserByNameResult } from "@/forum/data/user";
-import { AccountSettings } from "./AccountSettings";
+import { AccountSettings } from "../auth/AccountSettings";
 
 const AccountMenuList = ({ onItemClick, user }: { onItemClick: () => void; user: FetchUserByNameResult }) => {
   const { mutate: logout, isPending } = useLogout();
