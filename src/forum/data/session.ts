@@ -171,7 +171,158 @@ const register: Register = async ({ username, password, email, description = "" 
 };
 
 // ----------------------------
+// 編輯個人資料 (username, email, description) (注意唯一性)
+// ----------------------------
+
+type EditProfileParams = {
+  userId: number;
+  username?: string;
+  email?: string;
+  description?: string;
+};
+type EditProfile = (params: EditProfileParams) => Promise<Session>;
+
+const editProfile: EditProfile = async ({ userId, username, email, description }) => {
+  // 取得目前的登入狀態
+  const currentSession = await getSession();
+  if (!currentSession.authenticated || currentSession.user.id !== userId) {
+    return { authenticated: false, user: null, loading: false, error: "未登入或無權限" };
+  }
+
+  // 檢查是否有任何要更新的欄位
+  if (!username && !email && description === undefined) {
+    return { ...currentSession, error: "沒有要更新的欄位" };
+  } else if (
+    username === currentSession.user.name &&
+    email === currentSession.user.email &&
+    description === currentSession.user.description
+  ) {
+    return { ...currentSession, error: "個人資料沒有任何變更需要更新" };
+  }
+
+  // 檢查用戶名唯一性
+  if (username && username !== currentSession.user.name) {
+    const existingUser = await fetchUserByName({ name: username });
+    if (existingUser) {
+      return { ...currentSession, error: "使用者名稱已存在" };
+    }
+  }
+
+  // 檢查電子郵件唯一性
+  if (email && email !== currentSession.user.email) {
+    const existingEmail = await fetchUserByEmail({ email });
+    if (existingEmail) {
+      return { ...currentSession, error: "電子郵件已被使用" };
+    }
+  }
+
+  // 準備更新欄位
+  const updateFields: string[] = [];
+  const params: Record<string, any> = { $userId: userId };
+
+  if (username) {
+    updateFields.push("name = $username");
+    params.$username = username;
+  }
+
+  if (email) {
+    updateFields.push("email = $email");
+    params.$email = email;
+  }
+
+  if (description !== undefined) {
+    updateFields.push("description = $description");
+    params.$description = description;
+  }
+
+  // 添加更新時間
+  updateFields.push("updatedAt = $updatedAt");
+  params.$updatedAt = new Date().toISOString();
+
+  // 執行更新
+  const sql = `
+      UPDATE users
+      SET ${updateFields.join(", ")}
+      WHERE id = $userId
+      RETURNING id, name, email, description
+    `;
+
+  const result = await SQLiteClient.exec(sql, params);
+
+  if (!result || result.length === 0) {
+    return { ...currentSession, error: "更新失敗" };
+  }
+
+  // 更新會話資訊
+  const user = result[0] as FetchUserByNameResult;
+  const session: Session = { authenticated: true, user, loading: false, error: null };
+  const storedSession: StoredSession = { ...session, timestamp: Date.now() };
+  localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(storedSession));
+
+  return session;
+};
+
+// ----------------------------
+// 變更密碼 (password)
+// ----------------------------
+
+type ChangePasswordParams = {
+  userId: number;
+  currentPassword: string;
+  newPassword: string;
+};
+type ChangePassword = (params: ChangePasswordParams) => Promise<Session>;
+
+const changePassword: ChangePassword = async ({ userId, currentPassword, newPassword }) => {
+  // 取得目前的登入狀態
+  const currentSession = await getSession();
+  if (!currentSession.authenticated || currentSession.user.id !== userId) {
+    return { authenticated: false, user: null, loading: false, error: "未登入或無權限" };
+  }
+
+  // 驗證當前密碼
+  const currentHashedPassword = await hashPassword(currentPassword);
+  const verifyPasswordSql = `
+      SELECT id
+      FROM users
+      WHERE id = $userId AND hashedPassword = $hashedPassword
+    `;
+
+  const verifyResult = await SQLiteClient.exec(verifyPasswordSql, {
+    $userId: userId,
+    $hashedPassword: currentHashedPassword,
+  });
+
+  if (verifyResult.length === 0) {
+    return { ...currentSession, error: "當前密碼錯誤" };
+  }
+
+  // 更新新密碼
+  const newHashedPassword = await hashPassword(newPassword);
+  const now = new Date().toISOString();
+
+  const updateSql = `
+      UPDATE users
+      SET hashedPassword = $hashedPassword,
+          updatedAt = $updatedAt
+      WHERE id = $userId
+    `;
+
+  await SQLiteClient.exec(updateSql, {
+    $userId: userId,
+    $hashedPassword: newHashedPassword,
+    $updatedAt: now,
+  });
+
+  return { ...currentSession, error: null };
+};
+
+// ----------------------------
+// 刪除帳號 (刪除整個 record)
+// ----------------------------
+
+// ----------------------------
 // 匯出
 // ----------------------------
 
-export { login, getSession, logout, register };
+export { login, getSession, logout, register, editProfile, changePassword };
