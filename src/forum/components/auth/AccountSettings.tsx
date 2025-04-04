@@ -10,6 +10,8 @@ import type { FetchUserByNameResult } from "@/forum/data/user";
 import { lgSpace, mdSpace, smSpace, xsSpace } from "./commonSx";
 import { BasicAccountSettings } from "./AccountSettingsBasic";
 import { PasswordChangeSettings } from "./AccountSettingsPassword";
+import { useState } from "react";
+import { useDeleteAccount } from "@/forum/hooks/session";
 
 type AccountSettingsProps = DialogProps & {
   user: Required<FetchUserByNameResult>;
@@ -31,15 +33,47 @@ const Header = () => (
   </Box>
 );
 
-const DeleteAccountSettings = () => {
+const DeleteAccountSettings = ({ userId }: { userId: number }) => {
+  const [open, setOpen] = useState(false);
+  const { mutate: deleteAccount, isPending } = useDeleteAccount();
+  const handleDeleteAccount = () => {
+    deleteAccount({ userId });
+  };
+
   return (
     <Box>
-      <Button variant="contained" color="error" fullWidth disableElevation startIcon={<DangerousRoundedIcon />}>
+      <Button
+        variant="contained"
+        color="error"
+        fullWidth
+        disableElevation
+        startIcon={<DangerousRoundedIcon />}
+        onClick={() => setOpen(true)}
+      >
         刪除帳號
       </Button>
-      <Typography variant="body2" sx={{ color: "text.secondary" }}>
+      <Typography variant="body2" sx={{ color: "text.secondary", mt: 1 }}>
         刪除帳號將會永久刪除所有相關資料，無法復原。
       </Typography>
+
+      <Dialog open={open} onClose={() => !isPending && setOpen(false)} maxWidth="sm" fullWidth>
+        <Stack sx={{ p: lgSpace, gap: smSpace }}>
+          <Typography variant="h6" color="error">
+            確認刪除帳號
+          </Typography>
+
+          <Typography variant="body1">你確定要刪除此帳號嗎？此操作將會永久移除你的所有資料，且無法復原。</Typography>
+
+          <Box sx={{ display: "flex", gap: mdSpace, justifyContent: "flex-end", mt: 2 }}>
+            <Button variant="outlined" onClick={() => !isPending && setOpen(false)} loading={isPending}>
+              取消
+            </Button>
+            <Button variant="contained" color="error" onClick={handleDeleteAccount} loading={isPending}>
+              {isPending ? "刪除中..." : "確認刪除"}
+            </Button>
+          </Box>
+        </Stack>
+      </Dialog>
     </Box>
   );
 };
@@ -69,7 +103,7 @@ const AccountSettings = ({ onClose, user, ...props }: AccountSettingsProps) => {
                   <PasswordChangeSettings userId={user.id} />
                   <Divider flexItem sx={{ mt: smSpace }} />
                 </Box>
-                <DeleteAccountSettings />
+                <DeleteAccountSettings userId={user.id} />
               </Stack>
             </Box>
           </>
@@ -81,7 +115,7 @@ const AccountSettings = ({ onClose, user, ...props }: AccountSettingsProps) => {
             <Divider flexItem />
             <PasswordChangeSettings userId={user.id} />
             <Divider flexItem sx={{ mb: smSpace }} />
-            <DeleteAccountSettings />
+            <DeleteAccountSettings userId={user.id} />
           </>
         )}
       </Stack>
