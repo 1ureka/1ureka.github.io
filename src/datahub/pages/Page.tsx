@@ -10,23 +10,25 @@ const SmallTiles = lazy(() =>
   import("../components/home/SmallTiles").then((module) => ({ default: module.SmallTiles }))
 );
 const SchemaSidebar = lazy(() => import("../components/schema/Sidebar"));
-const SchemaFlow = lazy(() => import("../components/schema/Flow"));
+const SchemaFlowChart = lazy(() => import("../components/schema/FlowChart"));
 
 type ValidPart = "home" | "schema";
 
+const paperSx = { borderRadius: 4, boxShadow: "none", flex: 1 } as const;
+
 const elementsMap: Record<ValidPart, () => React.ReactNode | null> = {
   home: () => (
-    <Box sx={{ p: mdSpace }}>
+    <Paper sx={{ ...paperSx, p: mdSpace }}>
       <SmallTiles />
       <LargeTiles />
-    </Box>
+    </Paper>
   ),
   schema: () => (
-    <Box sx={{ display: "flex", alignItems: "stretch", height: 1 }}>
+    <Paper sx={{ ...paperSx, position: "relative", overflow: "hidden", display: "flex", alignItems: "stretch" }}>
       <title>資料樣板 | 結構圖</title>
       <SchemaSidebar />
-      <SchemaFlow />
-    </Box>
+      <SchemaFlowChart />
+    </Paper>
   ),
 };
 
@@ -45,19 +47,17 @@ const Page = () => {
   }
 
   return (
-    <Paper
-      sx={{ borderRadius: 4, boxShadow: "none", flex: 1, position: "relative", display: "grid", placeItems: "stretch" }}
-    >
-      <Suspense
-        fallback={
+    <Suspense
+      fallback={
+        <Paper sx={{ ...paperSx, position: "relative", display: "grid", placeItems: "stretch" }}>
           <Box sx={{ position: "absolute", inset: 0, display: "grid", placeItems: "center" }}>
             <CircularProgress />
           </Box>
-        }
-      >
-        {elementsMap[part1]()}
-      </Suspense>
-    </Paper>
+        </Paper>
+      }
+    >
+      {elementsMap[part1]()}
+    </Suspense>
   );
 };
 
