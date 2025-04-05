@@ -33,8 +33,8 @@ const FlatDonutBar = () => {
 
     const typeCount: Record<string, number> = {};
     let total = 0;
-    tableInfo.forEach((columnInfo) => {
-      columnInfo.forEach(({ type }) => {
+    tableInfo.forEach(({ columns }) => {
+      columns.forEach(({ type }) => {
         typeCount[type] = (typeCount[type] || 0) + 1;
         total += 1;
       });

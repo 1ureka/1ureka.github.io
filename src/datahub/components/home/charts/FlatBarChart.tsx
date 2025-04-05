@@ -45,8 +45,8 @@ const FlatBarChart = () => {
     // 統計所有欄位名稱的使用頻率
     const fieldCounts: Record<string, number> = {};
 
-    tableInfo.forEach((table) => {
-      table.forEach(({ name }) => {
+    tableInfo.forEach(({ columns }) => {
+      columns.forEach(({ name }) => {
         fieldCounts[name] = (fieldCounts[name] || 0) + 1;
       });
     });
