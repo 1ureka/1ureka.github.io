@@ -110,20 +110,24 @@ const useFlowChart = () => {
     });
 
     // 為每個表格創建節點
-    return tables.map(({ table, type, columns }, hueIndex) => {
-      // 取得當前表格的外鍵
-      const foreginKeys = foreignKeys.find(({ table: _table }) => _table === table) || null;
+    return tables
+      .toSorted((a, b) => a.type.localeCompare(b.type))
+      .map(({ table, type, columns }, i) => {
+        // 取得當前表格的外鍵
+        const foreginKeys = foreignKeys.find(({ table: _table }) => _table === table) || null;
 
-      const fields: TableNodeData["fields"] = columns.map((column) => ({
-        fieldName: column.name,
-        fieldType: column.type,
-        nullable: column.pk === 1 ? "pk" : column.notnull === 0 ? "yes" : "no",
-        isSource: referencedFields[table]?.has(column.name) || false,
-        isTarget: foreginKeys?.keys.some((key) => key.from === column.name) || false,
-      }));
+        const fields: TableNodeData["fields"] = columns.map((column) => ({
+          fieldName: column.name,
+          fieldType: column.type,
+          nullable: column.pk === 1 ? "pk" : column.notnull === 0 ? "yes" : "no",
+          isSource: referencedFields[table]?.has(column.name) || false,
+          isTarget: foreginKeys?.keys.some((key) => key.from === column.name) || false,
+        }));
 
-      return { tableName: table, tableType: type, hueIndex, fields };
-    });
+        const hueIndex = i % 7;
+
+        return { tableName: table, tableType: type, hueIndex, fields };
+      });
   }, [tables, foreignKeys]);
 
   const edges: TableEdgeData[] = useMemo(() => {
