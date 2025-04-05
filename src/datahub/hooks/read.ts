@@ -57,7 +57,13 @@ const useForeignKeys = ({ types }: { types: Exclude<SQLiteObjectType, "index" | 
   const { data: objects = [], isFetching: isFetchingObjects } = useObjects({ types });
   const { data, isFetching: isFetchingForeignKeys } = useQuery({
     queryKey: ["foreignKeys", objects],
-    queryFn: async () => Promise.all(objects.map(async ({ name }) => getTableForeignKeys(name))),
+    queryFn: async () => {
+      const results = await Promise.all(
+        objects.map(async ({ name, type }) => ({ table: name, type, keys: await getTableForeignKeys(name) }))
+      );
+
+      return results.filter((obj) => obj.keys.length > 0);
+    },
     enabled: objects.length > 0,
     staleTime,
   });
@@ -78,6 +84,14 @@ type TableNodeData = {
   }[];
 };
 
+type TableEdgeData = {
+  id: string;
+  source: string;
+  target: string;
+  sourceHandle: string;
+  targetHandle: string; // 若target, source在同個表，則targetHandle會是${targetId}_self
+};
+
 const useFlowChart = () => {
   const { data: tables = [], isFetching: isFetchingTables } = useTableInfo({ types: ["table", "view"] });
   const { data: foreignKeys = [], isFetching: isFetchingForeignKeys } = useForeignKeys({ types: ["table", "view"] });
@@ -88,7 +102,7 @@ const useFlowChart = () => {
 
     // 標記被參考的欄位 (isSource)
     const referencedFields: Record<string, Set<string>> = {};
-    foreignKeys.forEach((keys) => {
+    foreignKeys.forEach(({ keys }) => {
       keys.forEach(({ table, to }) => {
         if (!referencedFields[table]) referencedFields[table] = new Set();
         referencedFields[table].add(to);
@@ -98,21 +112,46 @@ const useFlowChart = () => {
     // 為每個表格創建節點
     return tables.map(({ table, type, columns }, hueIndex) => {
       // 取得當前表格的外鍵
-      const tableForginKeys = foreignKeys.find((keys) => keys.some((key) => key.table === table)) || [];
+      const foreginKeys = foreignKeys.find(({ table: _table }) => _table === table) || null;
 
       const fields: TableNodeData["fields"] = columns.map((column) => ({
         fieldName: column.name,
         fieldType: column.type,
         nullable: column.pk === 1 ? "pk" : column.notnull === 0 ? "yes" : "no",
         isSource: referencedFields[table]?.has(column.name) || false,
-        isTarget: tableForginKeys.some((key) => key.from === column.name),
+        isTarget: foreginKeys?.keys.some((key) => key.from === column.name) || false,
       }));
 
       return { tableName: table, tableType: type, hueIndex, fields };
     });
   }, [tables, foreignKeys]);
 
-  return { nodes, isFetching: isFetchingTables || isFetchingForeignKeys };
+  const edges: TableEdgeData[] = useMemo(() => {
+    if (tables.length === 0 || foreignKeys.length === 0) return [];
+
+    const result: TableEdgeData[] = [];
+
+    // 處理每個外鍵
+    foreignKeys.forEach(({ table, keys }) => {
+      keys.forEach(({ from, to, table: referencedTable }) => {
+        const sourceHandle = to;
+        const targetHandle = referencedTable === table ? `${from}_self` : from; // 若是同一個表格，則加上 _self
+
+        result.push({
+          id: `${referencedTable}.${targetHandle}->${table}.${sourceHandle}`,
+          source: referencedTable,
+          target: table,
+          sourceHandle,
+          targetHandle,
+        });
+      });
+    });
+
+    return result;
+  }, [tables, foreignKeys]);
+
+  return { nodes, edges, isFetching: isFetchingTables || isFetchingForeignKeys };
 };
 
 export { useDbBytes, useObjects, useRowCounts, useTableInfo, useForeignKeys, useFlowChart };
+export type { TableNodeData };
