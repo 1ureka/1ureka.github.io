@@ -4,8 +4,14 @@ import { BarChart } from "./charts/BarChart";
 import { FlatDonutBar } from "./charts/FlatDonutBar";
 import { FlatBarChart } from "./charts/FlatBarChart";
 import { ellipsisSx, lgSpace, noSpace, smSpace } from "./commonSx";
+import { useUrl } from "@/datahub/hooks/url";
 
 const FlowChart = () => {
+  const { updateHash } = useUrl();
+  const handleClick = () => {
+    updateHash("schema");
+  };
+
   return (
     <Stack sx={{ aspectRatio: { xs: "2/1", ml: "2/1.2" }, borderTop: "1px solid", borderColor: "divider" }}>
       <Box sx={{ display: "flex", gap: smSpace, alignItems: "flex-end", p: smSpace }}>
@@ -42,6 +48,7 @@ const FlowChart = () => {
                 color="inherit"
                 size="large"
                 variant="outlined"
+                onClick={handleClick}
                 endIcon={<ArrowOutwardRoundedIcon />}
                 sx={{
                   "&:hover": { scale: "1.02" },
