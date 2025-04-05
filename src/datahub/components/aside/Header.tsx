@@ -11,7 +11,7 @@ type ValidPart = "home" | "schema";
 
 const titleMap: Record<ValidPart, string> = {
   home: "概覽",
-  schema: "結構",
+  schema: "結構圖",
 };
 
 const elementsMap: Record<ValidPart, React.ReactNode | null> = {

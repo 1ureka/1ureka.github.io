@@ -9,17 +9,24 @@ const LargeTiles = lazy(() =>
 const SmallTiles = lazy(() =>
   import("../components/home/SmallTiles").then((module) => ({ default: module.SmallTiles }))
 );
+const SchemaSidebar = lazy(() => import("../components/schema/Sidebar"));
+const SchemaFlow = lazy(() => import("../components/schema/Flow"));
 
 type ValidPart = "home" | "schema";
 
 const elementsMap: Record<ValidPart, () => React.ReactNode | null> = {
   home: () => (
-    <>
+    <Box sx={{ p: mdSpace }}>
       <SmallTiles />
       <LargeTiles />
-    </>
+    </Box>
   ),
-  schema: () => null,
+  schema: () => (
+    <Box sx={{ display: "flex", alignItems: "stretch", height: 1 }}>
+      <SchemaSidebar />
+      <SchemaFlow />
+    </Box>
+  ),
 };
 
 const isValidPart = (part: string): part is ValidPart => {
@@ -37,7 +44,9 @@ const Page = () => {
   }
 
   return (
-    <Paper sx={{ borderRadius: 4, boxShadow: "none", flex: 1, p: mdSpace, position: "relative" }}>
+    <Paper
+      sx={{ borderRadius: 4, boxShadow: "none", flex: 1, position: "relative", display: "grid", placeItems: "stretch" }}
+    >
       <Suspense
         fallback={
           <Box sx={{ position: "absolute", inset: 0, display: "grid", placeItems: "center" }}>
