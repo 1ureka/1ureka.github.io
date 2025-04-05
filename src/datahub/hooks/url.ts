@@ -19,6 +19,12 @@ window.history.replaceState = function (...args) {
 
 const ensureLeadingSlash = (path: string) => (path.startsWith("/") ? path : "/" + path);
 
+function withTransition(callback: () => void) {
+  if (document.startViewTransition) {
+    document.startViewTransition(callback);
+  } else callback();
+}
+
 // -------------------------------------------------------
 // 定義 useUrl 鉤子
 // -------------------------------------------------------
@@ -55,9 +61,9 @@ export function useUrl() {
   // 代理 hash，使其具有 get 方法
   const proxyHash = useMemo(() => {
     return {
-      get: ({ raw }: { raw?: boolean }) => {
+      get: (optinos?: { raw?: boolean }) => {
         accessedKeysRef.current.add(hashKey);
-        return raw ? hash : hash.replace(/^#/, "");
+        return optinos?.raw ? hash : hash.replace(/^#/, "");
       },
       getParts: (): string[] => {
         accessedKeysRef.current.add(hashKey);
@@ -76,18 +82,16 @@ export function useUrl() {
       else url.searchParams.set(key, value);
     });
 
-    // 更新 URL 但不重新加載頁面
     url.hash = window.location.hash; // 保留 hash 部分
-    window.history.pushState({}, "", url);
+    withTransition(() => window.history.pushState({}, "", url));
   }, []);
 
   // 用於更新 hash 的函數
   const updateHash = useCallback((newHash: string) => {
     const url = new URL(window.location.href);
 
-    // 更新 URL 但不重新加載頁面
     url.hash = ensureLeadingSlash(newHash); // 確保 hash 是乾淨的
-    window.history.pushState({}, "", url);
+    withTransition(() => window.history.pushState({}, "", url));
   }, []);
 
   // 監聽 URL 變化
