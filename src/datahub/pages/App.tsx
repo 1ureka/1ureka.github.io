@@ -35,8 +35,8 @@ function App() {
 
         <Sidebar />
 
-        <Box sx={{ position: "relative", flex: 1, height: 1, overflow: "auto" }}>
-          <Stack sx={{ minHeight: 1, gap: 3, px: 6, pb: 3 }} id="view-transition-content">
+        <Box sx={{ position: "relative", flex: 1, height: 1, overflow: "auto" }} id="scroll-area">
+          <Stack sx={{ minHeight: 1, gap: 3, px: 6, pb: 3 }}>
             <Header />
             <Page />
           </Stack>
