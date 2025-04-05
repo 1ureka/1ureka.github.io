@@ -23,6 +23,7 @@ const elementsMap: Record<ValidPart, () => React.ReactNode | null> = {
   ),
   schema: () => (
     <Box sx={{ display: "flex", alignItems: "stretch", height: 1 }}>
+      <title>資料樣板 | 結構圖</title>
       <SchemaSidebar />
       <SchemaFlow />
     </Box>
