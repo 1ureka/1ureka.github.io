@@ -79,12 +79,8 @@ const Sidebar = () => {
           translate: "90% 0",
           cursor: "ew-resize",
           zIndex: 10,
-          "&:hover": {
-            bgcolor: "action.hover",
-          },
-          "&:active": {
-            bgcolor: "action.selected",
-          },
+          "&:hover": { bgcolor: "action.hover" },
+          "&:active": { bgcolor: "action.selected" },
         }}
         onMouseDown={startDragging}
       />

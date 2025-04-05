@@ -1,5 +1,5 @@
 import { useTreeItem2, UseTreeItem2Parameters } from "@mui/x-tree-view/useTreeItem2";
-import { TreeItem2Content, TreeItem2IconContainer, TreeItem2GroupTransition } from "@mui/x-tree-view/TreeItem2";
+import { TreeItem2Content, TreeItem2IconContainer } from "@mui/x-tree-view/TreeItem2";
 import { TreeItem2Label, TreeItem2Root } from "@mui/x-tree-view/TreeItem2";
 import { TreeItem2Icon } from "@mui/x-tree-view/TreeItem2Icon";
 import { TreeItem2Provider } from "@mui/x-tree-view/TreeItem2Provider";
@@ -12,6 +12,7 @@ import VpnKeyRoundedIcon from "@mui/icons-material/VpnKeyRounded";
 import InfoOutlineRoundedIcon from "@mui/icons-material/InfoOutlineRounded";
 import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 import DatasetRoundedIcon from "@mui/icons-material/DatasetRounded";
+import { TreeViewTransition } from "./TreeViewTransition";
 import { ellipsisSx } from "../home/commonSx";
 
 interface CustomTreeItemProps
@@ -161,9 +162,13 @@ const CustomTreeItem = forwardRef(function CustomTreeItem(props: CustomTreeItemP
           </Box>
         </TreeItem2Content>
         {children && (
-          <TreeItem2GroupTransition
+          <TreeViewTransition
             {...getGroupTransitionProps()}
-            sx={{ pl: iconSize, boxShadow: "-1px 0 0 var(--mui-palette-divider)" }}
+            // sx={{ pl: iconSize, boxShadow: "-1px 0 0 var(--mui-palette-divider)" }}
+            style={{
+              paddingLeft: `calc(var(--mui-spacing) * ${iconSize})`,
+              boxShadow: "-1px 0 0 var(--mui-palette-divider)",
+            }}
           />
         )}
       </TreeItem2Root>

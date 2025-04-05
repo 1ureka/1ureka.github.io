@@ -36,7 +36,7 @@ function App() {
         <Sidebar />
 
         <Box sx={{ position: "relative", flex: 1, height: 1, overflow: "auto" }} id="scroll-area">
-          <Stack sx={{ minHeight: 1, gap: 3, px: 6, pb: 3 }}>
+          <Stack sx={{ minHeight: 1, gap: 3, px: 2, pb: 3 }}>
             <Header />
             <Page />
           </Stack>
