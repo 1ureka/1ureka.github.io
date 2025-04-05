@@ -36,6 +36,14 @@ const isValidPart = (part: string): part is ValidPart => {
   return Object.keys(elementsMap).includes(part);
 };
 
+const LoadingDisplay = () => (
+  <Paper sx={{ ...paperSx, position: "relative", display: "grid", placeItems: "stretch" }}>
+    <Box sx={{ position: "absolute", inset: 0, display: "grid", placeItems: "center" }}>
+      <CircularProgress />
+    </Box>
+  </Paper>
+);
+
 const Page = () => {
   const { hash } = useUrl();
 
@@ -46,19 +54,7 @@ const Page = () => {
     throw new Error(`頁面不存在: ${hash.get()}`);
   }
 
-  return (
-    <Suspense
-      fallback={
-        <Paper sx={{ ...paperSx, position: "relative", display: "grid", placeItems: "stretch" }}>
-          <Box sx={{ position: "absolute", inset: 0, display: "grid", placeItems: "center" }}>
-            <CircularProgress />
-          </Box>
-        </Paper>
-      }
-    >
-      {elementsMap[part1]()}
-    </Suspense>
-  );
+  return <Suspense fallback={<LoadingDisplay />}>{elementsMap[part1]()}</Suspense>;
 };
 
 export { Page };
