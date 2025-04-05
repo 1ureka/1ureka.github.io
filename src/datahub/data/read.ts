@@ -9,6 +9,10 @@ const getClient = () => {
   return client;
 };
 
+// --------------------------------------------------------
+// 資料庫大小、所有表、所有行數
+// --------------------------------------------------------
+
 const getDbBytes = async () => {
   const client = getClient();
   const bytes = await client.getDatabaseSize();
@@ -55,7 +59,11 @@ const getTotalRowCount = async (types: Exclude<SQLiteObjectType, "index" | "trig
   return results;
 };
 
-type TableInfo = {
+// --------------------------------------------------------
+// 表格結構、資料型別分析
+// --------------------------------------------------------
+
+type TableColumnInfo = {
   cid: number;
   name: string;
   type: string;
@@ -109,7 +117,7 @@ const getColumnType = async (tableName: string, col: string, type: string) => {
 const getTableInfo = async (tableName: string) => {
   const client = getClient();
   const sql = `PRAGMA table_info(${tableName});`;
-  const tableInfo = (await client.exec(sql)) as TableInfo[];
+  const tableInfo = (await client.exec(sql)) as TableColumnInfo[];
   if (tableInfo.length === 0) return null;
 
   const types = await Promise.all(tableInfo.map((col) => getColumnType(tableName, col.name, col.type)));
@@ -117,5 +125,68 @@ const getTableInfo = async (tableName: string) => {
   return tableInfo.map((item, i) => ({ ...item, type: formatedTypes[i] }));
 };
 
-export { getDbBytes, getObjectsByTypes, getTotalRowCount, getTableInfo };
-export type { SQLiteObjectType };
+// --------------------------------------------------------
+// 獲取 foreign 資訊
+// --------------------------------------------------------
+
+type TableForeignKey = {
+  id: number; // 外鍵編號（同一條件的群組）
+  seq: number; // 在該外鍵編號內的順序（通常 0）
+  table: string; // 指向的表格名稱
+  from: string; // 當前表格的欄位
+  to: string; // 外部表格的欄位
+  on_update: string; // ON UPDATE 行為（如 CASCADE）
+  on_delete: string; // ON DELETE 行為（如 SET NULL）
+  match: string; // MATCH 規則（通常為 'NONE'）
+};
+
+const getTableForeignKeys = async (tableName: string): Promise<TableForeignKey[]> => {
+  const client = getClient();
+  const sql = `PRAGMA foreign_key_list(${tableName});`;
+  const foreignKeys = await client.exec(sql);
+
+  return foreignKeys as TableForeignKey[];
+};
+
+// --------------------------------------------------------
+// 獲取 indexes
+// --------------------------------------------------------
+
+type IndexListRow = {
+  seq: number; // 索引在此表格中的順序
+  name: string; // 索引名稱
+  unique: 0 | 1; // 是否為 UNIQUE 索引
+  origin: "c" | "u" | "pk"; // 來源：使用者建立、UNIQUE 約束、PRIMARY KEY
+  partial: 0 | 1; // 是否為 partial index（有條件的索引）
+};
+
+type IndexInfoRow = {
+  seqno: number; // 在索引中的順序
+  cid: number; // 對應表格中欄位的 ID
+  name: string; // 對應表格中欄位的名稱
+};
+
+type TableIndexInfo = IndexListRow & { columns: IndexInfoRow[] };
+
+const getTableIndexInfo = async (tableName: string): Promise<TableIndexInfo[]> => {
+  const client = getClient();
+
+  // 獲取表格的索引列表
+  const indexListSql = `PRAGMA index_list(${tableName});`;
+  const indexList = (await client.exec(indexListSql)) as IndexListRow[];
+
+  // 獲取每個索引的詳細資訊
+  const indexInfos: TableIndexInfo[] = await Promise.all(
+    indexList.map(async (index) => {
+      const indexInfoSql = `PRAGMA index_info(${index.name});`;
+      const columns = (await client.exec(indexInfoSql)) as IndexInfoRow[];
+
+      return { ...index, columns };
+    })
+  );
+
+  return indexInfos;
+};
+
+export { getDbBytes, getObjectsByTypes, getTotalRowCount, getTableInfo, getTableForeignKeys, getTableIndexInfo };
+export type { SQLiteObjectType, TableColumnInfo, TableForeignKey, TableIndexInfo };
