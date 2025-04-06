@@ -31,7 +31,7 @@ const fakeEditable = false;
 const iconMap: Record<CustomTreeItemProps["type"], (hueIndex?: number) => React.ReactNode> = {
   table: (hueIndex?: number) => (
     <Box sx={commonIconSx}>
-      <DatasetRoundedIcon sx={{ color: "primary.main", filter: `hue-rotate(${hueIndex ?? 0 * 20}deg)` }} />
+      <DatasetRoundedIcon sx={{ color: "primary.main", filter: `hue-rotate(${(hueIndex ?? 0) * 20}deg)` }} />
     </Box>
   ),
   columns: () => (
