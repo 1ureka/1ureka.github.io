@@ -16,6 +16,7 @@ import { EmojiMenu } from "./shared/EmojiMenu";
 
 import { z } from "zod";
 import { useForm } from "@tanstack/react-form";
+import { useCreatePost } from "@/forum/hooks/post";
 import { getFormIsError } from "@/forum/utils/form";
 
 import { toEntries } from "@/utils/typedBuiltins";
@@ -74,16 +75,25 @@ const defaultValues: z.infer<typeof formSchema> = {
 };
 
 const NewPost = () => {
+  const { mutateAsync: createPost, isPending } = useCreatePost();
   const { user, authenticated, loading } = useSession();
 
   const form = useForm({
     defaultValues,
     validators: { onSubmit: formSchema },
     onSubmit: async ({ value }) => {
-      console.log(value);
-      // if (isPending) return;
-      // const result = await createPost(value);
-      // if (result.error) console.error(result.error);
+      if (isPending) return;
+      const payload = {
+        ...value,
+        photos: value.photos.map((file) => ({ name: file.name, size: file.size, url: "" })),
+        attachments: value.attachments.map((file) => ({ name: file.name, size: file.size, url: "" })),
+      };
+      const result = await createPost(payload);
+      if (typeof result === "number") {
+        form.reset();
+        return console.log("發佈成功，貼文 ID：", result);
+      }
+      if (result.error) console.error(`貼文發佈失敗：${result.error}`);
     },
   });
 
@@ -419,7 +429,12 @@ const NewPost = () => {
         </Box>
 
         <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-          <Button variant="outlined" onClick={() => form.reset()} disabled={!authenticated || loading}>
+          <Button
+            variant="outlined"
+            onClick={() => form.reset()}
+            disabled={!authenticated || loading}
+            loading={isPending}
+          >
             取消
           </Button>
           <Button
@@ -428,6 +443,7 @@ const NewPost = () => {
             endIcon={<PublishRoundedIcon />}
             onClick={handleSubmit}
             disabled={!authenticated || loading}
+            loading={isPending}
           >
             發佈
           </Button>
