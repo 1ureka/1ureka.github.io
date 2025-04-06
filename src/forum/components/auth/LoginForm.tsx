@@ -6,7 +6,7 @@ import { useForm } from "@tanstack/react-form";
 import { z } from "zod";
 import { getFormErrorHelperText, getFormIsError } from "@/forum/utils/form";
 
-const formSchema = z.object({
+const formElementsSchema = {
   username: z
     .string()
     .trim()
@@ -14,14 +14,16 @@ const formSchema = z.object({
     .max(20, "使用者名稱最多 20 個字元")
     .regex(/^[a-zA-Z0-9 ]+$/, "使用者名稱只能包含英文字母與數字"),
   password: z.string().trim().min(1, "密碼不能為空"),
-});
+};
+
+const formSchema = z.object(formElementsSchema);
 
 const LoginForm = () => {
   const { mutateAsync: login, isPending } = useLogin();
 
   const form = useForm({
     defaultValues: { username: "", password: "" },
-    validators: { onBlur: formSchema },
+    validators: { onSubmit: formSchema },
     onSubmit: async ({ value }) => {
       if (isPending) return;
       const { username, password } = value;
@@ -50,6 +52,7 @@ const LoginForm = () => {
 
       <form.Field
         name="username"
+        validators={{ onChange: formElementsSchema.username }}
         children={(field) => (
           <TextField
             required
@@ -70,6 +73,7 @@ const LoginForm = () => {
       />
       <form.Field
         name="password"
+        validators={{ onChange: formElementsSchema.password }}
         children={(field) => (
           <TextField
             required

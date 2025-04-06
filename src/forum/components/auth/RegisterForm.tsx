@@ -6,7 +6,7 @@ import { useForm } from "@tanstack/react-form";
 import { z } from "zod";
 import { getFormErrorHelperText, getFormIsError } from "@/forum/utils/form";
 
-const formSchema = z.object({
+const formElementsSchema = {
   email: z.string().trim().email("請輸入有效的電子郵件地址").max(100, "電子郵件地址過長"),
   username: z
     .string()
@@ -15,14 +15,16 @@ const formSchema = z.object({
     .max(20, "使用者名稱最多 20 個字元")
     .regex(/^[a-zA-Z0-9 ]+$/, "使用者名稱只能包含英文字母與數字"),
   password: z.string().trim().min(1, "密碼不能為空"),
-});
+};
+
+const formSchema = z.object(formElementsSchema);
 
 const RegisterForm = () => {
   const { mutateAsync: register, isPending } = useRegister();
 
   const form = useForm({
     defaultValues: { email: "", username: "", password: "" },
-    validators: { onBlur: formSchema },
+    validators: { onSubmit: formSchema },
     onSubmit: async ({ value }) => {
       if (isPending) return;
       const { email, username, password } = value;
@@ -51,6 +53,7 @@ const RegisterForm = () => {
 
       <form.Field
         name="email"
+        validators={{ onChange: formElementsSchema.email }}
         children={(field) => (
           <TextField
             required
@@ -71,6 +74,7 @@ const RegisterForm = () => {
       />
       <form.Field
         name="username"
+        validators={{ onChange: formElementsSchema.username }}
         children={(field) => (
           <TextField
             required
@@ -91,6 +95,7 @@ const RegisterForm = () => {
       />
       <form.Field
         name="password"
+        validators={{ onChange: formElementsSchema.password }}
         children={(field) => (
           <TextField
             required
