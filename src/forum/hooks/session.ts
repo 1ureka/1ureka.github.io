@@ -47,7 +47,7 @@ export const useLogout = () => {
   return useMutation({
     mutationFn: logout,
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["session"] });
+      queryClient.invalidateQueries({ queryKey: [] });
     },
   });
 };
