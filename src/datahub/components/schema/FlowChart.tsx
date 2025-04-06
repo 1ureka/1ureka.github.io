@@ -1,30 +1,38 @@
+import { memo, useMemo, useState } from "react";
+import { BoxM } from "@/components/Motion";
 import { Box, Button } from "@mui/material";
 import OpenInFullRoundedIcon from "@mui/icons-material/OpenInFullRounded";
+import CloseFullscreenRoundedIcon from "@mui/icons-material/CloseFullscreenRounded";
 
 import { useFlowChart } from "@/datahub/hooks/read";
 import { ReactFlowProvider } from "@xyflow/react";
 import { ReactFlow } from "./ReactFlow";
 import "@xyflow/react/dist/style.css";
 
+const MemoFlow = memo(ReactFlow);
+
 const Flow = () => {
   const { nodes, edges, isFetching } = useFlowChart();
+  const [fullScreen, setFullScreen] = useState(false);
 
-  //   useEffect(() => {
-  //     if (nodes.length > 0) {
-  //       const scrollArea = document.getElementById("scroll-area");
-  //       if (scrollArea) scrollArea.scrollTo({ top: scrollArea.scrollHeight, behavior: "smooth" });
-  //     }
-  //   }, [nodes]);
+  const nodesMemo = useMemo(
+    () => nodes.map((data) => ({ id: data.tableName, type: "tableNode", data, position: { x: 0, y: 0 } })),
+    [nodes]
+  );
 
   return (
-    <Box sx={{ position: "relative", flex: 1 }}>
-      <Box sx={{ position: "absolute", inset: 0 }}>
+    <BoxM
+      sx={{
+        position: fullScreen ? "fixed" : "relative",
+        flex: 1,
+        inset: fullScreen ? 0 : undefined,
+        zIndex: fullScreen ? "snackbar" : undefined,
+      }}
+      layout="position"
+    >
+      <Box sx={{ position: "absolute", inset: 0, bgcolor: "background.paper" }}>
         <ReactFlowProvider>
-          <ReactFlow
-            isFetching={isFetching}
-            nodes={nodes.map((data) => ({ id: data.tableName, type: "tableNode", data, position: { x: 0, y: 0 } }))}
-            edges={edges}
-          />
+          <MemoFlow isFetching={isFetching} nodes={nodesMemo} edges={edges} />
         </ReactFlowProvider>
       </Box>
 
@@ -46,11 +54,17 @@ const Flow = () => {
           m: "15px",
         }}
       >
-        <Button color="inherit" sx={{ py: 0.2 }} endIcon={<OpenInFullRoundedIcon />} loading={isFetching}>
-          全螢幕
+        <Button
+          color="inherit"
+          sx={{ py: 0.2 }}
+          endIcon={fullScreen ? <CloseFullscreenRoundedIcon /> : <OpenInFullRoundedIcon />}
+          loading={isFetching}
+          onClick={() => setFullScreen((prev) => !prev)}
+        >
+          {fullScreen ? "退出全螢幕" : "全螢幕"}
         </Button>
       </Box>
-    </Box>
+    </BoxM>
   );
 };
 
