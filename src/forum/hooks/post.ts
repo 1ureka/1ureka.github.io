@@ -1,6 +1,6 @@
 import { useEffect } from "react";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { fetchPostCounts, fetchPosts, fetchPostById, fetchTags } from "@/forum/data/post";
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { fetchPostCounts, fetchPosts, fetchPostById, fetchTags, createPost } from "@/forum/data/post";
 import type { FetchPostsParams, FetchPostCountsParams, FetchPostByIdParams } from "@/forum/data/post";
 
 const staleTime = 1 * 60 * 1000;
@@ -75,4 +75,17 @@ const usePostById = ({ postId, incrementViewCount }: FetchPostByIdParams) => {
   });
 };
 
-export { usePosts, usePostCounts, useInfinitePosts, useTags, usePostById };
+const useCreatePost = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: createPost,
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      queryClient.invalidateQueries({ queryKey: ["infinitePosts"] });
+      queryClient.invalidateQueries({ queryKey: ["postCounts"] });
+      queryClient.invalidateQueries({ queryKey: ["tags"] });
+    },
+  });
+};
+
+export { usePosts, usePostCounts, useInfinitePosts, useTags, usePostById, useCreatePost };
