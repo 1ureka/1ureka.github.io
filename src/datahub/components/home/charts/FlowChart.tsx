@@ -50,7 +50,15 @@ const FlowChart = () => {
               <MemoFlow nodes={nodesMemo} edges={edges} isFetching={isFetching} />
             </Box>
 
-            <Box sx={{ position: "absolute", inset: "auto 0 0 auto", color: "secondary.dark", translate: "1rem 50%" }}>
+            <Box
+              sx={{
+                position: "absolute",
+                inset: "auto 0 0 auto",
+                color: "secondary.dark",
+                translate: "1rem 50%",
+                zIndex: 2,
+              }}
+            >
               <Button
                 color="inherit"
                 size="large"
