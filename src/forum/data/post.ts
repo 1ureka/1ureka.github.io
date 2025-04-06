@@ -268,8 +268,56 @@ const fetchPostById: FetchPostById = async ({ postId, incrementViewCount = false
 };
 
 // ----------------------------
+// 創建貼文
+// ----------------------------
+
+// userId 自動從 session 中獲取
+type CreatePostParams = Pick<FetchPostByIdResult, "title" | "content" | "tags" | "photos" | "attachments">;
+type CreatePost = (params: CreatePostParams) => Promise<{ error: string } | number>;
+
+const createPost: CreatePost = async ({ title, content, tags, photos, attachments }) => {
+  // 獲取當前使用者 ID
+  const session = await getSession();
+  if (!session.authenticated) return { error: "未登入或授權失效，無法創建貼文" };
+  const userId = session.user.id;
+
+  // 處理 JSON 資料
+  const tagsJson = JSON.stringify(tags);
+  const photosJson = photos ? JSON.stringify(photos) : null;
+  const attachmentsJson = attachments ? JSON.stringify(attachments) : null;
+
+  // 建立插入 SQL
+  const sql = `
+      INSERT INTO posts ( userId, title, content, tags, photos, attachments, createdAt, updatedAt )
+      VALUES ( $userId, $title, $content, $tags, $photos, $attachments, $createdAt, $updatedAt )
+      RETURNING id
+    `;
+
+  // 建立當前時間的 ISO 字串
+  const now = new Date().toISOString();
+  const params = {
+    $userId: userId,
+    $title: title,
+    $content: content,
+    $tags: tagsJson,
+    $photos: photosJson,
+    $attachments: attachmentsJson,
+    $createdAt: now,
+    $updatedAt: now,
+  };
+
+  // 執行 SQL 並獲取新增的 ID
+  const result = await SQLiteClient.exec(sql, params);
+  if (!result || result.length === 0 || !(typeof result[0].id === "number")) {
+    return { error: "創建貼文失敗" };
+  }
+
+  return result[0].id;
+};
+
+// ----------------------------
 // 匯出
 // ----------------------------
 
-export { fetchPosts, fetchPostCounts, fetchPostById, fetchTags };
+export { fetchPosts, fetchPostCounts, fetchPostById, fetchTags, createPost };
 export type { FetchPostsParams, FetchPostCountsParams, FetchPostByIdParams, FetchPostByIdResult };
