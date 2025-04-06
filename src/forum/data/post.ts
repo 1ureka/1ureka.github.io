@@ -1,3 +1,4 @@
+import { getSession } from "./session";
 import { SQLiteClient } from "./SQLiteClient";
 
 // ----------------------------
@@ -42,6 +43,7 @@ type FetchPostsParams = {
   userId?: number;
   orderBy?: "title" | "createdAt" | "updatedAt" | "viewCount" | "likeCount" | "commentCount";
   order?: "asc" | "desc";
+  prioritizeFollowers?: boolean;
 };
 
 type FetchPosts = (params?: FetchPostsParams) => Promise<{
@@ -57,6 +59,7 @@ const fetchPosts: FetchPosts = async ({
   userId,
   orderBy = "createdAt",
   order = "desc",
+  prioritizeFollowers,
 } = {}) => {
   // ----------------------------
   // 建立條件子句
@@ -82,6 +85,32 @@ const fetchPosts: FetchPosts = async ({
   else if (orderBy === "createdAt" || orderBy === "updatedAt") orderColumn = `datetime(p.${orderBy})`;
   else orderColumn = `p.${orderBy}`;
 
+  // 判斷是否啟用優先顯示追蹤者的文章
+  let priorityJoinClause = "";
+  let priorityOrderClause = "";
+
+  if (prioritizeFollowers) {
+    // 獲取當前session中的使用者ID
+    const session = await getSession();
+    const currentUserId = session.authenticated ? session.user.id : null;
+
+    if (currentUserId) {
+      params.$currentUserId = currentUserId;
+
+      // 新增 JOIN 子句，用來標記貼文是否來自追蹤者
+      priorityJoinClause = `
+        LEFT JOIN (
+          SELECT followeeId, 1 AS isFollowed
+          FROM user_interactions
+          WHERE followerId = $currentUserId AND type = 'follow'
+        ) AS following ON p.userId = following.followeeId
+      `;
+
+      // 優先排序追蹤者的文章
+      priorityOrderClause = `CASE WHEN following.isFollowed = 1 THEN 1 ELSE 0 END DESC, `;
+    }
+  }
+
   // ----------------------------
   // 查詢總數
   const countSql = `
@@ -104,8 +133,9 @@ const fetchPosts: FetchPosts = async ({
         SELECT id
         FROM posts p
         LEFT JOIN post_interaction_counts pic ON p.id = pic.postId
+        ${priorityJoinClause}
         ${whereClause}
-        ORDER BY ${orderColumn} ${order.toUpperCase()}, p.createdAt DESC
+        ORDER BY ${priorityOrderClause}${orderColumn} ${order.toUpperCase()}, p.createdAt DESC
         LIMIT $limit OFFSET $offset
       `;
 
@@ -156,18 +186,24 @@ type FetchPostByIdResult = {
   userName: string;
   likeCount: number;
   commentCount: number;
+  isFromFollowing: boolean; // 是否來自追蹤者
 };
 
 type FetchPostById = (params: FetchPostByIdParams) => Promise<FetchPostByIdResult | null>;
 
 const fetchPostById: FetchPostById = async ({ postId, incrementViewCount = false }) => {
-  // 更新瀏覽計數
+  // 獲取當前使用者資訊，用於判斷是否來自追蹤者
+  let currentUserId: number | null = null;
+  const session = await getSession();
+  currentUserId = session.authenticated ? session.user.id : null;
+
+  // 更新瀏覽計數 (非重要，因此不使用 await)
   if (incrementViewCount) {
-    await SQLiteClient.exec(`UPDATE posts SET viewCount = viewCount + 1 WHERE id = $postId`, { $postId: postId });
+    SQLiteClient.exec(`UPDATE posts SET viewCount = viewCount + 1 WHERE id = $postId`, { $postId: postId });
   }
 
   // 查詢貼文詳細資訊
-  const sql = `
+  let sql = `
       SELECT
         p.id,
         p.title,
@@ -182,17 +218,36 @@ const fetchPostById: FetchPostById = async ({ postId, incrementViewCount = false
         u.name as userName,
         COALESCE(pic.likeCount, 0) as likeCount,
         COALESCE(pic.commentCount, 0) as commentCount
-      FROM
-        posts p
-      JOIN
-        users u ON p.userId = u.id
-      LEFT JOIN
-        post_interaction_counts pic ON p.id = pic.postId
-      WHERE
-        p.id = $postId
-    `;
+  `;
 
-  const result = await SQLiteClient.exec(sql, { $postId: postId });
+  // 如果有登入的使用者，增加判斷是否來自追蹤者的欄位
+  if (currentUserId) {
+    sql += `,
+      EXISTS (
+        SELECT 1
+        FROM user_interactions
+        WHERE followerId = $currentUserId
+        AND followeeId = p.userId
+        AND type = 'follow'
+      ) as isFromFollowing
+    `;
+  } else {
+    sql += `, 0 as isFromFollowing`;
+  }
+
+  sql += `
+      FROM posts p
+      JOIN users u ON p.userId = u.id
+      LEFT JOIN post_interaction_counts pic ON p.id = pic.postId
+      WHERE p.id = $postId
+  `;
+
+  const params: Record<string, string | number> = { $postId: postId };
+  if (currentUserId) {
+    params.$currentUserId = currentUserId;
+  }
+
+  const result = await SQLiteClient.exec(sql, params);
   if (result.length === 0) return null;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -208,6 +263,7 @@ const fetchPostById: FetchPostById = async ({ postId, incrementViewCount = false
     updatedAt: new Date(post.updatedAt),
     likeCount: post.likeCount || 0,
     commentCount: post.commentCount || 0,
+    isFromFollowing: Boolean(post.isFromFollowing),
   };
 };
 

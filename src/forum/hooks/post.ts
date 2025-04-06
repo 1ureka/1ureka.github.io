@@ -5,11 +5,11 @@ import type { FetchPostsParams, FetchPostCountsParams, FetchPostByIdParams } fro
 
 const staleTime = 1 * 60 * 1000;
 
-const usePosts = ({ limit, topic, userId, orderBy, order }: FetchPostsParams = {}) => {
+const usePosts = ({ limit, topic, userId, orderBy, order, prioritizeFollowers }: FetchPostsParams = {}) => {
   return useQuery({
-    queryKey: ["posts", limit, topic, userId, orderBy, order],
+    queryKey: ["posts", limit, topic, userId, orderBy, order, prioritizeFollowers],
     queryFn: async () => {
-      const result = await fetchPosts({ page: 0, limit, topic, userId, orderBy, order });
+      const result = await fetchPosts({ page: 0, limit, topic, userId, orderBy, order, prioritizeFollowers });
       return result.posts;
     },
     staleTime,
@@ -24,10 +24,10 @@ const usePostCounts = ({ topic }: FetchPostCountsParams = {}) => {
   });
 };
 
-const useInfinitePosts = ({ limit = 6, topic, userId, orderBy, order }: FetchPostsParams = {}) => {
+const useInfinitePosts = ({ limit = 6, topic, userId, orderBy, order, prioritizeFollowers }: FetchPostsParams = {}) => {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery({
-    queryKey: ["infinitePosts", limit, topic, userId, orderBy, order],
-    queryFn: ({ pageParam: page }) => fetchPosts({ page, limit, topic, userId, orderBy, order }),
+    queryKey: ["infinitePosts", limit, topic, userId, orderBy, order, prioritizeFollowers],
+    queryFn: ({ pageParam: page }) => fetchPosts({ page, limit, topic, userId, orderBy, order, prioritizeFollowers }),
     initialPageParam: 0,
     getNextPageParam: (lastPage) => lastPage.nextPage,
     staleTime,
