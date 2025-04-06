@@ -17,7 +17,7 @@ export class SQLiteClient {
   /**
    *  執行 SQL 查詢
    */
-  static async exec(sql: string, params?: BindParams) {
+  static async exec(sql: string, params?: BindParams, noDelay = false) {
     const startTime = Date.now(); // 計時
 
     this.dbPromise = this.dbPromise === null ? this.loadDatabase() : this.dbPromise;
@@ -48,7 +48,7 @@ export class SQLiteClient {
 
     // 至少等待 TEST_DELAY 毫秒
     const elapsedTime = Date.now() - startTime;
-    if (elapsedTime < TEST_DELAY) {
+    if (elapsedTime < TEST_DELAY && !noDelay) {
       await new Promise((resolve) => setTimeout(resolve, TEST_DELAY - elapsedTime));
     }
 
