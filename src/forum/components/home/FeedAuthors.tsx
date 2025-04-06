@@ -3,7 +3,7 @@ import { Box, Typography } from "@mui/material";
 import { AuthorDisplay, AuthorLoadingDisplay } from "../userElement/AuthorDisplay";
 
 const FeedAuthors = ({ length }: { length: number }) => {
-  const { data, isFetching } = useUsers({ limit: length, orderBy: "followerCount", order: "desc" });
+  const { data, isFetching } = useUsers({ limit: length, orderBy: "followerCount", order: "desc", isUnfollowed: true });
   const authors = data ? (data.pages[0] ? data.pages[0].users : []) : [];
 
   return (

@@ -12,10 +12,10 @@ const useUserCounts = () => {
   });
 };
 
-const useUsers = ({ page = 0, limit, isAuthor = true, orderBy, order }: FetchUsersParams = {}) => {
+const useUsers = ({ page = 0, limit, isAuthor = true, isUnfollowed, orderBy, order }: FetchUsersParams = {}) => {
   return useInfiniteQuery({
-    queryKey: ["users", page, limit, isAuthor, orderBy, order],
-    queryFn: async ({ pageParam: page }) => fetchUsers({ page, limit, isAuthor, orderBy, order }),
+    queryKey: ["users", page, limit, isAuthor, isUnfollowed, orderBy, order],
+    queryFn: async ({ pageParam: page }) => fetchUsers({ page, limit, isAuthor, isUnfollowed, orderBy, order }),
     initialPageParam: 0,
     getNextPageParam: (lastPage) => lastPage.nextPage,
     staleTime,

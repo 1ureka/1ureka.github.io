@@ -4,7 +4,7 @@ import { useUsers } from "@/forum/hooks/user";
 import { AuthorDisplay, AuthorLoadingDisplay } from "../userElement/AuthorDisplay";
 
 const FeedAuthors = ({ length }: { length: number }) => {
-  const { data, isFetching } = useUsers({ limit: length, orderBy: "postCount", order: "desc" });
+  const { data, isFetching } = useUsers({ limit: length, orderBy: "postCount", order: "desc", isUnfollowed: true });
   const authors = data ? (data.pages[0] ? data.pages[0].users : null) : null;
 
   return (
