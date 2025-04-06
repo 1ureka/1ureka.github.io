@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getDbBytes, getObjectsByTypes, getTableForeignKeys } from "../data/read";
+import { getDbBytes, getObjectsByTypes, getTableForeignKeys, getTableIndexInfo } from "../data/read";
 import { getTableInfo, getTotalRowCount } from "../data/read";
-import type { SQLiteObjectType, TableColumnInfo } from "../data/read";
+import type { SQLiteObjectType, TableColumnInfo, TableIndexInfo } from "../data/read";
 
 // const staleTime = 1 * 60 * 1000;
 const staleTime = 0; // TODO: 測試完 loading state 後要記得改回 1 分鐘
@@ -69,6 +69,24 @@ const useForeignKeys = ({ types }: { types: Exclude<SQLiteObjectType, "index" | 
   });
 
   return { data, isFetching: isFetchingObjects || isFetchingForeignKeys };
+};
+
+const useIndexes = ({ types }: { types: Exclude<SQLiteObjectType, "index" | "trigger">[] }) => {
+  const { data: objects = [], isFetching: isFetchingObjects } = useObjects({ types });
+  const { data, isFetching: isFetchingIndexes } = useQuery({
+    queryKey: ["indexes", objects],
+    queryFn: async () => {
+      const results = await Promise.all(
+        objects.map(async ({ name, type }) => ({ table: name, type, indexes: await getTableIndexInfo(name) }))
+      );
+
+      return results.filter((obj) => obj.indexes.length > 0);
+    },
+    enabled: objects.length > 0,
+    staleTime,
+  });
+
+  return { data, isFetching: isFetchingObjects || isFetchingIndexes };
 };
 
 type TableNodeData = {
@@ -157,5 +175,41 @@ const useFlowChart = () => {
   return { nodes, edges, isFetching: isFetchingTables || isFetchingForeignKeys };
 };
 
-export { useDbBytes, useObjects, useRowCounts, useTableInfo, useForeignKeys, useFlowChart };
+type TreeViewData = {
+  [table: string]: {
+    columns: TableColumnInfo[];
+    indexes: TableIndexInfo[];
+    type: "table" | "view";
+    hueIndex: number;
+  };
+};
+
+const useTreeView = () => {
+  const { data: tables = [], isFetching: isFetchingTables } = useTableInfo({ types: ["table", "view"] });
+  const { data: indexes = [], isFetching: isFetchingIndexes } = useIndexes({ types: ["table", "view"] });
+
+  const data = useMemo(() => {
+    if (tables.length === 0 || indexes.length === 0) return {};
+
+    const result: TreeViewData = {};
+
+    tables
+      .toSorted((a, b) => a.type.localeCompare(b.type))
+      .forEach(({ table, columns, type }, i) => {
+        result[table] = { columns, indexes: [], type, hueIndex: i % 7 };
+      });
+
+    indexes.forEach(({ table, indexes: tableIndexes }) => {
+      if (!result[table]) return;
+      result[table].indexes.push(...tableIndexes);
+    });
+
+    return result;
+  }, [tables, indexes]);
+
+  return { data, isFetching: isFetchingTables || isFetchingIndexes };
+};
+
+export { useDbBytes, useObjects, useRowCounts, useTableInfo, useForeignKeys, useIndexes };
+export { useFlowChart, useTreeView };
 export type { TableNodeData };
