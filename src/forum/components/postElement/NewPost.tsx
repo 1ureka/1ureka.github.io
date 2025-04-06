@@ -1,5 +1,6 @@
 import { Box, Button, Chip, Divider, Skeleton } from "@mui/material";
 import { IconButton, TextField, Tooltip, Typography } from "@mui/material";
+import { BoxM } from "@/components/Motion";
 
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import InsertPhotoRoundedIcon from "@mui/icons-material/InsertPhotoRounded";
@@ -13,48 +14,116 @@ import { useSession } from "@/forum/hooks/session";
 import { TopicAutocomplete } from "./shared/TopicAutocomplete";
 import { EmojiMenu } from "./shared/EmojiMenu";
 
+import { z } from "zod";
+import { useForm } from "@tanstack/react-form";
+import { getFormIsError } from "@/forum/utils/form";
+
+import { toEntries } from "@/utils/typedBuiltins";
+import { uniqueByField } from "@/utils/array";
+import { formatFileSize } from "@/utils/formatters";
+
+const formElementsSchema = {
+  title: z.string().trim().min(1, "標題不能為空").max(100, "標題最多 100 個字元"),
+  content: z.string().trim().min(1, "內容不能為空").max(5000, "內容最多 5000 個字元"),
+  tags: z
+    .array(z.string().trim().min(1, "標籤不能為空"))
+    .min(1, "至少選擇一個標籤")
+    .max(8, "最多選擇 8 個標籤")
+    .refine((tags) => new Set(tags).size === tags.length, {
+      message: "標籤不能重複",
+    }),
+  photos: z
+    .array(z.instanceof(File))
+    .max(10, "最多上傳 10 張圖片")
+    .refine((files) => files.every((file) => file.type.startsWith("image/")), {
+      message: "附圖僅允許上傳圖片檔案，其他類型檔案請用附件功能",
+    })
+    .refine((files) => files.every((file) => file.size <= 5 * 1024 * 1024), {
+      message: "每個附件不得超過 5MB",
+    })
+    .refine(
+      (files) => {
+        const fileNames = files.map((file) => file.name);
+        return new Set(fileNames).size === fileNames.length;
+      },
+      { message: "不允許上傳重複的圖片檔案" }
+    ),
+  attachments: z
+    .array(z.instanceof(File))
+    .max(10, "最多上傳 10 個附件")
+    .refine((files) => files.every((file) => file.size <= 5 * 1024 * 1024), {
+      message: "每個附件不得超過 5MB",
+    })
+    .refine(
+      (files) => {
+        const fileNames = files.map((file) => file.name);
+        return new Set(fileNames).size === fileNames.length;
+      },
+      { message: "不允許上傳重複的附件檔案" }
+    ),
+};
+
+const formSchema = z.object(formElementsSchema);
+
+const defaultValues: z.infer<typeof formSchema> = {
+  title: "",
+  content: "",
+  tags: [],
+  photos: [],
+  attachments: [],
+};
+
 const NewPost = () => {
   const { user, authenticated, loading } = useSession();
 
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [tags, setTags] = useState<string[]>([]);
-  const [photos, setPhotos] = useState<File[]>([]);
-  const [attachments, setAttachments] = useState<File[]>([]);
-  const [photoPreviewUrls, setPhotoPreviewUrls] = useState<string[]>([]);
+  const form = useForm({
+    defaultValues,
+    validators: { onSubmit: formSchema },
+    onSubmit: async ({ value }) => {
+      console.log(value);
+      // if (isPending) return;
+      // const result = await createPost(value);
+      // if (result.error) console.error(result.error);
+    },
+  });
 
-  const handleSubmit = () => {
-    // TODO: validate form data
-    console.log({ title, content, tags, photos, attachments });
+  const handleSubmit = async () => {
+    if (!form.state.canSubmit) {
+      toEntries(form.getAllErrors().fields).forEach(([fieldName, fieldErrors]) => {
+        fieldErrors.errors.forEach((error) => {
+          if (!error || typeof error !== "object") return;
+          if (!("message" in error)) return;
+          console.error(`${fieldName}: ${error.message}`);
+        });
+      });
+
+      console.error("請檢查表單是否填寫正確");
+      return;
+    }
+    form.handleSubmit();
   };
 
   // 處理附件上傳
   const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files) return;
-
     const newFiles = Array.from(event.target.files);
-    setPhotos((prevPhotos) => [...prevPhotos, ...newFiles]);
-
-    // 生成預覽 URL
-    const newPreviewUrls = newFiles.map((file) => URL.createObjectURL(file));
-    setPhotoPreviewUrls((prevUrls) => [...prevUrls, ...newPreviewUrls]);
+    form.setFieldValue("photos", (prev) => [...prev, ...newFiles]);
+    form.validateField("photos", "change");
   };
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files) return;
-
     const newFiles = Array.from(event.target.files);
-    setAttachments((prevAttachments) => [...prevAttachments, ...newFiles]);
+    form.setFieldValue("attachments", (prev) => [...prev, ...newFiles]);
   };
 
   // 移除附件
-  const removePhoto = (index: number) => {
-    URL.revokeObjectURL(photoPreviewUrls[index]);
-
-    setPhotos((prevPhotos) => prevPhotos.filter((_, i) => i !== index));
-    setPhotoPreviewUrls((prevUrls) => prevUrls.filter((_, i) => i !== index));
+  const removePhoto = (fileName: string) => {
+    form.setFieldValue("photos", (prev) => prev.filter((file) => file.name !== fileName));
+    form.validateField("photos", "change");
   };
-  const removeAttachment = (index: number) => {
-    setAttachments((prevAttachments) => prevAttachments.filter((_, i) => i !== index));
+  const removeAttachment = (fileName: string) => {
+    form.setFieldValue("attachments", (prev) => prev.filter((file) => file.name !== fileName));
+    form.validateField("attachments", "change");
   };
 
   // 標籤相關狀態
@@ -62,13 +131,18 @@ const NewPost = () => {
   const handleAddTagClick = (event: React.MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
   const handleAddTagClose = () => setAnchorEl(null);
   const handleAddTag = (value: string) => {
-    setTags([...tags, value]);
+    form.setFieldValue("tags", (prev) => Array.from(new Set([...prev, value])));
+    form.validateField("tags", "change");
     handleAddTagClose();
+  };
+  const handleDelTag = (tag: string) => {
+    form.setFieldValue("tags", (prev) => prev.filter((t) => t !== tag));
+    form.validateField("tags", "change");
   };
 
   // 插入表情符號到內容中
   const handleEmojiInsert = (emoji: string) => {
-    setContent((prevContent) => {
+    form.setFieldValue("content", (prevContent) => {
       const textField = document.querySelector('textarea[placeholder="分享你的想法..."]') as HTMLTextAreaElement;
 
       if (textField) {
@@ -132,62 +206,115 @@ const NewPost = () => {
       <Divider sx={{ my: 2 }} />
 
       <Box sx={{ px: 3 }}>
-        <TextField
-          fullWidth
-          label="標題"
-          variant="filled"
-          sx={{ mb: 0.5 }}
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          disabled={!authenticated || loading}
+        <form.Field
+          name="title"
+          validators={{ onSubmit: formElementsSchema.title }}
+          children={(field) => (
+            <TextField
+              name={field.name}
+              fullWidth
+              label="標題"
+              variant="filled"
+              sx={{ mb: 0.5 }}
+              disabled={!authenticated || loading}
+              type="text"
+              error={getFormIsError(field.state.meta.errors)}
+              value={field.state.value}
+              onChange={(e) => field.handleChange(e.target.value)}
+              onBlur={field.handleBlur}
+            />
+          )}
         />
-        <TextField
-          multiline
-          fullWidth
-          placeholder="分享你的想法..."
-          variant="filled"
-          minRows={6}
-          maxRows={12}
-          size="small"
-          sx={{ mb: 1 }}
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          disabled={!authenticated || loading}
+        <form.Field
+          name="content"
+          validators={{ onSubmit: formElementsSchema.content }}
+          children={(field) => (
+            <TextField
+              name={field.name}
+              multiline
+              fullWidth
+              placeholder="分享你的想法..."
+              variant="filled"
+              minRows={6}
+              maxRows={12}
+              size="small"
+              sx={{ mb: 1 }}
+              disabled={!authenticated || loading}
+              type="text"
+              error={getFormIsError(field.state.meta.errors)}
+              value={field.state.value}
+              onChange={(e) => field.handleChange(e.target.value)}
+              onBlur={field.handleBlur}
+            />
+          )}
         />
 
-        {/* 附件預覽 */}
-        {photoPreviewUrls.length > 0 && (
-          <Box sx={{ mb: 1, display: "flex", flexWrap: "wrap", gap: 1 }}>
-            {photoPreviewUrls.map((url, index) => (
-              <Box
-                key={index}
-                sx={{ position: "relative", width: 100, height: 100, borderRadius: 1, overflow: "hidden" }}
-              >
-                <img
-                  src={url}
-                  alt={`上傳的圖片 ${index + 1}`}
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                />
-                <IconButton
-                  size="small"
-                  onClick={() => removePhoto(index)}
-                  sx={{
-                    position: "absolute",
-                    top: 4,
-                    right: 4,
-                    bgcolor: "divider",
-                    color: "white",
-                    "&:hover": { bgcolor: "error.main" },
-                    p: 0.5,
-                  }}
-                >
-                  <CloseRoundedIcon fontSize="small" />
-                </IconButton>
+        <form.Field
+          name="photos"
+          validators={{ onChange: formElementsSchema.photos }}
+          children={(field) =>
+            field.state.value.length > 0 && (
+              <Box sx={{ mb: 1, display: "flex", flexWrap: "wrap", gap: 1 }}>
+                {uniqueByField(field.state.value, "name").map((file, i) => {
+                  const url = URL.createObjectURL(file);
+                  return (
+                    <BoxM
+                      key={file.name}
+                      layout
+                      sx={{ position: "relative", width: 100, height: 100, borderRadius: 1, overflow: "hidden" }}
+                    >
+                      <img
+                        src={url}
+                        alt={`上傳的圖片 ${i + 1}`}
+                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                        onLoad={() => URL.revokeObjectURL(url)}
+                      />
+                      <IconButton
+                        size="small"
+                        onClick={() => removePhoto(file.name)}
+                        sx={{
+                          position: "absolute",
+                          top: 4,
+                          right: 4,
+                          bgcolor: "divider",
+                          color: "white",
+                          "&:hover": { bgcolor: "error.main" },
+                          p: 0.5,
+                        }}
+                      >
+                        <CloseRoundedIcon fontSize="small" />
+                      </IconButton>
+                    </BoxM>
+                  );
+                })}
               </Box>
-            ))}
-          </Box>
-        )}
-        {attachments.length > 0 && (
+            )
+          }
+        />
+
+        <form.Field
+          name="attachments"
+          validators={{ onChange: formElementsSchema.attachments }}
+          children={(field) =>
+            field.state.value.length > 0 && (
+              <Box sx={{ mb: 1 }}>
+                <Typography variant="body2" sx={{ color: "text.secondary", mb: 0.5 }}>
+                  附件檔案：
+                </Typography>
+                {uniqueByField(field.state.value, "name").map((file) => (
+                  <BoxM key={file.name} layout sx={{ mr: 1, mb: 1, display: "inline-block" }}>
+                    <Chip
+                      label={`${file.name} (${formatFileSize(file.size)})`}
+                      onDelete={() => removeAttachment(file.name)}
+                    />
+                  </BoxM>
+                ))}
+              </Box>
+            )
+          }
+        />
+
+        {/* {attachments.length > 0 && (
           <Box sx={{ mb: 1 }}>
             <Typography variant="body2" sx={{ color: "text.secondary", mb: 0.5 }}>
               附件檔案：
@@ -201,17 +328,25 @@ const NewPost = () => {
               />
             ))}
           </Box>
-        )}
+        )} */}
 
         <Box sx={{ display: "flex", gap: 1, alignItems: "center", flexWrap: "wrap" }}>
           <Typography variant="body2" component="span" sx={{ color: "text.secondary" }}>
             標籤：
           </Typography>
-          {[...new Set(tags)].map((tag) => (
-            <Tooltip title="刪除" arrow placement="top" key={tag}>
-              <Chip label={tag} clickable onClick={() => setTags(tags.filter((t) => t !== tag))} />
-            </Tooltip>
-          ))}
+          <form.Field name="tags" validators={{ onChange: formElementsSchema.tags }} children={() => null} />
+          <form.Subscribe
+            selector={(state) => state.values.tags}
+            children={(tags) => (
+              <>
+                {[...new Set(tags)].map((tag) => (
+                  <Tooltip title="刪除" arrow placement="top" key={tag}>
+                    <Chip label={tag} clickable onClick={() => handleDelTag(tag)} />
+                  </Tooltip>
+                ))}
+              </>
+            )}
+          />
 
           <Chip
             label="新增標籤"
@@ -283,15 +418,20 @@ const NewPost = () => {
           </Tooltip>
         </Box>
 
-        <Button
-          variant="contained"
-          color="primary"
-          endIcon={<PublishRoundedIcon />}
-          onClick={handleSubmit}
-          disabled={!authenticated || loading}
-        >
-          發佈
-        </Button>
+        <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+          <Button variant="outlined" onClick={() => form.reset()} disabled={!authenticated || loading}>
+            取消
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            endIcon={<PublishRoundedIcon />}
+            onClick={handleSubmit}
+            disabled={!authenticated || loading}
+          >
+            發佈
+          </Button>
+        </Box>
       </Box>
     </>
   );
