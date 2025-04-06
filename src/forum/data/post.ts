@@ -187,6 +187,7 @@ type FetchPostByIdResult = {
   likeCount: number;
   commentCount: number;
   isFromFollowing: boolean; // 是否來自追蹤者
+  isSelf: boolean; // 是否為自己創建的貼文
 };
 
 type FetchPostById = (params: FetchPostByIdParams) => Promise<FetchPostByIdResult | null>;
@@ -264,6 +265,7 @@ const fetchPostById: FetchPostById = async ({ postId, incrementViewCount = false
     likeCount: post.likeCount || 0,
     commentCount: post.commentCount || 0,
     isFromFollowing: Boolean(post.isFromFollowing),
+    isSelf: currentUserId ? post.userId === currentUserId : false,
   };
 };
 
