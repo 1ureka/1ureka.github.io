@@ -7,6 +7,7 @@ import PersonPinCircleRoundedIcon from "@mui/icons-material/PersonPinCircleRound
 import { usePostById } from "@/forum/hooks/post";
 import { LikeButton } from "./shared/LikeButton";
 import { TopicTags } from "./shared/TopicTags";
+import { SelfActions } from "./shared/SelfActions";
 import { LoadingPostHeader, PostHeader } from "./shared/PostHeader";
 import { routes } from "@/routes";
 
@@ -149,7 +150,7 @@ const CollapsedPost = ({ postId }: { postId: number }) => {
       >
         <Box sx={{ position: "absolute", inset: 0, bgcolor: "divider", opacity: 0.35 }} />
 
-        <LikeButton postId={post.id} likeCount={post.likeCount} />
+        {post.isSelf ? <SelfActions post={post} /> : <LikeButton postId={post.id} likeCount={post.likeCount} />}
 
         <Button
           color="inherit"

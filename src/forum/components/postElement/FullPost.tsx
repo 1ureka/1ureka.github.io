@@ -11,6 +11,7 @@ import { LoadingPostHeader, PostHeader } from "./shared/PostHeader";
 import { TopicTags } from "./shared/TopicTags";
 import { LikeButton } from "./shared/LikeButton";
 import { FavButton } from "./shared/FavButton";
+import { SelfActions } from "./shared/SelfActions";
 import type { FetchPostByIdResult } from "@/forum/data/post";
 
 // 用於生成載入中的貼文內容 (每個lenght長度是0~1)
@@ -192,8 +193,14 @@ const FullPost = ({ post }: { post: FetchPostByIdResult }) => (
     >
       <Box sx={{ position: "absolute", inset: 0, bgcolor: "divider", opacity: 0.35 }} />
 
-      <LikeButton postId={post.id} likeCount={post.likeCount} />
-      <FavButton postId={post.id} />
+      {post.isSelf ? (
+        <SelfActions post={post} />
+      ) : (
+        <>
+          <LikeButton postId={post.id} likeCount={post.likeCount} />
+          <FavButton postId={post.id} />
+        </>
+      )}
 
       <Box sx={{ flex: 1 }} />
 

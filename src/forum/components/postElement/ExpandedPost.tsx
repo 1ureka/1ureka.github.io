@@ -7,6 +7,7 @@ import ThumbUpRoundedIcon from "@mui/icons-material/ThumbUpRounded";
 import { LikeButton } from "./shared/LikeButton";
 import { FavButton } from "./shared/FavButton";
 import { TopicTags } from "./shared/TopicTags";
+import { SelfActions } from "./shared/SelfActions";
 import { LoadingPostHeader, PostHeader } from "./shared/PostHeader";
 import { usePostById } from "@/forum/hooks/post";
 import { routes } from "@/routes";
@@ -230,8 +231,14 @@ const ExpandedPost = ({ postId }: { postId: number }) => {
       >
         <Box sx={{ position: "absolute", inset: 0, bgcolor: "divider", opacity: 0.35 }} />
 
-        <LikeButton postId={post.id} likeCount={post.likeCount} />
-        <FavButton postId={post.id} />
+        {post.isSelf ? (
+          <SelfActions post={post} />
+        ) : (
+          <>
+            <LikeButton postId={post.id} likeCount={post.likeCount} />
+            <FavButton postId={post.id} />
+          </>
+        )}
 
         <Button
           color="inherit"
