@@ -2,6 +2,7 @@ import { Box, Button, Chip, Divider, Skeleton, Typography } from "@mui/material"
 import CommentRoundedIcon from "@mui/icons-material/CommentRounded";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 import ThumbUpRoundedIcon from "@mui/icons-material/ThumbUpRounded";
+import PersonPinCircleRoundedIcon from "@mui/icons-material/PersonPinCircleRounded";
 
 import { usePostById } from "@/forum/hooks/post";
 import { LikeButton } from "./shared/LikeButton";
@@ -121,8 +122,15 @@ const CollapsedPost = ({ postId }: { postId: number }) => {
           {post.content}
         </Typography>
 
-        <Box sx={{ display: "flex", gap: 1.5, mt: 2 }}>
+        <Box sx={{ display: "flex", gap: 1.5, mt: 2, alignItems: "center" }}>
           <TopicTags post={post} displayCount={3} />
+
+          {post.isFromFollowing && (
+            <>
+              <Box sx={{ flex: 1 }} />
+              <Chip size="small" label={"來自追蹤者"} variant="outlined" icon={<PersonPinCircleRoundedIcon />} />
+            </>
+          )}
         </Box>
       </Box>
 
