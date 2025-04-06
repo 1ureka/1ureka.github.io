@@ -25,7 +25,7 @@ type ActionsProps = {
 
 const Actions = ({ alignDirection, selectedNodes, onAlign, onResetAlign, onResetView, onFocus }: ActionsProps) => {
   return (
-    <Panel position="bottom-left">
+    <Panel position="top-left">
       <Box
         sx={{
           display: "flex",
@@ -200,6 +200,11 @@ function Flow({
         colorMode={mode}
         minZoom={0.7}
         maxZoom={1.5}
+        defaultViewport={{
+          x: 100,
+          y: 100,
+          zoom: 0.9,
+        }}
         defaultEdgeOptions={{
           type: "smoothstep",
           animated: true,
