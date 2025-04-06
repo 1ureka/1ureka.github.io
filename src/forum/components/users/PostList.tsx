@@ -81,7 +81,7 @@ const PostListWrapper = () => {
         <>
           <Stack sx={{ p: 1 }} />
           <NewPost />
-          <Divider sx={{ mb: 2 }} />
+          <Divider />
         </>
       )}
       <PostList userId={user.id} />
