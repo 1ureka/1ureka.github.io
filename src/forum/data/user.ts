@@ -47,7 +47,7 @@ const fetchUsers: FetchUsers = async ({
   // 如果需要篩選未追蹤的使用者，先獲取當前登入的使用者資訊
   let currentUserId: number | null = null;
   if (isUnfollowed) {
-    const session = await getSession();
+    const session = await getSession({ server: true });
     currentUserId = session.authenticated ? session.user.id : null;
   }
 

@@ -10,7 +10,7 @@ const staleTime = 1000 * 60 * 5; // 5分鐘
 export const useSession = (): Session => {
   const { data, isFetching, error } = useQuery({
     queryKey: ["session"],
-    queryFn: getSession,
+    queryFn: () => getSession({ server: false }),
     staleTime,
   });
 

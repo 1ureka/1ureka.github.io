@@ -56,9 +56,9 @@ const login: Login = async ({ username, password }) => {
 // 獲取會話資訊 (現實中應該要從 http only cookie 獲取，但這裡為了簡化，直接從 localStorage 獲取)
 // ----------------------------
 
-type GetSession = () => Promise<Session>;
+type GetSession = (options?: { server: boolean }) => Promise<Session>;
 
-const getSession: GetSession = async () => {
+const getSession: GetSession = async ({ server } = { server: false }) => {
   // 檢查會話是否存在
   const sessionStr = localStorage.getItem(SESSION_STORAGE_KEY);
   if (!sessionStr) return { authenticated: false, user: null, loading: false, error: null };
@@ -84,7 +84,7 @@ const getSession: GetSession = async () => {
     WHERE id = $userId
     LIMIT 1
   `;
-  const result = await SQLiteClient.exec(sql, { $userId: storedSession.user.id });
+  const result = await SQLiteClient.exec(sql, { $userId: storedSession.user.id }, server);
 
   // 如果使用者不存在，清除會話
   if (result.length === 0) {
@@ -184,7 +184,7 @@ type EditProfile = (params: EditProfileParams) => Promise<Session>;
 
 const editProfile: EditProfile = async ({ userId, username, email, description }) => {
   // 取得目前的登入狀態
-  const currentSession = await getSession();
+  const currentSession = await getSession({ server: true });
   if (!currentSession.authenticated || currentSession.user.id !== userId) {
     return { authenticated: false, user: null, loading: false, error: "未登入或無權限" };
   }
@@ -275,7 +275,7 @@ type ChangePassword = (params: ChangePasswordParams) => Promise<Session>;
 
 const changePassword: ChangePassword = async ({ userId, currentPassword, newPassword }) => {
   // 取得目前的登入狀態
-  const currentSession = await getSession();
+  const currentSession = await getSession({ server: true });
   if (!currentSession.authenticated || currentSession.user.id !== userId) {
     return { authenticated: false, user: null, loading: false, error: "未登入或無權限" };
   }
@@ -329,7 +329,7 @@ type DeleteAccount = (params: DeleteAccountParams) => Promise<{ success: boolean
 
 const deleteAccount: DeleteAccount = async ({ userId }) => {
   // 取得目前的登入狀態
-  const currentSession = await getSession();
+  const currentSession = await getSession({ server: true });
   if (!currentSession.authenticated || currentSession.user.id !== userId) {
     return { success: false, error: "未登入或無權限" };
   }

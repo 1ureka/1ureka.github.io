@@ -91,7 +91,7 @@ const fetchPosts: FetchPosts = async ({
 
   if (prioritizeFollowers) {
     // 獲取當前session中的使用者ID
-    const session = await getSession();
+    const session = await getSession({ server: true });
     const currentUserId = session.authenticated ? session.user.id : null;
 
     if (currentUserId) {
@@ -195,7 +195,7 @@ type FetchPostById = (params: FetchPostByIdParams) => Promise<FetchPostByIdResul
 const fetchPostById: FetchPostById = async ({ postId, incrementViewCount = false }) => {
   // 獲取當前使用者資訊，用於判斷是否來自追蹤者
   let currentUserId: number | null = null;
-  const session = await getSession();
+  const session = await getSession({ server: true });
   currentUserId = session.authenticated ? session.user.id : null;
 
   // 更新瀏覽計數 (非重要，因此不使用 await)
@@ -279,7 +279,7 @@ type CreatePost = (params: CreatePostParams) => Promise<{ error: string } | numb
 
 const createPost: CreatePost = async ({ title, content, tags, photos, attachments }) => {
   // 獲取當前使用者 ID
-  const session = await getSession();
+  const session = await getSession({ server: true });
   if (!session.authenticated) return { error: "未登入或授權失效，無法創建貼文" };
   const userId = session.user.id;
 
