@@ -35,6 +35,10 @@
     "dev": "/src/forum/pages/users/index.html",
     "prod": "/forum/users"
   },
+  "forum_edit": {
+    "dev": "/src/forum/pages/edit/index.html",
+    "prod": "/forum/edit"
+  },
   "datahub_home": {
     "dev": "/src/datahub/pages/index.html",
     "prod": "/datahub"
