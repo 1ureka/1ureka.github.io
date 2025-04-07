@@ -66,6 +66,7 @@ const EditPage = () => {
         post.isSelf ? (
           <NewPost
             mode="edit"
+            postId={post.id}
             initialValues={{
               title: post.title,
               content: post.content,

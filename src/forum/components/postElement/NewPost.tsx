@@ -16,7 +16,7 @@ import { EmojiMenu } from "./shared/EmojiMenu";
 
 import { z } from "zod";
 import { useForm } from "@tanstack/react-form";
-import { useCreatePost } from "@/forum/hooks/post";
+import { useCreatePost, useUpdatePost } from "@/forum/hooks/post";
 import { getFormIsError } from "@/forum/utils/form";
 
 import { toEntries } from "@/utils/typedBuiltins";
@@ -74,13 +74,22 @@ const defaultValues: z.infer<typeof formSchema> = {
   attachments: [],
 };
 
-type NewPostProps = {
-  mode?: "create" | "edit";
-  initialValues?: Partial<typeof defaultValues>;
-};
+type NewPostProps =
+  | {
+      mode?: "create";
+      initialValues?: Partial<typeof defaultValues>;
+      postId?: never;
+    }
+  | {
+      mode: "edit";
+      initialValues: Partial<typeof defaultValues>;
+      postId: number;
+    };
 
-const NewPost = ({ mode = "create", initialValues = {} }: NewPostProps) => {
-  const { mutateAsync: createPost, isPending } = useCreatePost();
+const NewPost = ({ mode = "create", initialValues = {}, postId }: NewPostProps) => {
+  const { mutateAsync: createPost, isPending: isPendingCreate } = useCreatePost();
+  const { mutateAsync: updatePost, isPending: isPendingUpdate } = useUpdatePost();
+  const isPending = isPendingCreate || isPendingUpdate;
   const { user, authenticated, loading } = useSession();
 
   const form = useForm({
@@ -88,17 +97,31 @@ const NewPost = ({ mode = "create", initialValues = {} }: NewPostProps) => {
     validators: { onSubmit: formSchema },
     onSubmit: async ({ value }) => {
       if (isPending) return;
+
       const payload = {
         ...value,
         photos: value.photos.map((file) => ({ name: file.name, size: file.size, url: "" })),
         attachments: value.attachments.map((file) => ({ name: file.name, size: file.size, url: "" })),
       };
-      const result = await createPost(payload);
-      if (typeof result === "number") {
-        form.reset();
-        return console.log("發佈成功，貼文 ID：", result);
+
+      if (mode === "edit") {
+        if (!postId) return console.error("編輯模式需要提供 postId");
+        const result = await updatePost({ ...payload, id: postId });
+        if (result === null) {
+          window.location.reload();
+          return;
+        }
+        if (result.error) console.error(`貼文更新失敗：${result.error}`);
       }
-      if (result.error) console.error(`貼文發佈失敗：${result.error}`);
+
+      if (mode === "create") {
+        const result = await createPost(payload);
+        if (typeof result === "number") {
+          form.reset();
+          return console.log("發佈成功，貼文 ID：", result);
+        }
+        if (result.error) console.error(`貼文發佈失敗：${result.error}`);
+      }
     },
   });
 
