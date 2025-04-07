@@ -9,6 +9,11 @@ const getClient = () => {
   return client;
 };
 
+const downloadDatabase = async (fileName: string = "database.sqlite") => {
+  const client = getClient();
+  return client.downloadDatabase(fileName);
+};
+
 // --------------------------------------------------------
 // 資料庫大小、所有表、所有行數
 // --------------------------------------------------------
@@ -188,5 +193,6 @@ const getTableIndexInfo = async (tableName: string): Promise<TableIndexInfo[]> =
   return indexInfos;
 };
 
-export { getDbBytes, getObjectsByTypes, getTotalRowCount, getTableInfo, getTableForeignKeys, getTableIndexInfo };
+export { getDbBytes, downloadDatabase };
+export { getObjectsByTypes, getTotalRowCount, getTableInfo, getTableForeignKeys, getTableIndexInfo };
 export type { SQLiteObjectType, TableColumnInfo, TableForeignKey, TableIndexInfo };

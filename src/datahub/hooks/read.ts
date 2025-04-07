@@ -1,11 +1,24 @@
 import { useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { getDbBytes, getObjectsByTypes, getTableForeignKeys, getTableIndexInfo } from "../data/read";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { downloadDatabase, getDbBytes, getObjectsByTypes, getTableForeignKeys, getTableIndexInfo } from "../data/read";
 import { getTableInfo, getTotalRowCount } from "../data/read";
 import type { SQLiteObjectType, TableColumnInfo, TableIndexInfo } from "../data/read";
 
 // const staleTime = 1 * 60 * 1000;
 const staleTime = 0; // TODO: 測試完 loading state 後要記得改回 1 分鐘
+
+const useDownloadDb = () => {
+  return useMutation({
+    mutationFn: downloadDatabase,
+    onSuccess: (success) => {
+      if (success) console.log("下載資料庫成功");
+      else console.error("下載資料庫失敗");
+    },
+    onError: (error) => {
+      console.error("下載資料庫失敗:", error);
+    },
+  });
+};
 
 const useDbBytes = () => {
   return useQuery({
@@ -210,6 +223,6 @@ const useTreeView = () => {
   return { data, isFetching: isFetchingTables || isFetchingIndexes };
 };
 
-export { useDbBytes, useObjects, useRowCounts, useTableInfo, useForeignKeys, useIndexes };
+export { useDownloadDb, useDbBytes, useObjects, useRowCounts, useTableInfo, useForeignKeys, useIndexes };
 export { useFlowChart, useTreeView };
 export type { TableNodeData };

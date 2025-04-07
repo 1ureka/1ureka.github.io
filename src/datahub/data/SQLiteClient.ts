@@ -23,6 +23,53 @@ export class SQLiteClient {
     await this.dbPromise;
   }
 
+  /**
+   * 下載目前資料庫狀態為檔案
+   * @param fileName 下載檔案名稱
+   * @returns 是否成功下載
+   */
+  async downloadDatabase(fileName: string = "database.db"): Promise<boolean> {
+    const startTime = Date.now(); // 計時
+
+    try {
+      // 確保資料庫已載入
+      this.dbPromise = this.dbPromise === null ? this.loadDatabase() : this.dbPromise;
+      const db = await this.dbPromise;
+
+      // 匯出資料庫為 Uint8Array
+      const data = db.export();
+
+      // 建立 Blob 並下載
+      const blob = new Blob([data], { type: "application/x-sqlite3" });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = fileName;
+      a.style.display = "none";
+      document.body.appendChild(a);
+
+      // 至少等待 TEST_DELAY 毫秒
+      const elapsedTime = Date.now() - startTime;
+      if (elapsedTime < TEST_DELAY) {
+        await new Promise((resolve) => setTimeout(resolve, TEST_DELAY - elapsedTime));
+      }
+
+      a.click();
+
+      // 清理
+      setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 100);
+
+      return true;
+    } catch (error) {
+      console.error("下載資料庫失敗", error);
+      return false;
+    }
+  }
+
   // ----------------------------
   // SQL操作方法
   // ----------------------------
