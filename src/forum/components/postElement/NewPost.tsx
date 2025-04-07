@@ -74,12 +74,17 @@ const defaultValues: z.infer<typeof formSchema> = {
   attachments: [],
 };
 
-const NewPost = () => {
+type NewPostProps = {
+  mode?: "create" | "edit";
+  initialValues?: Partial<typeof defaultValues>;
+};
+
+const NewPost = ({ mode = "create", initialValues = {} }: NewPostProps) => {
   const { mutateAsync: createPost, isPending } = useCreatePost();
   const { user, authenticated, loading } = useSession();
 
   const form = useForm({
-    defaultValues,
+    defaultValues: { ...defaultValues, ...initialValues },
     validators: { onSubmit: formSchema },
     onSubmit: async ({ value }) => {
       if (isPending) return;
@@ -178,42 +183,44 @@ const NewPost = () => {
 
   return (
     <>
-      <Box sx={{ display: "flex", gap: 1, alignItems: "center", px: 3 }}>
-        <PeopleRoundedIcon
-          className="mode-light"
-          sx={{
-            fontSize: 48,
-            mr: 1,
-            bgcolor: "primary.main",
-            borderRadius: 1,
-            color: "background.default",
-            p: 1,
-            opacity: 0.8,
-          }}
-        />
-        {authenticated ? (
-          <>
-            <Typography variant="h5" component="h2" color="primary" sx={{ opacity: 0.8 }}>
-              {user.name}
-            </Typography>
-            <Typography variant="h5" component="h2">
-              ，你在想些什麼？
-            </Typography>
-          </>
-        ) : loading ? (
-          <Skeleton variant="rounded" animation="wave">
+      {mode === "create" && (
+        <Box sx={{ display: "flex", gap: 1, alignItems: "center", px: 3 }}>
+          <PeopleRoundedIcon
+            className="mode-light"
+            sx={{
+              fontSize: 48,
+              mr: 1,
+              bgcolor: "primary.main",
+              borderRadius: 1,
+              color: "background.default",
+              p: 1,
+              opacity: 0.8,
+            }}
+          />
+          {authenticated ? (
+            <>
+              <Typography variant="h5" component="h2" color="primary" sx={{ opacity: 0.8 }}>
+                {user.name}
+              </Typography>
+              <Typography variant="h5" component="h2">
+                ，你在想些什麼？
+              </Typography>
+            </>
+          ) : loading ? (
+            <Skeleton variant="rounded" animation="wave">
+              <Typography variant="h5" component="h2">
+                登入就能分享你的想法喔 ✨
+              </Typography>
+            </Skeleton>
+          ) : (
             <Typography variant="h5" component="h2">
               登入就能分享你的想法喔 ✨
             </Typography>
-          </Skeleton>
-        ) : (
-          <Typography variant="h5" component="h2">
-            登入就能分享你的想法喔 ✨
-          </Typography>
-        )}
-      </Box>
+          )}
+        </Box>
+      )}
 
-      <Divider sx={{ my: 2 }} />
+      {mode === "create" && <Divider sx={{ my: 2 }} />}
 
       <Box sx={{ px: 3 }}>
         <form.Field
@@ -278,6 +285,15 @@ const NewPost = () => {
                         alt={`上傳的圖片 ${i + 1}`}
                         style={{ width: "100%", height: "100%", objectFit: "cover" }}
                         onLoad={() => URL.revokeObjectURL(url)}
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.onerror = null;
+                          target.src =
+                            "data:image/svg+xml;base64," +
+                            btoa(
+                              `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect width="100%" height="100%" fill="gray"/></svg>`
+                            );
+                        }}
                       />
                       <IconButton
                         size="small"
@@ -323,22 +339,6 @@ const NewPost = () => {
             )
           }
         />
-
-        {/* {attachments.length > 0 && (
-          <Box sx={{ mb: 1 }}>
-            <Typography variant="body2" sx={{ color: "text.secondary", mb: 0.5 }}>
-              附件檔案：
-            </Typography>
-            {attachments.map((file, index) => (
-              <Chip
-                key={index}
-                label={`${file.name} (${(file.size / 1024).toFixed(1)}KB)`}
-                onDelete={() => removeAttachment(index)}
-                sx={{ mr: 1, mb: 1 }}
-              />
-            ))}
-          </Box>
-        )} */}
 
         <Box sx={{ display: "flex", gap: 1, alignItems: "center", flexWrap: "wrap" }}>
           <Typography variant="body2" component="span" sx={{ color: "text.secondary" }}>
