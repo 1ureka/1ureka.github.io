@@ -14,6 +14,7 @@ import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 import DatasetRoundedIcon from "@mui/icons-material/DatasetRounded";
 import { TreeViewTransition } from "./TreeViewTransition";
 import { ellipsisSx } from "../home/commonSx";
+import { iconSize } from "./treeViewSx";
 
 interface CustomTreeItemProps
   extends Omit<UseTreeItem2Parameters, "rootRef">,
@@ -24,7 +25,6 @@ interface CustomTreeItemProps
   caption?: string;
 }
 
-const iconSize = 4; // mui space
 const commonIconSx = { position: "absolute", color: "text.secondary", display: "grid", placeItems: "center" };
 const fakeEditable = false;
 
@@ -178,4 +178,4 @@ const CustomTreeItem = forwardRef(function CustomTreeItem(props: CustomTreeItemP
 
 const TreeViewItem = memo(CustomTreeItem);
 
-export { TreeViewItem, iconSize };
+export { TreeViewItem };

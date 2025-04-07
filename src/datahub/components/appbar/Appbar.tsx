@@ -7,8 +7,7 @@ import { SrearchTopic } from "./SearchTopic";
 import { SearchBar } from "./SearchBar";
 import { ThemeMenuWithButton } from "../ThemeMenu";
 import { AccountMenu } from "./AccountMenu";
-
-const APPBAR_HEIGHT = 72; // px
+import { APPBAR_HEIGHT } from "./appbarSx";
 
 const flexRowSx: BoxProps["sx"] = {
   display: "flex",
@@ -67,4 +66,4 @@ const Appbar = () => {
   );
 };
 
-export { Appbar, APPBAR_HEIGHT };
+export { Appbar };

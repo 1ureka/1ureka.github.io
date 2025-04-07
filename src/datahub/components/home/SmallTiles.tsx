@@ -118,6 +118,8 @@ const Tile2 = () => {
   );
 };
 
+const fakeLoadErrorState = true;
+
 const SmallTiles = () => {
   return (
     <Box
@@ -145,7 +147,7 @@ const SmallTiles = () => {
 
         <Stack sx={{ alignItems: "flex-start" }}>
           <TileTitle>潛在問題</TileTitle>
-          {true ? (
+          {fakeLoadErrorState ? (
             <TileContent sx={{ textWrap: "nowrap", color: "warning.main", display: "inline-block", ...underlineSx }}>
               2
               <OpenInNewRoundedIcon fontSize="small" sx={{ verticalAlign: "middle", ml: 0.5 }} />

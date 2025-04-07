@@ -1,11 +1,12 @@
 import { SimpleTreeView } from "@mui/x-tree-view/SimpleTreeView";
 import UnfoldMoreRoundedIcon from "@mui/icons-material/UnfoldMoreRounded";
 import UnfoldLessRoundedIcon from "@mui/icons-material/UnfoldLessRounded";
-import { iconSize, TreeViewItem } from "./TreeViewItem";
+import { TreeViewItem } from "./TreeViewItem";
 import { useEffect, useState } from "react";
 import { useTreeView } from "@/datahub/hooks/read";
 import { Box, CircularProgress } from "@mui/material";
 import { toEntries } from "@/utils/typedBuiltins";
+import { iconSize } from "./treeViewSx";
 
 const sep = ",_,";
 

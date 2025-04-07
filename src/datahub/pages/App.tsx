@@ -2,9 +2,10 @@ import { Box, Stack } from "@mui/material";
 import { useResponsiveFontSize } from "../utils/theme";
 import { useSqliteInitializer } from "../hooks/useSQLiteInitializer";
 
+import { APPBAR_HEIGHT } from "../components/appbar/appbarSx";
 import { AppWrapper } from "@/datahub/components/AppWrapper";
 import { AppNotSupported } from "../components/AppError";
-import { Appbar, APPBAR_HEIGHT } from "../components/appbar/Appbar";
+import { Appbar } from "../components/appbar/Appbar";
 import { Sidebar } from "../components/aside/Sidebar";
 import { Header } from "../components/aside/Header";
 import { Page } from "./Page";
