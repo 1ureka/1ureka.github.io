@@ -4,14 +4,22 @@ import EditNoteRoundedIcon from "@mui/icons-material/EditNoteRounded";
 import DeleteSweepRoundedIcon from "@mui/icons-material/DeleteSweepRounded";
 import { routes } from "@/routes";
 import { useState } from "react";
+import { useDeletePost } from "@/forum/hooks/post";
 
 const SelfActions = ({ post }: { post: FetchPostByIdResult }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
+  const handleOpen = (event: React.MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
+  const handleClose = () => setAnchorEl(null);
+
+  const { mutateAsync: deletePost, isPending } = useDeletePost();
+  const handleDelete = async () => {
+    const result = await deletePost(post.id);
+    if (result === null) {
+      window.location.reload();
+      return;
+    }
+    console.error("刪除貼文失敗" + result.error);
+    handleClose();
   };
 
   return (
@@ -39,15 +47,15 @@ const SelfActions = ({ post }: { post: FetchPostByIdResult }) => {
             確認刪除貼文後，將無法復原，請謹慎操作。
           </Typography>
           <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 1 }}>
-            <Button variant="outlined" size="small" onClick={handleClose} color="inherit">
+            <Button variant="outlined" size="small" onClick={handleClose} color="inherit" loading={isPending}>
               取消
             </Button>
             <Button
               variant="contained"
               color="error"
               size="small"
-              onClick={handleClose}
-              //   disabled={status === "pending"}
+              onClick={handleDelete}
+              loading={isPending}
               disableElevation
             >
               確認刪除
