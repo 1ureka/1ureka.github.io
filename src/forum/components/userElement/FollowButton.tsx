@@ -33,6 +33,12 @@ const PrimaryFollowButton = ({ targetId }: { targetId: number }) => {
           "&:hover": { bgcolor: "primary.main", scale: "1.05", boxShadow: 3 },
           "&:active": { scale: "0.95" },
         }}
+        onClick={() => {
+          const accountSettingButton = document.querySelector(".account-settings-button") as HTMLButtonElement;
+          if (accountSettingButton) {
+            accountSettingButton.click();
+          }
+        }}
       >
         編輯個人資料
       </Button>

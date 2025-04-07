@@ -38,7 +38,7 @@ const AccountMenuList = ({ onItemClick, user }: { onItemClick: () => void; user:
         個人檔案
       </MenuItem>
 
-      <MenuItem onClick={handleOpenDialog}>
+      <MenuItem onClick={handleOpenDialog} className="account-settings-button">
         <ListItemIcon>
           <ManageAccountsRoundedIcon />
         </ListItemIcon>
@@ -91,6 +91,7 @@ const AccountMenuDesktop = () => {
           transformOrigin={{ horizontal: "center", vertical: "top" }}
           open={Boolean(anchorEl)}
           onClose={handleClose}
+          keepMounted
         >
           <AccountMenuList onItemClick={handleClose} user={user} />
         </Popover>
@@ -142,6 +143,7 @@ const AccountMenuMobile = () => {
           onClose={handleClose}
           onOpen={handleOpen}
           slotProps={{ paper: { sx: { width: 240 } } }}
+          keepMounted
         >
           <Puller />
 
