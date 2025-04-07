@@ -14,6 +14,7 @@ import { useResponsiveFontSize } from "@/forum/utils/theme";
 import { routes } from "@/routes";
 import { useUrl } from "@/forum/hooks/url";
 import { usePostById } from "@/forum/hooks/post";
+import { NewPost } from "@/forum/components/postElement/NewPost";
 
 const EditPage = () => {
   const isMd = useMediaQuery((theme) => theme.breakpoints.up("md"));
@@ -55,7 +56,7 @@ const EditPage = () => {
         </Button>
       </Box>
 
-      <Divider />
+      <Divider sx={{ mb: 2 }} />
 
       {isFetching ? (
         <Box sx={{ py: 8, display: "grid", placeItems: "center" }}>
@@ -63,7 +64,20 @@ const EditPage = () => {
         </Box>
       ) : post ? (
         post.isSelf ? (
-          <Typography sx={{ textAlign: "center" }}>{post.id}</Typography>
+          <NewPost
+            mode="edit"
+            initialValues={{
+              title: post.title,
+              content: post.content,
+              tags: post.tags,
+              photos: post.photos?.map(
+                ({ name, size }) => new File([new Uint8Array(size)], name, { type: "image/jpeg" })
+              ),
+              attachments: post.attachments?.map(
+                ({ name, size }) => new File([new Uint8Array(size)], name, { type: "application/pdf" })
+              ),
+            }}
+          />
         ) : (
           <Box sx={{ py: 6, display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
             <SentimentDissatisfiedRoundedIcon sx={{ fontSize: "6rem", color: "action.disabled" }} />
