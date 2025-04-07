@@ -5,7 +5,7 @@ import "@/forum/utils/app.css";
 const theme = createTheme({
   cssVariables: { colorSchemeSelector: ".mode-%s" },
   typography: {
-    fontFamily: `Comfortaa, "jf openhuninn", "Noto Sans TC"`,
+    fontFamily: `Comfortaa, "jf openhuninn"`,
   },
   colorSchemes: {
     light: {
