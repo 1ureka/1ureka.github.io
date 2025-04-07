@@ -13,6 +13,8 @@ import { LikeButton } from "./shared/LikeButton";
 import { FavButton } from "./shared/FavButton";
 import { SelfActions } from "./shared/SelfActions";
 import type { FetchPostByIdResult } from "@/forum/data/post";
+import { PhotoDialog } from "./shared/PhotoDialog";
+import { useState } from "react";
 
 // 用於生成載入中的貼文內容 (每個lenght長度是0~1)
 const randomLengthArray = (length: number) => Array.from({ length }, () => Math.random() * 0.7 + 0.3);
@@ -84,140 +86,147 @@ const LoadingFullPost = () => (
   </Box>
 );
 
-const FullPost = ({ post }: { post: FetchPostByIdResult }) => (
-  <Box sx={{ pt: 1.5 }}>
-    <title>{`論壇樣板 | ${post.title}`}</title>
-    <Divider />
+const FullPost = ({ post }: { post: FetchPostByIdResult }) => {
+  const [photo, setOpenPhoto] = useState({ open: false, name: "" });
+  const handleOpen = (name: string) => setOpenPhoto({ open: true, name });
+  const handleClose = () => setOpenPhoto((prev) => ({ open: false, name: prev.name }));
 
-    <Box sx={{ position: "relative", py: 1.5, height: "fit-content" }}>
-      <Box sx={{ position: "absolute", inset: 0, bgcolor: "divider", opacity: 0.35, pointerEvents: "none" }} />
-      <Box sx={{ px: 2.5 }}>
-        <PostHeader post={post} sx={{ m: 0 }} />
+  return (
+    <Box sx={{ pt: 1.5 }}>
+      <title>{`論壇樣板 | ${post.title}`}</title>
+      <Divider />
+
+      <Box sx={{ position: "relative", py: 1.5, height: "fit-content" }}>
+        <Box sx={{ position: "absolute", inset: 0, bgcolor: "divider", opacity: 0.35, pointerEvents: "none" }} />
+        <Box sx={{ px: 2.5 }}>
+          <PostHeader post={post} sx={{ m: 0 }} />
+        </Box>
       </Box>
-    </Box>
 
-    <Divider sx={{ mb: 2.5 }} />
+      <Divider sx={{ mb: 2.5 }} />
 
-    <Box sx={{ px: 2.5 }}>
-      <Typography variant="h4" component="h2" sx={{ textAlign: "start" }} gutterBottom>
-        {post.title}
-      </Typography>
-      <Typography variant="body2" component="p" sx={{ whiteSpace: "pre-line" }}>
-        {post.content}
-      </Typography>
+      <Box sx={{ px: 2.5 }}>
+        <Typography variant="h4" component="h2" sx={{ textAlign: "start" }} gutterBottom>
+          {post.title}
+        </Typography>
+        <Typography variant="body2" component="p" sx={{ whiteSpace: "pre-line" }}>
+          {post.content}
+        </Typography>
 
-      {post.photos && post.photos.length > 0 && (
-        <Box sx={{ display: "grid", gap: 1, mt: 2, gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))" }}>
-          {post.photos.map(({ name, url }, i) => (
-            <Tooltip title="查看圖片" key={`${url}${i}`} arrow placement="top">
-              <ButtonBase
-                sx={{
-                  position: "relative",
-                  aspectRatio: "1 / 1",
-                  bgcolor: "divider",
-                  borderRadius: 1,
-                  overflow: "hidden",
-                }}
-              >
-                {/* <img src={""} style={{ display: "block", position: "absolute", inset: 0 }} /> */}
+        {post.photos && post.photos.length > 0 && (
+          <Box sx={{ display: "grid", gap: 1, mt: 2, gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))" }}>
+            {post.photos.map(({ name, url }, i) => (
+              <Tooltip title="查看圖片" key={`${url}${i}`} arrow placement="top">
+                <ButtonBase
+                  onClick={() => handleOpen(name)}
+                  sx={{
+                    position: "relative",
+                    aspectRatio: "1 / 1",
+                    bgcolor: "divider",
+                    borderRadius: 1,
+                    overflow: "hidden",
+                  }}
+                >
+                  {/* <img src={""} style={{ display: "block", position: "absolute", inset: 0 }} /> */}
 
-                <Box sx={{ position: "absolute", inset: "auto 0 0 0", pb: 1, display: "grid", placeItems: "center" }}>
-                  <Box sx={{ maxWidth: 150 }}>
-                    <Chip label={name} size="small" />
+                  <Box sx={{ position: "absolute", inset: "auto 0 0 0", pb: 1, display: "grid", placeItems: "center" }}>
+                    <Box sx={{ maxWidth: 150 }}>
+                      <Chip label={name} size="small" />
+                    </Box>
                   </Box>
-                </Box>
-              </ButtonBase>
-
-              {/* TODO: 用於顯示圖片的 dialog */}
-            </Tooltip>
-          ))}
-        </Box>
-      )}
-
-      <Stack
-        sx={{
-          gap: 1.5,
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexWrap: "wrap-reverse",
-          mt: 2,
-        }}
-      >
-        <Box sx={{ display: "flex", gap: 1.5, flexWrap: "wrap", alignItems: "center" }}>
-          <Typography
-            variant="subtitle2"
-            sx={{ color: "text.secondary", display: "flex", alignItems: "center", gap: 0.5 }}
-          >
-            <SellIcon fontSize="small" />
-            標籤：
-          </Typography>
-          <TopicTags post={post} displayCount={99} />
-        </Box>
-
-        {post.attachments && post.attachments.length > 0 && (
-          <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", alignItems: "center" }}>
-            <Typography
-              variant="subtitle2"
-              sx={{ color: "text.secondary", display: "flex", alignItems: "center", gap: 0.5 }}
-            >
-              <AttachFileRoundedIcon fontSize="small" />
-              附件：
-            </Typography>
-            {post.attachments.map((file, index) => (
-              <Tooltip title="下載附件" key={index} arrow placement="top">
-                <Chip
-                  label={`${file.name} (${(file.size / 1024).toFixed(1)}KB)`}
-                  clickable
-                  icon={<AttachFileRoundedIcon fontSize="small" />}
-                />
+                </ButtonBase>
               </Tooltip>
             ))}
           </Box>
         )}
-      </Stack>
-    </Box>
 
-    <Divider sx={{ mt: 2.5 }} />
+        <PhotoDialog open={photo.open} onClose={handleClose} name={photo.name} />
 
-    <Box
-      sx={{
-        px: 2.5,
-        py: 1,
-        display: "flex",
-        gap: 1.5,
-        alignItems: "center",
-        position: "relative",
-        color: "text.secondary",
-      }}
-    >
-      <Box sx={{ position: "absolute", inset: 0, bgcolor: "divider", opacity: 0.35 }} />
+        <Stack
+          sx={{
+            gap: 1.5,
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexWrap: "wrap-reverse",
+            mt: 2,
+          }}
+        >
+          <Box sx={{ display: "flex", gap: 1.5, flexWrap: "wrap", alignItems: "center" }}>
+            <Typography
+              variant="subtitle2"
+              sx={{ color: "text.secondary", display: "flex", alignItems: "center", gap: 0.5 }}
+            >
+              <SellIcon fontSize="small" />
+              標籤：
+            </Typography>
+            <TopicTags post={post} displayCount={99} />
+          </Box>
 
-      {post.isSelf ? (
-        <SelfActions post={post} />
-      ) : (
-        <>
-          <LikeButton postId={post.id} likeCount={post.likeCount} />
-          <FavButton postId={post.id} />
-        </>
-      )}
+          {post.attachments && post.attachments.length > 0 && (
+            <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", alignItems: "center" }}>
+              <Typography
+                variant="subtitle2"
+                sx={{ color: "text.secondary", display: "flex", alignItems: "center", gap: 0.5 }}
+              >
+                <AttachFileRoundedIcon fontSize="small" />
+                附件：
+              </Typography>
+              {post.attachments.map((file, index) => (
+                <Tooltip title="下載附件" key={index} arrow placement="top">
+                  <Chip
+                    label={`${file.name} (${(file.size / 1024).toFixed(1)}KB)`}
+                    clickable
+                    icon={<AttachFileRoundedIcon fontSize="small" />}
+                  />
+                </Tooltip>
+              ))}
+            </Box>
+          )}
+        </Stack>
+      </Box>
 
-      <Box sx={{ flex: 1 }} />
+      <Divider sx={{ mt: 2.5 }} />
 
-      <Button
-        startIcon={<VisibilityRoundedIcon />}
-        disabled
-        size="small"
-        sx={{ "button&.Mui-disabled": { color: "text.secondary", opacity: 0.8 } }}
+      <Box
+        sx={{
+          px: 2.5,
+          py: 1,
+          display: "flex",
+          gap: 1.5,
+          alignItems: "center",
+          position: "relative",
+          color: "text.secondary",
+        }}
       >
-        <Typography variant="caption" component="span">
-          {post.viewCount} 次瀏覽
-        </Typography>
-      </Button>
-    </Box>
+        <Box sx={{ position: "absolute", inset: 0, bgcolor: "divider", opacity: 0.35 }} />
 
-    <Divider flexItem />
-  </Box>
-);
+        {post.isSelf ? (
+          <SelfActions post={post} />
+        ) : (
+          <>
+            <LikeButton postId={post.id} likeCount={post.likeCount} />
+            <FavButton postId={post.id} />
+          </>
+        )}
+
+        <Box sx={{ flex: 1 }} />
+
+        <Button
+          startIcon={<VisibilityRoundedIcon />}
+          disabled
+          size="small"
+          sx={{ "button&.Mui-disabled": { color: "text.secondary", opacity: 0.8 } }}
+        >
+          <Typography variant="caption" component="span">
+            {post.viewCount} 次瀏覽
+          </Typography>
+        </Button>
+      </Box>
+
+      <Divider flexItem />
+    </Box>
+  );
+};
 
 export { FullPost, LoadingFullPost };
