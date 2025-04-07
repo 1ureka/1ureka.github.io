@@ -1,22 +1,64 @@
 import { useSession } from "@/forum/hooks/session";
 import { Avatar, Box, Button, TextField, type BoxProps } from "@mui/material";
-import { useRef, useState } from "react";
 import { EmojiMenu } from "../postElement/shared/EmojiMenu";
 import { UserAvatar } from "../userElement/UserAvatar";
 
-type NewCommentProps = {
-  onCancel?: () => void;
+import { z } from "zod";
+import { useRef } from "react";
+import { useForm } from "@tanstack/react-form";
+import { useCreateComment } from "@/forum/hooks/comment";
+import { getFormIsError, getFormErrorHelperText } from "@/forum/utils/form";
+import { toEntries } from "@/utils/typedBuiltins";
+
+const formElementsSchema = {
+  content: z.string().min(1, { message: "請輸入留言內容" }).max(250, { message: "留言內容過長" }),
 };
 
-const NewComment = ({ sx, onCancel, ...props }: BoxProps & NewCommentProps) => {
+const formSchema = z.object(formElementsSchema);
+const defaultValues: z.infer<typeof formSchema> = { content: "" };
+
+type NewCommentProps = { onCancel?: () => void; postId: number; parentId?: number };
+
+const NewComment = ({ sx, onCancel, postId, parentId, ...props }: BoxProps & NewCommentProps) => {
+  const { mutateAsync: createComment, isPending } = useCreateComment();
   const { user, authenticated, loading } = useSession();
 
+  const form = useForm({
+    defaultValues,
+    validators: { onSubmit: formSchema },
+    onSubmit: async ({ value }) => {
+      if (isPending) return;
+
+      const result = await createComment({ ...value, postId, parentId });
+      if (typeof result === "number") {
+        form.reset();
+        return console.log("發佈成功，留言 ID：", result);
+      }
+      if (result.error) console.error(`留言發佈失敗：${result.error}`);
+    },
+  });
+
+  const handleSubmit = async () => {
+    if (!form.state.canSubmit) {
+      toEntries(form.getAllErrors().fields).forEach(([fieldName, fieldErrors]) => {
+        fieldErrors.errors.forEach((error) => {
+          if (!error || typeof error !== "object") return;
+          if (!("message" in error)) return;
+          console.error(`${fieldName}: ${error.message}`);
+        });
+      });
+
+      console.error("請檢查表單是否填寫正確");
+      return;
+    }
+    form.handleSubmit();
+  };
+
   const ref = useRef<HTMLInputElement | null>(null);
-  const [content, setContent] = useState("");
 
   // 插入表情符號到內容中
   const handleEmojiInsert = (emoji: string) => {
-    setContent((prevContent) => {
+    form.setFieldValue("content", (prevContent) => {
       const textField = ref.current;
 
       if (textField) {
@@ -49,18 +91,27 @@ const NewComment = ({ sx, onCancel, ...props }: BoxProps & NewCommentProps) => {
           <Avatar sx={{ width: "2rem", height: "2rem", mt: 1.5 }} />
         )}
 
-        <Box sx={{ flex: 1 }} component="form">
-          <TextField
-            inputRef={ref}
-            variant="standard"
-            size="small"
-            name="comment"
-            label={authenticated ? "發表你的想法" : "登入後即可發表留言"}
-            fullWidth
-            type="text"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            disabled={!authenticated || loading}
+        <Box sx={{ flex: 1 }}>
+          <form.Field
+            name="content"
+            validators={{ onSubmit: formElementsSchema.content }}
+            children={(field) => (
+              <TextField
+                inputRef={ref}
+                name={field.name}
+                variant="standard"
+                size="small"
+                label={authenticated ? "發表你的想法" : "登入後即可發表留言"}
+                fullWidth
+                type="text"
+                disabled={!authenticated || loading}
+                error={getFormIsError(field.state.meta.errors)}
+                helperText={getFormErrorHelperText(field.state.meta.errors)}
+                value={field.state.value}
+                onChange={(e) => field.handleChange(e.target.value)}
+                onBlur={field.handleBlur}
+              />
+            )}
           />
 
           <Box sx={{ display: "flex", justifyContent: "space-between", mt: 1, alignItems: "center", gap: 1 }}>
@@ -71,20 +122,28 @@ const NewComment = ({ sx, onCancel, ...props }: BoxProps & NewCommentProps) => {
                 size="small"
                 disabled={!authenticated || loading}
                 sx={{ color: "text.secondary" }}
+                loading={isPending}
                 onClick={() => {
-                  setContent("");
+                  form.reset();
                   if (onCancel !== undefined) onCancel();
                 }}
               >
                 取消
               </Button>
-              <Button
-                size="small"
-                disabled={!authenticated || loading || content.trim().length === 0}
-                variant="contained"
-              >
-                留言
-              </Button>
+              <form.Subscribe
+                selector={(state) => state.values.content}
+                children={(value) => (
+                  <Button
+                    size="small"
+                    disabled={!authenticated || loading || value.trim().length === 0}
+                    variant="contained"
+                    onClick={handleSubmit}
+                    loading={isPending}
+                  >
+                    留言
+                  </Button>
+                )}
+              />
             </Box>
           </Box>
         </Box>

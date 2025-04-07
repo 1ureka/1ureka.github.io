@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
-import { fetchCommentById, fetchComments, type CommentOrderBy } from "../data/comment";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { createComment, fetchCommentById, fetchComments, type CommentOrderBy } from "../data/comment";
 
 const staleTime = 1000 * 60 * 1;
 
@@ -27,4 +27,17 @@ const useCommentById = (commentId: number) => {
   });
 };
 
-export { useCommentsByPostId, useCommentsByParentId, useCommentById };
+const useCreateComment = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: createComment,
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["commentsByPost"] });
+      queryClient.invalidateQueries({ queryKey: ["commentsByParent"] });
+      queryClient.invalidateQueries({ queryKey: ["comment"] });
+      queryClient.invalidateQueries({ queryKey: ["post"] });
+    },
+  });
+};
+
+export { useCommentsByPostId, useCommentsByParentId, useCommentById, useCreateComment };
