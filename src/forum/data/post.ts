@@ -318,8 +318,90 @@ const createPost: CreatePost = async ({ title, content, tags, photos, attachment
 };
 
 // ----------------------------
+// 更新貼文
+// ----------------------------
+
+type UpdatePostParams = Pick<FetchPostByIdResult, "id" | "title" | "content" | "tags" | "photos" | "attachments">;
+type UpdatePost = (params: UpdatePostParams) => Promise<{ error: string } | null>;
+
+const updatePost: UpdatePost = async ({ id: postId, title, content, tags, photos, attachments }) => {
+  // 獲取當前使用者 ID
+  const session = await getSession({ server: true });
+  if (!session.authenticated) return { error: "未登入或授權失效，無法更新貼文" };
+  const userId = session.user.id;
+
+  // 驗證使用者是否為貼文擁有者
+  const checkOwnerSql = `SELECT userId FROM posts WHERE id = $postId`;
+  const checkResult = await SQLiteClient.exec(checkOwnerSql, { $postId: postId });
+
+  if (checkResult.length === 0) return { error: "貼文不存在" };
+  if (checkResult[0].userId !== userId) return { error: "您沒有權限更新此貼文" };
+
+  // 處理 JSON 資料
+  const tagsJson = JSON.stringify(tags);
+  const photosJson = photos ? JSON.stringify(photos) : null;
+  const attachmentsJson = attachments ? JSON.stringify(attachments) : null;
+
+  // 更新時間戳
+  const now = new Date().toISOString();
+
+  // 建立更新 SQL
+  const sql = `
+      UPDATE posts
+      SET title = $title,
+          content = $content,
+          tags = $tags,
+          photos = $photos,
+          attachments = $attachments,
+          updatedAt = $updatedAt
+      WHERE id = $postId AND userId = $userId
+    `;
+
+  const params = {
+    $postId: postId,
+    $userId: userId,
+    $title: title,
+    $content: content,
+    $tags: tagsJson,
+    $photos: photosJson,
+    $attachments: attachmentsJson,
+    $updatedAt: now,
+  };
+
+  // 執行 SQL
+  await SQLiteClient.exec(sql, params);
+  return null; // 成功無錯誤返回
+};
+
+// ------------------------------
+// 刪除貼文
+// ------------------------------
+
+type DeletePost = (postId: number) => Promise<{ error: string } | null>;
+
+const deletePost: DeletePost = async (postId) => {
+  // 獲取當前使用者 ID
+  const session = await getSession({ server: true });
+  if (!session.authenticated) return { error: "未登入或授權失效，無法刪除貼文" };
+  const userId = session.user.id;
+
+  // 驗證使用者是否為貼文擁有者
+  const checkOwnerSql = `SELECT userId FROM posts WHERE id = $postId`;
+  const checkResult = await SQLiteClient.exec(checkOwnerSql, { $postId: postId });
+
+  if (checkResult.length === 0) return { error: "貼文不存在" };
+  if (checkResult[0].userId !== userId) return { error: "您沒有權限刪除此貼文" };
+
+  // 刪除貼文
+  const sql = `DELETE FROM posts WHERE id = $postId AND userId = $userId`;
+  await SQLiteClient.exec(sql, { $postId: postId, $userId: userId });
+
+  return null; // 成功無錯誤返回
+};
+
+// ----------------------------
 // 匯出
 // ----------------------------
 
-export { fetchPosts, fetchPostCounts, fetchPostById, fetchTags, createPost };
+export { fetchPosts, fetchPostCounts, fetchPostById, fetchTags, createPost, updatePost, deletePost };
 export type { FetchPostsParams, FetchPostCountsParams, FetchPostByIdParams, FetchPostByIdResult };
