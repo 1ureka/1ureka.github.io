@@ -13,11 +13,12 @@ import { UserAvatar } from "../userElement/UserAvatar";
 import { CommentLikeButton } from "./CommentLikeButton";
 
 interface CommentProps {
+  postId: number;
   commentId: number;
   nestedLevel: number;
 }
 
-const Comment = ({ commentId, nestedLevel, sx, ...props }: CommentProps & BoxProps) => {
+const Comment = ({ postId, commentId, nestedLevel, sx, ...props }: CommentProps & BoxProps) => {
   if (nestedLevel < 0) throw new Error("nestedLevel must be greater than 0");
 
   const { data: comment, isFetching } = useCommentById(commentId);
@@ -98,7 +99,9 @@ const Comment = ({ commentId, nestedLevel, sx, ...props }: CommentProps & BoxPro
             </Button>
           </Box>
 
-          {isShowNewComment && <NewComment onCancel={() => setIsShowNewComment(false)} />}
+          {isShowNewComment && (
+            <NewComment onCancel={() => setIsShowNewComment(false)} postId={postId} parentId={commentId} />
+          )}
 
           {comments && comments.length > 0 && (
             <Button
@@ -119,7 +122,7 @@ const Comment = ({ commentId, nestedLevel, sx, ...props }: CommentProps & BoxPro
             </Button>
           )}
 
-          {isShowReplies && comments && <Replies commentId={commentId} />}
+          {isShowReplies && comments && <Replies commentId={commentId} postId={postId} />}
         </Box>
       </Box>
     </Box>

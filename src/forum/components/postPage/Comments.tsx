@@ -4,7 +4,7 @@ import { Comment, LoadingComment } from "./Comment";
 import { NewComment } from "@/forum/components/postPage/NewComment";
 import { useUrl } from "@/forum/hooks/url";
 
-const Replies = ({ commentId }: { commentId: number }) => {
+const Replies = ({ commentId, postId }: { commentId: number; postId: number }) => {
   const { data: comments, isFetching } = useCommentsByParentId(commentId);
 
   if (isFetching)
@@ -21,7 +21,7 @@ const Replies = ({ commentId }: { commentId: number }) => {
   return (
     <Box>
       {comments.map((commentId) => (
-        <Comment key={commentId} commentId={commentId} nestedLevel={1} />
+        <Comment key={commentId} commentId={commentId} postId={postId} nestedLevel={1} />
       ))}
     </Box>
   );
@@ -83,7 +83,7 @@ const Comments = ({ totalComments }: { totalComments: number }) => {
     return (
       <>
         <Box sx={{ pr: 2 }}>
-          <NewComment />
+          <NewComment postId={postId} />
         </Box>
 
         <Box sx={{ pb: 2 }}>
@@ -112,9 +112,9 @@ const Comments = ({ totalComments }: { totalComments: number }) => {
       <Divider />
 
       <Box sx={{ pr: 2, "& > .comment:nth-of-type(odd):before": oddBeforeSx }}>
-        <NewComment className="comment" />
+        <NewComment className="comment" postId={postId} />
         {comments.map((commentId) => (
-          <Comment key={commentId} commentId={commentId} nestedLevel={0} className="comment" />
+          <Comment key={commentId} commentId={commentId} postId={postId} nestedLevel={0} className="comment" />
         ))}
       </Box>
     </>
