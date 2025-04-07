@@ -6,6 +6,7 @@ import type { ButtonProps } from "@mui/material";
 
 import { useState } from "react";
 import { useResetDatabase } from "@/datahub/hooks/update";
+import { useDownloadDb } from "@/datahub/hooks/read";
 
 const buttonVaraintMap = {
   outlined: { variant: "outlined", color: "inherit" },
@@ -39,6 +40,7 @@ const HeaderButton = ({
 
 const HomeHeader = () => {
   const { status, mutate } = useResetDatabase();
+  const { status: downloadStatus, mutate: downloadMutate } = useDownloadDb();
   const [resetAnchorEl, setResetAnchorEl] = useState<null | HTMLElement>(null);
   const handleResetClick = (event: React.MouseEvent<HTMLElement>) => {
     if (status === "pending") return;
@@ -65,6 +67,11 @@ const HomeHeader = () => {
         variant="main"
         disableElevation
         sx={{ bgcolor: "background.paper" }}
+        loading={downloadStatus === "pending"}
+        onClick={() => {
+          if (downloadStatus === "pending") return;
+          downloadMutate("sqlite3.db");
+        }}
       >
         匯出
       </HeaderButton>
