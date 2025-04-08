@@ -1,8 +1,9 @@
-import { Button, ButtonGroup, useColorScheme } from "@mui/material";
+import { Button, ButtonGroup, useColorScheme, useMediaQuery } from "@mui/material";
 import LightModeRoundedIcon from "@mui/icons-material/LightModeRounded";
 import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
 
 export const ThemeButtonGroup = () => {
+  const isSm = useMediaQuery((theme) => theme.breakpoints.up("sm"));
   const { mode, setMode, systemMode } = useColorScheme();
 
   const lightMode = mode === "light" || systemMode === "light";
@@ -16,6 +17,7 @@ export const ThemeButtonGroup = () => {
         color={lightMode ? "primary" : "inherit"}
         variant={lightMode ? "contained" : "outlined"}
         sx={{ textWrap: "none", whiteSpace: "nowrap" }}
+        disableElevation={!isSm}
       >
         淺色
       </Button>
@@ -25,6 +27,7 @@ export const ThemeButtonGroup = () => {
         color={darkMode ? "primary" : "inherit"}
         variant={darkMode ? "contained" : "outlined"}
         sx={{ textWrap: "none", whiteSpace: "nowrap" }}
+        disableElevation={!isSm}
       >
         深色
       </Button>

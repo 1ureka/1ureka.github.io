@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { Box, Button, CssBaseline, Divider, Stack, ThemeProvider, Typography, useMediaQuery } from "@mui/material";
+import type { BoxProps } from "@mui/material";
 import ForumRoundedIcon from "@mui/icons-material/ForumRounded";
 import DataExplorationRoundedIcon from "@mui/icons-material/DataExplorationRounded";
 
@@ -38,8 +39,8 @@ const Title = () => (
   </>
 );
 
-const Actions = () => (
-  <Box sx={{ color: "text.secondary" }}>
+const Actions = ({ sx, ...props }: BoxProps) => (
+  <Box sx={{ color: "text.secondary", ...sx }} {...props}>
     <Button
       color="inherit"
       variant="outlined"
@@ -60,9 +61,10 @@ const Actions = () => (
 
 function App() {
   const isMd = useMediaQuery(theme.breakpoints.up("md"));
+  const isSm = useMediaQuery(theme.breakpoints.up("sm"));
   useEffect(() => {
-    document.documentElement.style.fontSize = "16px";
-  }, []);
+    document.documentElement.style.fontSize = isSm ? "16px" : "14px";
+  }, [isSm]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -71,12 +73,11 @@ function App() {
 
       <Box
         sx={{
-          p: 5,
+          p: { xs: 2.5, sm: 3.5, md: 5 },
           display: "flex",
           flexDirection: { xs: "column", md: "row" },
           height: "100dvh",
           overflow: "auto",
-          minWidth: 600,
         }}
       >
         <Stack
@@ -99,7 +100,7 @@ function App() {
             )}
           </Box>
 
-          <Actions />
+          {isSm && <Actions />}
         </Stack>
 
         {!isMd && (
@@ -109,16 +110,25 @@ function App() {
           </Typography>
         )}
 
+        {!isSm && <Actions sx={{ mt: 2 }} />}
+
         {isMd ? (
           <Divider orientation="vertical" flexItem sx={{ mx: 5 }} />
         ) : (
-          <Divider orientation="horizontal" flexItem sx={{ my: 5 }} />
+          <Divider orientation="horizontal" flexItem sx={{ my: 3 }} />
         )}
 
         <Box component="main" sx={{ flex: 1 }}>
           <ListControlBar />
 
-          <Box sx={{ mt: 5, display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(500px, 1fr))", gap: 2 }}>
+          <Box
+            sx={{
+              mt: 5,
+              display: "grid",
+              gridTemplateColumns: { xs: "1fr", sm: "repeat(auto-fill, minmax(500px, 1fr))" },
+              gap: 2,
+            }}
+          >
             <ProjectCard
               title="資料樣板"
               description="探索資料結構、互動體驗與儀表板 UX 的設計樣板，結合可視化與開發工具的一站式後台模組"
