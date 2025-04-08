@@ -22,3 +22,27 @@ export function formatFileSize(bytes: number, decimals = 2): string {
 
   return `${formatNumber(fixed)} ${unit}`;
 }
+
+const DIVISIONS = [
+  { amount: 60, name: "second" },
+  { amount: 60, name: "minute" },
+  { amount: 24, name: "hour" },
+  { amount: 7, name: "day" },
+  { amount: 4.34524, name: "week" },
+  { amount: 12, name: "month" },
+  { amount: Number.POSITIVE_INFINITY, name: "year" },
+] as const;
+
+export function formatRelativeTime(date: Date, locale: Intl.LocalesArgument = "zh-TW") {
+  let duration = (date.getTime() - Date.now()) / 1000;
+
+  for (let i = 0; i < DIVISIONS.length; i++) {
+    const division = DIVISIONS[i];
+    if (Math.abs(duration) < division.amount) {
+      return new Intl.RelativeTimeFormat(locale, { numeric: "auto" }).format(Math.round(duration), division.name);
+    }
+    duration /= division.amount;
+  }
+
+  return new Intl.RelativeTimeFormat(locale, { numeric: "auto" }).format(Math.round(duration), "year");
+}
