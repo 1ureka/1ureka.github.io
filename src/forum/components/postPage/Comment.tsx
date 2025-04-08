@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Button, Typography, IconButton, Tooltip, BoxProps, Skeleton } from "@mui/material";
+import { Box, Button, Typography, IconButton, Tooltip, BoxProps, Skeleton, useMediaQuery } from "@mui/material";
 import ThumbUpRoundedIcon from "@mui/icons-material/ThumbUpRounded";
 import ReplyRoundedIcon from "@mui/icons-material/ReplyRounded";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -11,6 +11,7 @@ import { NewComment } from "./NewComment";
 import { routes } from "@/routes";
 import { UserAvatar } from "../userElement/UserAvatar";
 import { CommentLikeButton } from "./CommentLikeButton";
+import { formatRelativeTime } from "@/utils/formatters";
 
 interface CommentProps {
   postId: number;
@@ -21,6 +22,7 @@ interface CommentProps {
 const Comment = ({ postId, commentId, nestedLevel, sx, ...props }: CommentProps & BoxProps) => {
   if (nestedLevel < 0) throw new Error("nestedLevel must be greater than 0");
 
+  const isMd = useMediaQuery((theme) => theme.breakpoints.up("md"));
   const { data: comment, isFetching } = useCommentById(commentId);
   const { data: comments, isFetching: isFetchingComments } = useCommentsByParentId(commentId);
 
@@ -63,7 +65,7 @@ const Comment = ({ postId, commentId, nestedLevel, sx, ...props }: CommentProps 
 
             <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
               <Typography variant="caption" color="text.secondary">
-                {comment.createdAt.toLocaleString()}
+                {isMd ? comment.createdAt.toLocaleString() : formatRelativeTime(comment.createdAt)}
               </Typography>
 
               {comment.createdAt.getTime() !== comment.updatedAt.getTime() && (
