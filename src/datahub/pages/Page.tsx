@@ -2,6 +2,7 @@ import { lazy, Suspense } from "react";
 import { Paper, CircularProgress, Box } from "@mui/material";
 import { mdSpace } from "../components/home/commonSx";
 import { useUrl } from "../hooks/url";
+import { routes } from "@/routes";
 
 const LargeTiles = lazy(() =>
   import("../components/home/LargeTiles").then((module) => ({ default: module.LargeTiles }))
@@ -12,28 +13,22 @@ const SmallTiles = lazy(() =>
 const SchemaSidebar = lazy(() => import("../components/schema/Sidebar"));
 const SchemaFlowChart = lazy(() => import("../components/schema/FlowChart"));
 
-type ValidPart = "home" | "schema";
-
 const paperSx = { borderRadius: 4, boxShadow: "none", flex: 1 } as const;
 
-const elementsMap: Record<ValidPart, () => React.ReactNode | null> = {
-  home: () => (
+const elementsMap: Record<string, () => React.ReactNode | null> = {
+  [routes.datahub_home]: () => (
     <Paper sx={{ ...paperSx, p: mdSpace }}>
       <SmallTiles />
       <LargeTiles />
     </Paper>
   ),
-  schema: () => (
+  [routes.datahub_schema]: () => (
     <Paper sx={{ ...paperSx, position: "relative", overflow: "hidden", display: "flex", alignItems: "stretch" }}>
       <title>資料樣板 | 結構圖</title>
       <SchemaSidebar />
       <SchemaFlowChart />
     </Paper>
   ),
-};
-
-const isValidPart = (part: string): part is ValidPart => {
-  return Object.keys(elementsMap).includes(part);
 };
 
 const LoadingDisplay = () => (
@@ -45,16 +40,15 @@ const LoadingDisplay = () => (
 );
 
 const Page = () => {
-  const { hash } = useUrl();
+  const { pathname } = useUrl();
 
-  const parts = hash.getParts();
-  const part1 = parts[0] || "home";
-
-  if (!isValidPart(part1) || parts.length > 1) {
-    throw new Error(`頁面不存在: ${hash.get()}`);
+  if (!(pathname.get() in elementsMap)) {
+    throw new Error(`頁面不存在: ${pathname.get()}`);
   }
 
-  return <Suspense fallback={<LoadingDisplay />}>{elementsMap[part1]()}</Suspense>;
+  const elements = elementsMap[pathname.get()];
+
+  return <Suspense fallback={<LoadingDisplay />}>{elements()}</Suspense>;
 };
 
 export { Page };

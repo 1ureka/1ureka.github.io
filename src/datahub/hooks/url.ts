@@ -30,12 +30,12 @@ function withTransition(callback: () => void) {
 // -------------------------------------------------------
 
 type SearchParamsUpdate = Record<string, string | null>;
-const hashKey = "__preserved__hash__key__";
+const pathKey = "__preserved__path__key__";
 
 export function useUrl() {
   // 初始化狀態
   const [searchParams, setSearchParams] = useState(new URLSearchParams(window.location.search));
-  const [hash, setHash] = useState(window.location.hash);
+  const [pathname, setPath] = useState(window.location.pathname);
 
   // 創建訪問過的參數集合，避免重新渲染時重置
   const accessedKeysRef = useRef(new Set<string>());
@@ -58,21 +58,24 @@ export function useUrl() {
     };
   }, [searchParams]);
 
-  // 代理 hash，使其具有 get 方法
-  const proxyHash = useMemo(() => {
+  // 代理 pathname get 方法
+  const proxyPath = useMemo(() => {
     return {
-      get: (optinos?: { raw?: boolean }) => {
-        accessedKeysRef.current.add(hashKey);
-        return optinos?.raw ? hash : hash.replace(/^#/, "");
+      get: () => {
+        accessedKeysRef.current.add(pathKey);
+        return pathname.replace(/\/$/, "");
       },
       getParts: (): string[] => {
-        accessedKeysRef.current.add(hashKey);
-        return hash.replace(/^#/, "").split("/").filter(Boolean);
+        accessedKeysRef.current.add(pathKey);
+        return pathname
+          .replace(/^\/|\/$/g, "")
+          .split("/")
+          .filter((part) => part !== "");
       },
     };
-  }, [hash]);
+  }, [pathname]);
 
-  // 用於更新查詢參數的函數 (會保留之前的 searchParams 與 hash)
+  // 用於更新查詢參數的函數 (會保留之前的 searchParams)
   const updateSearchParams = useCallback((updates: SearchParamsUpdate) => {
     const url = new URL(window.location.href);
 
@@ -82,15 +85,13 @@ export function useUrl() {
       else url.searchParams.set(key, value);
     });
 
-    url.hash = window.location.hash; // 保留 hash 部分
     withTransition(() => window.history.pushState({}, "", url));
   }, []);
 
-  // 用於更新 hash 的函數
-  const updateHash = useCallback((newHash: string) => {
+  // 用於更新 pathname 的函數
+  const updatePath = useCallback((newPath: string) => {
     const url = new URL(window.location.href);
-
-    url.hash = ensureLeadingSlash(newHash); // 確保 hash 是乾淨的
+    url.pathname = ensureLeadingSlash(newPath);
     withTransition(() => window.history.pushState({}, "", url));
   }, []);
 
@@ -98,12 +99,12 @@ export function useUrl() {
   useEffect(() => {
     const handleUrlChange = () => {
       const newParams = new URLSearchParams(window.location.search);
-      const newHash = window.location.hash;
+      const newPath = window.location.pathname;
       let shouldUpdate = false;
 
       // 檢查是否有被訂閱的參數發生變化
       accessedKeysRef.current.forEach((key) => {
-        if (key === hashKey && hash !== newHash) {
+        if (key === pathKey && pathname !== newPath) {
           shouldUpdate = true;
         } else if (searchParams.get(key) !== newParams.get(key)) {
           shouldUpdate = true;
@@ -112,7 +113,7 @@ export function useUrl() {
 
       if (shouldUpdate) {
         setSearchParams(newParams);
-        setHash(newHash);
+        setPath(newPath);
       }
     };
 
@@ -123,8 +124,8 @@ export function useUrl() {
       window.removeEventListener("popstate", handleUrlChange);
       window.removeEventListener("locationchange", handleUrlChange);
     };
-  }, [searchParams, accessedKeysRef, hash]);
-  // 路由後需要讓 effect 中的 searchParams, hash 更新才能知道 diff，而 accessedKeysRef 則是因為 lint
+  }, [searchParams, accessedKeysRef, pathname]);
+  // 路由後需要讓 effect 中的 searchParams, pathname 更新才能知道 diff，而 accessedKeysRef 則是因為 lint
 
-  return { searchParams: proxySearchParams, updateSearchParams, hash: proxyHash, updateHash };
+  return { searchParams: proxySearchParams, updateSearchParams, pathname: proxyPath, updatePath };
 }

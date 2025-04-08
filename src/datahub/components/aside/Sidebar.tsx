@@ -9,6 +9,7 @@ import FirstPageRoundedIcon from "@mui/icons-material/FirstPageRounded";
 import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
 import { useState } from "react";
 import { useUrl } from "@/datahub/hooks/url";
+import { routes } from "@/routes";
 
 type NavButtonProps = {
   title: string;
@@ -79,7 +80,7 @@ const ExpandedNavButton = ({ title, description, icon, active, onClick }: Expand
 };
 
 const ExpandedSidebar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
-  const { searchParams, updateSearchParams, updateHash, hash } = useUrl();
+  const { searchParams, updateSearchParams, updatePath, pathname } = useUrl();
   const createHandleDbClick = (dbName: string) => () => {
     updateSearchParams({ db: dbName });
   };
@@ -129,12 +130,12 @@ const ExpandedSidebar = ({ open, onClose }: { open: boolean; onClose: () => void
         description="快速掌握資料庫狀態與視覺化圖表"
         icon={
           <DashboardRoundedIcon
-            sx={{ color: hash.getParts().length === 0 ? "primary.dark" : "#fffc", fontSize: "3.5rem" }}
+            sx={{ color: pathname.get() === routes.datahub_home ? "primary.dark" : "#fffc", fontSize: "3.5rem" }}
           />
         }
-        active={hash.getParts().length === 0}
+        active={pathname.get() === routes.datahub_home}
         onClick={() => {
-          updateHash("");
+          updatePath(routes.datahub_home);
           onClose();
         }}
       />
@@ -144,12 +145,12 @@ const ExpandedSidebar = ({ open, onClose }: { open: boolean; onClose: () => void
         description="圖像化呈現資料表間的關聯"
         icon={
           <SchemaRoundedIcon
-            sx={{ color: hash.getParts()[0] === "schema" ? "primary.dark" : "#fffc", fontSize: "3.5rem" }}
+            sx={{ color: pathname.get() === routes.datahub_schema ? "primary.dark" : "#fffc", fontSize: "3.5rem" }}
           />
         }
-        active={hash.getParts()[0] === "schema"}
+        active={pathname.get() === routes.datahub_schema}
         onClick={() => {
-          updateHash("schema");
+          updatePath(routes.datahub_schema);
           onClose();
         }}
       />
@@ -180,17 +181,25 @@ const ExpandedSidebar = ({ open, onClose }: { open: boolean; onClose: () => void
 };
 
 const Sidebar = () => {
-  const { updateHash, hash } = useUrl();
+  const { updatePath, pathname } = useUrl();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const toggleDrawer = () => setDrawerOpen(!drawerOpen);
 
   return (
     <Stack sx={{ position: "relative", bgcolor: "primary.dark", p: 2, py: 4, color: "#fffc", height: 1, gap: 2 }}>
-      <NavButton title="概覽" active={hash.getParts().length === 0} onClick={() => updateHash("")}>
+      <NavButton
+        title="概覽"
+        active={pathname.get() === routes.datahub_home}
+        onClick={() => updatePath(routes.datahub_home)}
+      >
         <DashboardRoundedIcon />
       </NavButton>
 
-      <NavButton title="資料庫結構" active={hash.getParts()[0] === "schema"} onClick={() => updateHash("schema")}>
+      <NavButton
+        title="資料庫結構"
+        active={pathname.get() === routes.datahub_schema}
+        onClick={() => updatePath(routes.datahub_schema)}
+      >
         <SchemaRoundedIcon />
       </NavButton>
 

@@ -5,14 +5,15 @@ import { InactiveReactFlow } from "../../schema/InactiveReactFlow";
 
 import { memo, useMemo } from "react";
 import { useUrl } from "@/datahub/hooks/url";
+import { routes } from "@/routes";
 import { useFlowChart } from "@/datahub/hooks/read";
 import "@xyflow/react/dist/style.css";
 
 const MemoFlow = memo(InactiveReactFlow);
 
 const FlowChart = () => {
-  const { updateHash } = useUrl();
-  const handleClick = () => updateHash("schema");
+  const { updatePath } = useUrl();
+  const handleClick = () => updatePath(routes.datahub_schema);
 
   const { nodes, edges, isFetching } = useFlowChart();
   const nodesMemo = useMemo(

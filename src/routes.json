@@ -42,5 +42,9 @@
   "datahub_home": {
     "dev": "/src/datahub/pages/index.html",
     "prod": "/datahub"
+  },
+  "datahub_schema": {
+    "dev": "/src/datahub/pages/schema/index.html",
+    "prod": "/datahub/schema"
   }
 }

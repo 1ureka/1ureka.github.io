@@ -2,25 +2,20 @@ import { Box, Breadcrumbs, Menu, MenuItem, Typography } from "@mui/material";
 import DnsRoundedIcon from "@mui/icons-material/DnsRounded";
 import { useState } from "react";
 import { useUrl } from "@/datahub/hooks/url";
+import { routes } from "@/routes";
 
 import { HeaderBackground } from "./HeaderBackground";
 import { HomeHeader } from "../home/HomeHeader";
 import { SchemaHeader } from "../schema/SchemaHeader";
 
-type ValidPart = "home" | "schema";
-
-const titleMap: Record<ValidPart, string> = {
-  home: "概覽",
-  schema: "結構圖",
+const titleMap = {
+  [routes.datahub_home]: "概覽",
+  [routes.datahub_schema]: "結構圖",
 };
 
-const elementsMap: Record<ValidPart, React.ReactNode | null> = {
-  home: <HomeHeader />,
-  schema: <SchemaHeader />,
-};
-
-const isValidPart = (part: string): part is ValidPart => {
-  return Object.keys(titleMap).includes(part);
+const elementsMap: Record<string, React.ReactNode | null> = {
+  [routes.datahub_home]: <HomeHeader />,
+  [routes.datahub_schema]: <SchemaHeader />,
 };
 
 const Header = () => {
@@ -29,18 +24,18 @@ const Header = () => {
     setAnchorEl((prev) => (prev ? null : event.currentTarget));
   const handleClose = () => setAnchorEl(null);
 
-  const { updateSearchParams, searchParams, hash } = useUrl();
+  const { updateSearchParams, searchParams, pathname } = useUrl();
   const createHandleDbClick = (dbName: string) => () => {
     updateSearchParams({ db: dbName });
     setAnchorEl(null);
   };
 
-  const parts = hash.getParts();
-  const part1 = parts[0] || "home";
-
-  if (!isValidPart(part1) || parts.length > 1) {
-    throw new Error(`頁面不存在: ${hash.get()}`);
+  if (!(pathname.get() in titleMap)) {
+    throw new Error(`頁面不存在: ${pathname.get()}`);
   }
+
+  const title = titleMap[pathname.get()];
+  const elements = elementsMap[pathname.get()];
 
   return (
     <Box
@@ -82,11 +77,11 @@ const Header = () => {
           </Box>
 
           <Typography variant="h4" component="h2" sx={{ pt: 1.5 }}>
-            {titleMap[part1]}
+            {title}
           </Typography>
         </Box>
 
-        {elementsMap[part1]}
+        {elements}
       </Box>
     </Box>
   );
