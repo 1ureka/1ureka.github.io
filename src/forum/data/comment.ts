@@ -49,11 +49,17 @@ type FetchCommentByIdResult = {
   likeCount: number;
   createdAt: Date;
   updatedAt: Date;
+  isSelf: boolean; // 是否為當前使用者的留言
 };
 
 type FetchCommentById = (params: FetchCommentByIdParams) => Promise<FetchCommentByIdResult | null>;
 
 const fetchCommentById: FetchCommentById = async ({ commentId }) => {
+  // 獲取當前使用者資訊，用於判斷是否來自自己
+  let currentUserId: number | null = null;
+  const session = await getSession({ server: true });
+  currentUserId = session.authenticated ? session.user.id : null;
+
   const sql = `
       SELECT
         c.id,
@@ -91,6 +97,7 @@ const fetchCommentById: FetchCommentById = async ({ commentId }) => {
     likeCount: comment.likeCount as number,
     createdAt: new Date(comment.createdAt as string),
     updatedAt: new Date(comment.updatedAt as string),
+    isSelf: currentUserId !== null ? comment.userId === currentUserId : false,
   };
 };
 
