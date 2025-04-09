@@ -1,14 +1,22 @@
 import { Box, Typography, Tooltip, useMediaQuery } from "@mui/material";
+import { NewComment } from "./NewComment";
+import { CommentMenu } from "./CommentMenu";
+import type { FetchCommentByIdResult } from "@/forum/data/comment";
 
 import { routes } from "@/routes";
 import { formatRelativeTime } from "@/utils/formatters";
-import { CommentMenu } from "./CommentMenu";
-import type { FetchCommentByIdResult } from "@/forum/data/comment";
 import { useState } from "react";
-import { NewComment } from "./NewComment";
+import { useDeleteComment } from "@/forum/hooks/comment";
 
 const CommentContent = ({ comment }: { comment: FetchCommentByIdResult }) => {
   const isMd = useMediaQuery((theme) => theme.breakpoints.up("md"));
+
+  const { mutateAsync: deleteComment, isPending } = useDeleteComment();
+  const handleDelete = async () => {
+    const result = await deleteComment(comment.id);
+    if (result === null) return console.log("留言刪除成功");
+    if (result.error) console.error(`留言刪除失敗：${result.error}`);
+  };
 
   const [isEditing, setIsEditing] = useState(false);
 
@@ -16,6 +24,7 @@ const CommentContent = ({ comment }: { comment: FetchCommentByIdResult }) => {
     return (
       <NewComment
         type="edit"
+        commentId={comment.id}
         postId={comment.postId}
         parentId={comment.parentId ?? undefined}
         initialValues={{ content: comment.content }}
@@ -51,9 +60,9 @@ const CommentContent = ({ comment }: { comment: FetchCommentByIdResult }) => {
           )}
 
           <CommentMenu
-            onDelete={() => {}}
+            onDelete={handleDelete}
             onEdit={() => setIsEditing(true)}
-            isPending={false}
+            isPending={isPending}
             isSelf={comment.isSelf}
           />
         </Box>

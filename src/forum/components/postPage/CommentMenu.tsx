@@ -4,7 +4,7 @@ import { useState } from "react";
 
 type CommentMenuProps = {
   onEdit: () => void;
-  onDelete: () => void;
+  onDelete: () => Promise<void>;
   isPending: boolean;
   isSelf: boolean;
 };
@@ -23,8 +23,8 @@ const CommentMenu = ({ onEdit, onDelete, isPending, isSelf }: CommentMenuProps) 
     handleClose();
   };
 
-  const handleDelete = () => {
-    onDelete();
+  const handleDelete = async () => {
+    await onDelete();
     handleClose();
     handleCloseDelete();
   };
