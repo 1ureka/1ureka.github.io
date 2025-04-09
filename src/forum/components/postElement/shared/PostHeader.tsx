@@ -1,10 +1,12 @@
 import type { FetchPostByIdResult } from "@/forum/data/post";
 import { routes } from "@/routes";
-import { Box, BoxProps, Skeleton, Tooltip, Typography } from "@mui/material";
+import { Box, BoxProps, Skeleton, Tooltip, Typography, useMediaQuery } from "@mui/material";
 import { UserAvatar } from "../../userElement/UserAvatar";
 import { underlineSx } from "@/utils/commonSx";
+import { formatRelativeTime } from "@/utils/formatters";
 
 const PostHeader = ({ post, sx, ...props }: { post: FetchPostByIdResult } & BoxProps) => {
+  const isMd = useMediaQuery((theme) => theme.breakpoints.up("md"));
   const isUpdated = Math.abs(post.updatedAt.getTime() - post.createdAt.getTime()) > 1000;
   return (
     <Box sx={{ display: "flex", gap: 1.5, mb: 2, alignItems: "center", ...sx }} {...props}>
@@ -25,12 +27,12 @@ const PostHeader = ({ post, sx, ...props }: { post: FetchPostByIdResult } & BoxP
       {isUpdated ? (
         <Tooltip title={`上次編輯於 ${post.updatedAt.toLocaleString()}`} arrow>
           <Typography variant="body2" sx={{ color: "text.secondary", opacity: 0.9, ...underlineSx }}>
-            *{post.createdAt.toLocaleString()}
+            {isMd ? post.createdAt.toLocaleString() : formatRelativeTime(post.createdAt)} (已編輯)
           </Typography>
         </Tooltip>
       ) : (
         <Typography variant="body2" sx={{ color: "text.secondary", opacity: 0.9 }}>
-          {post.createdAt.toLocaleString()}
+          {isMd ? post.createdAt.toLocaleString() : formatRelativeTime(post.createdAt)}
         </Typography>
       )}
     </Box>
