@@ -7,7 +7,8 @@ import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
 
 import { TileContent, TileTitle } from "./TileText";
 import { TileTooltip } from "./TileTooltip";
-import { lgSpace, mdSpace, smSpace, tileIconCommonSx, underlineSx } from "./commonSx";
+import { underlineSx } from "@/utils/commonSx";
+import { lgSpace, mdSpace, smSpace, tileIconCommonSx } from "./commonSx";
 import { useDbBytes, useObjects, useRowCounts } from "@/datahub/hooks/read";
 import { formatFileSize, formatNumber } from "@/utils/formatters";
 import { toEntries } from "@/utils/typedBuiltins";

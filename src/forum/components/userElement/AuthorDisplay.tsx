@@ -2,6 +2,7 @@ import { Box, Chip, Skeleton, Typography } from "@mui/material";
 import type { FetchUserByNameResult } from "@/forum/data/user";
 import { SmallFollowButton } from "./FollowButton";
 import { routes } from "@/routes";
+import { ellipsisSx } from "@/utils/commonSx";
 import { UserAvatar, UserAvatarSkeleton } from "./UserAvatar";
 
 const AuthorLoadingDisplay = () => {
@@ -33,14 +34,6 @@ const AuthorLoadingDisplay = () => {
     </>
   );
 };
-
-const ellipsisSx = {
-  display: "-webkit-box",
-  WebkitLineClamp: 1,
-  WebkitBoxOrient: "vertical",
-  overflow: "hidden",
-  textOverflow: "ellipsis",
-} as const;
 
 const AuthorDisplay = ({ id, name, description, ellipsis }: { ellipsis?: boolean } & FetchUserByNameResult) => {
   return (

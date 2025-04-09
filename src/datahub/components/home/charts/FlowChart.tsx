@@ -1,6 +1,7 @@
 import ArrowOutwardRoundedIcon from "@mui/icons-material/ArrowOutwardRounded";
 import { Box, Button, Stack, Typography } from "@mui/material";
-import { ellipsisSx, noSpace, smSpace } from "../commonSx";
+import { noSpace, smSpace } from "../commonSx";
+import { ellipsisSx } from "@/utils/commonSx";
 import { InactiveReactFlow } from "../../schema/InactiveReactFlow";
 
 import { memo, useMemo } from "react";

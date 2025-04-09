@@ -2,7 +2,7 @@ import { Box, Typography } from "@mui/material";
 import TableViewRoundedIcon from "@mui/icons-material/TableViewRounded";
 import TreeView from "./TreeView";
 import { useEffect, useRef, useState } from "react";
-import { ellipsisSx } from "../home/commonSx";
+import { ellipsisSx } from "@/utils/commonSx";
 
 const Sidebar = () => {
   const [width, setWidth] = useState(350);

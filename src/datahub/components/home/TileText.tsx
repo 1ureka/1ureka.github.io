@@ -1,5 +1,5 @@
+import { ellipsisSx } from "@/utils/commonSx";
 import { Typography, type TypographyProps } from "@mui/material";
-import { ellipsisSx } from "./commonSx";
 
 const TileTitle = ({ children, sx, ...props }: { children: React.ReactNode } & TypographyProps) => (
   <Typography variant="subtitle1" component="h3" sx={{ color: "text.secondary", textWrap: "nowrap", ...sx }} {...props}>

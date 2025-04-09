@@ -11,18 +11,4 @@ export const tileIconCommonSx = {
   fontSize: "3rem",
 } as const;
 
-export const underlineSx = {
-  "&:hover": { textDecoration: "underline" },
-  cursor: "pointer",
-} as const;
-
-export const ellipsisSx = {
-  display: "-webkit-box",
-  WebkitLineClamp: 1,
-  WebkitBoxOrient: "vertical",
-  overflow: "hidden",
-  textOverflow: "ellipsis",
-  wordBreak: "break-all",
-} as const;
-
 export const chartChangeTransition = "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)";

@@ -6,7 +6,8 @@ import { useState } from "react";
 import { useRowCounts } from "@/datahub/hooks/read";
 import { TileTooltip } from "../TileTooltip";
 import { StripedBackground } from "./StripedBackground";
-import { chartChangeTransition, ellipsisSx, noSpace, smSpace, underlineSx } from "../commonSx";
+import { chartChangeTransition, noSpace, smSpace } from "../commonSx";
+import { ellipsisSx, underlineSx } from "@/utils/commonSx";
 
 type DisplayCounts = 3 | 5 | 7;
 

@@ -7,7 +7,8 @@ import { formatNumber } from "@/utils/formatters";
 
 import { TileTooltip } from "../TileTooltip";
 import { StripedBackground } from "./StripedBackground";
-import { chartChangeTransition, ellipsisSx, noSpace, smSpace, underlineSx } from "../commonSx";
+import { chartChangeTransition, noSpace, smSpace } from "../commonSx";
+import { ellipsisSx, underlineSx } from "@/utils/commonSx";
 
 const SkeletonWrapper = ({ children, loading, ...props }: SkeletonProps & { loading: boolean }) => {
   if (!loading) return children;

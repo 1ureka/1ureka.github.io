@@ -2,6 +2,7 @@ import type { FetchPostByIdResult } from "@/forum/data/post";
 import { routes } from "@/routes";
 import { Box, BoxProps, Skeleton, Tooltip, Typography } from "@mui/material";
 import { UserAvatar } from "../../userElement/UserAvatar";
+import { underlineSx } from "@/utils/commonSx";
 
 const PostHeader = ({ post, sx, ...props }: { post: FetchPostByIdResult } & BoxProps) => {
   const isUpdated = Math.abs(post.updatedAt.getTime() - post.createdAt.getTime()) > 1000;
@@ -23,16 +24,7 @@ const PostHeader = ({ post, sx, ...props }: { post: FetchPostByIdResult } & BoxP
       <Box sx={{ flex: 1 }} />
       {isUpdated ? (
         <Tooltip title={`上次編輯於 ${post.updatedAt.toLocaleString()}`} arrow>
-          <Typography
-            variant="body2"
-            sx={{
-              color: "text.secondary",
-              opacity: 0.9,
-              "&:hover": {
-                textDecoration: "underline",
-              },
-            }}
-          >
+          <Typography variant="body2" sx={{ color: "text.secondary", opacity: 0.9, ...underlineSx }}>
             *{post.createdAt.toLocaleString()}
           </Typography>
         </Tooltip>

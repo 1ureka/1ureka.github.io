@@ -13,7 +13,7 @@ import InfoOutlineRoundedIcon from "@mui/icons-material/InfoOutlineRounded";
 import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 import DatasetRoundedIcon from "@mui/icons-material/DatasetRounded";
 import { TreeViewTransition } from "./TreeViewTransition";
-import { ellipsisSx } from "../home/commonSx";
+import { ellipsisSx } from "@/utils/commonSx";
 import { iconSize } from "./treeViewSx";
 
 interface CustomTreeItemProps

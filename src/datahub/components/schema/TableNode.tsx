@@ -4,7 +4,7 @@ import DatasetRoundedIcon from "@mui/icons-material/DatasetRounded";
 import { Handle, Position } from "@xyflow/react";
 import type { Node, NodeProps } from "@xyflow/react";
 import type { TableNodeData } from "@/datahub/hooks/read";
-import { ellipsisSx } from "../home/commonSx";
+import { ellipsisSx } from "@/utils/commonSx";
 import { memo } from "react";
 
 export type TableNodeType = Node<TableNodeData, "tableNode">;

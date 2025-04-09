@@ -5,7 +5,8 @@ import TypeSpecimenRoundedIcon from "@mui/icons-material/TypeSpecimenRounded";
 import { StripedBackground } from "./StripedBackground";
 import { TileContent, TileTitle } from "../TileText";
 import { TileTooltip } from "../TileTooltip";
-import { chartChangeTransition, ellipsisSx, mdSpace, smSpace, tileIconCommonSx } from "../commonSx";
+import { chartChangeTransition, mdSpace, smSpace, tileIconCommonSx } from "../commonSx";
+import { ellipsisSx } from "@/utils/commonSx";
 
 import { useTableInfo } from "@/datahub/hooks/read";
 import { useMemo } from "react";
