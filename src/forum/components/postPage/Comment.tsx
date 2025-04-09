@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Button, Typography, IconButton, Tooltip, BoxProps, Skeleton, useMediaQuery } from "@mui/material";
+import { Box, Button, Typography, IconButton, Tooltip, BoxProps, Skeleton } from "@mui/material";
 import ThumbUpRoundedIcon from "@mui/icons-material/ThumbUpRounded";
 import ReplyRoundedIcon from "@mui/icons-material/ReplyRounded";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -8,10 +8,9 @@ import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownR
 import { useCommentById, useCommentsByParentId } from "@/forum/hooks/comment";
 import { Replies } from "./Comments";
 import { NewComment } from "./NewComment";
-import { routes } from "@/routes";
 import { UserAvatar } from "../userElement/UserAvatar";
 import { CommentLikeButton } from "./CommentLikeButton";
-import { formatRelativeTime } from "@/utils/formatters";
+import { CommentContent } from "./CommentContent";
 
 interface CommentProps {
   postId: number;
@@ -22,7 +21,6 @@ interface CommentProps {
 const Comment = ({ postId, commentId, nestedLevel, sx, ...props }: CommentProps & BoxProps) => {
   if (nestedLevel < 0) throw new Error("nestedLevel must be greater than 0");
 
-  const isMd = useMediaQuery((theme) => theme.breakpoints.up("md"));
   const { data: comment, isFetching } = useCommentById(commentId);
   const { data: comments, isFetching: isFetchingComments } = useCommentsByParentId(commentId);
 
@@ -53,40 +51,7 @@ const Comment = ({ postId, commentId, nestedLevel, sx, ...props }: CommentProps 
         <UserAvatar name={comment.userName} sx={{ mt: 1 }} />
 
         <Box sx={{ flex: 1 }}>
-          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <Typography
-              variant="subtitle2"
-              component="a"
-              sx={{ "&:hover": { textDecoration: "underline" }, color: "text.primary" }}
-              href={`${routes.forum_users}?user=${comment.userName}`}
-            >
-              {comment.userName}
-            </Typography>
-
-            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-              <Typography variant="caption" color="text.secondary">
-                {isMd ? comment.createdAt.toLocaleString() : formatRelativeTime(comment.createdAt)}
-              </Typography>
-
-              {comment.createdAt.getTime() !== comment.updatedAt.getTime() && (
-                <Tooltip title={`最後編輯於 ${comment.updatedAt.toLocaleString()}`} arrow>
-                  <Typography variant="caption" color="text.secondary">
-                    (已編輯)
-                  </Typography>
-                </Tooltip>
-              )}
-
-              <Tooltip title="更多選項" arrow>
-                <IconButton size="small">
-                  <MoreVertIcon fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            </Box>
-          </Box>
-
-          <Typography variant="body2" sx={{ mt: 0.5, whiteSpace: "pre-line" }}>
-            {comment.content}
-          </Typography>
+          <CommentContent comment={comment} />
 
           <Box sx={{ display: "flex", alignItems: "center", mt: 1, gap: 1 }}>
             <CommentLikeButton commentId={commentId} likeCount={comment.likeCount} />
@@ -102,7 +67,12 @@ const Comment = ({ postId, commentId, nestedLevel, sx, ...props }: CommentProps 
           </Box>
 
           {isShowNewComment && (
-            <NewComment onCancel={() => setIsShowNewComment(false)} postId={postId} parentId={commentId} />
+            <NewComment
+              onCancel={() => setIsShowNewComment(false)}
+              postId={postId}
+              parentId={commentId}
+              type="create"
+            />
           )}
 
           {comments && comments.length > 0 && (

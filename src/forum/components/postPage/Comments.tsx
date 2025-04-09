@@ -83,7 +83,7 @@ const Comments = ({ totalComments }: { totalComments: number }) => {
     return (
       <>
         <Box sx={{ pr: 2 }}>
-          <NewComment postId={postId} />
+          <NewComment type="create" postId={postId} />
         </Box>
 
         <Box sx={{ pb: 2 }}>
@@ -112,7 +112,7 @@ const Comments = ({ totalComments }: { totalComments: number }) => {
       <Divider />
 
       <Box sx={{ pr: 2, "& > .comment:nth-of-type(odd):before": oddBeforeSx }}>
-        <NewComment className="comment" postId={postId} />
+        <NewComment type="create" className="comment" postId={postId} />
         {comments.map((commentId) => (
           <Comment key={commentId} commentId={commentId} postId={postId} nestedLevel={0} className="comment" />
         ))}
