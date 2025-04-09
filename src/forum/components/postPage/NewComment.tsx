@@ -6,7 +6,7 @@ import { UserAvatar } from "../userElement/UserAvatar";
 import { z } from "zod";
 import { useRef } from "react";
 import { useForm } from "@tanstack/react-form";
-import { useCreateComment } from "@/forum/hooks/comment";
+import { useCreateComment, useUpdateComment } from "@/forum/hooks/comment";
 import { getFormIsError, getFormErrorHelperText } from "@/forum/utils/form";
 import { toEntries } from "@/utils/typedBuiltins";
 
@@ -20,7 +20,10 @@ const defaultValues: z.infer<typeof formSchema> = { content: "" };
 type NewCommentBaseProps = { onCancel?: () => void; postId: number; parentId?: number; hideAvator?: boolean };
 
 type NewCommentProps = NewCommentBaseProps &
-  ({ type: "create"; initialValues?: never } | { type: "edit"; initialValues: z.infer<typeof formSchema> });
+  (
+    | { type: "create"; initialValues?: never; commentId?: never }
+    | { type: "edit"; initialValues: z.infer<typeof formSchema>; commentId: number }
+  );
 
 const NewComment = ({
   type,
@@ -29,10 +32,13 @@ const NewComment = ({
   onCancel,
   postId,
   parentId,
+  commentId,
   initialValues,
   ...props
 }: BoxProps & NewCommentProps) => {
-  const { mutateAsync: createComment, isPending } = useCreateComment();
+  const { mutateAsync: createComment, isPending: isPendingCreate } = useCreateComment();
+  const { mutateAsync: updateComment, isPending: isPendingUpdate } = useUpdateComment();
+  const isPending = isPendingCreate || isPendingUpdate;
   const { user, authenticated, loading } = useSession();
 
   const form = useForm({
@@ -51,7 +57,12 @@ const NewComment = ({
       }
 
       if (type === "edit") {
-        // TODO: implement edit comment
+        const result = await updateComment({ ...value, commentId });
+        if (result === null) {
+          form.reset();
+          return console.log("更新留言成功");
+        }
+        if (result.error) console.error(`留言更新失敗：${result.error}`);
       }
     },
   });
