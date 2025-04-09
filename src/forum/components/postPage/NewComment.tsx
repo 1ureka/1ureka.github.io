@@ -17,24 +17,42 @@ const formElementsSchema = {
 const formSchema = z.object(formElementsSchema);
 const defaultValues: z.infer<typeof formSchema> = { content: "" };
 
-type NewCommentProps = { onCancel?: () => void; postId: number; parentId?: number };
+type NewCommentBaseProps = { onCancel?: () => void; postId: number; parentId?: number; hideAvator?: boolean };
 
-const NewComment = ({ sx, onCancel, postId, parentId, ...props }: BoxProps & NewCommentProps) => {
+type NewCommentProps = NewCommentBaseProps &
+  ({ type: "create"; initialValues?: never } | { type: "edit"; initialValues: z.infer<typeof formSchema> });
+
+const NewComment = ({
+  type,
+  hideAvator,
+  sx,
+  onCancel,
+  postId,
+  parentId,
+  initialValues,
+  ...props
+}: BoxProps & NewCommentProps) => {
   const { mutateAsync: createComment, isPending } = useCreateComment();
   const { user, authenticated, loading } = useSession();
 
   const form = useForm({
-    defaultValues,
+    defaultValues: { ...defaultValues, ...initialValues },
     validators: { onSubmit: formSchema },
     onSubmit: async ({ value }) => {
       if (isPending) return;
 
-      const result = await createComment({ ...value, postId, parentId });
-      if (typeof result === "number") {
-        form.reset();
-        return console.log("發佈成功，留言 ID：", result);
+      if (type === "create") {
+        const result = await createComment({ ...value, postId, parentId });
+        if (typeof result === "number") {
+          form.reset();
+          return console.log("發佈成功，留言 ID：", result);
+        }
+        if (result.error) console.error(`留言發佈失敗：${result.error}`);
       }
-      if (result.error) console.error(`留言發佈失敗：${result.error}`);
+
+      if (type === "edit") {
+        // TODO: implement edit comment
+      }
     },
   });
 
@@ -85,11 +103,13 @@ const NewComment = ({ sx, onCancel, postId, parentId, ...props }: BoxProps & New
   return (
     <Box sx={{ position: "relative", py: 1, px: 2, ...sx }} {...props}>
       <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1.5 }}>
-        {authenticated && user ? (
-          <UserAvatar name={user.name} sx={{ mt: 1.5 }} />
-        ) : (
-          <Avatar sx={{ width: "2rem", height: "2rem", mt: 1.5 }} />
-        )}
+        {!hideAvator ? (
+          authenticated && user ? (
+            <UserAvatar name={user.name} sx={{ mt: 1.5 }} />
+          ) : (
+            <Avatar sx={{ width: "2rem", height: "2rem", mt: 1.5 }} />
+          )
+        ) : null}
 
         <Box sx={{ flex: 1 }}>
           <form.Field
