@@ -1,5 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createComment, fetchCommentById, fetchComments, type CommentOrderBy } from "../data/comment";
+import { fetchCommentById, fetchComments } from "../data/comment";
+import { createComment, deleteComment, updateComment } from "../data/comment";
+import type { CommentOrderBy } from "../data/comment";
 
 const staleTime = 1000 * 60 * 1;
 
@@ -40,4 +42,37 @@ const useCreateComment = () => {
   });
 };
 
-export { useCommentsByPostId, useCommentsByParentId, useCommentById, useCreateComment };
+const useUpdateComment = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: updateComment,
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["commentsByPost"] });
+      queryClient.invalidateQueries({ queryKey: ["commentsByParent"] });
+      queryClient.invalidateQueries({ queryKey: ["comment"] });
+      queryClient.invalidateQueries({ queryKey: ["post"] });
+    },
+  });
+};
+
+const useDeleteComment = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: deleteComment,
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["commentsByPost"] });
+      queryClient.invalidateQueries({ queryKey: ["commentsByParent"] });
+      queryClient.invalidateQueries({ queryKey: ["comment"] });
+      queryClient.invalidateQueries({ queryKey: ["post"] });
+    },
+  });
+};
+
+export {
+  useCommentsByPostId,
+  useCommentsByParentId,
+  useCommentById,
+  useCreateComment,
+  useUpdateComment,
+  useDeleteComment,
+};

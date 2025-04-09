@@ -162,8 +162,81 @@ const createComment: CreateComment = async ({ postId, content, parentId }) => {
 };
 
 // ----------------------------
+// 編輯留言
+// ----------------------------
+
+type UpdateCommentParams = {
+  commentId: number;
+  content: string;
+};
+
+type UpdateComment = (params: UpdateCommentParams) => Promise<{ error: string } | null>;
+
+const updateComment: UpdateComment = async ({ commentId, content }) => {
+  // 獲取當前使用者 ID
+  const session = await getSession({ server: true });
+  if (!session.authenticated) return { error: "未登入或授權失效，無法編輯留言" };
+  const userId = session.user.id;
+
+  // 驗證使用者是否為留言擁有者
+  const checkOwnerSql = `SELECT userId FROM comments WHERE id = $commentId`;
+  const checkResult = await SQLiteClient.exec(checkOwnerSql, { $commentId: commentId });
+
+  if (checkResult.length === 0) return { error: "留言不存在" };
+  if (checkResult[0].userId !== userId) return { error: "您沒有權限編輯此留言" };
+
+  // 更新時間戳
+  const now = new Date().toISOString();
+
+  // 建立更新 SQL
+  const sql = `
+      UPDATE comments
+      SET content = $content,
+          updatedAt = $updatedAt
+      WHERE id = $commentId AND userId = $userId
+    `;
+
+  const params = {
+    $commentId: commentId,
+    $userId: userId,
+    $content: content,
+    $updatedAt: now,
+  };
+
+  // 執行 SQL
+  await SQLiteClient.exec(sql, params);
+  return null; // 成功無錯誤返回
+};
+
+// ----------------------------
+// 刪除留言
+// ----------------------------
+
+type DeleteComment = (commentId: number) => Promise<{ error: string } | null>;
+
+const deleteComment: DeleteComment = async (commentId) => {
+  // 獲取當前使用者 ID
+  const session = await getSession({ server: true });
+  if (!session.authenticated) return { error: "未登入或授權失效，無法刪除留言" };
+  const userId = session.user.id;
+
+  // 驗證使用者是否為留言擁有者
+  const checkOwnerSql = `SELECT userId FROM comments WHERE id = $commentId`;
+  const checkResult = await SQLiteClient.exec(checkOwnerSql, { $commentId: commentId });
+
+  if (checkResult.length === 0) return { error: "留言不存在" };
+  if (checkResult[0].userId !== userId) return { error: "您沒有權限刪除此留言" };
+
+  // 刪除留言
+  const sql = `DELETE FROM comments WHERE id = $commentId AND userId = $userId`;
+  await SQLiteClient.exec(sql, { $commentId: commentId, $userId: userId });
+
+  return null; // 成功無錯誤返回
+};
+
+// ----------------------------
 // 匯出
 // ----------------------------
 
-export { fetchComments, fetchCommentById, createComment };
+export { fetchComments, fetchCommentById, createComment, updateComment, deleteComment };
 export type { FetchCommentByIdResult, CommentOrderBy };
