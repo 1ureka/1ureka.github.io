@@ -16,7 +16,7 @@ import { TopicSelect } from "@/forum/components/posts/TopicSelect";
 import { PageTitle, PostCounts, PostList } from "@/forum/components/posts/PostList";
 
 function App() {
-  const { isMd } = useResponsiveFontSize();
+  const { isMd, isSm } = useResponsiveFontSize();
 
   return (
     <AppWrapper>
@@ -29,16 +29,18 @@ function App() {
         <Container maxWidth="lg" sx={{ position: "relative", my: 10, px: 0 }}>
           <Paper sx={{ py: 3, borderRadius: 3, border: "1px solid", borderColor: "divider" }} elevation={1}>
             <Box sx={{ display: "flex", gap: 1, alignItems: "center", pr: { xs: 3, md: 5 }, pl: 2 }}>
-              <Stack sx={{ alignItems: "flex-start", flex: 1 }}>
-                <Button
-                  href={routes.forum_home}
-                  startIcon={<ArrowBackIosRoundedIcon />}
-                  variant="outlined"
-                  sx={{ textWrap: "nowrap" }}
-                >
-                  {isMd ? "返回首頁" : "首頁"}
-                </Button>
-              </Stack>
+              {isSm && (
+                <Stack sx={{ alignItems: "flex-start", flex: 1 }}>
+                  <Button
+                    href={routes.forum_home}
+                    startIcon={<ArrowBackIosRoundedIcon />}
+                    variant="outlined"
+                    sx={{ textWrap: "nowrap" }}
+                  >
+                    {isMd ? "返回首頁" : "首頁"}
+                  </Button>
+                </Stack>
+              )}
 
               <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
                 <PeopleRoundedIcon

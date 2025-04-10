@@ -14,7 +14,7 @@ import { NextPostNav, PrevPostNav } from "@/forum/components/postPage/PrevNextPo
 import { PostBlock } from "@/forum/components/postPage/PostBlock";
 
 function App() {
-  const { isMd } = useResponsiveFontSize();
+  const { isMd, isSm } = useResponsiveFontSize();
 
   return (
     <AppWrapper>
@@ -26,14 +26,16 @@ function App() {
         <Container maxWidth="lg" sx={{ position: "relative", my: 10, px: 0 }}>
           <Paper sx={{ pb: 3, borderRadius: 3, border: "1px solid", borderColor: "divider" }} elevation={1}>
             <Box sx={{ display: "flex", justifyContent: "center", mt: 2, mx: 2 }}>
-              <Button
-                href={routes.forum_home}
-                startIcon={<ArrowBackIosRoundedIcon />}
-                variant="outlined"
-                sx={{ textWrap: "nowrap" }}
-              >
-                {isMd ? "返回首頁" : "首頁"}
-              </Button>
+              {isSm && (
+                <Button
+                  href={routes.forum_home}
+                  startIcon={<ArrowBackIosRoundedIcon />}
+                  variant="outlined"
+                  sx={{ textWrap: "nowrap" }}
+                >
+                  {isMd ? "返回首頁" : "首頁"}
+                </Button>
+              )}
 
               <Box sx={{ flex: 1 }} />
 

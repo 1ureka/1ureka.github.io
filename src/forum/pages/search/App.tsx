@@ -17,19 +17,22 @@ import { OrderTabs } from "@/forum/components/search/OrderTabs";
 
 const Header = () => {
   const isMd = useMediaQuery(theme.breakpoints.up("md"));
+  const isSm = useMediaQuery(theme.breakpoints.up("sm"));
 
   return (
     <>
-      <Stack sx={{ alignItems: "flex-start", flex: 1 }}>
-        <Button
-          href={routes.forum_home}
-          startIcon={<ArrowBackIosRoundedIcon />}
-          variant="outlined"
-          sx={{ textWrap: "nowrap" }}
-        >
-          {isMd ? "返回首頁" : "首頁"}
-        </Button>
-      </Stack>
+      {isSm && (
+        <Stack sx={{ alignItems: "flex-start", flex: 1 }}>
+          <Button
+            href={routes.forum_home}
+            startIcon={<ArrowBackIosRoundedIcon />}
+            variant="outlined"
+            sx={{ textWrap: "nowrap" }}
+          >
+            {isMd ? "返回首頁" : "首頁"}
+          </Button>
+        </Stack>
+      )}
 
       <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
         <SearchRoundedIcon
