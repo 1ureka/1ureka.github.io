@@ -1,1 +1,0 @@
-function c(t,o="en-US"){return t.toLocaleString(o)}function f(t,o=2){if(t<=0)return"0 Bytes";if(!Number.isFinite(t))return"N/A";const n=1024,i=["Bytes","KB","MB","GB"],e=Math.floor(Math.log(t)/Math.log(n)),r=t/Math.pow(n,e),a=parseFloat(r.toFixed(o)),s=i[e];return`${c(a)} ${s}`}export{c as a,f};
