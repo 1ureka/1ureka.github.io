@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Button, Typography, IconButton, Tooltip, BoxProps, Skeleton } from "@mui/material";
+import { Box, Button, Typography, IconButton, Tooltip, BoxProps, Skeleton, useMediaQuery } from "@mui/material";
 import ThumbUpRoundedIcon from "@mui/icons-material/ThumbUpRounded";
 import ReplyRoundedIcon from "@mui/icons-material/ReplyRounded";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -21,6 +21,7 @@ interface CommentProps {
 const Comment = ({ postId, commentId, nestedLevel, sx, ...props }: CommentProps & BoxProps) => {
   if (nestedLevel < 0) throw new Error("nestedLevel must be greater than 0");
 
+  const isSm = useMediaQuery((theme) => theme.breakpoints.up("sm"));
   const { data: comment, isFetching } = useCommentById(commentId);
   const { data: comments, isFetching: isFetchingComments } = useCommentsByParentId(commentId);
 
@@ -40,7 +41,7 @@ const Comment = ({ postId, commentId, nestedLevel, sx, ...props }: CommentProps 
         position: "relative",
         py: 1,
         pb: nestedLevel > 0 ? 0 : 1,
-        pl: 2,
+        pl: { xs: 1, sm: 2 },
         borderLeft: nestedLevel > 0 ? "2px solid" : "none",
         borderColor: "divider",
         ...sx,
@@ -94,9 +95,11 @@ const Comment = ({ postId, commentId, nestedLevel, sx, ...props }: CommentProps 
             </Button>
           )}
 
-          {isShowReplies && comments && <Replies commentId={commentId} postId={postId} />}
+          {isSm && isShowReplies && comments && <Replies commentId={commentId} postId={postId} />}
         </Box>
       </Box>
+
+      {!isSm && isShowReplies && comments && <Replies commentId={commentId} postId={postId} />}
     </Box>
   );
 };
@@ -107,7 +110,7 @@ const LoadingComment = ({ nestedLevel, sx, ...props }: { nestedLevel: number } &
       position: "relative",
       py: 1,
       pb: nestedLevel > 0 ? 0 : 1,
-      pl: 2,
+      pl: { xs: 1, sm: 2 },
       borderLeft: nestedLevel > 0 ? "2px solid" : "none",
       borderColor: "divider",
       ...sx,
