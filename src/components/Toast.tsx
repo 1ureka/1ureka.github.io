@@ -29,7 +29,7 @@ const ToastProgress = ({ type, duration, onClose }: ToastProgressProps) => {
 
     rafRef.current = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(rafRef.current!);
-  }, [duration]);
+  }, [duration, onClose]);
 
   return (
     <LinearProgress
