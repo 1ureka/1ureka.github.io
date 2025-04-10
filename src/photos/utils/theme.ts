@@ -6,6 +6,12 @@ declare module "@mui/material/styles" {
   interface TypeText {
     colored: string;
   }
+  interface Palette {
+    border: Palette["primary"];
+  }
+  interface PaletteOptions {
+    border?: PaletteOptions["primary"];
+  }
 }
 
 const theme = createTheme({
@@ -16,18 +22,22 @@ const theme = createTheme({
   colorSchemes: {
     light: {
       palette: {
+        border: { main: "var(--mui-palette-divider)" },
         text: {
           colored: "color-mix(in srgb, var(--mui-palette-primary-main) 50%, var(--mui-palette-text-primary) 50%)",
         },
         primary: { main: "#d077a1" },
+        background: { paper: "#f9f9f9", default: "#f3f3f3" },
       },
     },
     dark: {
       palette: {
+        border: { main: "transparent" },
         text: {
           colored: "color-mix(in srgb, var(--mui-palette-primary-main) 50%, var(--mui-palette-text-primary) 50%)",
         },
         primary: { main: "#d077a1" },
+        background: { paper: "#272727", default: "#202020" },
       },
     },
   },
@@ -47,7 +57,7 @@ const useResponsiveFontSize = () => {
 
   useEffect(() => {
     if (isLg) document.documentElement.style.fontSize = "16px";
-    else if (isMd) document.documentElement.style.fontSize = "14px";
+    // else if (isMd) document.documentElement.style.fontSize = "14px";
   }, [isLg, isMd, isSm]);
 
   return { isLg, isMd, isSm };

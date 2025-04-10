@@ -26,6 +26,7 @@
 * {
   scrollbar-width: thin;
   scrollbar-color: gray transparent;
+  transition: 0.25s background-color cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 body {
