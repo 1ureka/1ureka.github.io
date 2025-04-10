@@ -3,6 +3,7 @@ import { Box, Button, CssBaseline, Divider, Stack, ThemeProvider, Typography, us
 import type { BoxProps } from "@mui/material";
 import ForumRoundedIcon from "@mui/icons-material/ForumRounded";
 import DataExplorationRoundedIcon from "@mui/icons-material/DataExplorationRounded";
+import CameraRoundedIcon from "@mui/icons-material/CameraRounded";
 
 import "@/home/utils/app.css";
 import { Toaster } from "@/components/Toast";
@@ -81,13 +82,13 @@ function App() {
         }}
       >
         <Stack
-          component="aside"
           sx={{
+            position: { xs: "relative", md: "sticky" },
+            top: 0,
             flexDirection: { xs: "row", md: "column" },
             justifyContent: "space-between",
             height: 1,
             width: { xs: 1, md: "13rem", lg: "15rem" },
-            position: "relative",
           }}
         >
           <Box>
@@ -137,7 +138,7 @@ function App() {
               actionLabel="開始探索"
               actionHref={routes.datahub_home}
               actionTarget="_blank"
-              progress={5}
+              progress={25}
             />
 
             <ProjectCard
@@ -149,6 +150,17 @@ function App() {
               actionHref={routes.forum_home}
               actionTarget="_blank"
               progress={80}
+            />
+
+            <ProjectCard
+              title="相簿樣板"
+              description="探索相簿的 UI/UX 設計樣板，嘗試在瀏覽器中實現 windows 的相簿體驗"
+              color="#d077a1"
+              icon={<CameraRoundedIcon sx={{ fontSize: "4em", color: "#d077a1" }} />}
+              actionLabel="開始探索"
+              actionHref={routes.photos_home}
+              actionTarget="_blank"
+              progress={2}
             />
           </Box>
         </Box>
