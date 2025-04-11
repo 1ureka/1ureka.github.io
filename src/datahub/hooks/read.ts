@@ -10,13 +10,8 @@ const staleTime = 0; // TODO: 測試完 loading state 後要記得改回 1 分�
 const useDownloadDb = () => {
   return useMutation({
     mutationFn: downloadDatabase,
-    onSuccess: (success) => {
-      if (success) console.log("下載資料庫成功");
-      else console.error("下載資料庫失敗");
-    },
-    onError: (error) => {
-      console.error("下載資料庫失敗:", error);
-    },
+    onSuccess: () => console.log("下載資料庫成功"),
+    onError: (error) => console.error("下載資料庫失敗:", error),
   });
 };
 

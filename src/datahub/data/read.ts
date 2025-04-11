@@ -1,13 +1,7 @@
+import { getClient } from "./client";
 import { tryCatchSync } from "@/utils/tryCatch";
-import { useSQLiteStore } from "../hooks/useSQLiteStore";
 import { aggregateStrings } from "../utils/array";
 import dayjs from "dayjs";
-
-const getClient = () => {
-  const { client } = useSQLiteStore.getState();
-  if (!client) throw new Error("SQLite client is not initialized.");
-  return client;
-};
 
 const downloadDatabase = async (fileName: string = "database.sqlite") => {
   const client = getClient();

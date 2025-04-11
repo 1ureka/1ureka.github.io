@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { useSQLiteStore } from "./useSQLiteStore";
-import { SQLiteClient } from "../data/SQLiteClient";
+import { SQLiteStore as useSQLiteStore } from "@/datahub/data/client";
+import { SQLiteClient } from "@/utils/SQLiteClient";
 
 import { toKeys } from "@/utils/typedBuiltins";
 import forumDb from "@/assets/db/forum.db?url";

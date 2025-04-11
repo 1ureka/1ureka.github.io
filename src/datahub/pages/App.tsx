@@ -1,6 +1,6 @@
 import { Box, Stack } from "@mui/material";
 import { useResponsiveFontSize } from "../utils/theme";
-import { useSqliteInitializer } from "../hooks/useSQLiteInitializer";
+import { useSqliteInitializer } from "../hooks/init";
 
 import { APPBAR_HEIGHT } from "../components/appbar/appbarSx";
 import { AppWrapper } from "@/datahub/components/AppWrapper";
