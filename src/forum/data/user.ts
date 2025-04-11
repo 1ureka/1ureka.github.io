@@ -1,5 +1,5 @@
 import { getSession } from "./session";
-import { SQLiteClient } from "./SQLiteClient";
+import { sqlite } from "./client";
 
 // ----------------------------
 // 查詢總使用者數
@@ -13,7 +13,7 @@ const fetchUserCount: FetchUserCount = async () => {
       FROM users
     `;
 
-  const result = (await SQLiteClient.exec(sql)) as { count: number }[];
+  const result = (await sqlite.exec(sql)) as { count: number }[];
   return result[0]?.count || 0;
 };
 
@@ -87,7 +87,7 @@ const fetchUsers: FetchUsers = async ({
       ${whereClause}
     `;
 
-  const countResult = (await SQLiteClient.exec(countSql, params)) as { totalCount: number }[];
+  const countResult = (await sqlite.exec(countSql, params)) as { totalCount: number }[];
   const totalCount = countResult[0]?.totalCount || 0;
   const totalPages = Math.ceil(totalCount / limit);
   const nextPage = page + 1 < totalPages ? page + 1 : null;
@@ -106,7 +106,7 @@ const fetchUsers: FetchUsers = async ({
       LIMIT $limit OFFSET $offset
     `;
 
-  const users = await SQLiteClient.exec(sql, params);
+  const users = await sqlite.exec(sql, params);
 
   return { users, nextPage, totalPages } as unknown as ReturnType<FetchUsers>;
 };
@@ -127,7 +127,7 @@ const fetchUserByName: FetchUserByName = async ({ name }) => {
       LIMIT 1
     `;
 
-  const results = await SQLiteClient.exec(sql, { $name: name });
+  const results = await sqlite.exec(sql, { $name: name });
   if (results.length === 0) return null;
   return results[0] as unknown as ReturnType<FetchUserByName>;
 };
@@ -143,7 +143,7 @@ const fetchUserByEmail: FetchUserByEmail = async ({ email }) => {
         LIMIT 1
       `;
 
-  const results = await SQLiteClient.exec(sql, { $email: email });
+  const results = await sqlite.exec(sql, { $email: email });
   if (results.length === 0) return null;
   return results[0] as unknown as ReturnType<FetchUserByEmail>;
 };
@@ -159,7 +159,7 @@ const fetchUserById: FetchUserById = async ({ id }) => {
         LIMIT 1
       `;
 
-  const results = await SQLiteClient.exec(sql, { $id: id });
+  const results = await sqlite.exec(sql, { $id: id });
   if (results.length === 0) return null;
   return results[0] as unknown as ReturnType<FetchUserById>;
 };
@@ -192,7 +192,7 @@ const fetchUserStats: FetchUserStats = async ({ userId }) => {
       WHERE userId = $userId
     `;
 
-  const results = await SQLiteClient.exec(sql, { $userId: userId });
+  const results = await sqlite.exec(sql, { $userId: userId });
 
   return results[0] as unknown as ReturnType<FetchUserStats>;
 };

@@ -1,5 +1,5 @@
 import { getSession } from "./session";
-import { SQLiteClient } from "./SQLiteClient";
+import { sqlite } from "./client";
 
 // ----------------------------
 // 查詢貼文總數
@@ -28,7 +28,7 @@ const fetchPostCounts: FetchPostCounts = async ({ topic } = {}) => {
       ${whereClause}
     `;
 
-  const countResult = (await SQLiteClient.exec(countSql, params)) as { totalCount: number }[];
+  const countResult = (await sqlite.exec(countSql, params)) as { totalCount: number }[];
   return countResult[0]?.totalCount || 0;
 };
 
@@ -119,7 +119,7 @@ const fetchPosts: FetchPosts = async ({
       ${whereClause}
     `;
 
-  const countResult = (await SQLiteClient.exec(countSql, params)) as { totalCount: number }[];
+  const countResult = (await sqlite.exec(countSql, params)) as { totalCount: number }[];
   const totalCount = countResult[0]?.totalCount || 0;
   const totalPages = Math.ceil(totalCount / limit);
   const nextPage = page + 1 < totalPages ? page + 1 : null;
@@ -139,7 +139,7 @@ const fetchPosts: FetchPosts = async ({
         LIMIT $limit OFFSET $offset
       `;
 
-  const result = await SQLiteClient.exec(sql, params);
+  const result = await sqlite.exec(sql, params);
   const posts = result.map((post) => post.id) as number[];
 
   return { posts, nextPage, totalPages };
@@ -154,7 +154,7 @@ type FetchTags = () => Promise<string[]>;
 const fetchTags: FetchTags = async () => {
   const sql = "SELECT uniqueTags FROM tag_stats";
 
-  const result = await SQLiteClient.exec(sql);
+  const result = await sqlite.exec(sql);
   if (result.length === 0) return [];
 
   // 從查詢結果中提取 uniqueTags 並解析 JSON 字串
@@ -200,7 +200,7 @@ const fetchPostById: FetchPostById = async ({ postId, incrementViewCount = false
 
   // 更新瀏覽計數 (非重要，因此不使用 await)
   if (incrementViewCount) {
-    SQLiteClient.exec(`UPDATE posts SET viewCount = viewCount + 1 WHERE id = $postId`, { $postId: postId });
+    sqlite.exec(`UPDATE posts SET viewCount = viewCount + 1 WHERE id = $postId`, { $postId: postId });
   }
 
   // 查詢貼文詳細資訊
@@ -248,7 +248,7 @@ const fetchPostById: FetchPostById = async ({ postId, incrementViewCount = false
     params.$currentUserId = currentUserId;
   }
 
-  const result = await SQLiteClient.exec(sql, params);
+  const result = await sqlite.exec(sql, params);
   if (result.length === 0) return null;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -309,7 +309,7 @@ const createPost: CreatePost = async ({ title, content, tags, photos, attachment
   };
 
   // 執行 SQL 並獲取新增的 ID
-  const result = await SQLiteClient.exec(sql, params);
+  const result = await sqlite.exec(sql, params);
   if (!result || result.length === 0 || !(typeof result[0].id === "number")) {
     return { error: "創建貼文失敗" };
   }
@@ -332,7 +332,7 @@ const updatePost: UpdatePost = async ({ id: postId, title, content, tags, photos
 
   // 驗證使用者是否為貼文擁有者
   const checkOwnerSql = `SELECT userId FROM posts WHERE id = $postId`;
-  const checkResult = await SQLiteClient.exec(checkOwnerSql, { $postId: postId });
+  const checkResult = await sqlite.exec(checkOwnerSql, { $postId: postId });
 
   if (checkResult.length === 0) return { error: "貼文不存在" };
   if (checkResult[0].userId !== userId) return { error: "您沒有權限更新此貼文" };
@@ -369,7 +369,7 @@ const updatePost: UpdatePost = async ({ id: postId, title, content, tags, photos
   };
 
   // 執行 SQL
-  await SQLiteClient.exec(sql, params);
+  await sqlite.exec(sql, params);
   return null; // 成功無錯誤返回
 };
 
@@ -387,14 +387,14 @@ const deletePost: DeletePost = async (postId) => {
 
   // 驗證使用者是否為貼文擁有者
   const checkOwnerSql = `SELECT userId FROM posts WHERE id = $postId`;
-  const checkResult = await SQLiteClient.exec(checkOwnerSql, { $postId: postId });
+  const checkResult = await sqlite.exec(checkOwnerSql, { $postId: postId });
 
   if (checkResult.length === 0) return { error: "貼文不存在" };
   if (checkResult[0].userId !== userId) return { error: "您沒有權限刪除此貼文" };
 
   // 刪除貼文
   const sql = `DELETE FROM posts WHERE id = $postId AND userId = $userId`;
-  await SQLiteClient.exec(sql, { $postId: postId, $userId: userId });
+  await sqlite.exec(sql, { $postId: postId, $userId: userId });
 
   return null; // 成功無錯誤返回
 };

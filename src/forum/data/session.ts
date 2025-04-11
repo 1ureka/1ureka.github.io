@@ -1,4 +1,4 @@
-import { SQLiteClient } from "./SQLiteClient";
+import { sqlite } from "./client";
 import { fetchUserByEmail, fetchUserByName, type FetchUserByNameResult } from "./user";
 
 // 在伺服器中，應該使用更安全的方法，例如 bcrypt 或 PBKDF2
@@ -40,7 +40,7 @@ const login: Login = async ({ username, password }) => {
   `;
 
   const hashedPassword = await hashPassword(password);
-  const result = await SQLiteClient.exec(sql, { $username: username, $hashedPassword: hashedPassword });
+  const result = await sqlite.exec(sql, { $username: username, $hashedPassword: hashedPassword });
   if (result.length === 0) {
     return { authenticated: false, user: null, loading: false, error: "密碼錯誤" };
   }
@@ -84,7 +84,7 @@ const getSession: GetSession = async ({ server } = { server: false }) => {
     WHERE id = $userId
     LIMIT 1
   `;
-  const result = await SQLiteClient.exec(sql, { $userId: storedSession.user.id }, server);
+  const result = await sqlite.exec(sql, { $userId: storedSession.user.id }, server);
 
   // 如果使用者不存在，清除會話
   if (result.length === 0) {
@@ -148,7 +148,7 @@ const register: Register = async ({ username, password, email, description = "" 
       RETURNING id, name, description
     `;
 
-  const result = await SQLiteClient.exec(sql, {
+  const result = await sqlite.exec(sql, {
     $name: username,
     $email: email,
     $hashedPassword: hashedPassword,
@@ -247,7 +247,7 @@ const editProfile: EditProfile = async ({ userId, username, email, description }
       RETURNING id, name, email, description
     `;
 
-  const result = await SQLiteClient.exec(sql, params);
+  const result = await sqlite.exec(sql, params);
 
   if (!result || result.length === 0) {
     return { ...currentSession, error: "更新失敗" };
@@ -288,7 +288,7 @@ const changePassword: ChangePassword = async ({ userId, currentPassword, newPass
       WHERE id = $userId AND hashedPassword = $hashedPassword
     `;
 
-  const verifyResult = await SQLiteClient.exec(verifyPasswordSql, {
+  const verifyResult = await sqlite.exec(verifyPasswordSql, {
     $userId: userId,
     $hashedPassword: currentHashedPassword,
   });
@@ -308,7 +308,7 @@ const changePassword: ChangePassword = async ({ userId, currentPassword, newPass
       WHERE id = $userId
     `;
 
-  await SQLiteClient.exec(updateSql, {
+  await sqlite.exec(updateSql, {
     $userId: userId,
     $hashedPassword: newHashedPassword,
     $updatedAt: now,
@@ -342,7 +342,7 @@ const deleteAccount: DeleteAccount = async ({ userId }) => {
   //       WHERE id = $userId AND hashedPassword = $hashedPassword
   //     `;
 
-  //   const verifyResult = await SQLiteClient.exec(verifyPasswordSql, {
+  //   const verifyResult = await sqlite.exec(verifyPasswordSql, {
   //     $userId: userId,
   //     $hashedPassword: hashedPassword,
   //   });
@@ -357,7 +357,7 @@ const deleteAccount: DeleteAccount = async ({ userId }) => {
       WHERE id = $userId
     `;
 
-  await SQLiteClient.exec(deleteSql, { $userId: userId });
+  await sqlite.exec(deleteSql, { $userId: userId });
   await logout();
   return { success: true, error: null };
 };

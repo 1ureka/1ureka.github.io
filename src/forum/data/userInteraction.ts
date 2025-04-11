@@ -1,4 +1,4 @@
-import { SQLiteClient } from "./SQLiteClient";
+import { sqlite } from "./client";
 
 // ----------------------------
 // 查詢使用者互動 (針對單一使用者獲取其追蹤的使用者)
@@ -20,7 +20,7 @@ const fetchUserFollowing: FetchUserFollowing = async ({ userId }) => {
     `;
 
   // 執行查詢
-  const followingResult = await SQLiteClient.exec(followingSql, {
+  const followingResult = await sqlite.exec(followingSql, {
     $userId: userId,
   });
 
@@ -55,7 +55,7 @@ const fetchUserFollowers: FetchUserFollowers = async ({ userId }) => {
     `;
 
   // 執行查詢
-  const followersResult = await SQLiteClient.exec(followersSql, {
+  const followersResult = await sqlite.exec(followersSql, {
     $userId: userId,
   });
 
@@ -96,7 +96,7 @@ const updateUserInteraction: UpdateUserInteraction = async ({ followerId, follow
           VALUES ($followerId, $followeeId, 'follow')
         `;
 
-    await SQLiteClient.exec(insertSql, {
+    await sqlite.exec(insertSql, {
       $followerId: followerId,
       $followeeId: followeeId,
     });
@@ -109,7 +109,7 @@ const updateUserInteraction: UpdateUserInteraction = async ({ followerId, follow
             AND type = 'follow'
         `;
 
-    await SQLiteClient.exec(deleteSql, {
+    await sqlite.exec(deleteSql, {
       $followerId: followerId,
       $followeeId: followeeId,
     });
@@ -139,7 +139,7 @@ const checkUserInteraction: CheckUserInteraction = async ({ targetId, userId }) 
     `;
 
   // 執行查詢
-  const followStatusResult = await SQLiteClient.exec(followStatusSql, {
+  const followStatusResult = await sqlite.exec(followStatusSql, {
     $userId: userId,
     $targetId: targetId,
   });

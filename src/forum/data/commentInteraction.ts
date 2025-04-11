@@ -1,4 +1,4 @@
-import { SQLiteClient } from "./SQLiteClient";
+import { sqlite } from "./client";
 
 // ----------------------------
 // 查詢評論互動
@@ -37,12 +37,12 @@ const fetchCommentInteractionLike: FetchCommentInteractionLike = async ({ commen
     `;
 
   // 執行查詢
-  const likeStatusResult = await SQLiteClient.exec(likeStatusSql, {
+  const likeStatusResult = await sqlite.exec(likeStatusSql, {
     $commentId: commentId,
     $userId: userId,
   });
 
-  const likeCountResult = await SQLiteClient.exec(likeCountSql, {
+  const likeCountResult = await sqlite.exec(likeCountSql, {
     $commentId: commentId,
   });
 
@@ -76,7 +76,7 @@ const updateCommentInteraction: UpdateCommentInteraction = async ({ commentId, u
         VALUES ($userId, $commentId, $type)
       `;
 
-    await SQLiteClient.exec(insertSql, { $userId: userId, $commentId: commentId, $type: type });
+    await sqlite.exec(insertSql, { $userId: userId, $commentId: commentId, $type: type });
   } else {
     // 若 value 為 false，表示要移除互動紀錄
     const deleteSql = `
@@ -86,7 +86,7 @@ const updateCommentInteraction: UpdateCommentInteraction = async ({ commentId, u
           AND type = $type
       `;
 
-    await SQLiteClient.exec(deleteSql, { $userId: userId, $commentId: commentId, $type: type });
+    await sqlite.exec(deleteSql, { $userId: userId, $commentId: commentId, $type: type });
   }
 };
 

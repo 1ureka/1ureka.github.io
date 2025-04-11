@@ -1,4 +1,4 @@
-import { SQLiteClient } from "./SQLiteClient";
+import { sqlite } from "./client";
 
 // ----------------------------
 // 查詢貼文互動
@@ -37,12 +37,12 @@ const fetchPostInteractionLike: FetchPostInteractionLike = async ({ postId, user
     `;
 
   // 執行查詢
-  const likeStatusResult = await SQLiteClient.exec(likeStatusSql, {
+  const likeStatusResult = await sqlite.exec(likeStatusSql, {
     $postId: postId,
     $userId: userId,
   });
 
-  const likeCountResult = await SQLiteClient.exec(likeCountSql, {
+  const likeCountResult = await sqlite.exec(likeCountSql, {
     $postId: postId,
   });
 
@@ -79,7 +79,7 @@ const fetchPostInteractionFav: FetchPostInteractionFav = async ({ postId, userId
     `;
 
   // 執行查詢
-  const favStatusResult = await SQLiteClient.exec(favStatusSql, {
+  const favStatusResult = await sqlite.exec(favStatusSql, {
     $postId: postId,
     $userId: userId,
   });
@@ -111,7 +111,7 @@ const updatePostInteraction: UpdatePostInteraction = async ({ postId, userId, ty
         VALUES ($userId, $postId, $type)
       `;
 
-    await SQLiteClient.exec(insertSql, {
+    await sqlite.exec(insertSql, {
       $userId: userId,
       $postId: postId,
       $type: type,
@@ -125,7 +125,7 @@ const updatePostInteraction: UpdatePostInteraction = async ({ postId, userId, ty
           AND type = $type
       `;
 
-    await SQLiteClient.exec(deleteSql, {
+    await sqlite.exec(deleteSql, {
       $userId: userId,
       $postId: postId,
       $type: type,
@@ -156,7 +156,7 @@ const fetchUserFavPosts: FetchUserFavPosts = async ({ userId }) => {
   `;
 
   // 執行查詢
-  const favPostsResult = await SQLiteClient.exec(favPostsSql, {
+  const favPostsResult = await sqlite.exec(favPostsSql, {
     $userId: userId,
   });
 

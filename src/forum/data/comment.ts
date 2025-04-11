@@ -1,5 +1,5 @@
 import { getSession } from "./session";
-import { SQLiteClient } from "./SQLiteClient";
+import { sqlite } from "./client";
 
 // ----------------------------
 // 查詢單層留言列表
@@ -29,7 +29,7 @@ const fetchComments: FetchComments = async (params) => {
 
   const queryParams = { $id: isPostQuery ? params.postId : params.parentId };
 
-  const result = await SQLiteClient.exec(sql, queryParams);
+  const result = await sqlite.exec(sql, queryParams);
   return result.map((comment) => comment.id as number);
 };
 
@@ -81,7 +81,7 @@ const fetchCommentById: FetchCommentById = async ({ commentId }) => {
         c.id = $commentId
     `;
 
-  const result = await SQLiteClient.exec(sql, { $commentId: commentId });
+  const result = await sqlite.exec(sql, { $commentId: commentId });
   if (result.length === 0) return null;
 
   const comment = result[0];
@@ -121,13 +121,13 @@ const createComment: CreateComment = async ({ postId, content, parentId }) => {
 
   // 驗證 postId 存在
   const checkPostSql = `SELECT id FROM posts WHERE id = $postId`;
-  const postResult = await SQLiteClient.exec(checkPostSql, { $postId: postId });
+  const postResult = await sqlite.exec(checkPostSql, { $postId: postId });
   if (postResult.length === 0) return { error: "貼文不存在" };
 
   // 如果有 parentId，驗證此留言存在且屬於正確的貼文
   if (parentId) {
     const checkParentSql = `SELECT id, postId FROM comments WHERE id = $parentId`;
-    const parentResult = await SQLiteClient.exec(checkParentSql, { $parentId: parentId });
+    const parentResult = await sqlite.exec(checkParentSql, { $parentId: parentId });
 
     if (parentResult.length === 0) return { error: "回覆的留言不存在" };
     if (parentResult[0].postId !== postId) return { error: "回覆的留言不屬於此貼文" };
@@ -153,7 +153,7 @@ const createComment: CreateComment = async ({ postId, content, parentId }) => {
   };
 
   // 執行 SQL 並獲取新增的 ID
-  const result = await SQLiteClient.exec(sql, params);
+  const result = await sqlite.exec(sql, params);
   if (!result || result.length === 0 || !(typeof result[0].id === "number")) {
     return { error: "創建留言失敗" };
   }
@@ -180,7 +180,7 @@ const updateComment: UpdateComment = async ({ commentId, content }) => {
 
   // 驗證使用者是否為留言擁有者
   const checkOwnerSql = `SELECT userId FROM comments WHERE id = $commentId`;
-  const checkResult = await SQLiteClient.exec(checkOwnerSql, { $commentId: commentId });
+  const checkResult = await sqlite.exec(checkOwnerSql, { $commentId: commentId });
 
   if (checkResult.length === 0) return { error: "留言不存在" };
   if (checkResult[0].userId !== userId) return { error: "您沒有權限編輯此留言" };
@@ -204,7 +204,7 @@ const updateComment: UpdateComment = async ({ commentId, content }) => {
   };
 
   // 執行 SQL
-  await SQLiteClient.exec(sql, params);
+  await sqlite.exec(sql, params);
   return null; // 成功無錯誤返回
 };
 
@@ -222,14 +222,14 @@ const deleteComment: DeleteComment = async (commentId) => {
 
   // 驗證使用者是否為留言擁有者
   const checkOwnerSql = `SELECT userId FROM comments WHERE id = $commentId`;
-  const checkResult = await SQLiteClient.exec(checkOwnerSql, { $commentId: commentId });
+  const checkResult = await sqlite.exec(checkOwnerSql, { $commentId: commentId });
 
   if (checkResult.length === 0) return { error: "留言不存在" };
   if (checkResult[0].userId !== userId) return { error: "您沒有權限刪除此留言" };
 
   // 刪除留言
   const sql = `DELETE FROM comments WHERE id = $commentId AND userId = $userId`;
-  await SQLiteClient.exec(sql, { $commentId: commentId, $userId: userId });
+  await sqlite.exec(sql, { $commentId: commentId, $userId: userId });
 
   return null; // 成功無錯誤返回
 };

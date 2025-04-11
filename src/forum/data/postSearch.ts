@@ -1,4 +1,4 @@
-import { SQLiteClient } from "./SQLiteClient";
+import { sqlite } from "./client";
 import dayjs from "dayjs";
 
 // ------------------------------
@@ -117,7 +117,7 @@ const searchPosts = async ({
       ${whereClause}
     `;
 
-  const countResult = (await SQLiteClient.exec(countSql, params)) as { totalCount: number }[];
+  const countResult = (await sqlite.exec(countSql, params)) as { totalCount: number }[];
   const totalCount = countResult[0]?.totalCount || 0;
   const totalPages = Math.ceil(totalCount / limit);
   const nextPage = page + 1 < totalPages ? page + 1 : null;
@@ -137,7 +137,7 @@ const searchPosts = async ({
       LIMIT $limit OFFSET $offset
     `;
 
-  const result = await SQLiteClient.exec(sql, params);
+  const result = await sqlite.exec(sql, params);
   const posts = result.map((post) => post.id) as number[];
 
   return { posts, nextPage, totalPages, totalCount };
