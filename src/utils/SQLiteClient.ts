@@ -15,12 +15,10 @@ export class SQLiteClient {
     this.storageKey = config.storageKey;
   }
 
-  /**
-   * 取得資料庫載入狀態
-   */
-  async ready(): Promise<void> {
+  private ready() {
+    // TODO: 偵測版本更新，若有更新則重新載入資料庫，實現跨頁面更新 (在 loadDatabase 中初始化版本號)(在 saveDatabase 中更新版本號)
     this.dbPromise = this.dbPromise === null ? this.loadDatabase() : this.dbPromise;
-    await this.dbPromise;
+    return this.dbPromise;
   }
 
   // ----------------------------
@@ -33,8 +31,8 @@ export class SQLiteClient {
   async exec(sql: string, params?: BindParams, noDelay = false) {
     const startTime = Date.now(); // 計時
 
-    this.dbPromise = this.dbPromise === null ? this.loadDatabase() : this.dbPromise;
-    const db = await this.dbPromise;
+    // 確保資料庫已載入
+    const db = await this.ready();
 
     // 確保外鍵約束開啟
     db.run("PRAGMA foreign_keys = ON;");
@@ -81,8 +79,7 @@ export class SQLiteClient {
     const startTime = Date.now(); // 計時
 
     // 確保資料庫已載入
-    this.dbPromise = this.dbPromise === null ? this.loadDatabase() : this.dbPromise;
-    const db = await this.dbPromise;
+    const db = await this.ready();
 
     // 匯出資料庫為 Uint8Array
     const data = db.export();
@@ -134,12 +131,15 @@ export class SQLiteClient {
    * 獲取資料庫大小
    */
   async getDatabaseSize(): Promise<number> {
-    await this.ready(); // 確保資料庫已載入
+    // 確保資料庫已載入
+    await this.ready();
+
     const { data: cached, error } = await tryCatch(get<Uint8Array>(this.storageKey));
     if (error) {
       console.error("Failed to get database size", error);
       return 0;
     }
+
     return cached ? cached.byteLength : 0;
   }
 
