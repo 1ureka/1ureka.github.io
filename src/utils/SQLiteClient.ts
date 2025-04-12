@@ -9,6 +9,7 @@ export class SQLiteClient {
   private dbPromise: Promise<Database> | null = null;
   private dbPath: string;
   private storageKey: string;
+  private timestamp: number | null = null; // 用於版本檢查
 
   constructor(config: { dbPath: string; storageKey: string }) {
     this.dbPath = config.dbPath;
@@ -16,7 +17,7 @@ export class SQLiteClient {
   }
 
   private ready() {
-    // TODO: 偵測版本更新，若有更新則重新載入資料庫，實現跨頁面更新 (在 loadDatabase 中初始化版本號)(在 saveDatabase 中更新版本號)
+    this.checkTimestamp(); // 檢查時間戳，若有變化則重新載入資料庫
     this.dbPromise = this.dbPromise === null ? this.loadDatabase() : this.dbPromise;
     return this.dbPromise;
   }
@@ -148,6 +149,28 @@ export class SQLiteClient {
   // ----------------------------
 
   /**
+   * 檢查時間戳，若有變化則重新載入資料庫
+   */
+  private checkTimestamp() {
+    const raw = localStorage.getItem("__db_timestamp__") ?? Date.now().toString();
+    const stamp = parseInt(raw, 10);
+    if (this.timestamp === null) this.timestamp = stamp;
+    else if (this.timestamp !== stamp) {
+      this.timestamp = stamp;
+      this.dbPromise = null; // 重新載入資料庫
+    }
+  }
+
+  /**
+   * 設置時間戳
+   */
+  private setTimestamp() {
+    const stamp = Date.now();
+    localStorage.setItem("__db_timestamp__", stamp.toString());
+    this.timestamp = stamp;
+  }
+
+  /**
    * 解析 SQL.js 返回的結果
    */
   private parse(result: QueryExecResult[]) {
@@ -190,6 +213,7 @@ export class SQLiteClient {
    * 保存當前數據庫狀態到 IndexedDB
    */
   private async saveDatabase(db: Database) {
+    this.setTimestamp(); // 更新時間戳，使其他頁面能夠檢測到變化
     const data = db.export();
     const { error } = await tryCatch(set(this.storageKey, data));
     if (error) console.error("Failed to save database to IndexedDB", error);
