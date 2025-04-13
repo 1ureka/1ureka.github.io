@@ -156,10 +156,18 @@ const ExpandedSidebar = ({ open, onClose }: { open: boolean; onClose: () => void
       />
 
       <ExpandedNavButton
-        title="資料表"
+        title="表格檢視"
         description="檢視、編輯與標準化資料表內容"
-        icon={<ViewListRoundedIcon sx={{ color: "#fffc", fontSize: "3.5rem" }} />}
-        onClick={onClose}
+        icon={
+          <ViewListRoundedIcon
+            sx={{ color: pathname.get() === routes.datahub_tables ? "primary.dark" : "#fffc", fontSize: "3.5rem" }}
+          />
+        }
+        active={pathname.get() === routes.datahub_tables}
+        onClick={() => {
+          updatePath(routes.datahub_tables);
+          onClose();
+        }}
       />
 
       <ExpandedNavButton
@@ -203,7 +211,11 @@ const Sidebar = () => {
         <SchemaRoundedIcon />
       </NavButton>
 
-      <NavButton title="資料表">
+      <NavButton
+        title="表格檢視"
+        active={pathname.get() === routes.datahub_tables}
+        onClick={() => updatePath(routes.datahub_tables)}
+      >
         <ViewListRoundedIcon />
       </NavButton>
 

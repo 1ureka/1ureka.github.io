@@ -11,11 +11,13 @@ import { SchemaHeader } from "../schema/SchemaHeader";
 const titleMap = {
   [routes.datahub_home]: "概覽",
   [routes.datahub_schema]: "結構圖",
+  [routes.datahub_tables]: "表格檢視",
 };
 
 const elementsMap: Record<string, React.ReactNode | null> = {
   [routes.datahub_home]: <HomeHeader />,
   [routes.datahub_schema]: <SchemaHeader />,
+  [routes.datahub_tables]: null,
 };
 
 const Header = () => {

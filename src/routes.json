@@ -47,6 +47,10 @@
     "dev": "/src/datahub/pages/schema/index.html",
     "prod": "/datahub/schema"
   },
+  "datahub_tables": {
+    "dev": "/src/datahub/pages/tables/index.html",
+    "prod": "/datahub/tables"
+  },
   "photos_home": {
     "dev": "/src/photos/pages/index.html",
     "prod": "/photos"

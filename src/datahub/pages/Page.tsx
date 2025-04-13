@@ -1,6 +1,6 @@
 import { lazy, Suspense } from "react";
 import { Paper, CircularProgress, Box } from "@mui/material";
-import { mdSpace } from "../components/home/commonSx";
+import { mdSpace, smSpace } from "../components/home/commonSx";
 import { useUrl } from "../hooks/url";
 import { routes } from "@/routes";
 
@@ -12,12 +12,14 @@ const SmallTiles = lazy(() =>
 );
 const SchemaSidebar = lazy(() => import("../components/schema/Sidebar"));
 const SchemaFlowChart = lazy(() => import("../components/schema/FlowChart"));
+const Tables = lazy(() => import("../components/tables/Tables"));
 
 const paperSx = { borderRadius: 4, boxShadow: "none", flex: 1 } as const;
 
 const elementsMap: Record<string, () => React.ReactNode | null> = {
   [routes.datahub_home]: () => (
     <Paper sx={{ ...paperSx, p: mdSpace }}>
+      <title>資料樣板</title>
       <SmallTiles />
       <LargeTiles />
     </Paper>
@@ -27,6 +29,12 @@ const elementsMap: Record<string, () => React.ReactNode | null> = {
       <title>資料樣板 | 結構圖</title>
       <SchemaSidebar />
       <SchemaFlowChart />
+    </Paper>
+  ),
+  [routes.datahub_tables]: () => (
+    <Paper sx={{ ...paperSx, p: smSpace }}>
+      <title>資料樣板 | 表格檢視</title>
+      <Tables />
     </Paper>
   ),
 };
