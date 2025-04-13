@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useObjects, useTableInfo } from "@/datahub/hooks/read";
 import {
   Box,
@@ -60,11 +60,14 @@ const useSelectedTable = () => {
   const { searchParams, updateSearchParams } = useUrl();
   const value = searchParams.get("table") ?? null;
 
-  const findIndexByName = (value: string) => {
-    if (!data) return 0;
-    const index = data.findIndex(({ name }) => name === value);
-    return index !== -1 ? index : 0;
-  };
+  const findIndexByName = useCallback(
+    (value: string) => {
+      if (!data) return 0;
+      const index = data.findIndex(({ name }) => name === value);
+      return index !== -1 ? index : 0;
+    },
+    [data]
+  );
 
   const [index, setIndex] = useState<number>(0);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -76,7 +79,7 @@ const useSelectedTable = () => {
   useEffect(() => {
     if (!data) return;
     setIndex(findIndexByName(value ?? data[0].name));
-  }, [value, data]);
+  }, [value, data, findIndexByName]);
 
   return { data, selected: data ? data[index] : null, handleChange, isFetching };
 };
