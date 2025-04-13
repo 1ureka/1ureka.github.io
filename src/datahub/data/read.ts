@@ -26,7 +26,9 @@ const getObjectsByTypes = async (types: SQLiteObjectType[]) => {
 
   await Promise.all(
     types.map(async (type) => {
-      const sql = `SELECT name FROM sqlite_master WHERE type = $type AND name NOT LIKE 'sqlite_%';`;
+      const sql = `
+      SELECT name FROM sqlite_master WHERE type = $type AND name NOT LIKE 'sqlite_%' ORDER BY rowid;
+      `;
       const rows = await client.exec(sql, { $type: type });
 
       rows.forEach((row) => {
@@ -35,7 +37,7 @@ const getObjectsByTypes = async (types: SQLiteObjectType[]) => {
     })
   );
 
-  return results;
+  return results.toSorted((a, b) => a.type.localeCompare(b.type));
 };
 
 const getTotalRowCount = async (types: Exclude<SQLiteObjectType, "index" | "trigger">[]) => {
