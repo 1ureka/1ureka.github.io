@@ -1,4 +1,4 @@
-import { Box, ButtonBase, Divider, IconButton, Stack, Typography, useColorScheme } from "@mui/material";
+import { Box, ButtonBase, Divider, IconButton, Stack, Tooltip, Typography, useColorScheme } from "@mui/material";
 import CameraRoundedIcon from "@mui/icons-material/CameraRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import LightModeRoundedIcon from "@mui/icons-material/LightModeRounded";
@@ -6,6 +6,9 @@ import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
 import ArrowDropDownRoundedIcon from "@mui/icons-material/ArrowDropDownRounded";
 import DragHandleRoundedIcon from "@mui/icons-material/DragHandleRounded";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
+import CollectionsRoundedIcon from "@mui/icons-material/CollectionsRounded";
+import CreateNewFolderRoundedIcon from "@mui/icons-material/CreateNewFolderRounded";
+import BookmarksRoundedIcon from "@mui/icons-material/BookmarksRounded";
 
 import { useResponsiveFontSize } from "../utils/theme";
 import { AppWrapper } from "@/photos/components/AppWrapper";
@@ -13,6 +16,7 @@ import { SearchBar } from "../components/appbar/SearchBar";
 import { BoxM } from "@/components/Motion";
 import { useEffect, useRef, useState } from "react";
 import { useSpring } from "motion/react";
+import { ellipsisSx } from "@/utils/commonSx";
 
 const ThemeSwitch = () => {
   const { mode, setMode, systemMode } = useColorScheme();
@@ -80,6 +84,74 @@ const ThemeSwitch = () => {
 
 const appbarHeight = 72;
 
+const SidebarButton = ({
+  expanded,
+  active,
+  icon,
+  title,
+  action,
+  onClick,
+}: {
+  expanded: boolean;
+  active: boolean;
+  icon: React.ReactNode;
+  title: string;
+  action?: React.ReactNode;
+  onClick: () => void;
+}) => {
+  const [isLayouting, setIsLayouting] = useState(false);
+
+  return (
+    <Tooltip title={expanded ? null : <Typography variant="body2">{title}</Typography>} arrow placement="right">
+      <BoxM layout sx={{ width: 1 }}>
+        <ButtonBase
+          onClick={onClick}
+          sx={{
+            width: expanded ? 1 : undefined,
+            borderRadius: 2,
+            display: "flex",
+            justifyContent: expanded ? "space-between" : "center",
+            alignItems: "center",
+            bgcolor: active ? "FilledInput.bg" : "transparent",
+            "&:hover": { bgcolor: "action.hover" },
+          }}
+        >
+          <Box sx={{ display: "flex", alignItems: "center", gap: 3, p: 1.2 }}>
+            <Box sx={{ color: "action.active", display: "contents" }}>{icon}</Box>
+            {expanded && (
+              <Typography variant="subtitle1" component="h6" sx={{ ...ellipsisSx, lineHeight: 1 }}>
+                {title}
+              </Typography>
+            )}
+          </Box>
+          {expanded && action}
+          {active && (
+            <BoxM
+              layoutId="selected-bar"
+              onLayoutAnimationStart={() => setIsLayouting(true)}
+              onLayoutAnimationComplete={() => setIsLayouting(false)}
+              sx={{ position: "absolute", inset: "0 auto 0 0", display: "grid", placeItems: "center" }}
+            >
+              <Box
+                sx={{
+                  px: 0.2,
+                  height: 0.5,
+                  bgcolor: "primary.main",
+                  borderRadius: 99,
+                  translate: "-50%",
+                  scale: isLayouting ? "1 1.5" : "1 1",
+                  transition: "scale 0.7s cubic-bezier(0.4, 0, 0.25, 1)",
+                  transitionDuration: isLayouting ? "0.2s" : "0.7s",
+                }}
+              />
+            </BoxM>
+          )}
+        </ButtonBase>
+      </BoxM>
+    </Tooltip>
+  );
+};
+
 const Content = () => {
   const expandedWidthRef = useRef(320);
   const collapsedWidthRef = useRef(56);
@@ -127,6 +199,8 @@ const Content = () => {
     };
   }, [handleMouseMove, stopDragging]);
 
+  const [selected, setSelected] = useState(0);
+
   return (
     <Box sx={{ display: "flex", height: `calc(100dvh - ${appbarHeight}px)`, position: "relative" }}>
       <BoxM ref={sidebarRef} sx={{ height: 1 }} style={{ width }}>
@@ -138,6 +212,54 @@ const Content = () => {
           >
             <MenuRoundedIcon />
           </IconButton>
+
+          {!expanded && (
+            <BoxM layoutId={"add-folder"}>
+              <Tooltip title={<Typography variant="body2">新增資料夾</Typography>} arrow placement="right">
+                <IconButton
+                  centerRipple={false}
+                  sx={{ borderRadius: 2, width: "2.5rem", height: "2.5rem" }}
+                  onMouseDown={(e) => e.stopPropagation()}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <CreateNewFolderRoundedIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            </BoxM>
+          )}
+
+          <SidebarButton
+            expanded={expanded}
+            active={selected === 0}
+            icon={<CollectionsRoundedIcon fontSize="small" color="inherit" />}
+            title="圖庫"
+            action={
+              <BoxM layoutId={"add-folder"}>
+                <Tooltip title={<Typography variant="body2">新增資料夾</Typography>} arrow placement="right">
+                  <IconButton
+                    centerRipple={false}
+                    sx={{ borderRadius: 2 }}
+                    onMouseDown={(e) => e.stopPropagation()}
+                    onClick={(e) => e.stopPropagation()}
+                    component="span"
+                  >
+                    <CreateNewFolderRoundedIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              </BoxM>
+            }
+            onClick={() => setSelected(0)}
+          />
+
+          <SidebarButton
+            expanded={expanded}
+            active={selected === 1}
+            icon={<BookmarksRoundedIcon fontSize="small" color="inherit" />}
+            title="我的最愛"
+            onClick={() => setSelected(1)}
+          />
+
+          <Divider flexItem />
         </Stack>
       </BoxM>
 

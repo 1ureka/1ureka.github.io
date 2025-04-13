@@ -19,7 +19,7 @@ const SearchBar = () => {
       variant="filled"
       label="搜尋"
       size="small"
-      sx={{ width: "20vw", maxWidth: "25rem", minWidth: "15rem", scale: "0.9", transformOrigin: "left" }}
+      sx={{ width: "37.5vw", maxWidth: "30rem", minWidth: "15rem", scale: "0.9", transformOrigin: "left" }}
       value={search}
       onChange={handleChange}
       onKeyDown={handleKeydown}
