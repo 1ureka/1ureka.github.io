@@ -1,10 +1,11 @@
-import { Box, ButtonBase, Divider, IconButton, Typography, useColorScheme } from "@mui/material";
+import { Box, ButtonBase, Divider, IconButton, Stack, Typography, useColorScheme } from "@mui/material";
 import CameraRoundedIcon from "@mui/icons-material/CameraRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import LightModeRoundedIcon from "@mui/icons-material/LightModeRounded";
 import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
 import ArrowDropDownRoundedIcon from "@mui/icons-material/ArrowDropDownRounded";
 import DragHandleRoundedIcon from "@mui/icons-material/DragHandleRounded";
+import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 
 import { useResponsiveFontSize } from "../utils/theme";
 import { AppWrapper } from "@/photos/components/AppWrapper";
@@ -80,9 +81,20 @@ const ThemeSwitch = () => {
 const appbarHeight = 72;
 
 const Content = () => {
-  const width = useSpring(250, { bounce: 0.3 });
+  const expandedWidthRef = useRef(320);
+  const collapsedWidthRef = useRef(56);
+  const width = useSpring(expandedWidthRef.current, { bounce: 0.3 });
   const [dragging, setDragging] = useState(false);
+  const [expanded, setExpanded] = useState(true);
   const sidebarRef = useRef<HTMLDivElement>(null);
+
+  const toggle = () => {
+    setExpanded((prev) => {
+      if (prev) width.set(collapsedWidthRef.current);
+      else width.set(expandedWidthRef.current);
+      return !prev;
+    });
+  };
 
   const startDragging = () => {
     setDragging(true);
@@ -100,6 +112,7 @@ const Content = () => {
     if (!dragging || !sidebarRef.current) return;
     const newWidth = e.clientX - sidebarRef.current.getBoundingClientRect().left;
     if (newWidth >= 200 && newWidth <= 800) {
+      expandedWidthRef.current = newWidth;
       width.set(newWidth);
     }
   };
@@ -116,7 +129,17 @@ const Content = () => {
 
   return (
     <Box sx={{ display: "flex", height: `calc(100dvh - ${appbarHeight}px)`, position: "relative" }}>
-      <BoxM ref={sidebarRef} sx={{ height: 1 }} style={{ width }}></BoxM>
+      <BoxM ref={sidebarRef} sx={{ height: 1 }} style={{ width }}>
+        <Stack sx={{ gap: 0.5, p: 1, alignItems: "flex-start" }}>
+          <IconButton
+            onClick={toggle}
+            centerRipple={false}
+            sx={{ borderRadius: 2, "& svg": { transition: "scale 0.15s ease" }, "&:active svg": { scale: "0.5 1" } }}
+          >
+            <MenuRoundedIcon />
+          </IconButton>
+        </Stack>
+      </BoxM>
 
       <Box
         sx={{
@@ -142,7 +165,7 @@ const Content = () => {
             cursor: "ew-resize",
             "&:hover": { bgcolor: "action.hover" },
             bgcolor: dragging ? "action.hover" : "transparent",
-            display: "grid",
+            display: expanded ? "grid" : "none",
             placeItems: "center",
           }}
         >
