@@ -4,11 +4,14 @@ import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import LightModeRoundedIcon from "@mui/icons-material/LightModeRounded";
 import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
 import ArrowDropDownRoundedIcon from "@mui/icons-material/ArrowDropDownRounded";
+import DragHandleRoundedIcon from "@mui/icons-material/DragHandleRounded";
 
 import { useResponsiveFontSize } from "../utils/theme";
 import { AppWrapper } from "@/photos/components/AppWrapper";
 import { SearchBar } from "../components/appbar/SearchBar";
 import { BoxM } from "@/components/Motion";
+import { useEffect, useRef, useState } from "react";
+import { useSpring } from "motion/react";
 
 const ThemeSwitch = () => {
   const { mode, setMode, systemMode } = useColorScheme();
@@ -75,6 +78,82 @@ const ThemeSwitch = () => {
 };
 
 const appbarHeight = 72;
+
+const Content = () => {
+  const width = useSpring(250, { bounce: 0.3 });
+  const [dragging, setDragging] = useState(false);
+  const sidebarRef = useRef<HTMLDivElement>(null);
+
+  const startDragging = () => {
+    setDragging(true);
+    document.body.style.cursor = "ew-resize";
+    document.body.style.userSelect = "none";
+  };
+
+  const stopDragging = () => {
+    setDragging(false);
+    document.body.style.cursor = "default";
+    document.body.style.userSelect = "";
+  };
+
+  const handleMouseMove = (e: MouseEvent) => {
+    if (!dragging || !sidebarRef.current) return;
+    const newWidth = e.clientX - sidebarRef.current.getBoundingClientRect().left;
+    if (newWidth >= 200 && newWidth <= 800) {
+      width.set(newWidth);
+    }
+  };
+
+  // 綁定事件
+  useEffect(() => {
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", stopDragging);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", stopDragging);
+    };
+  }, [handleMouseMove, stopDragging]);
+
+  return (
+    <Box sx={{ display: "flex", height: `calc(100dvh - ${appbarHeight}px)`, position: "relative" }}>
+      <BoxM ref={sidebarRef} sx={{ height: 1 }} style={{ width }}></BoxM>
+
+      <Box
+        sx={{
+          position: "relative",
+          height: 1,
+          flex: 1,
+          overflow: "hidden",
+          bgcolor: "background.paper",
+          borderRadius: (theme) => `${theme.shape.borderRadius * 6}px 0 0 0`,
+          border: 1,
+          borderColor: "border.main",
+        }}
+      >
+        <Box sx={{ height: 1, overflow: "auto", scrollbarGutter: "stable" }}>
+          <Box sx={{ height: 1500 }} />
+        </Box>
+
+        <Box
+          onMouseDown={startDragging}
+          sx={{
+            position: "absolute",
+            inset: "0 auto 0 0",
+            cursor: "ew-resize",
+            "&:hover": { bgcolor: "action.hover" },
+            bgcolor: dragging ? "action.hover" : "transparent",
+            display: "grid",
+            placeItems: "center",
+          }}
+        >
+          <DragHandleRoundedIcon
+            sx={{ fontSize: "1.2rem", color: "text.secondary", rotate: "90deg", scale: "1.5 1" }}
+          />
+        </Box>
+      </Box>
+    </Box>
+  );
+};
 
 function App() {
   useResponsiveFontSize();
@@ -159,24 +238,7 @@ function App() {
         </Box>
       </Box>
 
-      <Box sx={{ display: "flex" }}>
-        <Box sx={{ height: `calc(100dvh - ${appbarHeight}px)`, width: 250 }}></Box>
-
-        <Box
-          sx={{
-            height: `calc(100dvh - ${appbarHeight}px)`,
-            flex: 1,
-            overflow: "auto",
-            scrollbarGutter: "stable",
-            bgcolor: "background.paper",
-            borderRadius: (theme) => `${theme.shape.borderRadius * 6}px 0 0 0`,
-            border: 1,
-            borderColor: "border.main",
-          }}
-        >
-          <Box sx={{ height: 1500 }} />
-        </Box>
-      </Box>
+      <Content />
     </AppWrapper>
   );
 }
