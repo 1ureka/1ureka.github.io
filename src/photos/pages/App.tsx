@@ -164,8 +164,13 @@ const Content = () => {
             inset: "0 auto 0 0",
             cursor: "ew-resize",
             "&:hover": { bgcolor: "action.hover" },
-            bgcolor: dragging ? "action.hover" : "transparent",
-            display: expanded ? "grid" : "none",
+            display: "grid",
+            pointerEvents: dragging || !expanded ? "none" : "auto",
+            opacity: expanded ? 1 : 0,
+            bgcolor: dragging ? "divider" : "transparent",
+            scale: dragging ? "0.7 1" : "1 1",
+            transformOrigin: "left",
+            transition: "all 0.2s ease",
             placeItems: "center",
           }}
         >
