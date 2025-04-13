@@ -22,7 +22,7 @@ import ArrowDropDownRoundedIcon from "@mui/icons-material/ArrowDropDownRounded";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import FilterAltRoundedIcon from "@mui/icons-material/FilterAltRounded";
 import { useUrl } from "@/datahub/hooks/url";
-import type { SQLiteObjectType, TableColumnInfo } from "@/datahub/data/read";
+import type { TableColumnInfo } from "@/datahub/data/read";
 
 const smSpace = { xs: 0.5, sm: 1 };
 const mdSpace = { xs: 1, md: 1.5 };
@@ -53,34 +53,41 @@ const TableSelectLoading = () => (
   </Box>
 );
 
-const useSelectTable = (data: { type: SQLiteObjectType; name: string }[]) => {
+const useSelectedTable = () => {
+  const { data, isFetching } = useObjects({ types: ["table", "view"] });
   const { searchParams, updateSearchParams } = useUrl();
   const value = searchParams.get("table") ?? null;
 
   const findIndexByName = (value: string) => {
+    if (!data) return 0;
     const index = data.findIndex(({ name }) => name === value);
     return index !== -1 ? index : 0;
   };
 
-  const [index, setIndex] = useState<number>(findIndexByName(value ?? data[0].name));
+  const [index, setIndex] = useState<number>(0);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    if (!data) return;
     updateSearchParams({ table: data[findIndexByName(event.target.value)].name });
   };
 
+  // 載入data完成後的初始化 + 之後路由更動時的更新
   useEffect(() => {
+    if (!data) return;
     setIndex(findIndexByName(value ?? data[0].name));
-  }, [value]);
+  }, [value, data]);
 
-  return { object: data[index], handleChange };
+  return { data, selected: data ? data[index] : null, handleChange, isFetching };
 };
 
-const TableSelect = ({ data }: { data: { type: SQLiteObjectType; name: string }[] }) => {
-  const { object, handleChange } = useSelectTable(data);
+const TableSelect = () => {
+  const { data, selected, handleChange, isFetching } = useSelectedTable();
+
+  if (!data || !selected || isFetching) return <TableSelectLoading />;
 
   return (
     <TextField
       select
-      value={object.name}
+      value={selected.name}
       onChange={handleChange}
       size="small"
       variant="filled"
@@ -106,7 +113,7 @@ const TableSelect = ({ data }: { data: { type: SQLiteObjectType; name: string }[
                 color="inherit"
                 sx={{ p: 0.5, borderRadius: 1, bgcolor: "divider", textTransform: "uppercase" }}
               >
-                {object.type}
+                {selected.type}
               </Typography>
             </InputAdornment>
           ),
@@ -254,23 +261,21 @@ const FilterFields = ({ columns }: { columns: TableColumnInfo[] }) => {
   );
 };
 
-const FilterFieldsWrapper = ({ data }: { data: { type: SQLiteObjectType; name: string }[] }) => {
-  const { object } = useSelectTable(data);
+const FilterFieldsWrapper = () => {
+  const { selected, isFetching: isFetchingObj } = useSelectedTable();
   const { data: tableInfo, isFetching } = useTableInfo({ types: ["table", "view"] });
 
-  if (isFetching || !tableInfo) return <FilterFieldsLoading />;
-  return <FilterFields columns={tableInfo.find(({ table }) => table === object.name)?.columns ?? []} />;
+  if (isFetching || !tableInfo || isFetchingObj || !selected) return <FilterFieldsLoading />;
+  return <FilterFields columns={tableInfo.find(({ table }) => table === selected.name)?.columns ?? []} />;
 };
 
 const Tables = () => {
-  const { data } = useObjects({ types: ["table", "view"] });
-
   return (
     <Stack>
       <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <Box sx={{ display: "flex", alignItems: "stretch", gap: mdSpace }}>
-          {!data ? <TableSelectLoading /> : <TableSelect data={data} />}
-          {!data ? <FilterFieldsLoading /> : <FilterFieldsWrapper data={data} />}
+          <TableSelect />
+          <FilterFieldsWrapper />
         </Box>
       </Box>
     </Stack>
