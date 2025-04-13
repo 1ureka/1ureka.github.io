@@ -51,7 +51,7 @@ const NewComment = ({
         const result = await createComment({ ...value, postId, parentId });
         if (typeof result === "number") {
           form.reset();
-          return console.log("發佈成功，留言 ID：", result);
+          return console.log("發佈成功，留言 ID：" + result);
         }
         if (result.error) console.error(`留言發佈失敗：${result.error}`);
       }
