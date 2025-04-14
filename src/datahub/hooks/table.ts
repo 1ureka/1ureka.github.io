@@ -25,7 +25,12 @@ const useSelectedTable = () => {
   const [index, setIndex] = useState<number>(0);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     if (!data) return;
-    updateSearchParams({ table: data[findIndexByName(event.target.value)].name, hiddenColumns: null });
+    updateSearchParams({
+      table: data[findIndexByName(event.target.value)].name,
+      hiddenColumns: null,
+      orderBy: null,
+      order: null,
+    });
   };
 
   // 載入data完成後的初始化 + 之後路由更動時的更新
@@ -71,4 +76,40 @@ const useHiddenColumns = () => {
   return { hiddenColumns, createToggleAllColumns, createToggleHandler };
 };
 
-export { useSelectedTable, useHiddenColumns };
+const useSort = (length: number | null) => {
+  const { searchParams, updateSearchParams } = useUrl();
+
+  const orderBy = useMemo(() => {
+    if (!length) return 0; // length可能還在loading中
+
+    const value = searchParams.get("orderBy") ?? null;
+    if (!value) return 0;
+
+    const parsedValue = parseInt(value, 10);
+    if (!Number.isInteger(parsedValue)) return 0;
+    if (parsedValue < 0 || parsedValue >= length) return 0;
+
+    return parsedValue;
+  }, [searchParams, length]);
+
+  const order: "asc" | "desc" = useMemo(() => {
+    const value = searchParams.get("order") ?? null;
+    if (!value) return "asc";
+    if (["asc", "desc"].includes(value)) return value as "asc" | "desc";
+    return "asc";
+  }, [searchParams]);
+
+  const createToggleHandler = useCallback(
+    (index: number) => () => {
+      const newOrderBy = index;
+      // 如果點擊的欄位是當前排序的欄位，則反轉排序順序，否則使用升序(預設)
+      const newOrder = orderBy === index && order === "asc" ? "desc" : "asc";
+      updateSearchParams({ orderBy: newOrderBy.toString(), order: newOrder }, true);
+    },
+    [orderBy, order, updateSearchParams]
+  );
+
+  return { orderBy, order, createToggleHandler };
+};
+
+export { useSelectedTable, useHiddenColumns, useSort };

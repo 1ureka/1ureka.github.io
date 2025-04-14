@@ -35,7 +35,8 @@ const uniqueByField = <T, K extends keyof T>(arr: T[], field: K): T[] => {
  */
 function toggleSet<T>(array: T[], value: T): T[] {
   const set = new Set(array);
-  set.has(value) ? set.delete(value) : set.add(value);
+  if (set.has(value)) set.delete(value);
+  else set.add(value);
   return Array.from(set);
 }
 
