@@ -1,5 +1,5 @@
 import { useTableInfo } from "@/datahub/hooks/read";
-import { useSelectedTable } from "@/datahub/hooks/table";
+import { useHiddenColumns, useSelectedTable } from "@/datahub/hooks/table";
 import { Box, Skeleton, TableCell, TableHead, TableRow, TableSortLabel, Typography } from "@mui/material";
 import SortRoundedIcon from "@mui/icons-material/SortRounded";
 import { smSpace } from "./commonSx";
@@ -66,17 +66,21 @@ const TableHeader = () => {
   const { data: tableInfo, isFetching: isFetchingInfo } = useTableInfo({ types: ["table", "view"] });
   const isFetching = isFetchingInfo || !tableInfo || isFetchingObj || !selected;
 
+  const { hiddenColumns } = useHiddenColumns();
+
   const columns = useMemo(() => {
     if (!tableInfo || !selected) return null;
     const table = tableInfo.find(({ table }) => table === selected.name);
     if (!table) return null;
-    return table.columns.toSorted((a, b) => {
+    const { columns } = table;
+    const filtered = columns.filter(({ cid }) => !hiddenColumns.includes(cid));
+    return filtered.toSorted((a, b) => {
       if (a.pk !== b.pk) return b.pk - a.pk;
       if (a.type === "text" && b.type !== "text") return -1;
       if (a.type !== "text" && b.type === "text") return 1;
       return a.cid - b.cid;
     });
-  }, [tableInfo, selected]);
+  }, [tableInfo, selected, hiddenColumns]);
 
   return (
     <TableHead sx={{ position: "relative" }}>

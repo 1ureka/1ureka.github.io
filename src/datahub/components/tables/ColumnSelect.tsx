@@ -97,18 +97,20 @@ const ColumnSelect = ({ columns }: { columns: TableColumnInfo[] }) => {
 
           <Divider sx={{ my: 0.5 }} />
 
-          {columns.map((column, i) => (
-            <ListItem key={i} disablePadding>
-              <ListItemButton role={undefined} onClick={createToggleHandler(i)} dense>
-                <Checkbox {...ListCheckBoxProps} checked={!hiddenColumns.includes(i)} />
-                <ListItemText
-                  sx={{ display: "flex", width: 1, gap: smSpace, justifyContent: "space-between", my: 0.5 }}
-                  primary={column.name}
-                  secondary={column.type.toUpperCase()}
-                />
-              </ListItemButton>
-            </ListItem>
-          ))}
+          {columns
+            .toSorted((a, b) => a.cid - b.cid)
+            .map((column, i) => (
+              <ListItem key={i} disablePadding>
+                <ListItemButton role={undefined} onClick={createToggleHandler(i)} dense>
+                  <Checkbox {...ListCheckBoxProps} checked={!hiddenColumns.includes(i)} />
+                  <ListItemText
+                    sx={{ display: "flex", width: 1, gap: smSpace, justifyContent: "space-between", my: 0.5 }}
+                    primary={column.name}
+                    secondary={column.type.toUpperCase()}
+                  />
+                </ListItemButton>
+              </ListItem>
+            ))}
         </List>
       </Popover>
     </>
