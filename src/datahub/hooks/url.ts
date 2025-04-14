@@ -19,8 +19,8 @@ window.history.replaceState = function (...args) {
 
 const ensureLeadingSlash = (path: string) => (path.startsWith("/") ? path : "/" + path);
 
-function withTransition(callback: () => void) {
-  if (document.startViewTransition) {
+function withTransition(callback: () => void, skip: boolean = false) {
+  if (document.startViewTransition && !skip) {
     document.startViewTransition(callback);
   } else callback();
 }
@@ -76,24 +76,41 @@ export function useUrl() {
   }, [pathname]);
 
   // 用於更新查詢參數的函數 (會保留之前的 searchParams)
-  const updateSearchParams = useCallback((updates: SearchParamsUpdate) => {
+  const updateSearchParams = useCallback((searchParams: SearchParamsUpdate, skipTransition: boolean = false) => {
     const url = new URL(window.location.href);
 
     // 更新或刪除參數
-    Object.entries(updates).forEach(([key, value]) => {
+    Object.entries(searchParams).forEach(([key, value]) => {
       if (value === null) url.searchParams.delete(key);
       else url.searchParams.set(key, value);
     });
 
-    withTransition(() => window.history.pushState({}, "", url));
+    withTransition(() => window.history.pushState({}, "", url), skipTransition);
   }, []);
 
   // 用於更新 pathname 的函數
-  const updatePath = useCallback((newPath: string) => {
+  const updatePath = useCallback((newPath: string, skipTransition: boolean = false) => {
     const url = new URL(window.location.href);
     url.pathname = ensureLeadingSlash(newPath);
-    withTransition(() => window.history.pushState({}, "", url));
+    withTransition(() => window.history.pushState({}, "", url), skipTransition);
   }, []);
+
+  // 用於更新 pathname + searchParams 的函數
+  const updatePathAndSearchParams = useCallback(
+    (newPath: string, searchParams: SearchParamsUpdate, skipTransition: boolean = false) => {
+      const url = new URL(window.location.href);
+      url.pathname = ensureLeadingSlash(newPath);
+
+      // 更新或刪除參數
+      Object.entries(searchParams).forEach(([key, value]) => {
+        if (value === null) url.searchParams.delete(key);
+        else url.searchParams.set(key, value);
+      });
+
+      withTransition(() => window.history.pushState({}, "", url), skipTransition);
+    },
+    []
+  );
 
   // 監聽 URL 變化
   useEffect(() => {
@@ -127,5 +144,11 @@ export function useUrl() {
   }, [searchParams, accessedKeysRef, pathname]);
   // 路由後需要讓 effect 中的 searchParams, pathname 更新才能知道 diff，而 accessedKeysRef 則是因為 lint
 
-  return { searchParams: proxySearchParams, updateSearchParams, pathname: proxyPath, updatePath };
+  return {
+    pathname: proxyPath,
+    searchParams: proxySearchParams,
+    updatePath,
+    updateSearchParams,
+    updatePathAndSearchParams,
+  };
 }
