@@ -1,13 +1,19 @@
-import { useTableInfo } from "@/datahub/hooks/read";
-import { useHiddenColumns, useSelectedTable } from "@/datahub/hooks/table";
-import { Box, Skeleton, TableCell, TableHead, TableRow, TableSortLabel, Typography } from "@mui/material";
+import { Box, Checkbox, Skeleton, Typography } from "@mui/material";
+import { TableCell, TableHead, TableRow, TableSortLabel } from "@mui/material";
 import SortRoundedIcon from "@mui/icons-material/SortRounded";
+
+import { useMemo } from "react";
+import { useTableInfo } from "@/datahub/hooks/read";
+import { useHiddenColumns, useSelectedTable, useSort } from "@/datahub/hooks/table";
 import { smSpace } from "./commonSx";
 import { ellipsisSx } from "@/utils/commonSx";
-import { useMemo } from "react";
 
 const TableHeaderLoading = () => (
   <TableRow>
+    <TableCell padding="checkbox" sx={{ border: "none" }}>
+      <Checkbox disabled size="small" />
+    </TableCell>
+
     <TableCell sx={{ border: "none" }}>
       <Skeleton variant="rounded" animation="wave">
         <Typography variant="body2">載入中. . .</Typography>
@@ -82,6 +88,12 @@ const TableHeader = () => {
     });
   }, [tableInfo, selected, hiddenColumns]);
 
+  const { order, orderBy, createToggleHandler } = useSort(columns?.length ?? 0);
+
+  const checked = Math.random() > 0.5;
+  const indeterminate = Math.random() > 0.5;
+  const unchecked = !checked && !indeterminate;
+
   return (
     <TableHead sx={{ position: "relative" }}>
       <Background />
@@ -90,15 +102,37 @@ const TableHeader = () => {
         <TableHeaderLoading />
       ) : (
         <TableRow>
-          {columns.map((column) => {
+          <TableCell padding="checkbox" sx={{ border: "none" }}>
+            <Checkbox
+              color="default"
+              indeterminate={indeterminate}
+              checked={checked}
+              size="small"
+              sx={{
+                color: !unchecked
+                  ? "color-mix(in srgb, var(--mui-palette-text-primary) 30%, var(--mui-palette-primary-main) 70%)"
+                  : undefined,
+              }}
+            />
+          </TableCell>
+
+          {columns.map((column, i) => {
             const { cid, name, type } = column;
             const isPk = column.pk === 1;
             const align = type !== "text" && !isPk ? "flex-end" : undefined;
+            const active = orderBy === i;
+            const scale = active ? (order === "desc" ? 1 : -1) : -1;
 
             return (
               <TableCell key={cid} sx={{ border: "none", minWidth: "10rem" }}>
                 <Box sx={{ display: "flex", alignItems: "center", justifyContent: align }}>
-                  <TableSortLabel active={cid === 0} direction={"desc"} IconComponent={SortRoundedIcon}>
+                  <TableSortLabel
+                    active={active}
+                    direction={active ? order : "asc"}
+                    IconComponent={SortRoundedIcon}
+                    slotProps={{ icon: { sx: { transform: `scaleY(${scale})` } } }}
+                    onClick={createToggleHandler(i)}
+                  >
                     <Typography variant="body2">{name}</Typography>
                   </TableSortLabel>
                   <Captions isPk={isPk} type={type} />
