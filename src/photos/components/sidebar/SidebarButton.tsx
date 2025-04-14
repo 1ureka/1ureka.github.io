@@ -36,7 +36,7 @@ const SidebarButton = ({
   nestedLevel,
 }: SidebarButtonProps) => {
   const [isLayouting, setIsLayouting] = useState(false);
-  const [selfExpanded, setSelfExpanded] = useState(false);
+  const [selfExpanded, setSelfExpanded] = useState(nestedLevel === undefined);
   const isActived = active || isAnyChildActive(children ?? []);
 
   return (

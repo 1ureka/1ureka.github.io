@@ -1,12 +1,7 @@
-import { Box, Divider, IconButton, Stack, Tooltip, Typography } from "@mui/material";
+import { Box, Divider, IconButton, Typography } from "@mui/material";
 import CameraRoundedIcon from "@mui/icons-material/CameraRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import DragHandleRoundedIcon from "@mui/icons-material/DragHandleRounded";
-import CollectionsRoundedIcon from "@mui/icons-material/CollectionsRounded";
-import CreateNewFolderRoundedIcon from "@mui/icons-material/CreateNewFolderRounded";
-import BookmarksRoundedIcon from "@mui/icons-material/BookmarksRounded";
-import CloudRoundedIcon from "@mui/icons-material/CloudRounded";
-import FolderOpenRoundedIcon from "@mui/icons-material/FolderOpenRounded";
 
 import { useResponsiveFontSize } from "../utils/theme";
 import { AppWrapper } from "@/photos/components/AppWrapper";
@@ -17,8 +12,7 @@ import { useSpring } from "motion/react";
 
 import { ThemeSwitch } from "../components/appbar/ThemeSwitch";
 import { AccountMenu } from "../components/appbar/AccountMenu";
-import { MenuButton } from "../components/sidebar/MenuButton";
-import { SidebarButton } from "../components/sidebar/SidebarButton";
+import { Sidebar } from "../components/sidebar/Sidebar";
 
 const appbarHeight = 72;
 
@@ -72,8 +66,6 @@ const Content = () => {
     };
   }, [handleMouseMove, stopDragging]);
 
-  const [selected, setSelected] = useState(0);
-
   return (
     <Box sx={{ display: "flex", height: `calc(100dvh - ${appbarHeight}px)`, position: "relative" }}>
       <BoxM
@@ -81,80 +73,7 @@ const Content = () => {
         sx={{ height: 1, overflowY: "auto", overflowX: "hidden", scrollbarGutter: "stable" }}
         style={{ width }}
       >
-        <Stack sx={{ gap: 0.5, p: 1, alignItems: "flex-start" }}>
-          <MenuButton onClick={toggle} />
-
-          {!expanded && (
-            <BoxM layoutId={"add-folder"}>
-              <Tooltip title={<Typography variant="body2">新增資料夾</Typography>} arrow placement="right">
-                <IconButton
-                  centerRipple={false}
-                  sx={{ borderRadius: 2, width: "2.5rem", height: "2.5rem" }}
-                  onMouseDown={(e) => e.stopPropagation()}
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <CreateNewFolderRoundedIcon fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            </BoxM>
-          )}
-
-          <SidebarButton
-            expanded={expanded}
-            active={selected === 0}
-            icon={<CollectionsRoundedIcon fontSize="small" color="inherit" />}
-            title="圖庫"
-            action={
-              <BoxM layoutId={"add-folder"}>
-                <Tooltip title={<Typography variant="body2">新增資料夾</Typography>} arrow placement="right">
-                  <IconButton
-                    centerRipple={false}
-                    sx={{ borderRadius: 2 }}
-                    onMouseDown={(e) => e.stopPropagation()}
-                    onClick={(e) => e.stopPropagation()}
-                    component="span"
-                  >
-                    <CreateNewFolderRoundedIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-              </BoxM>
-            }
-            onClick={() => setSelected(0)}
-          />
-
-          <SidebarButton
-            expanded={expanded}
-            active={selected === 1}
-            icon={<BookmarksRoundedIcon fontSize="small" color="inherit" />}
-            title="我的最愛"
-            onClick={() => setSelected(1)}
-          />
-
-          <Divider flexItem />
-
-          <SidebarButton
-            expanded={expanded}
-            active={selected === 2}
-            icon={<CloudRoundedIcon fontSize="small" color="inherit" />}
-            title="個人相簿"
-            onClick={() => setSelected(2)}
-            children={[...Array(5)].map((_, i) => ({
-              active: selected === i + 3,
-              icon: <FolderOpenRoundedIcon fontSize="small" color="inherit" />,
-              title: `資料夾${i + 1}`,
-              onClick: () => setSelected(i + 3),
-              children:
-                i === 3
-                  ? [...Array(2)].map((_, j) => ({
-                      active: selected === j + 8,
-                      icon: <FolderOpenRoundedIcon fontSize="small" color="inherit" />,
-                      title: `子資料夾${j + 1}`,
-                      onClick: () => setSelected(j + 8),
-                    }))
-                  : [],
-            }))}
-          />
-        </Stack>
+        <Sidebar expanded={expanded} onMenuClick={toggle} />
       </BoxM>
 
       <Box
