@@ -1,160 +1,30 @@
-import { Box, ButtonBase, Divider, IconButton, Stack, Tooltip, Typography, useColorScheme } from "@mui/material";
+import { Box, Divider, IconButton, Stack, Tooltip, Typography } from "@mui/material";
 import CameraRoundedIcon from "@mui/icons-material/CameraRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
-import LightModeRoundedIcon from "@mui/icons-material/LightModeRounded";
-import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
-import ArrowDropDownRoundedIcon from "@mui/icons-material/ArrowDropDownRounded";
 import DragHandleRoundedIcon from "@mui/icons-material/DragHandleRounded";
-import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import CollectionsRoundedIcon from "@mui/icons-material/CollectionsRounded";
 import CreateNewFolderRoundedIcon from "@mui/icons-material/CreateNewFolderRounded";
 import BookmarksRoundedIcon from "@mui/icons-material/BookmarksRounded";
+import CloudRoundedIcon from "@mui/icons-material/CloudRounded";
+import FolderOpenRoundedIcon from "@mui/icons-material/FolderOpenRounded";
 
 import { useResponsiveFontSize } from "../utils/theme";
 import { AppWrapper } from "@/photos/components/AppWrapper";
 import { SearchBar } from "../components/appbar/SearchBar";
 import { BoxM } from "@/components/Motion";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useSpring } from "motion/react";
-import { ellipsisSx } from "@/utils/commonSx";
 
-const ThemeSwitch = () => {
-  const { mode, setMode, systemMode } = useColorScheme();
-  const isLight = mode === "light" || systemMode === "light";
-  const isDark = mode === "dark" || systemMode === "dark";
-
-  return (
-    <Box
-      sx={{
-        position: "relative",
-        p: 0.5,
-        gap: 0.5,
-        bgcolor: "action.hover",
-        borderRadius: 2,
-        display: "flex",
-        alignItems: "center",
-      }}
-    >
-      <BoxM
-        layout
-        sx={{
-          position: "absolute",
-          left: isLight ? 0 : undefined,
-          ml: isLight ? 0.5 : undefined,
-          right: isDark ? 0 : undefined,
-          mr: isDark ? 0.5 : undefined,
-          p: 1,
-          width: "1.25rem",
-          height: "1.25rem",
-          boxSizing: "content-box",
-          bgcolor: "primary.light",
-          borderRadius: 1.5,
-        }}
-      />
-
-      <IconButton
-        onClick={() => setMode("light")}
-        centerRipple={false}
-        sx={{
-          position: "relative",
-          borderRadius: 1.5,
-          overflow: "hidden",
-          color: isLight ? "background.paper" : undefined,
-          transition: "0.25s all ease",
-        }}
-      >
-        <LightModeRoundedIcon fontSize="small" />
-      </IconButton>
-      <IconButton
-        onClick={() => setMode("dark")}
-        centerRipple={false}
-        sx={{
-          position: "relative",
-          borderRadius: 1.5,
-          overflow: "hidden",
-          color: isDark ? "background.paper" : undefined,
-          transition: "0.25s all ease",
-        }}
-      >
-        <DarkModeRoundedIcon fontSize="small" />
-      </IconButton>
-    </Box>
-  );
-};
+import { ThemeSwitch } from "../components/appbar/ThemeSwitch";
+import { AccountMenu } from "../components/appbar/AccountMenu";
+import { MenuButton } from "../components/sidebar/MenuButton";
+import { SidebarButton } from "../components/sidebar/SidebarButton";
 
 const appbarHeight = 72;
 
-const SidebarButton = ({
-  expanded,
-  active,
-  icon,
-  title,
-  action,
-  onClick,
-}: {
-  expanded: boolean;
-  active: boolean;
-  icon: React.ReactNode;
-  title: string;
-  action?: React.ReactNode;
-  onClick: () => void;
-}) => {
-  const [isLayouting, setIsLayouting] = useState(false);
-
-  return (
-    <Tooltip title={expanded ? null : <Typography variant="body2">{title}</Typography>} arrow placement="right">
-      <BoxM layout sx={{ width: 1 }}>
-        <ButtonBase
-          onClick={onClick}
-          sx={{
-            width: expanded ? 1 : undefined,
-            borderRadius: 2,
-            display: "flex",
-            justifyContent: expanded ? "space-between" : "center",
-            alignItems: "center",
-            bgcolor: active ? "FilledInput.bg" : "transparent",
-            "&:hover": { bgcolor: "action.hover" },
-          }}
-        >
-          <Box sx={{ display: "flex", alignItems: "center", gap: 3, p: 1.2 }}>
-            <Box sx={{ color: "action.active", display: "contents" }}>{icon}</Box>
-            {expanded && (
-              <Typography variant="subtitle1" component="h6" sx={{ ...ellipsisSx, lineHeight: 1 }}>
-                {title}
-              </Typography>
-            )}
-          </Box>
-          {expanded && action}
-          {active && (
-            <BoxM
-              layoutId="selected-bar"
-              onLayoutAnimationStart={() => setIsLayouting(true)}
-              onLayoutAnimationComplete={() => setIsLayouting(false)}
-              sx={{ position: "absolute", inset: "0 auto 0 0", display: "grid", placeItems: "center" }}
-            >
-              <Box
-                sx={{
-                  px: 0.2,
-                  height: 0.5,
-                  bgcolor: "primary.main",
-                  borderRadius: 99,
-                  translate: "-50%",
-                  scale: isLayouting ? "1 1.5" : "1 1",
-                  transition: "scale 0.7s cubic-bezier(0.4, 0, 0.25, 1)",
-                  transitionDuration: isLayouting ? "0.2s" : "0.7s",
-                }}
-              />
-            </BoxM>
-          )}
-        </ButtonBase>
-      </BoxM>
-    </Tooltip>
-  );
-};
-
 const Content = () => {
   const expandedWidthRef = useRef(320);
-  const collapsedWidthRef = useRef(56);
+  const collapsedWidthRef = useRef(64);
   const width = useSpring(expandedWidthRef.current, { bounce: 0.3 });
   const [dragging, setDragging] = useState(false);
   const [expanded, setExpanded] = useState(true);
@@ -171,23 +41,26 @@ const Content = () => {
   const startDragging = () => {
     setDragging(true);
     document.body.style.cursor = "ew-resize";
-    document.body.style.userSelect = "none";
+    document.getElementById("root")!.style.pointerEvents = "none";
   };
 
-  const stopDragging = () => {
+  const stopDragging = useCallback(() => {
     setDragging(false);
     document.body.style.cursor = "default";
-    document.body.style.userSelect = "";
-  };
+    document.getElementById("root")!.style.pointerEvents = "";
+  }, []);
 
-  const handleMouseMove = (e: MouseEvent) => {
-    if (!dragging || !sidebarRef.current) return;
-    const newWidth = e.clientX - sidebarRef.current.getBoundingClientRect().left;
-    if (newWidth >= 200 && newWidth <= 800) {
-      expandedWidthRef.current = newWidth;
-      width.set(newWidth);
-    }
-  };
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
+      if (!dragging || !sidebarRef.current) return;
+      const newWidth = e.clientX - sidebarRef.current.getBoundingClientRect().left;
+      if (newWidth >= 200 && newWidth <= 800) {
+        expandedWidthRef.current = newWidth;
+        width.set(newWidth);
+      }
+    },
+    [dragging, width]
+  );
 
   // 綁定事件
   useEffect(() => {
@@ -203,15 +76,13 @@ const Content = () => {
 
   return (
     <Box sx={{ display: "flex", height: `calc(100dvh - ${appbarHeight}px)`, position: "relative" }}>
-      <BoxM ref={sidebarRef} sx={{ height: 1 }} style={{ width }}>
+      <BoxM
+        ref={sidebarRef}
+        sx={{ height: 1, overflowY: "auto", overflowX: "hidden", scrollbarGutter: "stable" }}
+        style={{ width }}
+      >
         <Stack sx={{ gap: 0.5, p: 1, alignItems: "flex-start" }}>
-          <IconButton
-            onClick={toggle}
-            centerRipple={false}
-            sx={{ borderRadius: 2, "& svg": { transition: "scale 0.15s ease" }, "&:active svg": { scale: "0.5 1" } }}
-          >
-            <MenuRoundedIcon />
-          </IconButton>
+          <MenuButton onClick={toggle} />
 
           {!expanded && (
             <BoxM layoutId={"add-folder"}>
@@ -260,6 +131,29 @@ const Content = () => {
           />
 
           <Divider flexItem />
+
+          <SidebarButton
+            expanded={expanded}
+            active={selected === 2}
+            icon={<CloudRoundedIcon fontSize="small" color="inherit" />}
+            title="個人相簿"
+            onClick={() => setSelected(2)}
+            children={[...Array(5)].map((_, i) => ({
+              active: selected === i + 3,
+              icon: <FolderOpenRoundedIcon fontSize="small" color="inherit" />,
+              title: `資料夾${i + 1}`,
+              onClick: () => setSelected(i + 3),
+              children:
+                i === 3
+                  ? [...Array(2)].map((_, j) => ({
+                      active: selected === j + 8,
+                      icon: <FolderOpenRoundedIcon fontSize="small" color="inherit" />,
+                      title: `子資料夾${j + 1}`,
+                      onClick: () => setSelected(j + 8),
+                    }))
+                  : [],
+            }))}
+          />
         </Stack>
       </BoxM>
 
@@ -350,41 +244,7 @@ function App() {
 
           <Divider flexItem orientation="vertical" />
 
-          <ButtonBase
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              p: 0.5,
-              pr: 0,
-              borderRadius: 2,
-              textAlign: "left",
-              "&:hover": { bgcolor: "action.hover" },
-            }}
-          >
-            <Box
-              sx={{
-                width: "2.3rem",
-                aspectRatio: 1,
-                borderRadius: 1.5,
-                bgcolor: "primary.light",
-                display: "grid",
-                placeItems: "center",
-                mr: 1,
-              }}
-            >
-              <Typography variant="h6" component="span" sx={{ color: "primary.contrastText" }}>
-                1
-              </Typography>
-            </Box>
-
-            <Typography variant="subtitle1" component="h6">
-              1ureka
-            </Typography>
-
-            <Box sx={{ color: "text.secondary" }}>
-              <ArrowDropDownRoundedIcon color="inherit" />
-            </Box>
-          </ButtonBase>
+          <AccountMenu />
         </Box>
       </Box>
 
