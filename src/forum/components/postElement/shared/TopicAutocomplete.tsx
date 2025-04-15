@@ -1,7 +1,7 @@
 import { useTags } from "@/forum/hooks/post";
 import { useUrl } from "@/forum/hooks/url";
 import { Autocomplete, Box, CircularProgress, Menu, TextField } from "@mui/material";
-import type { MenuProps } from "@mui/material";
+import type { AutocompleteChangeReason, MenuProps } from "@mui/material";
 
 type InputProps =
   | {
@@ -14,7 +14,9 @@ type InputProps =
     };
 
 const createAddHandler =
-  (onAdd: (value: string) => void) => (_: React.SyntheticEvent<Element, Event>, value: string | null) => {
+  (onAdd: (value: string) => void) =>
+  (_: React.SyntheticEvent<Element, Event>, value: string | null, reason: AutocompleteChangeReason) => {
+    if (reason === "clear" || reason === "removeOption") return;
     if (value === null || !value.trim()) return console.error("請輸入標籤名稱");
     if (value === "顯示全部") return console.error("該標籤名稱無效");
     onAdd(value.trim());
