@@ -1,36 +1,24 @@
-import { Box, Button, CircularProgress, Dialog, Divider, InputAdornment, TextField, Typography } from "@mui/material";
+import { Box, Button, Dialog, Divider, InputAdornment, TextField, Typography } from "@mui/material";
 import type { DialogProps } from "@mui/material";
-import { SearchTopicFilled } from "./SearchTopic";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
-import { useUrl } from "@/datahub/hooks/url";
 
-const databases = {
-  forum: { primary: "論壇資料庫", secondary: "來自論壇樣板" },
-};
+import { SearchTopicFilterFilled } from "./SearchTopic.tsx";
+import { useSearchTopic, type SearchTopic } from "./searchTopic";
+import { DialogContent, DialogContentLoading } from "./DialogContent";
+import { QuickActions } from "./QuickActions";
 
-const SearchContentLoading = () => {
-  return (
-    <Box sx={{ display: "grid", placeItems: "center", py: 5 }}>
-      <CircularProgress size={24} />
-    </Box>
-  );
-};
-
-const SearchContent = () => {
-  return <></>;
-};
-
-const topicMap: Record<string, string> = {
-  db: "資料庫",
-  table: "所有資料表",
-  column: "所有表格欄位",
+const getPlaceholder = (searchTopic: SearchTopic) => {
+  const map: Record<SearchTopic, string> = {
+    db: "資料庫",
+    table: "所有資料表",
+    column: "所有表格欄位",
+  };
+  return `在 "${map[searchTopic]}" 中尋找...`;
 };
 
 const SearchDialog = (props: Omit<DialogProps, "children">) => {
-  const isFetching = true;
-  const { searchParams } = useUrl();
-  const raw = searchParams.get("searchTopic") ?? "db";
-  const searchTopic = ["db", "table", "column"].includes(raw) ? raw : "db";
+  const isFetching = false;
+  const { searchTopic } = useSearchTopic();
 
   return (
     <Dialog
@@ -40,10 +28,11 @@ const SearchDialog = (props: Omit<DialogProps, "children">) => {
       slotProps={{ paper: { elevation: 0, sx: { borderRadius: 2, maxHeight: 400 } } }}
     >
       <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, p: 1.5, position: "relative" }}>
-        <SearchTopicFilled />
+        <SearchTopicFilterFilled />
+
         <TextField
           variant="standard"
-          placeholder={`在 "${topicMap[searchTopic]}" 中尋找...`}
+          placeholder={getPlaceholder(searchTopic)}
           sx={{ flex: 1 }}
           slotProps={{
             input: {
@@ -59,6 +48,7 @@ const SearchDialog = (props: Omit<DialogProps, "children">) => {
             },
           }}
         />
+
         <Button
           onClick={() => props.onClose?.({}, "escapeKeyDown")}
           color="inherit"
@@ -76,8 +66,14 @@ const SearchDialog = (props: Omit<DialogProps, "children">) => {
           </Typography>
         </Button>
       </Box>
+
       <Divider />
-      {isFetching ? <SearchContentLoading /> : <SearchContent />}
+
+      {isFetching ? <DialogContentLoading /> : <DialogContent />}
+
+      <Divider />
+
+      <QuickActions />
     </Dialog>
   );
 };
