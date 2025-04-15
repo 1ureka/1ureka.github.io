@@ -36,4 +36,10 @@ const DialogContent = () => {
   );
 };
 
-export { DialogContent, DialogContentLoading };
+const DialogContentWrapper = () => {
+  const isFetching = false; // Replace with actual fetching logic
+
+  return isFetching ? <DialogContentLoading /> : <DialogContent />;
+};
+
+export { DialogContentWrapper as DialogContent };

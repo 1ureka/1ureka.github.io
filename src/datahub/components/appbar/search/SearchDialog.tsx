@@ -1,25 +1,12 @@
-import { Box, Button, Dialog, Divider, InputAdornment, TextField, Typography } from "@mui/material";
+import { Box, Button, Dialog, Divider, Typography } from "@mui/material";
 import type { DialogProps } from "@mui/material";
-import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 
+import { SearchBar } from "./SearchBar.tsx";
 import { SearchTopicFilterFilled } from "./SearchTopic.tsx";
-import { useSearchTopic, type SearchTopic } from "./searchTopic";
-import { DialogContent, DialogContentLoading } from "./DialogContent";
+import { DialogContent } from "./DialogContent";
 import { QuickActions } from "./QuickActions";
 
-const getPlaceholder = (searchTopic: SearchTopic) => {
-  const map: Record<SearchTopic, string> = {
-    db: "資料庫",
-    table: "所有資料表",
-    column: "所有表格欄位",
-  };
-  return `在 "${map[searchTopic]}" 中尋找...`;
-};
-
 const SearchDialog = (props: Omit<DialogProps, "children">) => {
-  const isFetching = false;
-  const { searchTopic } = useSearchTopic();
-
   return (
     <Dialog
       {...props}
@@ -29,25 +16,7 @@ const SearchDialog = (props: Omit<DialogProps, "children">) => {
     >
       <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, p: 1.5, position: "relative" }}>
         <SearchTopicFilterFilled />
-
-        <TextField
-          variant="standard"
-          placeholder={getPlaceholder(searchTopic)}
-          sx={{ flex: 1 }}
-          slotProps={{
-            input: {
-              sx: {
-                "&::before": { borderBottom: 0 },
-                "&:hover:not(.Mui-disabled, .Mui-error):before": { borderBottom: 0 },
-              },
-              startAdornment: (
-                <InputAdornment position="start" sx={{ mr: 1.5 }}>
-                  <SearchRoundedIcon />
-                </InputAdornment>
-              ),
-            },
-          }}
-        />
+        <SearchBar />
 
         <Button
           onClick={() => props.onClose?.({}, "escapeKeyDown")}
@@ -68,11 +37,9 @@ const SearchDialog = (props: Omit<DialogProps, "children">) => {
       </Box>
 
       <Divider />
-
-      {isFetching ? <DialogContentLoading /> : <DialogContent />}
+      <DialogContent />
 
       <Divider />
-
       <QuickActions />
     </Dialog>
   );
