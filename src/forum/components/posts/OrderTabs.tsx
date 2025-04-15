@@ -1,4 +1,4 @@
-import { Box, Stack, Tab, Tabs, Tooltip, Typography } from "@mui/material";
+import { Box, FormControlLabel, Stack, Switch, Tab, Tabs, Tooltip, Typography } from "@mui/material";
 import SortRoundedIcon from "@mui/icons-material/SortRounded";
 import ArrowUpwardRoundedIcon from "@mui/icons-material/ArrowUpwardRounded";
 import { useUrl } from "@/forum/hooks/url";
@@ -14,6 +14,11 @@ const OrderTabs = () => {
   // 從 URL 獲取排序欄位，如果不存在則使用默認值
   const orderBy = searchParams.get("orderBy") || orders[0];
   const orderDesc = searchParams.get("orderDesc") === "true";
+  const followPrior = searchParams.get("followPrior") === "true";
+
+  const handleSwitchFollowPrior = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+    updateSearchParams({ followPrior: checked.toString() });
+  };
 
   // 根據 orderBy 找到對應的索引
   let orderId = orders.findIndex((field) => field === orderBy);
@@ -36,19 +41,19 @@ const OrderTabs = () => {
   };
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        alignItems: { xs: "normal", md: "center" },
-        gap: { xs: 0, md: 1.5 },
-        flexDirection: { xs: "column", md: "row" },
-      }}
-    >
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1, p: { xs: 1, md: 0 }, pb: 0 }}>
-        <SortRoundedIcon sx={{ color: "inherit" }} />
-        <Typography variant="subtitle1" component="h2" sx={{ lineHeight: 1 }}>
-          排序依據
-        </Typography>
+    <Stack>
+      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", p: 1 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <SortRoundedIcon sx={{ color: "inherit" }} />
+          <Typography variant="subtitle1" component="h2" sx={{ lineHeight: 1 }}>
+            排序依據
+          </Typography>
+        </Box>
+
+        <FormControlLabel
+          control={<Switch size="small" checked={followPrior} onChange={handleSwitchFollowPrior} />}
+          label="追蹤者優先?"
+        />
       </Box>
 
       <Tabs
@@ -83,7 +88,7 @@ const OrderTabs = () => {
           />
         ))}
       </Tabs>
-    </Box>
+    </Stack>
   );
 };
 
