@@ -75,7 +75,13 @@ const AccountMenuDesktop = () => {
   return (
     <>
       {authenticated ? (
-        <Button variant="outlined" color="inherit" startIcon={<AccountCircleRoundedIcon />} onClick={handleOpen}>
+        <Button
+          variant="outlined"
+          color="inherit"
+          startIcon={<AccountCircleRoundedIcon />}
+          onClick={handleOpen}
+          sx={{ textTransform: "none" }}
+        >
           {user.name}
         </Button>
       ) : (
