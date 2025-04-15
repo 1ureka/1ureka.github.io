@@ -1,52 +1,51 @@
-import { IconButton, InputAdornment, TextField, Tooltip } from "@mui/material";
+import { Box, IconButton, InputAdornment, TextField } from "@mui/material";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import { useState } from "react";
+import { SearchDialog } from "./SearchDialog";
 
 const SearchBar = () => {
-  const [search, setSearch] = useState("");
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value);
-
-  const href = "#" + search;
-  const handleKeydown: React.KeyboardEventHandler<HTMLDivElement> = ({ key }) => {
-    if (key !== "Enter") return;
-    if (!search.trim()) return console.error("請輸入搜尋內容");
-    console.log("還沒寫完，請稍後再試");
-    window.location.href = "#";
-  };
+  const [open, setOpen] = useState(false);
+  const handleClick = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   return (
-    <TextField
-      variant="outlined"
-      label="搜尋"
-      size="small"
-      sx={{
-        width: "20vw",
-        maxWidth: "22rem",
-        bgcolor: "background.paper",
-        backgroundImage: "linear-gradient(#fff1, #fff1)",
-        borderRadius: 1,
-      }}
-      value={search}
-      onChange={handleChange}
-      onKeyDown={handleKeydown}
-      slotProps={{
-        input: {
-          sx: {
-            "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "secondary.main" },
-            "& .MuiOutlinedInput-notchedOutline": { borderColor: "divider" },
-          },
-          endAdornment: (
-            <Tooltip title={search.trim() ? "搜尋" : "請輸入搜尋內容"} arrow>
-              <InputAdornment position="end">
-                <IconButton edge="end" href={href} disabled={!search.trim()}>
-                  <SearchRoundedIcon />
-                </IconButton>
-              </InputAdornment>
-            </Tooltip>
-          ),
-        },
-      }}
-    />
+    <>
+      <Box sx={{ position: "relative" }}>
+        <TextField
+          variant="outlined"
+          label="搜尋"
+          size="small"
+          disabled
+          sx={{
+            width: "20vw",
+            maxWidth: "22rem",
+            bgcolor: "background.paper",
+            backgroundImage: "linear-gradient(#fff1, #fff1)",
+            borderRadius: 1,
+          }}
+          slotProps={{
+            input: {
+              sx: {
+                "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "secondary.main" },
+                "& .MuiOutlinedInput-notchedOutline": { borderColor: "divider" },
+                "&.Mui-disabled .MuiOutlinedInput-notchedOutline": { borderColor: "divider" },
+              },
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton edge="end" disabled={true}>
+                    <SearchRoundedIcon />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            },
+          }}
+        />
+
+        <Box sx={{ position: "absolute", inset: 0, cursor: "pointer" }} onClick={handleClick} />
+      </Box>
+
+      <SearchDialog open={open} onClose={handleClose} />
+    </>
   );
 };
 
