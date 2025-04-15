@@ -126,10 +126,15 @@ const CollapsedPost = ({ postId }: { postId: number }) => {
         <Box sx={{ display: "flex", gap: 1.5, mt: 2, alignItems: "center" }}>
           <TopicTags post={post} displayCount={3} />
 
-          {post.isFromFollowing && (
+          {(post.isFromFollowing || post.isSelf) && (
             <>
               <Box sx={{ flex: 1 }} />
-              <Chip size="small" label={"來自追蹤者"} variant="outlined" icon={<PersonPinCircleRoundedIcon />} />
+              {post.isFromFollowing && (
+                <Chip size="small" label={"來自追蹤者"} variant="outlined" icon={<PersonPinCircleRoundedIcon />} />
+              )}
+              {post.isSelf && (
+                <Chip size="small" label={"我的貼文"} variant="outlined" icon={<PersonPinCircleRoundedIcon />} />
+              )}
             </>
           )}
         </Box>

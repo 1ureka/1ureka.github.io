@@ -3,6 +3,7 @@ import CommentRoundedIcon from "@mui/icons-material/CommentRounded";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 import AttachFileRoundedIcon from "@mui/icons-material/AttachFileRounded";
 import ThumbUpRoundedIcon from "@mui/icons-material/ThumbUpRounded";
+import PersonPinCircleRoundedIcon from "@mui/icons-material/PersonPinCircleRounded";
 
 import { LikeButton } from "./shared/LikeButton";
 import { FavButton } from "./shared/FavButton";
@@ -253,6 +254,12 @@ const ExpandedPost = ({ postId }: { postId: number }) => {
 
         <Box sx={{ flex: 1 }} />
 
+        {post.isFromFollowing && (
+          <Chip size="small" label={"來自追蹤者"} variant="outlined" icon={<PersonPinCircleRoundedIcon />} />
+        )}
+        {post.isSelf && (
+          <Chip size="small" label={"我的貼文"} variant="outlined" icon={<PersonPinCircleRoundedIcon />} />
+        )}
         <Button
           startIcon={<VisibilityRoundedIcon />}
           disabled
