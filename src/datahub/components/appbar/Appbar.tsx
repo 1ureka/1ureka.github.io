@@ -3,8 +3,8 @@ import type { BoxProps } from "@mui/material";
 import DataExplorationRoundedIcon from "@mui/icons-material/DataExplorationRounded";
 import NotificationsRoundedIcon from "@mui/icons-material/NotificationsRounded";
 
-import { SrearchTopic } from "./SearchTopic";
-import { SearchBar } from "./SearchBar";
+import { SearchTopicFilter } from "./search/SearchTopic.tsx";
+import { SearchBarButton } from "./search/SearchBarButton";
 import { ThemeMenuWithButton } from "../ThemeMenu";
 import { AccountMenu } from "./AccountMenu";
 import { APPBAR_HEIGHT } from "./appbarSx";
@@ -44,8 +44,8 @@ const Appbar = () => {
         </Box>
 
         <Box sx={{ gap: 0.5, ...flexRowSx }}>
-          <SrearchTopic />
-          <SearchBar />
+          <SearchTopicFilter />
+          <SearchBarButton />
         </Box>
       </Box>
 

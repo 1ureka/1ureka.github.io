@@ -1,24 +1,24 @@
-import { useUrl } from "@/datahub/hooks/url";
 import { InputAdornment, MenuItem, TextField } from "@mui/material";
 import type { InputProps } from "@mui/material";
 import ArrowDropDownRoundedIcon from "@mui/icons-material/ArrowDropDownRounded";
 import FindInPageRoundedIcon from "@mui/icons-material/FindInPageRounded";
 
+import { isSearchTopic, useSearchTopic as use } from "./searchTopic";
+
 const useSearchTopic = () => {
-  const { searchParams, updateSearchParams } = useUrl();
-  const raw = searchParams.get("searchTopic") ?? "db";
-  const searchTopic = ["db", "table", "column"].includes(raw) ? raw : "db";
+  const { searchTopic, updateSearchParams } = use();
 
   const handleSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     if (value === searchTopic) return;
+    if (!isSearchTopic(value)) return;
     updateSearchParams({ searchTopic: value });
   };
 
   return { searchTopic, handleSelect };
 };
 
-const SrearchTopic = () => {
+const SearchTopicFilter = () => {
   const { searchTopic, handleSelect } = useSearchTopic();
 
   return (
@@ -60,7 +60,7 @@ const inputSx: InputProps["sx"] = {
   "& div[role='combobox']": { p: 1 },
 };
 
-const SearchTopicFilled = () => {
+const SearchTopicFilterFilled = () => {
   const { searchTopic, handleSelect } = useSearchTopic();
 
   return (
@@ -95,4 +95,4 @@ const SearchTopicFilled = () => {
   );
 };
 
-export { SrearchTopic, SearchTopicFilled };
+export { SearchTopicFilter, SearchTopicFilterFilled };
