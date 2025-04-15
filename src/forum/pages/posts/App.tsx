@@ -68,8 +68,8 @@ function App() {
 
             <Divider sx={{ mt: 2 }} />
 
-            <Box sx={{ position: "relative", px: { xs: 1, sm: 2, md: 5 } }}>
-              <Box sx={{ position: "absolute", inset: 0, bgcolor: "divider", opacity: 0.35 }} />
+            <Box sx={{ position: "relative", px: 1 }}>
+              <Box sx={{ position: "absolute", inset: 0, bgcolor: "divider", opacity: 0.35, pointerEvents: "none" }} />
               <OrderTabs />
             </Box>
 

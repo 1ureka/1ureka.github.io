@@ -50,7 +50,7 @@ function App() {
                   variant="outlined"
                   color="primary"
                   fullWidth
-                  href={routes.forum_posts}
+                  href={`${routes.forum_posts}?followPrior=true&orderBy=createdAt&orderDesc=true`}
                   endIcon={<ArrowRightAltRoundedIcon />}
                 >
                   查看更多
