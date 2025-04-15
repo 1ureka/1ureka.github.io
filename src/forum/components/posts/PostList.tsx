@@ -11,13 +11,17 @@ const isOrder = (value: string): value is OrderBy => orders.includes(value as Or
 
 const PostList = () => {
   const { searchParams } = useUrl();
+
   const topic = searchParams.get("topic") ?? undefined;
   const orderBy = searchParams.get("orderBy") ?? "title";
   const orderDesc = searchParams.get("orderDesc") === "true";
+  const followPrior = searchParams.get("followPrior") === "true";
+
   const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } = useInfinitePosts({
     topic,
     orderBy: isOrder(orderBy) ? orderBy : "createdAt",
     order: orderDesc ? "desc" : "asc",
+    prioritizeFollowers: followPrior,
   });
 
   if (isLoading || !data) {
