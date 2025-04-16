@@ -1,6 +1,8 @@
-import { Box, FormControlLabel, Stack, Switch, Tab, Tabs, Tooltip, Typography } from "@mui/material";
+import { Box, Stack, Tab, Tabs, Tooltip, Typography } from "@mui/material";
 import SortRoundedIcon from "@mui/icons-material/SortRounded";
 import ArrowUpwardRoundedIcon from "@mui/icons-material/ArrowUpwardRounded";
+
+import { FilterMenu } from "./FilterMenu";
 import { useUrl } from "@/forum/hooks/url";
 import type { FetchPostsParams } from "@/forum/data/post";
 
@@ -14,11 +16,6 @@ const OrderTabs = () => {
   // 從 URL 獲取排序欄位，如果不存在則使用默認值
   const orderBy = searchParams.get("orderBy") || orders[0];
   const orderDesc = searchParams.get("orderDesc") === "true";
-  const followPrior = searchParams.get("followPrior") === "true";
-
-  const handleSwitchFollowPrior = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
-    updateSearchParams({ followPrior: checked.toString() });
-  };
 
   // 根據 orderBy 找到對應的索引
   let orderId = orders.findIndex((field) => field === orderBy);
@@ -50,10 +47,7 @@ const OrderTabs = () => {
           </Typography>
         </Box>
 
-        <FormControlLabel
-          control={<Switch size="small" checked={followPrior} onChange={handleSwitchFollowPrior} />}
-          label="追蹤者優先?"
-        />
+        <FilterMenu />
       </Box>
 
       <Tabs
