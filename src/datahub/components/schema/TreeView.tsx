@@ -72,7 +72,7 @@ export default function TreeView() {
               <TreeViewItem
                 key={`${tableName}${sep}column${sep}${name}`}
                 itemId={`${tableName}${sep}column${sep}${name}`}
-                type={pk === 1 ? "pk" : name.toLowerCase().includes("id") ? "key" : "column"}
+                type={pk >= 1 ? "pk" : name.toLowerCase().includes("id") ? "key" : "column"}
                 label={name}
                 caption={type}
               />

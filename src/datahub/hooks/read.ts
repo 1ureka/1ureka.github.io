@@ -145,7 +145,7 @@ const useFlowChart = () => {
         const fields: TableNodeData["fields"] = columns.map((column) => ({
           fieldName: column.name,
           fieldType: column.type,
-          nullable: column.pk === 1 ? "pk" : column.notnull === 0 ? "yes" : "no",
+          nullable: column.pk >= 1 ? "pk" : column.notnull === 0 ? "yes" : "no",
           isSource: referencedFields[table]?.has(column.name) || false,
           isTarget: foreginKeys?.keys.some((key) => key.from === column.name) || false,
         }));

@@ -118,7 +118,7 @@ const TableHeader = () => {
 
           {columns.map((column, i) => {
             const { cid, name, type } = column;
-            const isPk = column.pk === 1;
+            const isPk = column.pk >= 1;
             const align = type !== "text" && !isPk ? "flex-end" : undefined;
             const active = orderBy === i;
             const scale = active ? (order === "desc" ? 1 : -1) : -1;
