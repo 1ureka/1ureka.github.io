@@ -149,16 +149,18 @@ const fetchPosts: FetchPosts = async ({
 // 查詢所有標籤
 // ----------------------------
 
-type FetchTags = () => Promise<string[]>;
+type FetchTagsResult = { name: string; count: number }[];
+
+type FetchTags = () => Promise<FetchTagsResult>;
 
 const fetchTags: FetchTags = async () => {
-  const sql = "SELECT uniqueTags FROM tag_stats";
+  const sql = "SELECT tags FROM tag_stats";
 
   const result = await sqlite.exec(sql);
   if (result.length === 0) return [];
 
-  // 從查詢結果中提取 uniqueTags 並解析 JSON 字串
-  const uniqueTagsJson = result[0].uniqueTags as string;
+  // 從查詢結果中提取 tags 並解析 JSON 字串
+  const uniqueTagsJson = result[0].tags as string;
   const tags = JSON.parse(uniqueTagsJson);
   return Array.isArray(tags) ? tags : [];
 };
@@ -404,4 +406,4 @@ const deletePost: DeletePost = async (postId) => {
 // ----------------------------
 
 export { fetchPosts, fetchPostCounts, fetchPostById, fetchTags, createPost, updatePost, deletePost };
-export type { FetchPostsParams, FetchPostCountsParams, FetchPostByIdParams, FetchPostByIdResult };
+export type { FetchPostsParams, FetchPostCountsParams, FetchTagsResult, FetchPostByIdParams, FetchPostByIdResult };
