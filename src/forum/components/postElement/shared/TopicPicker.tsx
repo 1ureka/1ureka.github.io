@@ -1,5 +1,5 @@
-import type { FetchTagsResult } from "@/forum/data/post";
-import { useTags } from "@/forum/hooks/post";
+import type { FetchTagsResult } from "@/forum/data/tag";
+import { useTags, useUserTags } from "@/forum/hooks/post";
 import { useSearch } from "@/hooks/fuse";
 import { Badge, Box, Button, IconButton, InputAdornment } from "@mui/material";
 import { Chip, CircularProgress, Divider, Popover, Stack, TextField, Typography } from "@mui/material";
@@ -12,6 +12,7 @@ type SelectContentBlockProps = {
   hint: string;
   tags: FetchTagsResult;
   onSelect: (tag: string) => void;
+  showAfter?: number;
 };
 
 const CustomBadge = ({ children }: { children: React.ReactNode }) => (
@@ -23,6 +24,7 @@ const CustomBadge = ({ children }: { children: React.ReactNode }) => (
       aspectRatio: "1/1",
       display: "grid",
       placeItems: "center",
+      mr: 0.5,
     }}
   >
     <Typography variant="caption" sx={{ position: "absolute", color: "background.paper", fontSize: "0.6rem" }}>
@@ -31,7 +33,7 @@ const CustomBadge = ({ children }: { children: React.ReactNode }) => (
   </Box>
 );
 
-const SelectContentBlock = memo(({ title, hint, tags, onSelect }: SelectContentBlockProps) => {
+const SelectContentBlock = memo(({ title, hint, tags, onSelect, showAfter = 1 }: SelectContentBlockProps) => {
   return (
     <Box>
       <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, justifyContent: "space-between" }}>
@@ -57,7 +59,7 @@ const SelectContentBlock = memo(({ title, hint, tags, onSelect }: SelectContentB
             clickable
             onClick={() => onSelect(name)}
             deleteIcon={<CustomBadge>{count}</CustomBadge>}
-            onDelete={count > 1 ? () => onSelect(name) : undefined}
+            onDelete={count > showAfter ? () => onSelect(name) : undefined}
           />
         ))}
       </Box>
@@ -78,38 +80,45 @@ type SelectContentProps = {
 };
 
 const TopicSelectContent = ({ type, onConfirm, onClose }: SelectContentProps) => {
-  const { data, isFetching } = useTags();
-  const isLoading = isFetching || !data;
+  const { data: tags, isFetching: isFetchingTags } = useTags(); // 所有標籤(包括使用過的標籤)
+  const { data: userTags, isFetching: isFetchingUserTags } = useUserTags(); // 使用過的標籤
+  const isLoading = isFetchingTags || !tags || isFetchingUserTags || !userTags;
 
   const [value, setValue] = useState<string>("");
-  const search = useSearch(data?.map((item) => ({ ...item, count: item.count.toString() })) ?? [], ["name"]);
+  const searchTags = useSearch(tags?.map((item) => ({ ...item, count: item.count.toString() })) ?? [], ["name"]);
+  const searchUserTags = useSearch(userTags?.map((item) => ({ ...item, count: item.count.toString() })) ?? [], [
+    "name",
+  ]);
 
   const contents = useMemo(() => {
-    if (!data) return [];
+    if (!tags) return [];
 
-    let filteredData = data;
+    let allTags = tags;
+    let usedTags = userTags ?? [];
     if (value.trim()) {
-      filteredData = search(value).map((result) => ({ ...result.item, count: Number(result.item.count) }));
+      allTags = searchTags(value).map((result) => ({ ...result.item, count: Number(result.item.count) }));
+      usedTags = searchUserTags(value).map((result) => ({ ...result.item, count: Number(result.item.count) }));
     }
 
     const self: Omit<SelectContentBlockProps, "onSelect"> = {
       title: "最近使用的標籤",
       hint: "你使用過的次數",
-      tags: filteredData.slice(0, 6),
+      tags: usedTags,
+      showAfter: 0,
     };
 
     const others: Omit<SelectContentBlockProps, "onSelect">[] = [
-      { title: "A ~ Z", hint: "總使用次數", tags: filteredData.filter((tag) => /^[a-zA-Z]/.test(tag.name)) },
-      { title: "0 ~ 9", hint: "總使用次數", tags: filteredData.filter((tag) => /^[0-9]/.test(tag.name)) },
-      { title: "中文", hint: "總使用次數", tags: filteredData.filter((tag) => !/^[a-zA-Z0-9]/.test(tag.name)) },
+      { title: "A ~ Z", hint: "總使用次數", tags: allTags.filter((tag) => /^[a-zA-Z]/.test(tag.name)) },
+      { title: "0 ~ 9", hint: "總使用次數", tags: allTags.filter((tag) => /^[0-9]/.test(tag.name)) },
+      { title: "中文", hint: "總使用次數", tags: allTags.filter((tag) => !/^[a-zA-Z0-9]/.test(tag.name)) },
     ];
 
     if (type === "add") return [self, ...others];
     return others;
-  }, [data, type, search, value]);
+  }, [tags, userTags, type, searchTags, searchUserTags, value]);
 
   const disableConfirm =
-    isLoading || value.trim() === "" || (type === "query" && !data.map(({ name }) => name).includes(value.trim()));
+    isLoading || value.trim() === "" || (type === "query" && !tags.map(({ name }) => name).includes(value.trim()));
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
     if (disableConfirm) return;
@@ -153,15 +162,7 @@ const TopicSelectContent = ({ type, onConfirm, onClose }: SelectContentProps) =>
 
             {contents.map(
               (content, index) =>
-                content.tags.length > 0 && (
-                  <SelectContentBlock
-                    key={index}
-                    title={content.title}
-                    hint={content.hint}
-                    tags={content.tags}
-                    onSelect={onConfirm}
-                  />
-                )
+                content.tags.length > 0 && <SelectContentBlock key={index} {...content} onSelect={onConfirm} />
             )}
           </Stack>
         </Box>
