@@ -1,14 +1,19 @@
 import { useState } from "react";
-import { Tooltip, Typography } from "@mui/material";
-import { TopicAutocomplete } from "../postElement/shared/TopicAutocomplete";
 import { useUrl } from "@/forum/hooks/url";
+import { Tooltip, Typography } from "@mui/material";
+import { TopicPicker } from "../postElement/shared/TopicPicker";
 
 const TopicSelect = () => {
-  const { searchParams } = useUrl();
+  const { searchParams, updateSearchParams } = useUrl();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const handleOpen = (event: React.MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
+
+  const handleNavigate = (tag: string | null) => {
+    updateSearchParams({ topic: tag });
+    handleClose();
+  };
 
   return (
     <>
@@ -26,12 +31,12 @@ const TopicSelect = () => {
         </Typography>
       </Tooltip>
 
-      <TopicAutocomplete
+      <TopicPicker
         type="query"
         open={Boolean(anchorEl)}
         anchorEl={anchorEl}
         onClose={handleClose}
-        onSelect={handleClose}
+        onConfirm={handleNavigate}
       />
     </>
   );

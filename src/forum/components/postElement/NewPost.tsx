@@ -11,7 +11,7 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
 import { useState } from "react";
 import { useSession } from "@/forum/hooks/session";
-import { TopicAutocomplete } from "./shared/TopicAutocomplete";
+import { TopicPicker } from "./shared/TopicPicker";
 import { EmojiMenu } from "./shared/EmojiMenu";
 
 import { z } from "zod";
@@ -168,8 +168,11 @@ const NewPost = ({ mode = "create", initialValues = {}, postId }: NewPostProps) 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const handleAddTagClick = (event: React.MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
   const handleAddTagClose = () => setAnchorEl(null);
-  const handleAddTag = (value: string) => {
-    form.setFieldValue("tags", (prev) => Array.from(new Set([...prev, value])));
+
+  const handleAddTag = (value: string | null) => {
+    if (!value || !value.trim()) return console.error("請輸入標籤名稱");
+    if (value === "顯示全部") return console.error("該標籤名稱無效");
+    form.setFieldValue("tags", (prev) => Array.from(new Set([...prev, value.trim()])));
     form.validateField("tags", "change");
     handleAddTagClose();
   };
@@ -389,12 +392,12 @@ const NewPost = ({ mode = "create", initialValues = {}, postId }: NewPostProps) 
             onClick={handleAddTagClick}
             disabled={!authenticated || loading}
           />
-          <TopicAutocomplete
+          <TopicPicker
             type="add"
             open={Boolean(anchorEl)}
             anchorEl={anchorEl}
             onClose={handleAddTagClose}
-            onAdd={handleAddTag}
+            onConfirm={handleAddTag}
           />
         </Box>
       </Box>
