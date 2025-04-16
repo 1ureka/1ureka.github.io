@@ -1,7 +1,8 @@
 import { useEffect } from "react";
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchPostCounts, fetchPosts, fetchPostById, fetchTags } from "@/forum/data/post";
+import { fetchPostCounts, fetchPosts, fetchPostById } from "@/forum/data/post";
 import { createPost, updatePost, deletePost } from "@/forum/data/post";
+import { fetchTags, fetchUserTags } from "@/forum/data/tag";
 import type { FetchPostsParams, FetchPostCountsParams, FetchPostByIdParams } from "@/forum/data/post";
 
 const staleTime = 1 * 60 * 1000;
@@ -64,6 +65,14 @@ const useTags = () => {
   });
 };
 
+const useUserTags = () => {
+  return useQuery({
+    queryKey: ["userTags"],
+    queryFn: fetchUserTags,
+    staleTime,
+  });
+};
+
 const usePostById = ({ postId, incrementViewCount }: FetchPostByIdParams) => {
   return useQuery({
     queryKey: ["post", postId],
@@ -85,6 +94,7 @@ const useCreatePost = () => {
       queryClient.invalidateQueries({ queryKey: ["infinitePosts"] });
       queryClient.invalidateQueries({ queryKey: ["postCounts"] });
       queryClient.invalidateQueries({ queryKey: ["tags"] });
+      queryClient.invalidateQueries({ queryKey: ["userTags"] });
     },
   });
 };
@@ -98,6 +108,7 @@ const useUpdatePost = () => {
       queryClient.invalidateQueries({ queryKey: ["infinitePosts"] });
       queryClient.invalidateQueries({ queryKey: ["postCounts"] });
       queryClient.invalidateQueries({ queryKey: ["tags"] });
+      queryClient.invalidateQueries({ queryKey: ["userTags"] });
     },
   });
 };
@@ -111,9 +122,10 @@ const useDeletePost = () => {
       queryClient.invalidateQueries({ queryKey: ["infinitePosts"] });
       queryClient.invalidateQueries({ queryKey: ["postCounts"] });
       queryClient.invalidateQueries({ queryKey: ["tags"] });
+      queryClient.invalidateQueries({ queryKey: ["userTags"] });
     },
   });
 };
 
-export { usePosts, usePostCounts, useInfinitePosts, useTags, usePostById };
+export { usePosts, usePostCounts, useInfinitePosts, useTags, useUserTags, usePostById };
 export { useCreatePost, useUpdatePost, useDeletePost };
