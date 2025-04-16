@@ -20,8 +20,8 @@ const FeedTopics = ({ length }: { length: number }) => {
       <Box sx={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 1, mt: 1 }}>
         {isFetching || !tags
           ? [...Array(length)].map((_, i) => <LoadingDisplay key={i} />)
-          : tags.map((tag) => (
-              <Chip key={tag} label={tag} clickable component="a" href={`${routes.forum_posts}?topic=${tag}`} />
+          : tags.map(({ name }) => (
+              <Chip key={name} label={name} clickable component="a" href={`${routes.forum_posts}?topic=${name}`} />
             ))}
       </Box>
 
