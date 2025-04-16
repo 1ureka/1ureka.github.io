@@ -133,7 +133,7 @@ const TopicSelectContent = ({ type, onConfirm, onClose }: SelectContentProps) =>
           onChange={(e) => setValue(e.target.value)}
           disabled={isLoading}
           size="small"
-          label="選擇主題"
+          label={type === "add" ? "查詢或新增標籤" : "查詢標籤"}
           variant="standard"
           fullWidth
           autoFocus
