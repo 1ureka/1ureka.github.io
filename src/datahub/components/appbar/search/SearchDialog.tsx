@@ -8,12 +8,7 @@ import { QuickActions } from "./QuickActions";
 
 const SearchDialog = (props: Omit<DialogProps, "children">) => {
   return (
-    <Dialog
-      {...props}
-      maxWidth="sm"
-      fullWidth
-      slotProps={{ paper: { elevation: 0, sx: { borderRadius: 2, maxHeight: 400 } } }}
-    >
+    <Dialog {...props} maxWidth="sm" fullWidth slotProps={{ paper: { elevation: 0, sx: { borderRadius: 2 } } }}>
       <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, p: 1.5, position: "relative" }}>
         <SearchTopicFilterFilled />
         <SearchBar />
@@ -38,8 +33,10 @@ const SearchDialog = (props: Omit<DialogProps, "children">) => {
 
       <Divider />
 
-      <DialogContent />
-      <QuickActions onNav={() => props.onClose?.({}, "escapeKeyDown")} />
+      <Box sx={{ maxHeight: "90dvh", overflowY: "auto", overflowX: "hidden" }}>
+        <DialogContent />
+        <QuickActions onNav={() => props.onClose?.({}, "escapeKeyDown")} />
+      </Box>
     </Dialog>
   );
 };
