@@ -1,6 +1,6 @@
 import { InputAdornment, TextField } from "@mui/material";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
-import { type SearchTopic, useSearchQuery, useSearchTopic } from "./searchTopic";
+import { type SearchTopic, useSearchQuery, useSearchTopic } from "@/datahub/hooks/search";
 
 const getPlaceholder = (searchTopic: SearchTopic) => {
   const map: Record<SearchTopic, string> = {

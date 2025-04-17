@@ -1,22 +1,13 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material";
 import { ResultButton } from "./SearchResultsItem";
-
-import { useMemo } from "react";
-import { useSearch } from "@/hooks/fuse";
-import { useSearchQuery, useSearchTopic, type SearchTopic } from "./searchTopic";
-import { useAllColumns, useObjects, useRowCounts } from "@/datahub/hooks/read";
+import { useSearchQuery, useSearchTopic, type SearchTopic } from "@/datahub/hooks/search";
+import { useSearchDatabases, useSearchTables, useSearchColumns } from "@/datahub/hooks/search";
 
 const LoadingDisplay = () => (
   <Box sx={{ display: "grid", placeItems: "center", flex: 1, p: 2 }}>
     <CircularProgress size={24} />
   </Box>
 );
-
-// 靜態資源
-const databases = [
-  { primary: "論壇資料庫", secondary: "來自論壇樣板", id: "forum", type: "資料庫" },
-  { primary: "相簿資料庫", secondary: "來自相簿樣板", id: "photos", type: "資料庫" },
-];
 
 const getSearchPrompt = (searchTopic: SearchTopic, input?: string) => {
   const map: Record<SearchTopic, { label: string; example: string }> = {
@@ -31,64 +22,10 @@ const getSearchPrompt = (searchTopic: SearchTopic, input?: string) => {
     請確認拼字是否正確，或嘗試其他關鍵字。`;
 };
 
-const useSearchDatabases = (q: string) => {
-  const search = useSearch(databases, ["primary", "secondary"]);
-  const results = useMemo(() => search(q), [search, q]);
-
-  return { results, isFetching: false };
-};
-
-const useSearchTables = (q: string) => {
-  const { data: objects, isFetching: isFetchingObjects } = useObjects({ types: ["table", "view"] });
-  const { data: rowCounts, isFetching: isFetchingRowCounts } = useRowCounts({ types: ["table", "view"] });
-  const isFetching = isFetchingObjects || isFetchingRowCounts;
-
-  const tables = useMemo(() => {
-    if (!rowCounts || !objects) return [];
-
-    return objects.map(({ name, type }) => {
-      const count = rowCounts[name] || 0;
-      return {
-        id: name,
-        primary: name,
-        secondary: `該${{ table: "資料", view: "檢視" }[type as string]}表有 ${count} 筆紀錄`,
-        type,
-      };
-    });
-  }, [rowCounts, objects]);
-
-  const search = useSearch(tables, ["primary", "secondary"]);
-  const results = useMemo(() => search(q), [search, q]);
-
-  return { results, isFetching };
-};
-
-const useSearchColumns = (q: string) => {
-  const { data, isFetching } = useAllColumns();
-
-  const columns = useMemo(() => {
-    if (!data || data.length <= 0) return [];
-
-    return data.map(({ id, name, type, from }) => {
-      return {
-        id,
-        primary: name,
-        secondary: `來自${{ table: "資料", view: "檢視" }[from.type]}表 "${from.table}"`,
-        type,
-      };
-    });
-  }, [data]);
-
-  const search = useSearch(columns, ["primary", "secondary"]);
-  const results = useMemo(() => search(q), [search, q]);
-
-  return { results, isFetching };
-};
-
 const createSearchResults = (type: SearchTopic) => {
   const useResults = type === "db" ? useSearchDatabases : type === "table" ? useSearchTables : useSearchColumns;
 
-  return ({ q }: { q: string }) => {
+  return ({ q, onNav }: { q: string; onNav: () => void }) => {
     const { results, isFetching } = useResults(q);
 
     if (isFetching) {
@@ -110,10 +47,12 @@ const createSearchResults = (type: SearchTopic) => {
         {results.map(({ item, highlights }) => (
           <ResultButton
             key={item.id}
+            id={item.id}
             variant={type}
             primary={highlights.primary}
             secondary={highlights.secondary}
             type={item.type}
+            onNav={onNav}
           />
         ))}
       </>
@@ -125,15 +64,15 @@ const SearchDatabases = createSearchResults("db");
 const SearchObjects = createSearchResults("table");
 const SearchColumns = createSearchResults("column");
 
-const SearchResults = () => {
+const SearchResults = ({ onNav }: { onNav: () => void }) => {
   const { searchTopic } = useSearchTopic();
   const { searchQuery } = useSearchQuery();
 
   return (
     <Stack sx={{ p: 1.5, flex: 1 }}>
-      {searchTopic === "db" && <SearchDatabases q={searchQuery} />}
-      {searchTopic === "table" && <SearchObjects q={searchQuery} />}
-      {searchTopic === "column" && <SearchColumns q={searchQuery} />}
+      {searchTopic === "db" && <SearchDatabases q={searchQuery} onNav={onNav} />}
+      {searchTopic === "table" && <SearchObjects q={searchQuery} onNav={onNav} />}
+      {searchTopic === "column" && <SearchColumns q={searchQuery} onNav={onNav} />}
     </Stack>
   );
 };

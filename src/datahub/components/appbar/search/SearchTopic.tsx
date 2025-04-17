@@ -3,7 +3,7 @@ import type { InputProps } from "@mui/material";
 import ArrowDropDownRoundedIcon from "@mui/icons-material/ArrowDropDownRounded";
 import FindInPageRoundedIcon from "@mui/icons-material/FindInPageRounded";
 
-import { isSearchTopic, useSearchTopic as use } from "./searchTopic";
+import { isSearchTopic, useSearchTopic as use } from "@/datahub/hooks/search";
 
 const useSearchTopic = () => {
   const { searchTopic, updateSearchParams } = use();

@@ -34,7 +34,7 @@ const SearchDialog = (props: Omit<DialogProps, "children">) => {
       <Divider />
 
       <Stack sx={{ height: "60dvh", overflowY: "auto", overflowX: "hidden" }}>
-        <SearchResults />
+        <SearchResults onNav={() => props.onClose?.({}, "escapeKeyDown")} />
         <QuickActions onNav={() => props.onClose?.({}, "escapeKeyDown")} />
       </Stack>
     </Dialog>
