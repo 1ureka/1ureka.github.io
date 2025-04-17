@@ -37,10 +37,9 @@ const SearchDialog = (props: Omit<DialogProps, "children">) => {
       </Box>
 
       <Divider />
-      <DialogContent />
 
-      <Divider />
-      <QuickActions />
+      <DialogContent />
+      <QuickActions onNav={() => props.onClose?.({}, "escapeKeyDown")} />
     </Dialog>
   );
 };

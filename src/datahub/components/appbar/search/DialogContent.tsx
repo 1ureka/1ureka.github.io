@@ -2,7 +2,7 @@ import { Box, CircularProgress, Typography } from "@mui/material";
 import { useSearchTopic, type SearchTopic } from "./searchTopic";
 
 const DialogContentLoading = () => (
-  <Box sx={{ display: "grid", placeItems: "center", py: 5 }}>
+  <Box sx={{ display: "grid", placeItems: "center", py: 10 }}>
     <CircularProgress size={24} />
   </Box>
 );
@@ -28,7 +28,7 @@ const DialogContent = () => {
   const { searchTopic } = useSearchTopic();
 
   return (
-    <Box sx={{ display: "grid", placeItems: "center", py: 5 }}>
+    <Box sx={{ display: "grid", placeItems: "center", py: 10 }}>
       <Typography variant="body2" color="text.secondary" textAlign="center">
         {getSearchPrompt(searchTopic)}
       </Typography>
