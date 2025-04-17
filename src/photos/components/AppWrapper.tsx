@@ -1,5 +1,6 @@
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { AppError } from "./AppError";
 import { ErrorBoundary } from "react-error-boundary";
 import { theme } from "../utils/theme";
 import { Toaster } from "@/components/Toast";
@@ -12,7 +13,7 @@ function AppWrapper({ children }: { children: React.ReactNode }) {
       <CssBaseline />
       <Toaster />
       <QueryClientProvider client={queryClient}>
-        <ErrorBoundary fallbackRender={(props) => <div>{JSON.stringify(props)}</div>}>{children}</ErrorBoundary>
+        <ErrorBoundary fallbackRender={(props) => <AppError {...props} />}>{children}</ErrorBoundary>
       </QueryClientProvider>
     </ThemeProvider>
   );
