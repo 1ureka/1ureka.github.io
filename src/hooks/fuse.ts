@@ -2,7 +2,7 @@ import { useCallback, useMemo } from "react";
 import Fuse, { type FuseResult } from "fuse.js";
 
 type StringKeys<T> = Extract<keyof T, string>;
-type Highlight = { text: string; highlight: boolean };
+export type Highlight = { text: string; highlight: boolean };
 
 // 工具：將 highlight 區段套用成 [{ text, highlight }][]
 const applyHighlights = (source: string, matches: readonly [number, number][]): Highlight[] => {
