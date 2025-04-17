@@ -67,7 +67,7 @@ const ResultButton = memo(({ variant, primary, secondary, type }: ResultButtonPr
       <ShortcutRoundedIcon sx={{ color: "text.secondary", scale: "-1" }} />
     </Box>
 
-    <Chip variant="filled" label={type} />
+    <Chip variant="filled" label={type} sx={{ textTransform: "uppercase" }} />
   </ButtonBase>
 ));
 

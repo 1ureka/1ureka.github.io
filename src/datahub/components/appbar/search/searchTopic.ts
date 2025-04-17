@@ -19,6 +19,7 @@ export const useSearchQuery = () => {
 
   const handleQueryChange = (value: string) => {
     if (value === searchQuery) return;
+    if (value.length > 99) return;
     updateSearchParams({ searchQuery: value }, true);
   };
 
