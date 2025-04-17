@@ -1,5 +1,5 @@
 import { Box, CircularProgress, Typography } from "@mui/material";
-import { useSearchTopic, type SearchTopic } from "./searchTopic";
+import { useSearchQuery, useSearchTopic, type SearchTopic } from "./searchTopic";
 
 const DialogContentLoading = () => (
   <Box sx={{ display: "grid", placeItems: "center", py: 10 }}>
@@ -26,11 +26,12 @@ const getSearchPrompt = (searchTopic: SearchTopic, input?: string) => {
 
 const DialogContent = () => {
   const { searchTopic } = useSearchTopic();
+  const { searchQuery } = useSearchQuery();
 
   return (
     <Box sx={{ display: "grid", placeItems: "center", py: 10 }}>
       <Typography variant="body2" color="text.secondary" textAlign="center">
-        {getSearchPrompt(searchTopic)}
+        {getSearchPrompt(searchTopic, searchQuery)}
       </Typography>
     </Box>
   );

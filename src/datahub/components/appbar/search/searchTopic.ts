@@ -12,3 +12,15 @@ export const useSearchTopic = () => {
 
   return { searchTopic, updateSearchParams };
 };
+
+export const useSearchQuery = () => {
+  const { searchParams, updateSearchParams } = useUrl();
+  const searchQuery = searchParams.get("searchQuery") ?? "";
+
+  const handleQueryChange = (value: string) => {
+    if (value === searchQuery) return;
+    updateSearchParams({ searchQuery: value }, true);
+  };
+
+  return { searchQuery, handleQueryChange };
+};

@@ -1,6 +1,6 @@
 import { InputAdornment, TextField } from "@mui/material";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
-import { type SearchTopic, useSearchTopic } from "./searchTopic";
+import { type SearchTopic, useSearchQuery, useSearchTopic } from "./searchTopic";
 
 const getPlaceholder = (searchTopic: SearchTopic) => {
   const map: Record<SearchTopic, string> = {
@@ -13,9 +13,12 @@ const getPlaceholder = (searchTopic: SearchTopic) => {
 
 const SearchBar = () => {
   const { searchTopic } = useSearchTopic();
+  const { searchQuery, handleQueryChange } = useSearchQuery();
 
   return (
     <TextField
+      value={searchQuery}
+      onChange={(e) => handleQueryChange(e.target.value)}
       variant="standard"
       placeholder={getPlaceholder(searchTopic)}
       sx={{ flex: 1 }}
