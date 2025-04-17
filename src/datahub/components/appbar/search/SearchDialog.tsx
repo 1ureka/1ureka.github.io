@@ -1,9 +1,9 @@
-import { Box, Button, Dialog, Divider, Typography } from "@mui/material";
+import { Box, Button, Dialog, Divider, Stack, Typography } from "@mui/material";
 import type { DialogProps } from "@mui/material";
 
 import { SearchBar } from "./SearchBar.tsx";
 import { SearchTopicFilterFilled } from "./SearchTopic.tsx";
-import { DialogContent } from "./DialogContent";
+import { SearchResults } from "./SearchResults";
 import { QuickActions } from "./QuickActions";
 
 const SearchDialog = (props: Omit<DialogProps, "children">) => {
@@ -33,10 +33,10 @@ const SearchDialog = (props: Omit<DialogProps, "children">) => {
 
       <Divider />
 
-      <Box sx={{ maxHeight: "90dvh", overflowY: "auto", overflowX: "hidden" }}>
-        <DialogContent />
+      <Stack sx={{ height: "60dvh", overflowY: "auto", overflowX: "hidden" }}>
+        <SearchResults />
         <QuickActions onNav={() => props.onClose?.({}, "escapeKeyDown")} />
-      </Box>
+      </Stack>
     </Dialog>
   );
 };

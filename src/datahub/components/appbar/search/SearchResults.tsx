@@ -1,11 +1,13 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material";
+import { ResultButton } from "./SearchResultsItem";
+
 import { useMemo } from "react";
 import { useSearch } from "@/hooks/fuse";
 import { useSearchQuery, useSearchTopic, type SearchTopic } from "./searchTopic";
-import { ResultButton } from "./SearchResultsItem";
+import { useObjects, useRowCounts } from "@/datahub/hooks/read";
 
 const LoadingDisplay = () => (
-  <Box sx={{ display: "grid", placeItems: "center", py: 10 }}>
+  <Box sx={{ display: "grid", placeItems: "center", flex: 1, p: 2 }}>
     <CircularProgress size={24} />
   </Box>
 );
@@ -57,6 +59,57 @@ const SearchDatabases = ({ q }: { q: string }) => {
   );
 };
 
+const SearchObjects = ({ q }: { q: string }) => {
+  const { data: objects, isFetching: isFetchingObjects } = useObjects({ types: ["table", "view"] });
+  const { data: rowCounts, isFetching: isFetchingRowCounts } = useRowCounts({ types: ["table", "view"] });
+  const isFetching = isFetchingObjects || isFetchingRowCounts;
+
+  const tables = useMemo(() => {
+    if (!rowCounts || !objects) return [];
+
+    return objects.map(({ name, type }) => {
+      const count = rowCounts[name] || 0;
+      return {
+        id: name,
+        primary: name,
+        secondary: `該${{ table: "資料", view: "檢視" }[type as string]}表有 ${count} 筆紀錄`,
+        type,
+      };
+    });
+  }, [rowCounts, objects]);
+
+  const search = useSearch(tables, ["primary", "secondary"]);
+  const results = useMemo(() => search(q), [search, q]);
+
+  if (isFetching) {
+    return <LoadingDisplay />;
+  }
+
+  if (!results || results.length === 0) {
+    return (
+      <Box sx={{ display: "grid", placeItems: "center", flex: 1, p: 2 }}>
+        <Typography variant="body2" color="text.secondary" textAlign="center">
+          {getSearchPrompt("table", q)}
+        </Typography>
+      </Box>
+    );
+  }
+
+  return (
+    <>
+      {results.map(({ item, highlights }, i) => (
+        <ResultButton
+          key={i}
+          variant="table"
+          primary={highlights.primary}
+          secondary={highlights.secondary}
+          type={item.type}
+        />
+      ))}
+    </>
+  );
+};
+
 const SearchResults = () => {
   const { searchTopic } = useSearchTopic();
   const { searchQuery } = useSearchQuery();
@@ -64,6 +117,7 @@ const SearchResults = () => {
   return (
     <Stack sx={{ p: 1.5, flex: 1 }}>
       {searchTopic === "db" && <SearchDatabases q={searchQuery} />}
+      {searchTopic === "table" && <SearchObjects q={searchQuery} />}
       {/* TODO */}
     </Stack>
   );
