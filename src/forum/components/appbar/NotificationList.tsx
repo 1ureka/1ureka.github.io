@@ -10,6 +10,7 @@ import NotificationsRoundedIcon from "@mui/icons-material/NotificationsRounded";
 import { useState } from "react";
 import { useNotifications } from "@/forum/hooks/notification";
 import { useSession } from "@/forum/hooks/session";
+import { NotificationListItem } from "./NotificationListItem";
 
 const MoreActionMenu = () => {
   const { authenticated, loading } = useSession();
@@ -67,7 +68,9 @@ const ListContent = ({ filter }: { filter: (typeof options)[number] }) => {
     );
   }
 
-  if (data.notifications.length <= 0) {
+  const { notifications } = data;
+
+  if (notifications.length <= 0) {
     return (
       <Box sx={{ p: 6 }}>
         <Typography variant="body2" sx={{ color: "text.secondary" }}>
@@ -78,11 +81,11 @@ const ListContent = ({ filter }: { filter: (typeof options)[number] }) => {
   }
 
   return (
-    <Box sx={{ p: 6 }}>
-      <Typography variant="body2" sx={{ color: "text.secondary" }}>
-        有通知，但還沒實作通知列表，請稍後再試！
-      </Typography>
-    </Box>
+    <Stack sx={{ width: 1, gap: 1.5 }}>
+      {notifications.map((notification) => (
+        <NotificationListItem key={notification.id} {...notification} />
+      ))}
+    </Stack>
   );
 };
 
