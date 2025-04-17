@@ -14,8 +14,8 @@ const LoadingDisplay = () => (
 
 // 靜態資源
 const databases = [
-  { primary: "論壇資料庫", secondary: "來自論壇樣板", id: "forum" },
-  { primary: "相簿資料庫", secondary: "來自相簿樣板", id: "photos" },
+  { primary: "論壇資料庫", secondary: "來自論壇樣板", id: "forum", type: "資料庫" },
+  { primary: "相簿資料庫", secondary: "來自相簿樣板", id: "photos", type: "資料庫" },
 ];
 
 const getSearchPrompt = (searchTopic: SearchTopic, input?: string) => {
@@ -31,36 +31,14 @@ const getSearchPrompt = (searchTopic: SearchTopic, input?: string) => {
     請確認拼字是否正確，或嘗試其他關鍵字。`;
 };
 
-const SearchDatabases = ({ q }: { q: string }) => {
+const useSearchDatabases = (q: string) => {
   const search = useSearch(databases, ["primary", "secondary"]);
   const results = useMemo(() => search(q), [search, q]);
 
-  if (!results || results.length === 0) {
-    return (
-      <Box sx={{ display: "grid", placeItems: "center", flex: 1, p: 2 }}>
-        <Typography variant="body2" color="text.secondary" textAlign="center">
-          {getSearchPrompt("db", q)}
-        </Typography>
-      </Box>
-    );
-  }
-
-  return (
-    <>
-      {results.map(({ highlights }, i) => (
-        <ResultButton
-          key={i}
-          variant="db"
-          primary={highlights.primary}
-          secondary={highlights.secondary}
-          type="資料庫"
-        />
-      ))}
-    </>
-  );
+  return { results, isFetching: false };
 };
 
-const SearchObjects = ({ q }: { q: string }) => {
+const useSearchTables = (q: string) => {
   const { data: objects, isFetching: isFetchingObjects } = useObjects({ types: ["table", "view"] });
   const { data: rowCounts, isFetching: isFetchingRowCounts } = useRowCounts({ types: ["table", "view"] });
   const isFetching = isFetchingObjects || isFetchingRowCounts;
@@ -82,36 +60,10 @@ const SearchObjects = ({ q }: { q: string }) => {
   const search = useSearch(tables, ["primary", "secondary"]);
   const results = useMemo(() => search(q), [search, q]);
 
-  if (isFetching) {
-    return <LoadingDisplay />;
-  }
-
-  if (!results || results.length === 0) {
-    return (
-      <Box sx={{ display: "grid", placeItems: "center", flex: 1, p: 2 }}>
-        <Typography variant="body2" color="text.secondary" textAlign="center">
-          {getSearchPrompt("table", q)}
-        </Typography>
-      </Box>
-    );
-  }
-
-  return (
-    <>
-      {results.map(({ item, highlights }, i) => (
-        <ResultButton
-          key={i}
-          variant="table"
-          primary={highlights.primary}
-          secondary={highlights.secondary}
-          type={item.type}
-        />
-      ))}
-    </>
-  );
+  return { results, isFetching };
 };
 
-const SearchColumns = ({ q }: { q: string }) => {
+const useSearchColumns = (q: string) => {
   const { data, isFetching } = useAllColumns();
 
   const columns = useMemo(() => {
@@ -130,34 +82,48 @@ const SearchColumns = ({ q }: { q: string }) => {
   const search = useSearch(columns, ["primary", "secondary"]);
   const results = useMemo(() => search(q), [search, q]);
 
-  if (isFetching) {
-    return <LoadingDisplay />;
-  }
-
-  if (!results || results.length === 0) {
-    return (
-      <Box sx={{ display: "grid", placeItems: "center", flex: 1, p: 2 }}>
-        <Typography variant="body2" color="text.secondary" textAlign="center">
-          {getSearchPrompt("column", q)}
-        </Typography>
-      </Box>
-    );
-  }
-
-  return (
-    <>
-      {results.map(({ item, highlights }) => (
-        <ResultButton
-          key={item.id}
-          variant="column"
-          primary={highlights.primary}
-          secondary={highlights.secondary}
-          type={item.type}
-        />
-      ))}
-    </>
-  );
+  return { results, isFetching };
 };
+
+const createSearchResults = (type: SearchTopic) => {
+  const useResults = type === "db" ? useSearchDatabases : type === "table" ? useSearchTables : useSearchColumns;
+
+  return ({ q }: { q: string }) => {
+    const { results, isFetching } = useResults(q);
+
+    if (isFetching) {
+      return <LoadingDisplay />;
+    }
+
+    if (!results || results.length === 0) {
+      return (
+        <Box sx={{ display: "grid", placeItems: "center", flex: 1, p: 2 }}>
+          <Typography variant="body2" color="text.secondary" textAlign="center">
+            {getSearchPrompt(type, q)}
+          </Typography>
+        </Box>
+      );
+    }
+
+    return (
+      <>
+        {results.map(({ item, highlights }) => (
+          <ResultButton
+            key={item.id}
+            variant={type}
+            primary={highlights.primary}
+            secondary={highlights.secondary}
+            type={item.type}
+          />
+        ))}
+      </>
+    );
+  };
+};
+
+const SearchDatabases = createSearchResults("db");
+const SearchObjects = createSearchResults("table");
+const SearchColumns = createSearchResults("column");
 
 const SearchResults = () => {
   const { searchTopic } = useSearchTopic();
