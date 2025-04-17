@@ -61,6 +61,29 @@ const useTableInfo = ({ types }: { types: Exclude<SQLiteObjectType, "index" | "t
   return { data, isFetching: isFetchingObjects || isFetchingTableInfos };
 };
 
+type AllColumns = ({
+  id: string; // 由 table + column 組成的唯一識別碼
+  from: { table: string; type: Exclude<SQLiteObjectType, "index" | "trigger"> };
+} & TableColumnInfo)[];
+
+const useAllColumns = () => {
+  const { data: tables = [], isFetching } = useTableInfo({ types: ["table", "view"] });
+
+  const allColumns: AllColumns = useMemo(() => {
+    if (!tables.length) return [];
+
+    return tables.flatMap(({ table, type, columns }) =>
+      columns.map((column) => ({
+        ...column,
+        id: `${table}.${column.name}`,
+        from: { table, type },
+      }))
+    );
+  }, [tables]);
+
+  return { data: allColumns, isFetching };
+};
+
 const useForeignKeys = ({ types }: { types: Exclude<SQLiteObjectType, "index" | "trigger">[] }) => {
   const { data: objects = [], isFetching: isFetchingObjects } = useObjects({ types });
   const { data, isFetching: isFetchingForeignKeys } = useQuery({
@@ -219,5 +242,5 @@ const useTreeView = () => {
 };
 
 export { useDownloadDb, useDbBytes, useObjects, useRowCounts, useTableInfo, useForeignKeys, useIndexes };
-export { useFlowChart, useTreeView };
+export { useAllColumns, useFlowChart, useTreeView };
 export type { TableNodeData };
