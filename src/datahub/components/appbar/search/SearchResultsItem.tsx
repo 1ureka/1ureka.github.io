@@ -4,12 +4,15 @@ import BorderAllRoundedIcon from "@mui/icons-material/BorderAllRounded";
 import ViewColumnRoundedIcon from "@mui/icons-material/ViewColumnRounded";
 import ShortcutRoundedIcon from "@mui/icons-material/ShortcutRounded";
 
-import type { SearchTopic } from "./searchTopic";
+import type { SearchTopic } from "@/datahub/hooks/search";
 import type { Highlight } from "@/hooks/fuse";
 import { memo } from "react";
+import { useUrl } from "@/datahub/hooks/url";
+import { routes } from "@/routes";
 
-const hightlightColor = "color-mix(in srgb, var(--mui-palette-primary-main) 70%, var(--mui-palette-text-primary) 30%)";
 const transition = "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)";
+const hightlightColor = "color-mix(in srgb, var(--mui-palette-primary-main) 70%, var(--mui-palette-text-primary) 30%)";
+
 const iconSize = "medium";
 const iconSx = { fontSize: 48, mr: 1, bgcolor: "action.hover", borderRadius: 1.5, color: "action.active", p: 1 };
 const iconMap: Record<SearchTopic, React.ReactNode> = {
@@ -19,56 +22,83 @@ const iconMap: Record<SearchTopic, React.ReactNode> = {
 };
 
 type ResultButtonProps = {
+  id: string;
   variant: SearchTopic;
   primary: Highlight[];
   secondary: Highlight[];
   type: string;
+  onNav: () => void;
 };
 
-const ResultButton = memo(({ variant, primary, secondary, type }: ResultButtonProps) => (
-  <ButtonBase
-    sx={{
-      display: "grid",
-      gap: 2.5,
-      alignItems: "center",
-      gridTemplateColumns: "auto 1fr auto auto",
-      borderRadius: 2,
-      "&:hover .hover-icon": { opacity: 1 },
-      "&:hover": { bgcolor: "action.hover" },
-      transition,
-      p: 1,
-    }}
-  >
-    <Box>{iconMap[variant]}</Box>
+const ResultButton = memo(({ id, variant, primary, secondary, type, onNav }: ResultButtonProps) => {
+  const { updatePathAndSearchParams } = useUrl();
 
-    <Stack sx={{ gap: 0.5, textAlign: "left" }}>
-      <Typography variant="subtitle1">
-        {primary.map(({ text, highlight }, i) => (
-          <Typography
-            key={i}
-            variant="subtitle1"
-            component="span"
-            sx={{ color: highlight ? hightlightColor : undefined }}
-          >
-            {text}
-          </Typography>
-        ))}
-      </Typography>
-      <Typography variant="body2" sx={{ color: "text.secondary" }}>
-        {secondary.map(({ text, highlight }, i) => (
-          <Typography key={i} variant="body2" component="span" sx={{ color: highlight ? hightlightColor : undefined }}>
-            {text}
-          </Typography>
-        ))}
-      </Typography>
-    </Stack>
+  let handleClick: (() => void) | null = null;
 
-    <Box className="hover-icon" sx={{ opacity: 0, transition }}>
-      <ShortcutRoundedIcon sx={{ color: "text.secondary", scale: "-1" }} />
-    </Box>
+  if (variant === "db") {
+    handleClick = () => updatePathAndSearchParams(routes.datahub_home, { db: id });
+  } else if (variant === "table") {
+    handleClick = () => updatePathAndSearchParams(routes.datahub_tables, { table: id });
+  } else if (variant === "column") {
+    handleClick = () => updatePathAndSearchParams(routes.datahub_tables, { table: id.split(".")[0] });
+  } else {
+    handleClick = () => {};
+  }
 
-    <Chip variant="filled" label={type} sx={{ textTransform: "uppercase" }} />
-  </ButtonBase>
-));
+  return (
+    <ButtonBase
+      onClick={() => {
+        handleClick();
+        onNav();
+      }}
+      sx={{
+        display: "grid",
+        gap: 2.5,
+        alignItems: "center",
+        gridTemplateColumns: "auto 1fr auto auto",
+        borderRadius: 2,
+        "&:hover .hover-icon": { opacity: 1 },
+        "&:hover": { bgcolor: "action.hover" },
+        transition,
+        p: 1,
+      }}
+    >
+      <Box>{iconMap[variant]}</Box>
+
+      <Stack sx={{ gap: 0.5, textAlign: "left" }}>
+        <Typography variant="subtitle1">
+          {primary.map(({ text, highlight }, i) => (
+            <Typography
+              key={i}
+              variant="subtitle1"
+              component="span"
+              sx={{ color: highlight ? hightlightColor : undefined }}
+            >
+              {text}
+            </Typography>
+          ))}
+        </Typography>
+        <Typography variant="body2" sx={{ color: "text.secondary" }}>
+          {secondary.map(({ text, highlight }, i) => (
+            <Typography
+              key={i}
+              variant="body2"
+              component="span"
+              sx={{ color: highlight ? hightlightColor : undefined }}
+            >
+              {text}
+            </Typography>
+          ))}
+        </Typography>
+      </Stack>
+
+      <Box className="hover-icon" sx={{ opacity: 0, transition }}>
+        <ShortcutRoundedIcon sx={{ color: "text.secondary", scale: "-1" }} />
+      </Box>
+
+      <Chip variant="filled" label={type} sx={{ textTransform: "uppercase" }} />
+    </ButtonBase>
+  );
+});
 
 export { ResultButton };
