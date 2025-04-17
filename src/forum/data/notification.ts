@@ -14,6 +14,12 @@ const messageMap = {
 
 type MessageType = keyof typeof messageMap;
 
+const titleMap = {
+  reply_post: "有一個新留言",
+  reply_comment: "有一個新留言",
+  follow_user: "有一個新追蹤者",
+} as const;
+
 // ----------------------------
 // 查詢通知數量
 // ----------------------------
@@ -64,6 +70,7 @@ type Notification = {
   createdAt: Date;
   isRead: boolean;
   isDeleted: boolean;
+  title: string; // 根據 titleMap 產生的標題
   message: string; // 根據 messageMap 產生的訊息
   extraData?: {
     postId?: number;
@@ -199,16 +206,19 @@ const fetchNotifications: FetchNotifications = async ({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const notifications = result.map((row: any) => {
     // 產生通知訊息
+    let title = "通知";
     let message = "";
     let extraData: Notification["extraData"] = {};
 
     if (row.type === "reply_post") {
+      title = titleMap.reply_post;
       message = messageMap.reply_post(row.actorName, row.postTitle || "");
       extraData = {
         postId: row.postId,
         postTitle: row.postTitle,
       };
     } else if (row.type === "reply_comment") {
+      title = titleMap.reply_comment;
       message = messageMap.reply_comment(row.actorName, row.commentContent || "");
       extraData = {
         postId: row.postId,
@@ -216,6 +226,7 @@ const fetchNotifications: FetchNotifications = async ({
         commentContent: row.commentContent,
       };
     } else if (row.type === "follow_user") {
+      title = titleMap.follow_user;
       message = messageMap.follow_user(row.actorName);
     }
 
@@ -231,6 +242,7 @@ const fetchNotifications: FetchNotifications = async ({
       createdAt: new Date(row.createdAt),
       isRead: Boolean(row.isRead),
       isDeleted: Boolean(row.isDeleted),
+      title,
       message,
       extraData: Object.keys(extraData).length > 0 ? extraData : undefined,
     };
