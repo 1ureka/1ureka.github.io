@@ -79,41 +79,57 @@ const ToastContent = ({ type, duration, args, onClose }: ToastContentProps) => {
   );
 };
 
+const configMap: Record<
+  ToastType,
+  Pick<ToastContentProps, "duration"> & {
+    toastFn: "success" | "error" | null;
+    toastOptions: ToasterProps["toastOptions"];
+  }
+> = {
+  info: { duration: 10000, toastFn: "success", toastOptions: { duration: Infinity } },
+  error: { duration: 15000, toastFn: "error", toastOptions: { duration: Infinity } },
+  warn: { duration: 10000, toastFn: null, toastOptions: { duration: Infinity, icon: "🚨" } },
+} as const;
+
 const useToaster = () => {
+  const idMap = useRef<Record<string, string>>({});
+
   useEffect(() => {
     // 保存原本的 console 方法
     const originalLog = console.log;
     const originalError = console.error;
     const originalWarn = console.warn;
 
+    // 自定義的 makeToast 函數
+    const makeToast = (type: ToastType, args: unknown[]) => {
+      const stringifyArgs = args.map((arg) => (typeof arg === "object" ? JSON.stringify(arg) : String(arg)));
+      const mapKey = [type, ...stringifyArgs].join(",");
+
+      if (idMap.current[mapKey]) toast.dismiss(idMap.current[mapKey]);
+      const { toastFn, toastOptions, duration } = configMap[type];
+      const props = { type, duration, args };
+      const toastId = toastFn
+        ? toast[toastFn]((t) => <ToastContent {...props} onClose={() => toast.dismiss(t.id)} />, toastOptions)
+        : toast((t) => <ToastContent {...props} onClose={() => toast.dismiss(t.id)} />, toastOptions);
+
+      idMap.current[mapKey] = toastId;
+    };
+
     // 重寫 console.log
     console.log = (...args: unknown[]) => {
-      toast.success(
-        (t) => <ToastContent type="info" duration={10000} args={args} onClose={() => toast.dismiss(t.id)} />,
-        {
-          duration: Infinity,
-        }
-      );
+      makeToast("info", args);
       originalLog(...args);
     };
 
     // 重寫 console.error
     console.error = (...args: unknown[]) => {
-      toast.error(
-        (t) => <ToastContent type="error" duration={15000} args={args} onClose={() => toast.dismiss(t.id)} />,
-        {
-          duration: Infinity,
-        }
-      );
+      makeToast("error", args);
       originalError(...args);
     };
 
     // 重寫 console.warn
     console.warn = (...args: unknown[]) => {
-      toast((t) => <ToastContent type="warn" duration={10000} args={args} onClose={() => toast.dismiss(t.id)} />, {
-        icon: "🚨",
-        duration: Infinity,
-      });
+      makeToast("warn", args);
       originalWarn(...args);
     };
 
