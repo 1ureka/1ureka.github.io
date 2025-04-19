@@ -128,6 +128,7 @@ function App() {
               display: "grid",
               gridTemplateColumns: { xs: "1fr", sm: "repeat(auto-fill, minmax(500px, 1fr))" },
               gap: 2,
+              pb: 5,
             }}
           >
             <ProjectCard
