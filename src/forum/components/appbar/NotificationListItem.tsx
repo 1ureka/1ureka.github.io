@@ -2,11 +2,13 @@ import { Box, Button, Stack, IconButton, Typography, Popover } from "@mui/materi
 import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 import MarkChatReadRoundedIcon from "@mui/icons-material/MarkChatReadRounded";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
+import ArrowOutwardRoundedIcon from "@mui/icons-material/ArrowOutwardRounded";
 
 import { useState } from "react";
 import { useSession } from "@/forum/hooks/session";
 import { formatRelativeTime } from "@/utils/formatters";
 import { ellipsisSx } from "@/utils/commonSx";
+import { routes } from "@/routes";
 
 import type { Notification } from "@/forum/data/notification";
 import { useDeleteNotification, useMarkNotification } from "@/forum/hooks/notification";
@@ -67,10 +69,17 @@ const UnreadDot = ({ forAlign = false }: { forAlign?: boolean }) => (
 );
 
 const NotificationListItem = (notification: Notification) => {
-  const { title, message, isRead, createdAt } = notification;
+  const { title, message, isRead, createdAt, actorName, extraData, type, sourceId } = notification;
+  const { mutateAsync: mark, isPending } = useMarkNotification();
+
+  const handleMark = async () => {
+    if (!isRead) await mark({ type, sourceId });
+    if (type === "follow_user") window.location.href = `${routes.forum_users}?user=${actorName}`;
+    else window.location.href = `${routes.forum_post}?postId=${extraData?.postId}`;
+  };
 
   return (
-    <Stack sx={{ gap: 0.25 }}>
+    <Stack sx={{ position: "relative", gap: 0.25 }}>
       <Box sx={{ display: "flex", alignItems: "center", gap: 1, position: "relative" }}>
         {!isRead && <UnreadDot />}
         <Typography variant="subtitle1">{title}</Typography>
@@ -85,6 +94,16 @@ const NotificationListItem = (notification: Notification) => {
         <Typography variant="body1" sx={{ color: "text.secondary", ...ellipsisSx }}>
           {message}
         </Typography>
+        <Box sx={{ flex: 1 }} />
+        <Button
+          variant="text"
+          size="small"
+          onClick={handleMark}
+          startIcon={<ArrowOutwardRoundedIcon />}
+          loading={isPending}
+        >
+          前往
+        </Button>
       </Box>
     </Stack>
   );
