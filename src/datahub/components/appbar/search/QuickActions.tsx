@@ -53,8 +53,8 @@ const ActionButton = ({ icon, title, description, onClick }: ActionButtonProps) 
   </ButtonBase>
 );
 
-const QuickActions = ({ onNav }: { onNav: () => void }) => {
-  const { updatePath } = useUrl();
+const QuickActions = () => {
+  const { updatePathAndSearchParams, updateSearchParams } = useUrl();
 
   return (
     <Box sx={{ p: 1.5, pt: 0 }}>
@@ -71,8 +71,7 @@ const QuickActions = ({ onNav }: { onNav: () => void }) => {
             title="資料庫結構"
             description="了解資料庫結構與關聯"
             onClick={() => {
-              updatePath(routes.datahub_schema);
-              onNav();
+              updatePathAndSearchParams(routes.datahub_schema, null);
             }}
           />
           <ActionButton
@@ -82,7 +81,7 @@ const QuickActions = ({ onNav }: { onNav: () => void }) => {
             onClick={() => {
               console.log("還沒做完");
               //   updatePath(routes.datahub_query);
-              onNav();
+              updateSearchParams({ search: "false" }, true);
             }}
           />
         </Box>

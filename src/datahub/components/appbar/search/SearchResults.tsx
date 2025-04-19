@@ -25,7 +25,7 @@ const getSearchPrompt = (searchTopic: SearchTopic, input?: string) => {
 const createSearchResults = (type: SearchTopic) => {
   const useResults = type === "db" ? useSearchDatabases : type === "table" ? useSearchTables : useSearchColumns;
 
-  return ({ q, onNav }: { q: string; onNav: () => void }) => {
+  return ({ q }: { q: string }) => {
     const { results, isFetching } = useResults(q);
 
     if (isFetching) {
@@ -52,7 +52,6 @@ const createSearchResults = (type: SearchTopic) => {
             primary={highlights.primary}
             secondary={highlights.secondary}
             type={item.type}
-            onNav={onNav}
           />
         ))}
       </>
@@ -64,15 +63,15 @@ const SearchDatabases = createSearchResults("db");
 const SearchObjects = createSearchResults("table");
 const SearchColumns = createSearchResults("column");
 
-const SearchResults = ({ onNav }: { onNav: () => void }) => {
+const SearchResults = () => {
   const { searchTopic } = useSearchTopic();
   const { searchQuery } = useSearchQuery();
 
   return (
     <Stack sx={{ p: 1.5, flex: 1 }}>
-      {searchTopic === "db" && <SearchDatabases q={searchQuery} onNav={onNav} />}
-      {searchTopic === "table" && <SearchObjects q={searchQuery} onNav={onNav} />}
-      {searchTopic === "column" && <SearchColumns q={searchQuery} onNav={onNav} />}
+      {searchTopic === "db" && <SearchDatabases q={searchQuery} />}
+      {searchTopic === "table" && <SearchObjects q={searchQuery} />}
+      {searchTopic === "column" && <SearchColumns q={searchQuery} />}
     </Stack>
   );
 };

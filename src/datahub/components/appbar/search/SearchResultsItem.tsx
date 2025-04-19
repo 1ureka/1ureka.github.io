@@ -27,30 +27,31 @@ type ResultButtonProps = {
   primary: Highlight[];
   secondary: Highlight[];
   type: string;
-  onNav: () => void;
 };
 
-const ResultButton = memo(({ id, variant, primary, secondary, type, onNav }: ResultButtonProps) => {
+const ResultButton = memo(({ id, variant, primary, secondary, type }: ResultButtonProps) => {
   const { updatePathAndSearchParams } = useUrl();
 
   let handleClick: (() => void) | null = null;
 
   if (variant === "db") {
-    handleClick = () => updatePathAndSearchParams(routes.datahub_home, { db: id });
+    handleClick = () => updatePathAndSearchParams(routes.datahub_home, { db: id, search: "false" });
   } else if (variant === "table") {
-    handleClick = () => updatePathAndSearchParams(routes.datahub_tables, { table: id });
+    handleClick = () => updatePathAndSearchParams(routes.datahub_tables, { table: id, search: "false" });
   } else if (variant === "column") {
-    handleClick = () => updatePathAndSearchParams(routes.datahub_tables, { table: id.split(".")[0] });
+    handleClick = () =>
+      updatePathAndSearchParams(routes.datahub_tables, {
+        table: id.split(".")[0],
+        search: "false",
+        hiddenColumns: null,
+      });
   } else {
     handleClick = () => {};
   }
 
   return (
     <ButtonBase
-      onClick={() => {
-        handleClick();
-        onNav();
-      }}
+      onClick={handleClick}
       sx={{
         display: "grid",
         gap: 2.5,

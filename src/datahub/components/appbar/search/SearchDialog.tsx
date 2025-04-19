@@ -5,16 +5,28 @@ import { SearchBar } from "./SearchBar.tsx";
 import { SearchTopicFilterFilled } from "./SearchTopic.tsx";
 import { SearchResults } from "./SearchResults";
 import { QuickActions } from "./QuickActions";
+import { useUrl } from "@/hooks/url.ts";
 
-const SearchDialog = (props: Omit<DialogProps, "children">) => {
+const SearchDialog = (props: Omit<DialogProps, "children" | "open" | "onClose">) => {
+  const { searchParams, updateSearchParams } = useUrl();
+  const open = searchParams.get("search") === "true";
+  const handleClose = () => updateSearchParams({ search: "false" }, true);
+
   return (
-    <Dialog {...props} maxWidth="sm" fullWidth slotProps={{ paper: { elevation: 0, sx: { borderRadius: 2 } } }}>
+    <Dialog
+      {...props}
+      open={open}
+      onClose={handleClose}
+      maxWidth="sm"
+      fullWidth
+      slotProps={{ paper: { elevation: 0, sx: { borderRadius: 2 } } }}
+    >
       <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, p: 1.5, position: "relative" }}>
         <SearchTopicFilterFilled />
         <SearchBar />
 
         <Button
-          onClick={() => props.onClose?.({}, "escapeKeyDown")}
+          onClick={handleClose}
           color="inherit"
           sx={{
             bgcolor: "FilledInput.bg",
@@ -34,8 +46,8 @@ const SearchDialog = (props: Omit<DialogProps, "children">) => {
       <Divider />
 
       <Stack sx={{ height: "60dvh", overflowY: "auto", overflowX: "hidden" }}>
-        <SearchResults onNav={() => props.onClose?.({}, "escapeKeyDown")} />
-        <QuickActions onNav={() => props.onClose?.({}, "escapeKeyDown")} />
+        <SearchResults />
+        <QuickActions />
       </Stack>
     </Dialog>
   );
