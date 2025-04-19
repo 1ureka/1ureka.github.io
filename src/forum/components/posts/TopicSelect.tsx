@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useUrl } from "@/forum/hooks/url";
+import { useUrl } from "@/hooks/url";
 import { Tooltip, Typography } from "@mui/material";
 import { TopicPicker } from "../postElement/shared/TopicPicker";
 

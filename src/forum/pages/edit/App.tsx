@@ -12,7 +12,7 @@ import { AppFooter } from "@/forum/components/appbar/AppFooter";
 
 import { useResponsiveFontSize } from "@/forum/utils/theme";
 import { routes } from "@/routes";
-import { useUrl } from "@/forum/hooks/url";
+import { useUrl } from "@/hooks/url";
 import { usePostById } from "@/forum/hooks/post";
 import { NewPost } from "@/forum/components/postElement/NewPost";
 

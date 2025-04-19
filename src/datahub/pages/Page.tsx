@@ -1,7 +1,7 @@
 import { lazy, Suspense } from "react";
 import { Paper, CircularProgress, Box } from "@mui/material";
 import { mdSpace, smSpace } from "../components/home/commonSx";
-import { useUrl } from "../hooks/url";
+import { useUrl } from "@/hooks/url";
 import { routes } from "@/routes";
 
 const LargeTiles = lazy(() =>

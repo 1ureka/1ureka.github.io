@@ -1,6 +1,6 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, Typography } from "@mui/material";
 import PeopleRoundedIcon from "@mui/icons-material/PeopleRounded";
-import { useUrl } from "@/forum/hooks/url";
+import { useUrl } from "@/hooks/url";
 import { useFollowers, useFollowing } from "@/forum/hooks/userInteraction";
 import { AuthorDisplay, AuthorLoadingDisplay } from "../userElement/AuthorDisplay";
 import { useUser } from "@/forum/hooks/user";

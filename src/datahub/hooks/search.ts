@@ -1,4 +1,4 @@
-import { useUrl } from "@/datahub/hooks/url";
+import { useUrl } from "@/hooks/url";
 import { useMemo } from "react";
 import { useSearch } from "@/hooks/fuse";
 import { useAllColumns, useObjects, useRowCounts } from "@/datahub/hooks/read";

@@ -8,7 +8,7 @@ import DataExplorationRoundedIcon from "@mui/icons-material/DataExplorationRound
 import FirstPageRoundedIcon from "@mui/icons-material/FirstPageRounded";
 import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
 import { useState } from "react";
-import { useUrl } from "@/datahub/hooks/url";
+import { useUrl } from "@/hooks/url";
 import { routes } from "@/routes";
 
 type NavButtonProps = {

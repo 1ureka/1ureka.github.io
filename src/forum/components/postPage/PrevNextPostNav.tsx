@@ -2,7 +2,7 @@ import { usePostById } from "@/forum/hooks/post";
 import { Button, ButtonProps, Typography } from "@mui/material";
 import ArrowRightRoundedIcon from "@mui/icons-material/ArrowRightRounded";
 import ArrowLeftRoundedIcon from "@mui/icons-material/ArrowLeftRounded";
-import { useUrl } from "@/forum/hooks/url";
+import { useUrl } from "@/hooks/url";
 
 const buttonTypoSx: ButtonProps["sx"] = {
   display: "-webkit-box",

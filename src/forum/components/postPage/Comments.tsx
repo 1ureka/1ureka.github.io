@@ -2,7 +2,7 @@ import { useCommentsByParentId, useCommentsByPostId } from "@/forum/hooks/commen
 import { Box, Divider, Skeleton, Tab, Tabs, Typography } from "@mui/material";
 import { Comment, LoadingComment } from "./Comment";
 import { NewComment } from "@/forum/components/postPage/NewComment";
-import { useUrl } from "@/forum/hooks/url";
+import { useUrl } from "@/hooks/url";
 
 const Replies = ({ commentId, postId }: { commentId: number; postId: number }) => {
   const { data: comments, isFetching } = useCommentsByParentId(commentId);

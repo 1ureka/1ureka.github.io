@@ -3,7 +3,7 @@ import SentimentDissatisfiedRoundedIcon from "@mui/icons-material/SentimentDissa
 import { ExpandedPost, ExpandedLoadingPost } from "../postElement/ExpandedPost";
 
 import dayjs from "dayjs";
-import { useUrl } from "@/forum/hooks/url";
+import { useUrl } from "@/hooks/url";
 import { useSearchPosts } from "@/forum/hooks/postSearch";
 import type { SearchPostsParams } from "@/forum/data/postSearch";
 import type { FormField } from "./SearchForm";

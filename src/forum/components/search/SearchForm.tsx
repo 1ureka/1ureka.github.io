@@ -12,7 +12,7 @@ import "dayjs/locale/zh-tw";
 
 import { getFormErrorHelperText, getFormIsError } from "@/forum/utils/form";
 import { NumberInput } from "@/forum/components/search/NumberInput";
-import { useUrl } from "@/forum/hooks/url";
+import { useUrl } from "@/hooks/url";
 import { useUsers } from "@/forum/hooks/user";
 import { useForm } from "@tanstack/react-form";
 import { z } from "zod";

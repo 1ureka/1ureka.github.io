@@ -7,7 +7,7 @@ import ShortcutRoundedIcon from "@mui/icons-material/ShortcutRounded";
 import type { SearchTopic } from "@/datahub/hooks/search";
 import type { Highlight } from "@/hooks/fuse";
 import { memo } from "react";
-import { useUrl } from "@/datahub/hooks/url";
+import { useUrl } from "@/hooks/url";
 import { routes } from "@/routes";
 
 const transition = "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)";

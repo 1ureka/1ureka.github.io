@@ -112,6 +112,13 @@ export function useUrl() {
     []
   );
 
+  // 清空 searchParams 的函數
+  const clearSearchParams = useCallback((skipTransition: boolean = false) => {
+    const url = new URL(window.location.href);
+    url.search = ""; // 清空 query string
+    withTransition(() => window.history.pushState({}, "", url), skipTransition);
+  }, []);
+
   // 監聽 URL 變化
   useEffect(() => {
     const handleUrlChange = () => {
@@ -150,5 +157,6 @@ export function useUrl() {
     updatePath,
     updateSearchParams,
     updatePathAndSearchParams,
+    clearSearchParams,
   };
 }

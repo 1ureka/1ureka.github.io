@@ -3,7 +3,7 @@ import SortRoundedIcon from "@mui/icons-material/SortRounded";
 import ArrowUpwardRoundedIcon from "@mui/icons-material/ArrowUpwardRounded";
 
 import { FilterMenu } from "./FilterMenu";
-import { useUrl } from "@/forum/hooks/url";
+import { useUrl } from "@/hooks/url";
 import type { FetchPostsParams } from "@/forum/data/post";
 
 type OrderBy = NonNullable<FetchPostsParams["orderBy"]>;

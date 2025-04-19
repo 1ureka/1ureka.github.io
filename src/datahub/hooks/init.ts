@@ -5,7 +5,7 @@ import { SQLiteClient } from "@/utils/SQLiteClient";
 
 import { toKeys } from "@/utils/typedBuiltins";
 import forumDb from "@/assets/db/forum.db?url";
-import { useUrl } from "./url";
+import { useUrl } from "@/hooks/url";
 
 const databases = {
   forum: forumDb,

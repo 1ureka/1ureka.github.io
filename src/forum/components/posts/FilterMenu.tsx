@@ -1,5 +1,5 @@
 import { useSession } from "@/forum/hooks/session";
-import { useUrl } from "@/forum/hooks/url";
+import { useUrl } from "@/hooks/url";
 import { FormControlLabel, Switch } from "@mui/material";
 
 const FilterMenu = () => {

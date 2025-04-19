@@ -1,7 +1,7 @@
 import { Box, Stack, Tab, Tabs, Tooltip, Typography } from "@mui/material";
 import SortRoundedIcon from "@mui/icons-material/SortRounded";
 import ArrowUpwardRoundedIcon from "@mui/icons-material/ArrowUpwardRounded";
-import { useUrl } from "@/forum/hooks/url";
+import { useUrl } from "@/hooks/url";
 import type { SearchPostsParams } from "@/forum/data/postSearch";
 
 type OrderBy = NonNullable<SearchPostsParams["orderBy"]>;

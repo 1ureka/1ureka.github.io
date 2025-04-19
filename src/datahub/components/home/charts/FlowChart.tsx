@@ -5,7 +5,7 @@ import { ellipsisSx } from "@/utils/commonSx";
 import { InactiveReactFlow } from "../../schema/InactiveReactFlow";
 
 import { memo, useMemo } from "react";
-import { useUrl } from "@/datahub/hooks/url";
+import { useUrl } from "@/hooks/url";
 import { routes } from "@/routes";
 import { useFlowChart } from "@/datahub/hooks/read";
 import "@xyflow/react/dist/style.css";

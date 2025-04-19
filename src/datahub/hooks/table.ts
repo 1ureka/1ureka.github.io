@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useObjects } from "./read";
-import { useUrl } from "./url";
+import { useUrl } from "@/hooks/url";
 
 import { tryCatchSync } from "@/utils/tryCatch";
 import { toggleSet } from "@/utils/array";

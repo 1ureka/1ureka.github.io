@@ -2,7 +2,7 @@ import { Box, Button, Skeleton, Stack, Typography } from "@mui/material";
 import SentimentDissatisfiedRoundedIcon from "@mui/icons-material/SentimentDissatisfiedRounded";
 import { useInfinitePosts, usePostCounts } from "@/forum/hooks/post";
 import { ExpandedPost, ExpandedLoadingPost } from "../postElement/ExpandedPost";
-import { useUrl } from "@/forum/hooks/url";
+import { useUrl } from "@/hooks/url";
 import type { FetchPostsParams } from "@/forum/data/post";
 
 type OrderBy = NonNullable<FetchPostsParams["orderBy"]>;

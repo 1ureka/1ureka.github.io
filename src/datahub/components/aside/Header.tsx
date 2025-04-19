@@ -1,7 +1,7 @@
 import { Box, Breadcrumbs, Menu, MenuItem, Typography } from "@mui/material";
 import DnsRoundedIcon from "@mui/icons-material/DnsRounded";
 import { useState } from "react";
-import { useUrl } from "@/datahub/hooks/url";
+import { useUrl } from "@/hooks/url";
 import { routes } from "@/routes";
 
 import { HeaderBackground } from "./HeaderBackground";

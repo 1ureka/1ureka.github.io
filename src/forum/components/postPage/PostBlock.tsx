@@ -1,7 +1,7 @@
 import { Box, Divider, Typography } from "@mui/material";
 import SentimentDissatisfiedRoundedIcon from "@mui/icons-material/SentimentDissatisfiedRounded";
 
-import { useUrl } from "@/forum/hooks/url";
+import { useUrl } from "@/hooks/url";
 import { usePostById, usePosts } from "@/forum/hooks/post";
 import { ExpandedLoadingPost, ExpandedPost } from "../postElement/ExpandedPost";
 import { FullPost, LoadingFullPost } from "../postElement/FullPost";
