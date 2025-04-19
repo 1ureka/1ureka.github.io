@@ -1,6 +1,7 @@
 import { Box, Chip, keyframes, LinearProgress, Stack, Typography, useMediaQuery } from "@mui/material";
 import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
 import HardwareRoundedIcon from "@mui/icons-material/HardwareRounded";
+import { BoxM } from "@/components/Motion";
 
 const scrollKeyframes = keyframes`
   from {
@@ -20,7 +21,7 @@ const getProgressLabel = (p: number): string => {
   return "快完成了！";
 };
 
-type ProjectCardProps = {
+export type ProjectCardProps = {
   title: string;
   description: string;
   progress?: number;
@@ -29,7 +30,6 @@ type ProjectCardProps = {
   /** CTA 的文字，例如「開始探索」 */
   actionLabel?: string;
   actionHref: string;
-  actionTarget?: React.HTMLAttributeAnchorTarget;
   /** 預覽圖片的url */
   images?: string[];
 };
@@ -42,13 +42,18 @@ export const ProjectCard = ({
   icon,
   actionLabel = "開始探索",
   actionHref,
-  actionTarget = "_blank",
   images = [...Array(16)].map(() => ""),
 }: ProjectCardProps) => {
   const isSm = useMediaQuery((theme) => theme.breakpoints.up("sm"));
 
   return (
-    <Box sx={{ height: "400px", position: "relative", borderRadius: 2, overflow: "hidden" }}>
+    <BoxM
+      initial={{ opacity: 0, y: 50 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -50 }}
+      layout
+      sx={{ height: "400px", position: "relative", borderRadius: 2, overflow: "hidden" }}
+    >
       <Box sx={{ position: "absolute", inset: 0, bgcolor: color, opacity: 0.4, pointerEvents: "none", zIndex: 1 }} />
 
       <Stack sx={{ height: 1 }}>
@@ -147,8 +152,6 @@ export const ProjectCard = ({
             }}
             component="a"
             href={actionHref}
-            target={actionTarget}
-            rel="noopener noreferrer"
           />
 
           <LinearProgress
@@ -159,6 +162,6 @@ export const ProjectCard = ({
           />
         </Box>
       </Stack>
-    </Box>
+    </BoxM>
   );
 };
