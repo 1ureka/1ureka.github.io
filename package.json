@@ -5,10 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite --port 3000",
-    "build": "tsc -b && vite build && node src/build.js",
     "lint": "eslint .",
-    "stat": "node src/stat.js",
-    "preview": "vite preview"
+    "build:deploy": "tsc -b && vite build && node src/build.js",
+    "build:analyze": "tsc -b && vite build",
+    "build:type": "tsc -b",
+    "stat": "node src/stat.js"
   },
   "dependencies": {
     "@dagrejs/dagre": "^1.1.4",
