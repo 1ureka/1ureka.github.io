@@ -7,18 +7,33 @@ import { useState } from "react";
 import { useSession } from "@/forum/hooks/session";
 import { formatRelativeTime } from "@/utils/formatters";
 import { ellipsisSx } from "@/utils/commonSx";
-import type { Notification } from "@/forum/data/notification";
 
-const MoreActionMenu = () => {
-  const { authenticated, loading } = useSession();
+import type { Notification } from "@/forum/data/notification";
+import { useDeleteNotification, useMarkNotification } from "@/forum/hooks/notification";
+
+const MoreActionMenu = ({ type, sourceId }: Notification) => {
+  const { authenticated, loading: isLoading } = useSession();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const handleOpen = (e: React.MouseEvent<HTMLButtonElement>) => setAnchorEl(e.currentTarget);
   const handleClose = () => setAnchorEl(null);
 
+  const { mutateAsync: mark, isPending: isPendingMark } = useMarkNotification();
+  const { mutateAsync: del, isPending: isPendingDelete } = useDeleteNotification();
+  const isPending = isPendingMark || isPendingDelete;
+
+  const handleMark = async () => {
+    await mark({ type, sourceId });
+    handleClose();
+  };
+  const handleDelete = async () => {
+    await del({ type, sourceId });
+    handleClose();
+  };
+
   return (
     <>
-      <IconButton onClick={handleOpen} disabled={!authenticated} loading={loading}>
+      <IconButton onClick={handleOpen} disabled={!authenticated} loading={isLoading}>
         <MoreHorizRoundedIcon fontSize="small" />
       </IconButton>
 
@@ -33,10 +48,10 @@ const MoreActionMenu = () => {
         <Stack
           sx={{ gap: 0.5, p: 0.5, color: "color-mix(in srgb, transparent 30%, var(--mui-palette-text-primary) 70%)" }}
         >
-          <Button color="inherit" startIcon={<MarkChatReadRoundedIcon />}>
+          <Button color="inherit" startIcon={<MarkChatReadRoundedIcon />} onClick={handleMark} loading={isPending}>
             標記為已讀
           </Button>
-          <Button color="error" startIcon={<DeleteOutlineRoundedIcon />}>
+          <Button color="error" startIcon={<DeleteOutlineRoundedIcon />} onClick={handleDelete} loading={isPending}>
             刪除該通知
           </Button>
         </Stack>
@@ -51,24 +66,28 @@ const UnreadDot = ({ forAlign = false }: { forAlign?: boolean }) => (
   </Box>
 );
 
-const NotificationListItem = ({ title, message, isRead, createdAt }: Notification) => (
-  <Stack sx={{ gap: 0.25 }}>
-    <Box sx={{ display: "flex", alignItems: "center", gap: 1, position: "relative" }}>
-      {!isRead && <UnreadDot />}
-      <Typography variant="subtitle1">{title}</Typography>
-      <Box sx={{ flex: 1 }} />
-      <Typography variant="body2" sx={{ color: "text.secondary" }}>
-        {formatRelativeTime(createdAt)}
-      </Typography>
-      <MoreActionMenu />
-    </Box>
-    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-      {!isRead && <UnreadDot forAlign />}
-      <Typography variant="body1" sx={{ color: "text.secondary", ...ellipsisSx }}>
-        {message}
-      </Typography>
-    </Box>
-  </Stack>
-);
+const NotificationListItem = (notification: Notification) => {
+  const { title, message, isRead, createdAt } = notification;
+
+  return (
+    <Stack sx={{ gap: 0.25 }}>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1, position: "relative" }}>
+        {!isRead && <UnreadDot />}
+        <Typography variant="subtitle1">{title}</Typography>
+        <Box sx={{ flex: 1 }} />
+        <Typography variant="body2" sx={{ color: "text.secondary" }}>
+          {formatRelativeTime(createdAt)}
+        </Typography>
+        <MoreActionMenu {...notification} />
+      </Box>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+        {!isRead && <UnreadDot forAlign />}
+        <Typography variant="body1" sx={{ color: "text.secondary", ...ellipsisSx }}>
+          {message}
+        </Typography>
+      </Box>
+    </Stack>
+  );
+};
 
 export { NotificationListItem };
