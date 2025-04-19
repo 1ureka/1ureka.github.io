@@ -1,23 +1,10 @@
-import { Skeleton, Stack, Switch, Typography } from "@mui/material";
+import { Stack, Switch, Typography } from "@mui/material";
 import { Box, CircularProgress, FormControlLabel, FormHelperText } from "@mui/material";
-import type { SkeletonProps } from "@mui/material";
-import { Fragment, useMemo, useState } from "react";
+import { FlatBarChartItem } from "./FlatBarChartItem";
+
+import { useMemo, useState } from "react";
 import { useTableInfo } from "@/datahub/hooks/read";
-import { formatNumber } from "@/utils/formatters";
-
-import { TileTooltip } from "../TileTooltip";
-import { StripedBackground } from "./StripedBackground";
-import { chartChangeTransition, noSpace, smSpace } from "../commonSx";
-import { ellipsisSx, underlineSx } from "@/utils/commonSx";
-
-const SkeletonWrapper = ({ children, loading, ...props }: SkeletonProps & { loading: boolean }) => {
-  if (!loading) return children;
-  return (
-    <Skeleton variant="rounded" animation="wave" {...props}>
-      {children}
-    </Skeleton>
-  );
-};
+import { noSpace, smSpace } from "../commonSx";
 
 const isSystemField = (field: string): boolean => {
   const value = field.toLowerCase();
@@ -32,8 +19,6 @@ type DataArray = {
   loading: boolean;
   noData: boolean;
 }[];
-
-const visualMultiplier = 1.375; // 視覺化的比例因子
 
 const FlatBarChart = () => {
   const [isSystemFieldVisible, setIsSystemFieldVisible] = useState(false);
@@ -144,86 +129,8 @@ const FlatBarChart = () => {
             </Typography>
           </Box>
 
-          {dataArray.map(({ field, count, percentage, loading, noData }, i) => (
-            <Fragment key={i}>
-              <Box>
-                {loading ? (
-                  <SkeletonWrapper loading>
-                    <Typography variant="body1" sx={{ ...ellipsisSx, ...underlineSx, width: "6rem" }}>
-                      載入中
-                    </Typography>
-                  </SkeletonWrapper>
-                ) : noData ? (
-                  <Typography variant="body1" sx={{ ...ellipsisSx, width: "6rem" }}>
-                    ---
-                  </Typography>
-                ) : (
-                  <TileTooltip title={<Typography>{field}</Typography>}>
-                    <Typography variant="body1" sx={{ ...ellipsisSx, ...underlineSx, width: "6rem" }}>
-                      {field}
-                    </Typography>
-                  </TileTooltip>
-                )}
-              </Box>
-
-              <TileTooltip
-                title={
-                  loading || noData ? null : (
-                    <Box>
-                      <Typography variant="subtitle2">{field}</Typography>
-                      <Typography>所有欄位名稱中的 {`${Math.round(percentage * 100)}%`}</Typography>
-                    </Box>
-                  )
-                }
-              >
-                <Box
-                  sx={{
-                    width: 1,
-                    height: "1rem",
-                    borderRadius: 99,
-                    position: "relative",
-                    overflow: "clip",
-                    display: "flex",
-                    alignItems: "center",
-                    "&:hover": { bgcolor: "action.hover", "& .bar-content": { opacity: 1 } },
-                    transition: "all 0.2s ease-in-out",
-                  }}
-                >
-                  <StripedBackground color1="divider" color2="#fff0" angle={-35} stripeWidth={5} />
-
-                  <Box
-                    sx={{
-                      position: "absolute",
-                      width: Math.max(0, Math.min(percentage * visualMultiplier, 1)),
-                      height: 1,
-                      borderRadius: 9,
-                      overflow: "clip",
-                      bgcolor: "background.paper",
-                      transition: chartChangeTransition,
-                    }}
-                  >
-                    <Box
-                      className="bar-content"
-                      sx={{
-                        position: "absolute",
-                        inset: 0,
-                        bgcolor: "primary.main",
-                        opacity: i === 0 ? 0.9 : 0.65,
-                        transition: "all 0.2s ease-in-out",
-                      }}
-                    />
-                  </Box>
-                </Box>
-              </TileTooltip>
-
-              <Box>
-                <SkeletonWrapper loading={loading}>
-                  <Typography variant="body1" sx={{ ...ellipsisSx, maxWidth: "10rem" }}>
-                    {loading ? "載入中" : noData ? "---" : formatNumber(count)}
-                  </Typography>
-                </SkeletonWrapper>
-              </Box>
-            </Fragment>
+          {dataArray.map((props, i) => (
+            <FlatBarChartItem key={i} {...props} index={i} />
           ))}
         </Box>
 
