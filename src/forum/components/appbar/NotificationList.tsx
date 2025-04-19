@@ -11,6 +11,7 @@ import { useState } from "react";
 import { useNotifications } from "@/forum/hooks/notification";
 import { useSession } from "@/forum/hooks/session";
 import { NotificationListItem } from "./NotificationListItem";
+import { useDeleteAllNotifications, useMarkAllNotification } from "@/forum/hooks/notification";
 
 const MoreActionMenu = () => {
   const { authenticated, loading } = useSession();
@@ -18,6 +19,19 @@ const MoreActionMenu = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const handleOpen = (e: React.MouseEvent<HTMLButtonElement>) => setAnchorEl(e.currentTarget);
   const handleClose = () => setAnchorEl(null);
+
+  const { mutateAsync: mark, isPending: isPendingMark } = useMarkAllNotification();
+  const { mutateAsync: del, isPending: isPendingDelete } = useDeleteAllNotifications();
+  const isPending = isPendingMark || isPendingDelete;
+
+  const handleMark = async () => {
+    await mark();
+    handleClose();
+  };
+  const handleDelete = async () => {
+    await del();
+    handleClose();
+  };
 
   return (
     <>
@@ -36,10 +50,10 @@ const MoreActionMenu = () => {
         <Stack
           sx={{ gap: 0.5, p: 0.5, color: "color-mix(in srgb, transparent 30%, var(--mui-palette-text-primary) 70%)" }}
         >
-          <Button color="inherit" startIcon={<MarkChatReadRoundedIcon />}>
+          <Button color="inherit" startIcon={<MarkChatReadRoundedIcon />} onClick={handleMark} loading={isPending}>
             已讀所有
           </Button>
-          <Button color="error" startIcon={<ClearAllRoundedIcon />}>
+          <Button color="error" startIcon={<ClearAllRoundedIcon />} onClick={handleDelete} loading={isPending}>
             清除所有
           </Button>
         </Stack>
