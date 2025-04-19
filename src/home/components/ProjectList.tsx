@@ -2,18 +2,21 @@ import { Box } from "@mui/material";
 import ForumRoundedIcon from "@mui/icons-material/ForumRounded";
 import DataExplorationRoundedIcon from "@mui/icons-material/DataExplorationRounded";
 import CameraRoundedIcon from "@mui/icons-material/CameraRounded";
+
 import { AnimatePresence } from "motion/react";
 import { ProjectCard, type ProjectCardProps } from "@/home/components/ProjectCard";
 
-import { orderBySchema, orderSchema } from "@/home/components/OrderSelect";
 import { sortObjectArray } from "@/utils/array";
 import { routes } from "@/routes";
 import { useUrl } from "@/hooks/url";
 import { useSearch, type Highlight } from "@/hooks/fuse";
 import { useMemo } from "react";
+import { useOrderState, useFilterState, filterSchema } from "../hooks/useControl";
+import { z } from "zod";
 
 type Project = ProjectCardProps & {
   time: number;
+  type: z.infer<typeof filterSchema>;
 };
 
 const projectsArray: Project[] = [
@@ -25,6 +28,7 @@ const projectsArray: Project[] = [
     actionHref: routes.datahub_home,
     progress: 39,
     time: 1743264000000,
+    type: "desktop",
   },
   {
     title: "論壇樣板",
@@ -34,6 +38,7 @@ const projectsArray: Project[] = [
     actionHref: routes.forum_home,
     progress: 85,
     time: 1741968000000,
+    type: "rwd",
   },
   {
     title: "相簿樣板",
@@ -43,6 +48,7 @@ const projectsArray: Project[] = [
     actionHref: routes.photos_home,
     progress: 2,
     time: 1744579200000,
+    type: "desktop",
   },
 ];
 
@@ -57,11 +63,8 @@ const ProjectList = () => {
   const { searchParams } = useUrl();
   const search = useSearch(projectsArrayForSearch, ["title", "description"]);
 
-  const orderState = useMemo(() => {
-    const { data: orderBy } = orderBySchema.safeParse(searchParams.get("orderBy"));
-    const { data: order } = orderSchema.safeParse(searchParams.get("order"));
-    return { orderBy: orderBy ?? "time", order: order ?? "asc" };
-  }, [searchParams]);
+  const { orderState } = useOrderState();
+  const { filter } = useFilterState();
 
   const result = useMemo<SearchResult>(() => {
     const q = searchParams.get("q") ?? "";
@@ -89,6 +92,11 @@ const ProjectList = () => {
     );
   }, [searchParams, orderState, search]);
 
+  const filtered = useMemo<SearchResult>(() => {
+    if (filter === "all") return result;
+    return result.filter((project) => project.type === filter);
+  }, [result, filter]);
+
   return (
     <Box
       sx={{
@@ -100,7 +108,7 @@ const ProjectList = () => {
       }}
     >
       <AnimatePresence initial={false}>
-        {result.map(({ time, highlights, ...project }) => (
+        {filtered.map(({ time, highlights, ...project }) => (
           <ProjectCard key={project.title} {...project} />
         ))}
       </AnimatePresence>
