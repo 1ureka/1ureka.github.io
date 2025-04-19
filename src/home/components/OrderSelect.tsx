@@ -3,9 +3,8 @@ import SortRoundedIcon from "@mui/icons-material/SortRounded";
 import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
 import ArrowUpwardRoundedIcon from "@mui/icons-material/ArrowUpwardRounded";
 
-import { z } from "zod";
-import { useUrl } from "@/hooks/url";
 import { fromEntries } from "@/utils/typedBuiltins";
+import { useOrderState } from "../hooks/useControl";
 
 const orderByOptions = [
   { value: "time", label: "時間" },
@@ -20,9 +19,6 @@ const orderOptions = [
 const orderByOptionsMap = fromEntries(orderByOptions.map((option) => [option.value, option]));
 const orderOptionsMap = fromEntries(orderOptions.map((option) => [option.value, option]));
 
-const orderBySchema = z.enum(["time", "title", "progress"]);
-const orderSchema = z.enum(["asc", "desc"]);
-
 const outlineElementSelector = "& .MuiOutlinedInput-notchedOutline";
 const sxMap = {
   left: { [outlineElementSelector]: { borderRadius: 2, borderTopRightRadius: 0, borderBottomRightRadius: 0 } },
@@ -31,21 +27,7 @@ const sxMap = {
 } as const;
 
 const OrderSelect = ({ position, fullWidth }: { position: "left" | "right" | "mid"; fullWidth?: boolean }) => {
-  const { searchParams, updateSearchParams } = useUrl();
-  const { data: orderByRaw } = orderBySchema.safeParse(searchParams.get("orderBy"));
-  const { data: orderRaw } = orderSchema.safeParse(searchParams.get("order"));
-  const orderState = { orderBy: orderByRaw ?? "time", order: orderRaw ?? "asc" };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    if (!["time", "title", "progress"].includes(value)) return;
-    updateSearchParams({ orderBy: value }, true);
-  };
-
-  const createChangeOrderHandler = (value: string) => () => {
-    if (orderState.order === value) return;
-    updateSearchParams({ order: value }, true);
-  };
+  const { orderState, handleChange, createChangeOrderHandler } = useOrderState();
 
   return (
     <TextField

@@ -4,9 +4,8 @@ import AppsRoundedIcon from "@mui/icons-material/AppsRounded";
 import DesktopWindowsRoundedIcon from "@mui/icons-material/DesktopWindowsRounded";
 import DevicesRoundedIcon from "@mui/icons-material/DevicesRounded";
 
-import { z } from "zod";
-import { useUrl } from "@/hooks/url";
 import { fromEntries } from "@/utils/typedBuiltins";
+import { useFilterState } from "../hooks/useControl";
 
 const filterOptions = [
   {
@@ -30,7 +29,6 @@ const filterOptions = [
 ] as const;
 
 const filterOptionsMap = fromEntries(filterOptions.map((option) => [option.value, option]));
-const filterValueSchema = z.enum(["all", "desktop", "rwd"]);
 
 const outlineElementSelector = "& .MuiOutlinedInput-notchedOutline";
 const sxMap = {
@@ -40,9 +38,7 @@ const sxMap = {
 } as const;
 
 const SearchFilter = ({ position, fullWidth }: { position: "left" | "right" | "mid"; fullWidth?: boolean }) => {
-  const { searchParams, updateSearchParams } = useUrl();
-  const { data } = filterValueSchema.safeParse(searchParams.get("filter"));
-  const filter = data ?? "all";
+  const { filter, handleChange } = useFilterState();
 
   return (
     <TextField
@@ -53,11 +49,7 @@ const SearchFilter = ({ position, fullWidth }: { position: "left" | "right" | "m
       value={filter}
       sx={sxMap[position]}
       fullWidth={fullWidth}
-      onChange={(e) => {
-        const value = e.target.value;
-        if (filter === value) return;
-        updateSearchParams({ filter: value }, true);
-      }}
+      onChange={handleChange}
       slotProps={{
         input: {
           startAdornment: (
