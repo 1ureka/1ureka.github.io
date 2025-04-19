@@ -14,7 +14,9 @@ import { useMemo } from "react";
 import { useOrderState, useFilterState, filterSchema } from "../hooks/useControl";
 import { z } from "zod";
 
-type Project = ProjectCardProps & {
+type Project = Omit<ProjectCardProps, "title" | "description"> & {
+  title: string;
+  description: string;
   time: number;
   type: z.infer<typeof filterSchema>;
 };
@@ -108,8 +110,8 @@ const ProjectList = () => {
       }}
     >
       <AnimatePresence initial={false}>
-        {filtered.map(({ time, highlights, ...project }) => (
-          <ProjectCard key={project.title} {...project} />
+        {filtered.map(({ time, title, description, highlights, ...project }) => (
+          <ProjectCard key={`${time}${title}${description}`} {...project} {...highlights} />
         ))}
       </AnimatePresence>
     </Box>

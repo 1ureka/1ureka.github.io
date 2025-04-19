@@ -2,6 +2,7 @@ import { Box, Chip, keyframes, LinearProgress, Stack, Typography, useMediaQuery 
 import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
 import HardwareRoundedIcon from "@mui/icons-material/HardwareRounded";
 import { BoxM } from "@/components/Motion";
+import type { Highlight } from "@/hooks/fuse";
 
 const scrollKeyframes = keyframes`
   from {
@@ -22,8 +23,8 @@ const getProgressLabel = (p: number): string => {
 };
 
 export type ProjectCardProps = {
-  title: string;
-  description: string;
+  title: Highlight[];
+  description: Highlight[];
   progress?: number;
   color: string;
   icon: React.ReactNode;
@@ -61,11 +62,34 @@ export const ProjectCard = ({
           {icon}
           <Box sx={{ display: "flex", alignItems: "flex-end", gap: 1 }}>
             <Typography variant="h4" component="h2" sx={{ fontFamily: "timemachine-wa", textWrap: "nowrap" }}>
-              {title}
+              {title.map(({ text, highlight }, i) => (
+                <Typography
+                  key={i}
+                  variant="h4"
+                  component="span"
+                  sx={{
+                    fontFamily: "inherit",
+                    color: highlight ? `color-mix(in srgb, yellow, var(--mui-palette-text-primary))` : undefined,
+                  }}
+                >
+                  {text}
+                </Typography>
+              ))}
             </Typography>
             {isSm && (
               <Typography variant="body2" component="p" sx={{ color: "text.secondary" }}>
-                {description}
+                {description.map(({ text, highlight }, i) => (
+                  <Typography
+                    key={i}
+                    variant="body2"
+                    component="span"
+                    sx={{
+                      color: highlight ? `color-mix(in srgb, yellow, var(--mui-palette-text-secondary))` : undefined,
+                    }}
+                  >
+                    {text}
+                  </Typography>
+                ))}
               </Typography>
             )}
           </Box>
@@ -73,7 +97,18 @@ export const ProjectCard = ({
 
         {!isSm && (
           <Typography variant="body2" component="p" sx={{ color: "text.secondary", p: 2, pt: 0 }}>
-            {description}
+            {description.map(({ text, highlight }, i) => (
+              <Typography
+                key={i}
+                variant="body2"
+                component="span"
+                sx={{
+                  color: highlight ? `color-mix(in srgb, ${color}, var(--mui-palette-text-secondary))` : undefined,
+                }}
+              >
+                {text}
+              </Typography>
+            ))}
           </Typography>
         )}
 
