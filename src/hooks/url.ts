@@ -76,8 +76,14 @@ export function useUrl() {
   }, [pathname]);
 
   // 用於更新查詢參數的函數 (會保留之前的 searchParams)
-  const updateSearchParams = useCallback((searchParams: SearchParamsUpdate, skipTransition: boolean = false) => {
+  const updateSearchParams = useCallback((searchParams: SearchParamsUpdate | null, skipTransition: boolean = false) => {
     const url = new URL(window.location.href);
+
+    if (searchParams === null) {
+      url.search = ""; // 清空 query string
+      withTransition(() => window.history.pushState({}, "", url), skipTransition);
+      return;
+    }
 
     // 更新或刪除參數
     Object.entries(searchParams).forEach(([key, value]) => {
@@ -97,9 +103,15 @@ export function useUrl() {
 
   // 用於更新 pathname + searchParams 的函數
   const updatePathAndSearchParams = useCallback(
-    (newPath: string, searchParams: SearchParamsUpdate, skipTransition: boolean = false) => {
+    (newPath: string, searchParams: SearchParamsUpdate | null, skipTransition: boolean = false) => {
       const url = new URL(window.location.href);
       url.pathname = ensureLeadingSlash(newPath);
+
+      if (searchParams === null) {
+        url.search = ""; // 清空 query string
+        withTransition(() => window.history.pushState({}, "", url), skipTransition);
+        return;
+      }
 
       // 更新或刪除參數
       Object.entries(searchParams).forEach(([key, value]) => {
