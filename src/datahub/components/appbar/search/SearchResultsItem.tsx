@@ -30,21 +30,17 @@ type ResultButtonProps = {
 };
 
 const ResultButton = memo(({ id, variant, primary, secondary, type }: ResultButtonProps) => {
-  const { updatePathAndSearchParams } = useUrl();
+  const { update } = useUrl();
 
   let handleClick: (() => void) | null = null;
 
   if (variant === "db") {
-    handleClick = () => updatePathAndSearchParams(routes.datahub_home, { db: id, search: "false" });
+    handleClick = () => update(routes.datahub_home, { db: id, search: "false" });
   } else if (variant === "table") {
-    handleClick = () => updatePathAndSearchParams(routes.datahub_tables, { table: id, search: "false" });
+    handleClick = () => update(routes.datahub_tables, { table: id, search: "false" });
   } else if (variant === "column") {
     handleClick = () =>
-      updatePathAndSearchParams(routes.datahub_tables, {
-        table: id.split(".")[0],
-        search: "false",
-        hiddenColumns: null,
-      });
+      update(routes.datahub_tables, { table: id.split(".")[0], search: "false", hiddenColumns: null });
   } else {
     handleClick = () => {};
   }

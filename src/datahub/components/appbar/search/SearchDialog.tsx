@@ -10,7 +10,7 @@ import { useUrl } from "@/hooks/url.ts";
 const SearchDialog = (props: Omit<DialogProps, "children" | "open" | "onClose">) => {
   const { searchParams, updateSearchParams } = useUrl();
   const open = searchParams.get("search") === "true";
-  const handleClose = () => updateSearchParams({ search: "false" }, true);
+  const handleClose = () => updateSearchParams({ search: "false" }, { skipTransition: true });
 
   return (
     <Dialog

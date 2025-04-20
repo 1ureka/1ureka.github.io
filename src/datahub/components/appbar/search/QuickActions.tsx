@@ -54,7 +54,7 @@ const ActionButton = ({ icon, title, description, onClick }: ActionButtonProps) 
 );
 
 const QuickActions = () => {
-  const { updatePathAndSearchParams, updateSearchParams } = useUrl();
+  const { update, updateSearchParams } = useUrl();
 
   return (
     <Box sx={{ p: 1.5, pt: 0 }}>
@@ -70,9 +70,7 @@ const QuickActions = () => {
             icon={<SchemaRoundedIcon color="inherit" />}
             title="資料庫結構"
             description="了解資料庫結構與關聯"
-            onClick={() => {
-              updatePathAndSearchParams(routes.datahub_schema, null);
-            }}
+            onClick={() => update(routes.datahub_schema, null)}
           />
           <ActionButton
             icon={<TerminalRoundedIcon color="inherit" />}
@@ -81,7 +79,7 @@ const QuickActions = () => {
             onClick={() => {
               console.log("還沒做完");
               //   updatePath(routes.datahub_query);
-              updateSearchParams({ search: "false" }, true);
+              updateSearchParams({ search: "false" }, { skipTransition: true });
             }}
           />
         </Box>

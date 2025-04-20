@@ -60,7 +60,7 @@ const useHiddenColumns = () => {
   const createToggleAllColumns = useCallback(
     (length: number) => () => {
       const newHiddenColumns = hiddenColumns.length ? [] : Array.from({ length }, (_, i) => i);
-      updateSearchParams({ hiddenColumns: JSON.stringify(newHiddenColumns) }, true);
+      updateSearchParams({ hiddenColumns: JSON.stringify(newHiddenColumns) }, { skipTransition: true });
     },
     [hiddenColumns, updateSearchParams]
   );
@@ -68,7 +68,7 @@ const useHiddenColumns = () => {
   const createToggleHandler = useCallback(
     (index: number) => () => {
       const newHiddenColumns = toggleSet(hiddenColumns, index);
-      updateSearchParams({ hiddenColumns: JSON.stringify(newHiddenColumns) }, true);
+      updateSearchParams({ hiddenColumns: JSON.stringify(newHiddenColumns) }, { skipTransition: true });
     },
     [hiddenColumns, updateSearchParams]
   );
@@ -104,7 +104,7 @@ const useSort = (length: number | null) => {
       const newOrderBy = index;
       // 如果點擊的欄位是當前排序的欄位，則反轉排序順序，否則使用升序(預設)
       const newOrder = orderBy === index && order === "asc" ? "desc" : "asc";
-      updateSearchParams({ orderBy: newOrderBy.toString(), order: newOrder }, true);
+      updateSearchParams({ orderBy: newOrderBy.toString(), order: newOrder }, { skipTransition: true });
     },
     [orderBy, order, updateSearchParams]
   );

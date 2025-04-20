@@ -5,7 +5,7 @@ import { useUrl } from "@/hooks/url";
 
 const SearchBarButton = () => {
   const { updateSearchParams } = useUrl();
-  const handleClick = () => updateSearchParams({ search: "true" }, true);
+  const handleClick = () => updateSearchParams({ search: "true" }, { skipTransition: true });
 
   return (
     <>

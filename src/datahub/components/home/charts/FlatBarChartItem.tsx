@@ -20,7 +20,8 @@ type FlatBarChartItemProps = {
 
 const FlatBarChartItem = ({ field, count, percentage, loading, noData, index }: FlatBarChartItemProps) => {
   const { updateSearchParams } = useUrl();
-  const handleClick = () => updateSearchParams({ search: "true", searchQuery: field, searchTopic: "column" }, true);
+  const handleClick = () =>
+    updateSearchParams({ search: "true", searchQuery: field, searchTopic: "column" }, { skipTransition: true });
 
   return (
     <>

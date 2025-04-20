@@ -26,8 +26,8 @@ const SearchBar = ({ position, fullWidth }: { position: "left" | "right" | "mid"
     const value = data ?? "";
     if (q === value) return;
 
-    if (value === "") updateSearchParams({ q: null }, true);
-    else updateSearchParams({ q: value }, true);
+    if (value === "") updateSearchParams({ q: null }, { skipTransition: true });
+    else updateSearchParams({ q: value }, { skipTransition: true });
   };
 
   return (

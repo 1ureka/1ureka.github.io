@@ -30,6 +30,7 @@ function withTransition(callback: () => void, skip: boolean = false) {
 // -------------------------------------------------------
 
 type SearchParamsUpdate = Record<string, string | null>;
+type UpdateOptions = { skipTransition?: boolean; clearSearchParams?: boolean };
 const pathKey = "__preserved__path__key__";
 
 export function useUrl() {
@@ -39,6 +40,10 @@ export function useUrl() {
 
   // 創建訪問過的參數集合，避免重新渲染時重置
   const accessedKeysRef = useRef(new Set<string>());
+
+  // -----------------------------------------------------
+  // 狀態
+  // -----------------------------------------------------
 
   // 代理 searchParams，使其具有 get、getAll、has 方法
   const proxySearchParams = useMemo(() => {
@@ -75,63 +80,53 @@ export function useUrl() {
     };
   }, [pathname]);
 
-  // 用於更新查詢參數的函數 (會保留之前的 searchParams)
-  const updateSearchParams = useCallback((searchParams: SearchParamsUpdate | null, skipTransition: boolean = false) => {
+  // -----------------------------------------------------
+  // 更新函數
+  // -----------------------------------------------------
+
+  const update = useCallback((path: string | null, params: SearchParamsUpdate | null, options?: UpdateOptions) => {
+    const { skipTransition = false, clearSearchParams = false } = options || {};
     const url = new URL(window.location.href);
 
-    if (searchParams === null) {
-      url.search = ""; // 清空 query string
-      withTransition(() => window.history.pushState({}, "", url), skipTransition);
-      return;
+    if (typeof path === "string") {
+      url.pathname = ensureLeadingSlash(path);
     }
 
-    // 更新或刪除參數
-    Object.entries(searchParams).forEach(([key, value]) => {
-      if (value === null) url.searchParams.delete(key);
+    if (params === null) {
+      url.search = "";
+      params = {};
+    }
+
+    if (clearSearchParams) {
+      url.search = "";
+    }
+
+    Object.entries(params).forEach(([key, value]) => {
+      if (value === null || value === undefined) url.searchParams.delete(key);
       else url.searchParams.set(key, value);
     });
 
     withTransition(() => window.history.pushState({}, "", url), skipTransition);
   }, []);
 
-  // 用於更新 pathname 的函數
-  const updatePath = useCallback((newPath: string, skipTransition: boolean = false) => {
-    const url = new URL(window.location.href);
-    url.pathname = ensureLeadingSlash(newPath);
-    withTransition(() => window.history.pushState({}, "", url), skipTransition);
-  }, []);
-
-  // 用於更新 pathname + searchParams 的函數
-  const updatePathAndSearchParams = useCallback(
-    (newPath: string, searchParams: SearchParamsUpdate | null, skipTransition: boolean = false) => {
-      const url = new URL(window.location.href);
-      url.pathname = ensureLeadingSlash(newPath);
-
-      if (searchParams === null) {
-        url.search = ""; // 清空 query string
-        withTransition(() => window.history.pushState({}, "", url), skipTransition);
-        return;
-      }
-
-      // 更新或刪除參數
-      Object.entries(searchParams).forEach(([key, value]) => {
-        if (value === null) url.searchParams.delete(key);
-        else url.searchParams.set(key, value);
-      });
-
-      withTransition(() => window.history.pushState({}, "", url), skipTransition);
+  const updateSearchParams = useCallback(
+    (params: SearchParamsUpdate | null, options?: UpdateOptions) => {
+      update(null, params, options);
     },
-    []
+    [update]
   );
 
-  // 清空 searchParams 的函數
-  const clearSearchParams = useCallback((skipTransition: boolean = false) => {
-    const url = new URL(window.location.href);
-    url.search = ""; // 清空 query string
-    withTransition(() => window.history.pushState({}, "", url), skipTransition);
-  }, []);
+  const updatePath = useCallback(
+    (path: string, options?: UpdateOptions) => {
+      update(path, {}, options);
+    },
+    [update]
+  );
 
-  // 監聽 URL 變化
+  // -----------------------------------------------------
+  // 監聽 URL 變化，根據 accessedKeysRef 更新狀態
+  // -----------------------------------------------------
+
   useEffect(() => {
     const handleUrlChange = () => {
       const newParams = new URLSearchParams(window.location.search);
@@ -166,9 +161,17 @@ export function useUrl() {
   return {
     pathname: proxyPath,
     searchParams: proxySearchParams,
+    /**
+     * 更新 URL pathname 與 searchParams；path 為 null 表示保留，params 為 null 表示清空、{} 表示不變更。
+     */
+    update,
+    /**
+     * 僅更新 searchParams，支援 null/{} 分別表示清空與不變更。
+     */
     updatePath,
+    /**
+     * 僅更新 pathname，searchParams 不變；可搭配 clearSearchParams 清空。
+     */
     updateSearchParams,
-    updatePathAndSearchParams,
-    clearSearchParams,
   };
 }

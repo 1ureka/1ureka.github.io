@@ -17,7 +17,7 @@ export const useOrderState = () => {
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
-      if (orderBySchema.safeParse(value).success) updateSearchParams({ orderBy: value }, true);
+      if (orderBySchema.safeParse(value).success) updateSearchParams({ orderBy: value }, { skipTransition: true });
     },
     [updateSearchParams]
   );
@@ -25,7 +25,7 @@ export const useOrderState = () => {
   const createChangeOrderHandler = useCallback(
     (order: string) => () => {
       if (orderState.order === order) return;
-      updateSearchParams({ order }, true);
+      updateSearchParams({ order }, { skipTransition: true });
     },
     [orderState, updateSearchParams]
   );
@@ -46,7 +46,7 @@ export const useFilterState = () => {
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
-      if (filterSchema.safeParse(value).success) updateSearchParams({ filter: value }, true);
+      if (filterSchema.safeParse(value).success) updateSearchParams({ filter: value }, { skipTransition: true });
     },
     [updateSearchParams]
   );
