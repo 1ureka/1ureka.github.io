@@ -80,10 +80,16 @@ const ExpandedNavButton = ({ title, description, icon, active, onClick }: Expand
 };
 
 const ExpandedSidebar = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
-  const { searchParams, updateSearchParams, updatePath, pathname } = useUrl();
+  const { searchParams, updateSearchParams, update, pathname } = useUrl();
+
   const createHandleDbClick = (dbName: string) => () => {
     updateSearchParams({ db: dbName });
   };
+  const createHandleNav = (path: string) => () => {
+    update(path, (prev) => ({ db: prev.db ?? "forum" }));
+    onClose();
+  };
+
   return (
     <Drawer
       anchor="left"
@@ -134,10 +140,7 @@ const ExpandedSidebar = ({ open, onClose }: { open: boolean; onClose: () => void
           />
         }
         active={pathname.get() === routes.datahub_home}
-        onClick={() => {
-          updatePath(routes.datahub_home);
-          onClose();
-        }}
+        onClick={createHandleNav(routes.datahub_home)}
       />
 
       <ExpandedNavButton
@@ -149,10 +152,7 @@ const ExpandedSidebar = ({ open, onClose }: { open: boolean; onClose: () => void
           />
         }
         active={pathname.get() === routes.datahub_schema}
-        onClick={() => {
-          updatePath(routes.datahub_schema);
-          onClose();
-        }}
+        onClick={createHandleNav(routes.datahub_schema)}
       />
 
       <ExpandedNavButton
@@ -164,10 +164,7 @@ const ExpandedSidebar = ({ open, onClose }: { open: boolean; onClose: () => void
           />
         }
         active={pathname.get() === routes.datahub_tables}
-        onClick={() => {
-          updatePath(routes.datahub_tables);
-          onClose();
-        }}
+        onClick={createHandleNav(routes.datahub_tables)}
       />
 
       <ExpandedNavButton
@@ -189,16 +186,20 @@ const ExpandedSidebar = ({ open, onClose }: { open: boolean; onClose: () => void
 };
 
 const Sidebar = () => {
-  const { updatePath, pathname } = useUrl();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const toggleDrawer = () => setDrawerOpen(!drawerOpen);
+  const { update, pathname } = useUrl();
+
+  const createHandleNav = (path: string) => () => {
+    update(path, (prev) => ({ db: prev.db ?? "forum" }));
+  };
 
   return (
     <Stack sx={{ position: "relative", bgcolor: "primary.dark", p: 2, py: 4, color: "#fffc", height: 1, gap: 2 }}>
       <NavButton
         title="概覽"
         active={pathname.get() === routes.datahub_home}
-        onClick={() => updatePath(routes.datahub_home)}
+        onClick={createHandleNav(routes.datahub_home)}
       >
         <DashboardRoundedIcon />
       </NavButton>
@@ -206,7 +207,7 @@ const Sidebar = () => {
       <NavButton
         title="資料庫結構"
         active={pathname.get() === routes.datahub_schema}
-        onClick={() => updatePath(routes.datahub_schema)}
+        onClick={createHandleNav(routes.datahub_schema)}
       >
         <SchemaRoundedIcon />
       </NavButton>
@@ -214,7 +215,7 @@ const Sidebar = () => {
       <NavButton
         title="表格檢視"
         active={pathname.get() === routes.datahub_tables}
-        onClick={() => updatePath(routes.datahub_tables)}
+        onClick={createHandleNav(routes.datahub_tables)}
       >
         <ViewListRoundedIcon />
       </NavButton>
