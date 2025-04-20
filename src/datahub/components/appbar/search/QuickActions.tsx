@@ -70,7 +70,7 @@ const QuickActions = () => {
             icon={<SchemaRoundedIcon color="inherit" />}
             title="資料庫結構"
             description="了解資料庫結構與關聯"
-            onClick={() => update(routes.datahub_schema, null)}
+            onClick={() => update(routes.datahub_schema, (prev) => ({ db: prev.db ?? null }))}
           />
           <ActionButton
             icon={<TerminalRoundedIcon color="inherit" />}
