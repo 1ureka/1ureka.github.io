@@ -4,8 +4,7 @@ import type { CheckboxProps, IconButtonProps } from "@mui/material";
 import FilterAltRoundedIcon from "@mui/icons-material/FilterAltRounded";
 
 import { useState } from "react";
-import { useHiddenColumns, useSelectedTable } from "@/datahub/hooks/table";
-import { useTableInfo } from "@/datahub/hooks/read";
+import { useHiddenColumns, useTableColumns } from "@/datahub/hooks/table";
 import { smSpace } from "./commonSx";
 import type { TableColumnInfo } from "@/datahub/data/read";
 
@@ -48,15 +47,15 @@ const ColumnSelectLoading = () => (
   </Tooltip>
 );
 
-const ColumnSelect = ({ columns }: { columns: TableColumnInfo[] }) => {
+const ColumnSelect = ({ columns }: { columns: (TableColumnInfo & { hidden: boolean })[] }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const handleOpen = (event: React.MouseEvent<HTMLElement>) =>
     setAnchorEl((prev) => (prev ? null : event.currentTarget));
   const handleClose = () => setAnchorEl(null);
 
-  const { hiddenColumns, createToggleAllColumns, createToggleHandler } = useHiddenColumns();
-  const isAllNotHidden = hiddenColumns.every((col) => col > columns.length - 1);
-  const isAllHidden = columns.every((_, i) => hiddenColumns.includes(i));
+  const { createToggleAllColumns, createToggleHandler } = useHiddenColumns();
+  const isAllNotHidden = columns.every((col) => !col.hidden);
+  const isAllHidden = columns.every((col) => col.hidden);
 
   return (
     <>
@@ -97,20 +96,18 @@ const ColumnSelect = ({ columns }: { columns: TableColumnInfo[] }) => {
 
           <Divider sx={{ my: 0.5 }} />
 
-          {columns
-            .toSorted((a, b) => a.cid - b.cid)
-            .map((column, i) => (
-              <ListItem key={i} disablePadding>
-                <ListItemButton role={undefined} onClick={createToggleHandler(i)} dense>
-                  <Checkbox {...ListCheckBoxProps} checked={!hiddenColumns.includes(i)} />
-                  <ListItemText
-                    sx={{ display: "flex", width: 1, gap: smSpace, justifyContent: "space-between", my: 0.5 }}
-                    primary={column.name}
-                    secondary={column.type.toUpperCase()}
-                  />
-                </ListItemButton>
-              </ListItem>
-            ))}
+          {columns.map((column, i) => (
+            <ListItem key={i} disablePadding>
+              <ListItemButton role={undefined} onClick={createToggleHandler(i)} dense>
+                <Checkbox {...ListCheckBoxProps} checked={!column.hidden} />
+                <ListItemText
+                  sx={{ display: "flex", width: 1, gap: smSpace, justifyContent: "space-between", my: 0.5 }}
+                  primary={column.name}
+                  secondary={column.type.toUpperCase()}
+                />
+              </ListItemButton>
+            </ListItem>
+          ))}
         </List>
       </Popover>
     </>
@@ -118,14 +115,9 @@ const ColumnSelect = ({ columns }: { columns: TableColumnInfo[] }) => {
 };
 
 const ColumnSelectWrapper = () => {
-  const { selected, isFetching: isFetchingObj } = useSelectedTable();
-  const { data: tableInfo, isFetching: isFetchingInfo } = useTableInfo({ types: ["table", "view"] });
-  const isFetching = isFetchingInfo || !tableInfo || isFetchingObj || !selected;
-
+  const { columnsForSelect, isFetching } = useTableColumns();
   if (isFetching) return <ColumnSelectLoading />;
-
-  const columns = tableInfo.find(({ table }) => table === selected.name)?.columns;
-  return <ColumnSelect columns={columns ?? []} />;
+  return <ColumnSelect columns={columnsForSelect ?? []} />;
 };
 
 export { ColumnSelectWrapper as ColumnSelect };

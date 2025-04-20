@@ -2,9 +2,7 @@ import { Box, Checkbox, Skeleton, Typography } from "@mui/material";
 import { TableCell, TableHead, TableRow, TableSortLabel } from "@mui/material";
 import SortRoundedIcon from "@mui/icons-material/SortRounded";
 
-import { useMemo } from "react";
-import { useTableInfo } from "@/datahub/hooks/read";
-import { useHiddenColumns, useSelectedTable, useSort } from "@/datahub/hooks/table";
+import { useSort, useTableColumns } from "@/datahub/hooks/table";
 import { smSpace } from "./commonSx";
 import { ellipsisSx } from "@/utils/commonSx";
 
@@ -68,27 +66,8 @@ const Background = () => (
 );
 
 const TableHeader = () => {
-  const { selected, isFetching: isFetchingObj } = useSelectedTable();
-  const { data: tableInfo, isFetching: isFetchingInfo } = useTableInfo({ types: ["table", "view"] });
-  const isFetching = isFetchingInfo || !tableInfo || isFetchingObj || !selected;
-
-  const { hiddenColumns } = useHiddenColumns();
-
-  const columns = useMemo(() => {
-    if (!tableInfo || !selected) return null;
-    const table = tableInfo.find(({ table }) => table === selected.name);
-    if (!table) return null;
-    const { columns } = table;
-    const filtered = columns.filter(({ cid }) => !hiddenColumns.includes(cid));
-    return filtered.toSorted((a, b) => {
-      if (a.pk !== b.pk) return b.pk - a.pk;
-      if (a.type === "text" && b.type !== "text") return -1;
-      if (a.type !== "text" && b.type === "text") return 1;
-      return a.cid - b.cid;
-    });
-  }, [tableInfo, selected, hiddenColumns]);
-
-  const { order, orderBy, createToggleHandler } = useSort(columns?.length ?? 0);
+  const { columnsForTable, isFetching } = useTableColumns();
+  const { order, orderBy, createToggleHandler } = useSort(columnsForTable?.length ?? 0);
 
   const checked = Math.random() > 0.5;
   const indeterminate = Math.random() > 0.5;
@@ -98,7 +77,7 @@ const TableHeader = () => {
     <TableHead sx={{ position: "relative" }}>
       <Background />
 
-      {isFetching || !columns ? (
+      {isFetching || !columnsForTable ? (
         <TableHeaderLoading />
       ) : (
         <TableRow>
@@ -116,7 +95,7 @@ const TableHeader = () => {
             />
           </TableCell>
 
-          {columns.map((column, i) => {
+          {columnsForTable.map((column, i) => {
             const { cid, name, type } = column;
             const isPk = column.pk >= 1;
             const align = type !== "text" && !isPk ? "flex-end" : undefined;
