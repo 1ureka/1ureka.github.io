@@ -9,9 +9,13 @@ import { TileContent, TileTitle } from "./TileText";
 import { TileTooltip } from "./TileTooltip";
 import { underlineSx } from "@/utils/commonSx";
 import { lgSpace, mdSpace, smSpace, tileIconCommonSx } from "./commonSx";
-import { useDbBytes, useObjects, useRowCounts } from "@/datahub/hooks/read";
+
 import { formatFileSize, formatNumber } from "@/utils/formatters";
 import { toEntries } from "@/utils/typedBuiltins";
+import { routes } from "@/routes";
+import { useUrl } from "@/hooks/url";
+import { useDbBytes, useObjects, useRowCounts } from "@/datahub/hooks/read";
+import { useMemo } from "react";
 
 const smallTileCommonSx: BoxProps["sx"] = {
   display: "flex",
@@ -71,16 +75,28 @@ const Tile1 = () => {
   );
 };
 
+const useHandleClick = () => {
+  const { update } = useUrl();
+  const createHandler = (label: string) => () =>
+    update(routes.datahub_tables, (prev) => ({ db: prev.db ?? null, table: label }));
+  return createHandler;
+};
+
 const Tile2 = () => {
   const { data, isFetching } = useRowCounts({ types: ["table", "view"] });
+  const createHandler = useHandleClick();
 
   const totalCount = data ? Object.values(data).reduce((acc, count) => acc + count, 0) : 0;
-  const max = data
-    ? toEntries(data).reduce((acc, [name, count]) => {
-        if (count > acc[1]) return [name, count];
-        return acc;
-      })
-    : ["", 0];
+
+  const maxCountItem = useMemo(() => {
+    if (!data) return { table: "", count: 0 };
+    const dataEntries = toEntries(data).filter(([name]) => typeof name === "string") as [string, number][];
+    const max = dataEntries.reduce((acc, [name, count]) => {
+      if (count > acc[1]) return [name, count];
+      return acc;
+    });
+    return { table: max[0], count: max[1] };
+  }, [data]);
 
   return (
     <Box sx={{ display: "flex", gap: smSpace }}>
@@ -107,11 +123,13 @@ const Tile2 = () => {
           <TileTooltip
             title={
               <Typography>
-                {max[0]} 有 {formatNumber(max[1] as number)} 筆紀錄
+                {maxCountItem.table} 有 {formatNumber(maxCountItem.count)} 筆紀錄
               </Typography>
             }
           >
-            <TileContent sx={underlineSx}>{max[0]}</TileContent>
+            <TileContent sx={underlineSx} onClick={createHandler(maxCountItem.table)}>
+              {maxCountItem.table}
+            </TileContent>
           </TileTooltip>
         )}
       </Stack>
