@@ -14,8 +14,8 @@ export const isSearchTopic = (value: string): value is SearchTopic => {
 
 export const useSearchTopic = () => {
   const { searchParams, updateSearchParams } = useUrl();
-  const raw = searchParams.get("searchTopic") ?? "db";
-  const searchTopic = isSearchTopic(raw) ? raw : "db";
+  const raw = searchParams.get("searchTopic") ?? "table";
+  const searchTopic = isSearchTopic(raw) ? raw : "table";
 
   return { searchTopic, updateSearchParams };
 };
