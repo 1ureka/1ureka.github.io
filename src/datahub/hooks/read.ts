@@ -4,8 +4,7 @@ import { downloadDatabase, getDbBytes, getObjectsByTypes, getTableForeignKeys, g
 import { getTableInfo, getTotalRowCount } from "../data/read";
 import type { SQLiteObjectType, TableColumnInfo, TableIndexInfo } from "../data/read";
 
-// const staleTime = 1 * 60 * 1000;
-const staleTime = 0; // TODO: 測試完 loading state 後要記得改回 1 分鐘
+const staleTime = 1 * 60 * 1000;
 
 const useDownloadDb = () => {
   return useMutation({
