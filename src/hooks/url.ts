@@ -29,7 +29,8 @@ function withTransition(callback: () => void, skip: boolean = false) {
 // 定義 useUrl 鉤子
 // -------------------------------------------------------
 
-type SearchParamsUpdate = Record<string, string | null>;
+type ParamsUpdate = Record<string, string | null>;
+type ParamsUpdateFn = (prev: Record<string, string | undefined>) => ParamsUpdate | null;
 type UpdateOptions = { skipTransition?: boolean; clearSearchParams?: boolean };
 const pathKey = "__preserved__path__key__";
 
@@ -84,33 +85,41 @@ export function useUrl() {
   // 更新函數
   // -----------------------------------------------------
 
-  const update = useCallback((path: string | null, params: SearchParamsUpdate | null, options?: UpdateOptions) => {
-    const { skipTransition = false, clearSearchParams = false } = options || {};
-    const url = new URL(window.location.href);
+  const update = useCallback(
+    (path: string | null, params: ParamsUpdate | ParamsUpdateFn | null, options?: UpdateOptions) => {
+      const { skipTransition = false, clearSearchParams = false } = options || {};
+      const shouldClearParams = params === null || typeof params === "function" || clearSearchParams;
+      const url = new URL(window.location.href);
 
-    if (typeof path === "string") {
-      url.pathname = ensureLeadingSlash(path);
-    }
+      if (typeof path === "string") {
+        url.pathname = ensureLeadingSlash(path);
+      }
 
-    if (params === null) {
-      url.search = "";
-      params = {};
-    }
+      if (typeof params === "function") {
+        const prevParams = Object.fromEntries(url.searchParams.entries());
+        params = params(prevParams);
+      }
 
-    if (clearSearchParams) {
-      url.search = "";
-    }
+      if (shouldClearParams) {
+        url.search = "";
+      }
 
-    Object.entries(params).forEach(([key, value]) => {
-      if (value === null || value === undefined) url.searchParams.delete(key);
-      else url.searchParams.set(key, value);
-    });
+      if (params === null) {
+        params = {};
+      }
 
-    withTransition(() => window.history.pushState({}, "", url), skipTransition);
-  }, []);
+      Object.entries(params).forEach(([key, value]) => {
+        if (value === null || value === undefined) url.searchParams.delete(key);
+        else url.searchParams.set(key, value);
+      });
+
+      withTransition(() => window.history.pushState({}, "", url), skipTransition);
+    },
+    []
+  );
 
   const updateSearchParams = useCallback(
-    (params: SearchParamsUpdate | null, options?: UpdateOptions) => {
+    (params: ParamsUpdate | ParamsUpdateFn | null, options?: UpdateOptions) => {
       update(null, params, options);
     },
     [update]
@@ -162,15 +171,17 @@ export function useUrl() {
     pathname: proxyPath,
     searchParams: proxySearchParams,
     /**
-     * 更新 URL pathname 與 searchParams；path 為 null 表示保留，params 為 null 表示清空、{} 表示不變更。
+     * 更新 URL pathname 與 searchParams；
+     * path 為 `null` 表示保留；
+     * params 為 `null` 表示清空、`{}` 表示不變更、`{a: value}`表示只更新"a"、`函數`表示先清空而使用端可選擇性地更新。
      */
     update,
     /**
-     * 僅更新 searchParams，支援 null/{} 分別表示清空與不變更。
+     * 僅更新 pathname，searchParams 不變；可搭配 clearSearchParams 清空。
      */
     updatePath,
     /**
-     * 僅更新 pathname，searchParams 不變；可搭配 clearSearchParams 清空。
+     * 僅更新 searchParams，支援 null/{} 分別表示清空與不變更。
      */
     updateSearchParams,
   };
