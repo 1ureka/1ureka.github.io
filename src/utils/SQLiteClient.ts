@@ -202,10 +202,7 @@ export class SQLiteClient {
       return new SQL.Database();
     }
 
-    const data = db.export();
-    const { error: saveError } = await tryCatch(set(this.storageKey, data));
-    if (saveError) console.error("Failed to save database to IndexedDB", saveError);
-
+    await this.saveDatabase(db); // 保存到 IndexedDB
     return db;
   }
 
