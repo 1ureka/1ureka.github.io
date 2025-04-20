@@ -80,12 +80,18 @@ const AccountMenuDesktop = () => {
           color="inherit"
           startIcon={<AccountCircleRoundedIcon />}
           onClick={handleOpen}
-          sx={{ textTransform: "none" }}
+          sx={{ textTransform: "none", borderRadius: 2 }}
         >
           {user.name}
         </Button>
       ) : (
-        <Button variant="outlined" color="inherit" startIcon={<LoginRoundedIcon />} href={routes.forum_login}>
+        <Button
+          variant="outlined"
+          color="inherit"
+          startIcon={<LoginRoundedIcon />}
+          href={routes.forum_login}
+          sx={{ borderRadius: 2 }}
+        >
           登入
         </Button>
       )}

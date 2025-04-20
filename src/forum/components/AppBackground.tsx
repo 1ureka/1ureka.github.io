@@ -2,7 +2,7 @@ import { Box } from "@mui/material";
 
 const AppBackground = () => (
   <Box sx={{ position: "absolute", inset: 0, pointerEvents: "none" }}>
-    <Box sx={{ bgcolor: "secondary.main", height: "35vh" }} />
+    <Box sx={{ bgcolor: "secondary.main", height: "34vh" }} />
     <Box
       sx={{
         height: "100px",
