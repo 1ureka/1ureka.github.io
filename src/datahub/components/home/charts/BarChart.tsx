@@ -1,13 +1,11 @@
 import { Box, ButtonBase, CircularProgress, MenuItem, MenuList } from "@mui/material";
-import { Popover, Skeleton, Stack, Typography } from "@mui/material";
+import { Popover, Stack, Typography } from "@mui/material";
 import ArrowDropDownRoundedIcon from "@mui/icons-material/ArrowDropDownRounded";
 
 import { useState } from "react";
 import { useRowCounts } from "@/datahub/hooks/read";
-import { TileTooltip } from "../TileTooltip";
-import { StripedBackground } from "./StripedBackground";
 import { chartChangeTransition, noSpace, smSpace } from "../commonSx";
-import { ellipsisSx, underlineSx } from "@/utils/commonSx";
+import { BarChartItem, BarChartItemLabel } from "./BarChartItem";
 
 type DisplayCounts = 3 | 5 | 7;
 
@@ -138,52 +136,8 @@ const BarChart = () => {
           alignItems: "stretch",
         }}
       >
-        {dataArray.map(({ label, records, percentage, loading, noData }, i) => (
-          <TileTooltip
-            key={i}
-            title={
-              loading || noData ? null : (
-                <Box>
-                  <Typography variant="subtitle2">{label}</Typography>
-                  <Typography>{records} 筆紀錄</Typography>
-                </Box>
-              )
-            }
-          >
-            <Box
-              sx={{
-                position: "relative",
-                flex: 1,
-                borderRadius: 2,
-                overflow: "clip",
-                transition: "all 0.2s ease-in-out",
-                "&:hover": { bgcolor: "action.hover", "& .bar-content": { opacity: 1 } },
-              }}
-            >
-              <StripedBackground color1="divider" color2="#fff0" angle={-20} stripeWidth={5} />
-              <Box
-                sx={{
-                  position: "absolute",
-                  inset: `${loading || noData ? 100 : Math.max(0, 100 - percentage)}% 0 0 0`,
-                  borderRadius: 2,
-                  overflow: "hidden",
-                  bgcolor: "background.paper",
-                  transition: chartChangeTransition,
-                }}
-              >
-                <Box
-                  className="bar-content"
-                  sx={{
-                    position: "absolute",
-                    inset: 0,
-                    bgcolor: "primary.main",
-                    opacity: i === 0 ? 0.9 : 0.65,
-                    transition: "all 0.2s ease-in-out",
-                  }}
-                />
-              </Box>
-            </Box>
-          </TileTooltip>
+        {dataArray.map((props, i) => (
+          <BarChartItem key={i} index={i} {...props} />
         ))}
 
         <Box
@@ -216,34 +170,9 @@ const BarChart = () => {
       </Box>
 
       <Box sx={{ display: "flex", gap: smSpace, p: smSpace, justifyContent: "space-around", alignItems: "center" }}>
-        {dataArray.map(({ label, loading, noData }, i) =>
-          loading ? (
-            <Skeleton key={i} variant="rounded" animation="wave">
-              <Typography variant="body1" component="p" sx={{ flex: 1, textAlign: "center" }}>
-                載入中
-              </Typography>
-            </Skeleton>
-          ) : noData ? (
-            <Typography
-              key={i}
-              variant="body1"
-              component="p"
-              sx={{ flex: 1, color: "text.secondary", ...ellipsisSx, textAlign: "center" }}
-            >
-              ---
-            </Typography>
-          ) : (
-            <TileTooltip key={i} title={<Typography>{label}</Typography>}>
-              <Typography
-                variant="body1"
-                component="p"
-                sx={{ flex: 1, color: "text.secondary", ...underlineSx, ...ellipsisSx, textAlign: "center" }}
-              >
-                {label}
-              </Typography>
-            </TileTooltip>
-          )
-        )}
+        {dataArray.map((props, i) => (
+          <BarChartItemLabel key={i} index={i} {...props} />
+        ))}
       </Box>
     </Stack>
   );
