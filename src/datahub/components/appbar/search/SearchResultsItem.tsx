@@ -35,12 +35,28 @@ const ResultButton = memo(({ id, variant, primary, secondary, type }: ResultButt
   let handleClick: (() => void) | null = null;
 
   if (variant === "db") {
-    handleClick = () => update(routes.datahub_home, { db: id, search: "false" });
+    handleClick = () =>
+      update(routes.datahub_home, (prev) => ({
+        db: id,
+        searchTopic: prev.searchTopic ?? null,
+        searchQuery: prev.searchQuery ?? null,
+      }));
   } else if (variant === "table") {
-    handleClick = () => update(routes.datahub_tables, { table: id, search: "false" });
+    handleClick = () =>
+      update(routes.datahub_tables, (prev) => ({
+        db: prev.db ?? null,
+        table: id,
+        searchTopic: prev.searchTopic ?? null,
+        searchQuery: prev.searchQuery ?? null,
+      }));
   } else if (variant === "column") {
     handleClick = () =>
-      update(routes.datahub_tables, { table: id.split(".")[0], search: "false", hiddenColumns: null });
+      update(routes.datahub_tables, (prev) => ({
+        db: prev.db ?? null,
+        table: id.split(".")[0],
+        searchTopic: prev.searchTopic ?? null,
+        searchQuery: prev.searchQuery ?? null,
+      }));
   } else {
     handleClick = () => {};
   }
