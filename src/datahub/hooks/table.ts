@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useObjects } from "./read";
+import { useObjects, useTableInfo } from "./read";
 import { useUrl } from "@/hooks/url";
 
 import { tryCatchSync } from "@/utils/tryCatch";
@@ -76,6 +76,40 @@ const useHiddenColumns = () => {
   return { hiddenColumns, createToggleAllColumns, createToggleHandler };
 };
 
+const useTableColumns = () => {
+  const { selected, isFetching: isFetchingObj } = useSelectedTable();
+  const { data: tableInfo, isFetching: isFetchingInfo } = useTableInfo({ types: ["table", "view"] });
+  const isFetching = isFetchingInfo || !tableInfo || isFetchingObj || !selected;
+
+  const { hiddenColumns } = useHiddenColumns();
+
+  const columnsForSelect = useMemo(() => {
+    if (!tableInfo || !selected) return null;
+
+    const table = tableInfo.find(({ table }) => table === selected.name);
+    if (!table) return null;
+
+    const { columns: rawColumns } = table;
+    const columns = rawColumns.map((info) => ({ ...info, hidden: hiddenColumns.includes(info.cid) }));
+
+    return columns.toSorted((a, b) => a.cid - b.cid);
+  }, [tableInfo, selected, hiddenColumns]);
+
+  const columnsForTable = useMemo(() => {
+    if (!columnsForSelect) return null;
+
+    const filtered = columnsForSelect.filter((column) => !column.hidden);
+    return filtered.toSorted((a, b) => {
+      if (a.pk !== b.pk) return b.pk - a.pk;
+      if (a.type === "text" && b.type !== "text") return -1;
+      if (a.type !== "text" && b.type === "text") return 1;
+      return a.cid - b.cid;
+    });
+  }, [columnsForSelect]);
+
+  return { isFetching, columnsForSelect, columnsForTable };
+};
+
 const useSort = (length: number | null) => {
   const { searchParams, updateSearchParams } = useUrl();
 
@@ -112,4 +146,4 @@ const useSort = (length: number | null) => {
   return { orderBy, order, createToggleHandler };
 };
 
-export { useSelectedTable, useHiddenColumns, useSort };
+export { useSelectedTable, useHiddenColumns, useTableColumns, useSort };
