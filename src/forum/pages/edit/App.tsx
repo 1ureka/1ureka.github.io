@@ -2,6 +2,7 @@ import { Box, Button, CircularProgress, Container, Divider, Paper, Typography, u
 import ArrowBackIosRoundedIcon from "@mui/icons-material/ArrowBackIosRounded";
 import EditNoteRoundedIcon from "@mui/icons-material/EditNoteRounded";
 import SentimentDissatisfiedRoundedIcon from "@mui/icons-material/SentimentDissatisfiedRounded";
+import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 
 import { AppWrapper } from "@/forum/components/AppWrapper";
 import { AppBackground } from "@/forum/components/AppBackground";
@@ -51,7 +52,17 @@ const EditPage = () => {
       <Box sx={{ position: "relative", px: 3, py: 1 }}>
         <Box sx={{ position: "absolute", inset: 0, bgcolor: "divider", opacity: 0.35, pointerEvents: "none" }} />
 
-        <Button variant="outlined" startIcon={<ArrowBackIosRoundedIcon />} size="small" href={routes.forum_home}>
+        <Button
+          variant="contained"
+          disableElevation
+          startIcon={<ArrowBackIosRoundedIcon />}
+          size="small"
+          href={`${routes.forum_post}?postId=${postId}`}
+          sx={{ mr: 1 }}
+        >
+          {isMd ? "返回貼文" : "貼文"}
+        </Button>
+        <Button variant="outlined" startIcon={<HomeRoundedIcon />} size="small" href={routes.forum_home}>
           {isMd ? "返回首頁" : "首頁"}
         </Button>
       </Box>

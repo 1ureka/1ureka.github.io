@@ -22,6 +22,7 @@ import { getFormIsError } from "@/forum/utils/form";
 import { toEntries } from "@/utils/typedBuiltins";
 import { uniqueByField } from "@/utils/array";
 import { formatFileSize } from "@/utils/formatters";
+import { routes } from "@/routes";
 
 const formElementsSchema = {
   title: z.string().trim().min(1, "標題不能為空").max(100, "標題最多 100 個字元"),
@@ -108,7 +109,7 @@ const NewPost = ({ mode = "create", initialValues = {}, postId }: NewPostProps) 
         if (!postId) return console.error("編輯模式需要提供 postId");
         const result = await updatePost({ ...payload, id: postId });
         if (result === null) {
-          window.location.reload();
+          window.location.href = `${routes.forum_post}?postId=${postId}`;
           return;
         }
         if (result.error) console.error(`貼文更新失敗：${result.error}`);
