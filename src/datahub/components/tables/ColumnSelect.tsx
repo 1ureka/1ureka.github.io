@@ -96,9 +96,9 @@ const ColumnSelect = ({ columns }: { columns: (TableColumnInfo & { hidden: boole
 
           <Divider sx={{ my: 0.5 }} />
 
-          {columns.map((column, i) => (
-            <ListItem key={i} disablePadding>
-              <ListItemButton role={undefined} onClick={createToggleHandler(i)} dense>
+          {columns.map((column) => (
+            <ListItem key={column.cid} disablePadding>
+              <ListItemButton role={undefined} onClick={createToggleHandler(column.cid)} dense>
                 <Checkbox {...ListCheckBoxProps} checked={!column.hidden} />
                 <ListItemText
                   sx={{ display: "flex", width: 1, gap: smSpace, justifyContent: "space-between", my: 0.5 }}

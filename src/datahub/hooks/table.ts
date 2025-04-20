@@ -8,6 +8,9 @@ import { z } from "zod";
 
 const IntegerArraySchema = z.array(z.number().int());
 
+/**
+ * 給 TableSelect(提供狀態與函數) 與 useTableColumns(提供狀態) 使用
+ */
 const useSelectedTable = () => {
   const { data, isFetching } = useObjects({ types: ["table", "view"] });
   const { searchParams, updateSearchParams } = useUrl();
@@ -42,6 +45,9 @@ const useSelectedTable = () => {
   return { data, selected: data && data.length > 0 ? data[index] : null, handleChange, isFetching };
 };
 
+/**
+ * 給 ColumnSelect(提供函數) 與 useTableColumns(提供狀態) 使用
+ */
 const useHiddenColumns = () => {
   const { searchParams, updateSearchParams } = useUrl();
   const value = searchParams.get("hiddenColumns") ?? null;
@@ -66,8 +72,8 @@ const useHiddenColumns = () => {
   );
 
   const createToggleHandler = useCallback(
-    (index: number) => () => {
-      const newHiddenColumns = toggleSet(hiddenColumns, index);
+    (cid: number) => () => {
+      const newHiddenColumns = toggleSet(hiddenColumns, cid);
       updateSearchParams({ hiddenColumns: JSON.stringify(newHiddenColumns) }, { skipTransition: true });
     },
     [hiddenColumns, updateSearchParams]
@@ -76,6 +82,9 @@ const useHiddenColumns = () => {
   return { hiddenColumns, createToggleAllColumns, createToggleHandler };
 };
 
+/**
+ * 給 ColumnSelect(提供狀態) 與 TableHeader(提供狀態) 使用
+ */
 const useTableColumns = () => {
   const { selected, isFetching: isFetchingObj } = useSelectedTable();
   const { data: tableInfo, isFetching: isFetchingInfo } = useTableInfo({ types: ["table", "view"] });
@@ -110,6 +119,9 @@ const useTableColumns = () => {
   return { isFetching, columnsForSelect, columnsForTable };
 };
 
+/**
+ * 給 TableHeader(提供函數狀態) 使用
+ */
 const useSort = (length: number | null) => {
   const { searchParams, updateSearchParams } = useUrl();
 
