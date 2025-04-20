@@ -1,4 +1,4 @@
-import { Box, ButtonBase, Chip, Stack, Typography } from "@mui/material";
+import { Box, Button, Chip, Stack, Typography } from "@mui/material";
 import StorageRoundedIcon from "@mui/icons-material/StorageRounded";
 import BorderAllRoundedIcon from "@mui/icons-material/BorderAllRounded";
 import ViewColumnRoundedIcon from "@mui/icons-material/ViewColumnRounded";
@@ -9,6 +9,7 @@ import type { Highlight } from "@/hooks/fuse";
 import { memo } from "react";
 import { useUrl } from "@/hooks/url";
 import { routes } from "@/routes";
+import { ellipsisSx } from "@/utils/commonSx";
 
 const transition = "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)";
 const hightlightColor = "color-mix(in srgb, var(--mui-palette-primary-main) 70%, var(--mui-palette-text-primary) 30%)";
@@ -62,24 +63,27 @@ const ResultButton = memo(({ id, variant, primary, secondary, type }: ResultButt
   }
 
   return (
-    <ButtonBase
+    <Button
       onClick={handleClick}
+      color="inherit"
       sx={{
         display: "grid",
         gap: 2.5,
         alignItems: "center",
         gridTemplateColumns: "auto 1fr auto auto",
         borderRadius: 2,
+        textTransform: "none",
+        lineHeight: undefined,
         "&:hover .hover-icon": { opacity: 1 },
         "&:hover": { bgcolor: "action.hover" },
         transition,
         p: 1,
       }}
     >
-      <Box>{iconMap[variant]}</Box>
+      <Box sx={{ display: "grid", placeItems: "center" }}>{iconMap[variant]}</Box>
 
       <Stack sx={{ gap: 0.5, textAlign: "left" }}>
-        <Typography variant="subtitle1">
+        <Typography variant="subtitle1" sx={ellipsisSx}>
           {primary.map(({ text, highlight }, i) => (
             <Typography
               key={i}
@@ -91,7 +95,7 @@ const ResultButton = memo(({ id, variant, primary, secondary, type }: ResultButt
             </Typography>
           ))}
         </Typography>
-        <Typography variant="body2" sx={{ color: "text.secondary" }}>
+        <Typography variant="body2" sx={{ color: "text.secondary", ...ellipsisSx }}>
           {secondary.map(({ text, highlight }, i) => (
             <Typography
               key={i}
@@ -105,12 +109,12 @@ const ResultButton = memo(({ id, variant, primary, secondary, type }: ResultButt
         </Typography>
       </Stack>
 
-      <Box className="hover-icon" sx={{ opacity: 0, transition }}>
+      <Box className="hover-icon" sx={{ display: "grid", placeItems: "center", opacity: 0, transition }}>
         <ShortcutRoundedIcon sx={{ color: "text.secondary", scale: "-1" }} />
       </Box>
 
       <Chip variant="filled" label={type} sx={{ textTransform: "uppercase" }} />
-    </ButtonBase>
+    </Button>
   );
 });
 
