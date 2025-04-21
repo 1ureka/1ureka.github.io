@@ -51,7 +51,9 @@ const HeroCTA = () => (
           transition: "all 0.2s",
         }}
       >
-        <ArrowForwardRoundedIcon sx={{ display: "block", color: "primary.main", width: iconSize, height: iconSize }} />
+        <ArrowForwardRoundedIcon
+          sx={{ display: "block", color: "primary.main", width: iconSize, height: iconSize, rotate: "90deg" }}
+        />
       </Box>
     </Box>
   </Button>
