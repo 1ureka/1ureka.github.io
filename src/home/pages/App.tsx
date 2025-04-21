@@ -40,28 +40,30 @@ function App() {
           <DemoBlocks />
         </Stack>
 
-        <Box sx={{ bgcolor: "coloredBg.main" }}>
-          <Box
-            sx={{
-              borderRadius: "2rem",
-              borderBottomLeftRadius: 0,
-              borderBottomRightRadius: 0,
-              border: "5px dashed",
-              borderBottom: 0,
-              borderColor: "border.main",
-              borderLeft: "5px solid transparent",
-              borderRight: "5px solid transparent",
-              bgcolor: "background.default",
-              p: lgSpace,
-              pb: smSpace,
-            }}
-          >
-            <ListControlBar />
+        <Box sx={{ minHeight: "100dvh" }}>
+          <Box sx={{ bgcolor: "coloredBg.main" }}>
+            <Box
+              sx={{
+                borderRadius: "2rem",
+                borderBottomLeftRadius: 0,
+                borderBottomRightRadius: 0,
+                border: "5px dashed",
+                borderBottom: 0,
+                borderColor: "border.main",
+                borderLeft: "5px solid transparent",
+                borderRight: "5px solid transparent",
+                bgcolor: "background.default",
+                p: lgSpace,
+                pb: smSpace,
+              }}
+            >
+              <ListControlBar />
+            </Box>
           </Box>
-        </Box>
 
-        <Box sx={{ p: lgSpace, pt: smSpace }}>
-          <ProjectList />
+          <Box sx={{ p: lgSpace, pt: smSpace }}>
+            <ProjectList />
+          </Box>
         </Box>
       </Box>
     </AppWrapper>
