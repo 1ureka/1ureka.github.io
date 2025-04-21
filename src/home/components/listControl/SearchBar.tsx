@@ -32,6 +32,7 @@ const SearchBar = ({ position, fullWidth }: { position: "left" | "right" | "mid"
 
   return (
     <TextField
+      id="search"
       label="搜尋"
       variant="outlined"
       size="small"

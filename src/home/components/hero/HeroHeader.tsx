@@ -6,11 +6,7 @@ import { GithubIcon } from "@/home/components/GithubIcon";
 import { ThemeSwitch } from "../ThemeSwitch";
 import { lgSpace, mdSpace } from "@/home/utils/commonSx";
 
-const HeaderIconButton = ({ children }: { children: React.ReactNode }) => (
-  <IconButton centerRipple={false} sx={{ borderRadius: 2 }}>
-    {children}
-  </IconButton>
-);
+const iconButtonProps = { centerRipple: false, sx: { borderRadius: 2 } };
 
 const HeroHeader = () => (
   <Box sx={{ p: mdSpace, px: lgSpace, bgcolor: "coloredBg.main" }}>
@@ -21,13 +17,13 @@ const HeroHeader = () => (
       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
         <ThemeSwitch />
 
-        <HeaderIconButton>
+        <IconButton {...iconButtonProps} href="#search">
           <SearchRoundedIcon />
-        </HeaderIconButton>
+        </IconButton>
 
-        <HeaderIconButton>
+        <IconButton {...iconButtonProps} href="https://github.com/1ureka" target="_blank" rel="noopener noreferrer">
           <GithubIcon />
-        </HeaderIconButton>
+        </IconButton>
       </Box>
     </Box>
   </Box>
