@@ -76,44 +76,26 @@ export const ProjectCard = ({
                 </Typography>
               ))}
             </Typography>
-            {isSm && (
-              <Typography variant="body2" component="p" sx={{ color: "text.secondary" }}>
-                {description.map(({ text, highlight }, i) => (
-                  <Typography
-                    key={i}
-                    variant="body2"
-                    component="span"
-                    sx={{
-                      color: highlight ? `color-mix(in srgb, yellow, var(--mui-palette-text-secondary))` : undefined,
-                    }}
-                  >
-                    {text}
-                  </Typography>
-                ))}
-              </Typography>
-            )}
           </Box>
         </Box>
 
-        {!isSm && (
-          <Typography variant="body2" component="p" sx={{ color: "text.secondary", p: 2, pt: 0 }}>
-            {description.map(({ text, highlight }, i) => (
-              <Typography
-                key={i}
-                variant="body2"
-                component="span"
-                sx={{
-                  color: highlight ? `color-mix(in srgb, ${color}, var(--mui-palette-text-secondary))` : undefined,
-                }}
-              >
-                {text}
-              </Typography>
-            ))}
-          </Typography>
-        )}
+        <Typography variant="body2" component="p" sx={{ color: "text.secondary", p: 2, pt: 0 }}>
+          {description.map(({ text, highlight }, i) => (
+            <Typography
+              key={i}
+              variant="body2"
+              component="span"
+              sx={{
+                color: highlight ? `color-mix(in srgb, ${color}, var(--mui-palette-text-secondary))` : undefined,
+              }}
+            >
+              {text}
+            </Typography>
+          ))}
+        </Typography>
 
         <Stack sx={{ alignItems: "center", flex: 1, gap: 1 }}>
-          {[...Array(2)].map((_, index) => (
+          {[...Array(1)].map((_, index) => (
             <Box
               key={index}
               sx={{ display: "flex", flex: 1 }}
