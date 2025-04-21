@@ -27,6 +27,5 @@
   scrollbar-width: thin;
   scrollbar-color: gray transparent;
   scroll-behavior: smooth;
-  scroll-margin-top: 50px;
   transition: background-color 0.2s ease-in-out;
 }
