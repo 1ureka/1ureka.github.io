@@ -50,13 +50,14 @@ const theme = createTheme({
 });
 
 const useResponsiveFontSize = () => {
+  const isXs = useMediaQuery("(min-width:450px)");
   const isSm = useMediaQuery(theme.breakpoints.up("sm"));
 
   useEffect(() => {
     document.documentElement.style.fontSize = isSm ? "16px" : "14px";
   }, [isSm]);
 
-  return { isSm };
+  return { isXs, isSm };
 };
 
 export { theme, useResponsiveFontSize };
