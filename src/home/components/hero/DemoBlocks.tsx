@@ -5,6 +5,7 @@ import { mdSpace, parallaxItemSx, smSpace } from "@/home/utils/commonSx";
 import { ToastDemo } from "../demo/ToastDemo";
 import { ChartDemo } from "../demo/ChartDemo";
 import { PickerDemo } from "../demo/PickerDemo";
+import { PostDemo } from "../demo/PostDemo";
 
 const demoBlockSx: BoxProps["sx"] = {
   p: smSpace,
@@ -34,7 +35,7 @@ const Absolute = ({ children }: { children: React.ReactNode }) => (
 );
 
 const DimensionProvider = ({ children }: { children: React.ReactNode }) => (
-  <Box sx={{ minWidth: 1350, width: "100dvw", maxWidth: 1700, height: 700 }}>{children}</Box>
+  <Box sx={{ minWidth: 1400, width: "100dvw", maxWidth: 1750, height: 700 }}>{children}</Box>
 );
 
 const GridLayout = () => (
@@ -56,7 +57,9 @@ const GridLayout = () => (
       <DemoPaper sx={{ width: 0.6, ...parallaxItemSx(-50) }}>
         <PickerDemo />
       </DemoPaper>
-      <DemoPaper sx={{ width: 1, height: 200 }}></DemoPaper>
+      <DemoPaper sx={{ width: 1 }}>
+        <PostDemo />
+      </DemoPaper>
     </Stack>
 
     <Box sx={{ ...demoBlockSx, display: "grid", height: 0.95 }}>
