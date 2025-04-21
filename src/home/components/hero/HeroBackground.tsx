@@ -6,7 +6,7 @@ const move = keyframes({
 });
 
 const HeroBackground = () => (
-  <Box sx={{ position: "absolute", inset: 0, overflow: "hidden", pointerEvents: "none" }}>
+  <Box sx={{ position: "absolute", inset: 0, overflow: "visible", pointerEvents: "none" }}>
     <Box
       sx={{
         position: "absolute",
