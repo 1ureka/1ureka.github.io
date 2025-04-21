@@ -1,5 +1,5 @@
 import { Box, Stack } from "@mui/material";
-import { smSpace, lgSpace, parallaxItemSx, parallaxScrollContainerSx } from "../utils/commonSx";
+import { smSpace, lgSpace, viewTimelineSx } from "../utils/commonSx";
 import { AppWrapper } from "../components/AppWrapper";
 
 import { HeroTitle } from "../components/hero/HeroTitle";
@@ -20,7 +20,7 @@ const PositionTitleAndCTA = ({ children }: { children: React.ReactNode }) => (
       height: "57.5dvh",
       display: "grid",
       placeItems: "center",
-      ...parallaxItemSx(-100),
+      ...viewTimelineSx({ targetView: "--hero", range: "exit-crossing", from: 0, to: -150 }),
     }}
   >
     <Box sx={{ pt: 10, textAlign: "center" }}>{children}</Box>
@@ -30,41 +30,70 @@ const PositionTitleAndCTA = ({ children }: { children: React.ReactNode }) => (
 function App() {
   return (
     <AppWrapper>
-      <Box sx={parallaxScrollContainerSx}>
+      <Box
+        sx={{
+          position: "relative",
+          height: "100dvh",
+          width: "100dvw",
+          overflowY: "auto",
+          overflowX: "hidden",
+          bgcolor: "coloredBg.main",
+        }}
+      >
         <HeroBackground />
 
-        <PositionTitleAndCTA>
-          <HeroTitle />
-          <HeroCTA />
-        </PositionTitleAndCTA>
+        <Stack
+          id="hero"
+          sx={{
+            position: "relative",
+            minHeight: "100dvh",
+            viewTimelineName: "--hero",
+            justifyContent: "space-between",
+          }}
+        >
+          <PositionTitleAndCTA>
+            <HeroTitle />
+            <HeroCTA />
+          </PositionTitleAndCTA>
 
-        <Stack sx={{ minHeight: "100dvh", justifyContent: "space-between", bgcolor: "coloredBg.main" }}>
           <HeroHeader />
           <DemoBlocks />
         </Stack>
 
-        <Box sx={{ minHeight: "100dvh" }}>
-          <Box sx={{ bgcolor: "coloredBg.main" }}>
-            <Box
-              sx={{
-                borderRadius: "2rem",
-                borderBottomLeftRadius: 0,
-                borderBottomRightRadius: 0,
-                border: "5px dashed",
-                borderBottom: 0,
-                borderColor: "border.main",
-                borderLeft: "5px solid transparent",
-                borderRight: "5px solid transparent",
-                bgcolor: "background.default",
-                p: lgSpace,
-                pb: smSpace,
-              }}
-            >
-              <ListControlBar />
-            </Box>
+        <Box
+          id="projects"
+          sx={{
+            position: "relative",
+            minHeight: "100dvh",
+            viewTimelineName: "--projects",
+            bgcolor: "background.default",
+            borderRadius: "2rem",
+            borderBottomLeftRadius: 0,
+            borderBottomRightRadius: 0,
+            border: "5px dashed",
+            borderBottom: 0,
+            borderColor: "border.main",
+            borderLeft: "5px solid transparent",
+            borderRight: "5px solid transparent",
+          }}
+        >
+          <Box
+            sx={{
+              p: lgSpace,
+              pb: smSpace,
+              ...viewTimelineSx({ targetView: "--projects", range: "entry", from: 50, to: 0 }),
+            }}
+          >
+            <ListControlBar />
           </Box>
 
-          <Box sx={{ p: lgSpace, pt: smSpace }}>
+          <Box
+            sx={{
+              p: lgSpace,
+              pt: smSpace,
+              ...viewTimelineSx({ targetView: "--projects", range: "entry", from: 150, to: 0 }),
+            }}
+          >
             <ProjectList />
           </Box>
         </Box>
