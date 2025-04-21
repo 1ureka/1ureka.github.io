@@ -1,5 +1,4 @@
-import { createTheme, useMediaQuery } from "@mui/material";
-import { useEffect } from "react";
+import { createTheme } from "@mui/material";
 import "@/home/utils/app.css";
 
 declare module "@mui/material/styles" {
@@ -8,9 +7,11 @@ declare module "@mui/material/styles" {
   }
   interface Palette {
     coloredBg: Palette["primary"];
+    border: Palette["primary"];
   }
   interface PaletteOptions {
     coloredBg?: PaletteOptions["primary"];
+    border?: PaletteOptions["primary"];
   }
 }
 
@@ -29,6 +30,7 @@ const theme = createTheme({
         primary: { main: "#e783ad", contrastText: "#fff" },
         secondary: { main: "#e783ad90", dark: "color-mix(in srgb, #e783ad 50%, var(--mui-palette-text-primary) 50%)" },
         coloredBg: { main: "#ffd6e7" },
+        border: { main: "transparent" },
       },
     },
     dark: {
@@ -40,6 +42,7 @@ const theme = createTheme({
         secondary: { main: "#e783ad90", dark: "color-mix(in srgb, #e783ad 50%, var(--mui-palette-text-primary) 50%)" },
         background: { default: "#202020", paper: "#202020" },
         coloredBg: { main: "var(--mui-palette-background-default)" },
+        border: { main: "var(--mui-palette-divider)" },
       },
     },
   },
@@ -49,15 +52,4 @@ const theme = createTheme({
   spacing: "0.5rem",
 });
 
-const useResponsiveFontSize = () => {
-  const isXs = useMediaQuery("(min-width:450px)");
-  const isSm = useMediaQuery(theme.breakpoints.up("sm"));
-
-  useEffect(() => {
-    document.documentElement.style.fontSize = isSm ? "16px" : "14px";
-  }, [isSm]);
-
-  return { isXs, isSm };
-};
-
-export { theme, useResponsiveFontSize };
+export { theme };
