@@ -1,9 +1,10 @@
 import { Box, Paper, Stack } from "@mui/material";
 import type { BoxProps, PaperProps } from "@mui/material";
 
+import { mdSpace, parallaxItemSx, smSpace } from "@/home/utils/commonSx";
 import { ToastDemo } from "../demo/ToastDemo";
 import { ChartDemo } from "../demo/ChartDemo";
-import { mdSpace, parallaxItemSx, smSpace } from "@/home/utils/commonSx";
+import { PickerDemo } from "../demo/PickerDemo";
 
 const demoBlockSx: BoxProps["sx"] = {
   p: smSpace,
@@ -33,7 +34,7 @@ const Absolute = ({ children }: { children: React.ReactNode }) => (
 );
 
 const DimensionProvider = ({ children }: { children: React.ReactNode }) => (
-  <Box sx={{ minWidth: 1260, width: "100dvw", maxWidth: 1700, height: 700 }}>{children}</Box>
+  <Box sx={{ minWidth: 1350, width: "100dvw", maxWidth: 1700, height: 700 }}>{children}</Box>
 );
 
 const GridLayout = () => (
@@ -52,8 +53,10 @@ const GridLayout = () => (
     </Stack>
 
     <Stack sx={{ ...demoBlockSx, alignItems: "flex-end", justifyContent: "flex-end", gap: smSpace }}>
-      <DemoPaper sx={{ width: 0.6, height: 300, ...parallaxItemSx(-50) }} />
-      <DemoPaper sx={{ width: 1, height: 200 }} />
+      <DemoPaper sx={{ width: 0.6, ...parallaxItemSx(-50) }}>
+        <PickerDemo />
+      </DemoPaper>
+      <DemoPaper sx={{ width: 1, height: 200 }}></DemoPaper>
     </Stack>
 
     <Box sx={{ ...demoBlockSx, display: "grid", height: 0.95 }}>
