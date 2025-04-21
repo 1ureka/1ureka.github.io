@@ -101,13 +101,7 @@ const ProjectList = () => {
 
   return (
     <Box
-      sx={{
-        mt: 5,
-        display: "grid",
-        gridTemplateColumns: { xs: "1fr", sm: "repeat(auto-fill, minmax(500px, 1fr))" },
-        gap: 2,
-        pb: 5,
-      }}
+      sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "repeat(auto-fill, minmax(500px, 1fr))" }, gap: 2 }}
     >
       <AnimatePresence initial={false}>
         {filtered.map(({ time, title, description, highlights, ...project }) => (
