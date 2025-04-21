@@ -46,7 +46,7 @@ function App() {
           id="hero"
           sx={{
             position: "relative",
-            minHeight: "100dvh",
+            minHeight: "max(100dvh, 850px)",
             viewTimelineName: "--hero",
             justifyContent: "space-between",
           }}
