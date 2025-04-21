@@ -1,127 +1,70 @@
-import { useEffect } from "react";
-import { Box, Button, CssBaseline, Divider, Stack, ThemeProvider, Typography, useMediaQuery } from "@mui/material";
-import type { BoxProps } from "@mui/material";
+import { Box, Stack } from "@mui/material";
+import { smSpace, lgSpace, parallaxItemSx, parallaxScrollContainerSx } from "../utils/commonSx";
+import { AppWrapper } from "../components/AppWrapper";
 
-import "@/home/utils/app.css";
-import { Toaster } from "@/components/Toast";
-import { theme } from "@/home/utils/theme";
+import { HeroTitle } from "../components/hero/HeroTitle";
+import { HeroCTA } from "../components/hero/HeroCTA";
+import { HeroHeader } from "../components/hero/HeroHeader";
+import { DemoBlocks } from "../components/hero/DemoBlocks";
 
-import { GithubIcon } from "@/home/components/GithubIcon";
-import { ThemeButtonGroup } from "@/home/components/ThemeButtonGroup";
-import { ListControlBar } from "@/home/components/ListControlBar";
-import { ProjectList } from "../components/ProjectList";
+import { ListControlBar } from "@/home/components/listControl/ListControlBar";
+import { ProjectList } from "@/home/components/list/ProjectList";
 
-const Title = () => (
-  <>
-    <Box sx={{ display: "flex", alignItems: "flex-end" }}>
-      <Typography
-        variant="h2"
-        component="h1"
-        sx={{ fontFamily: "timemachine-wa", "&:first-letter": { color: "primary.main" } }}
-      >
-        1ureka
-      </Typography>
-
-      {/* dot */}
-      <Box sx={{ position: "relative", display: "grid", placeItems: "center" }}>
-        <Box sx={{ p: 1, borderRadius: 1, bgcolor: "primary.light", m: 2 }} />
-        <Box
-          sx={{ p: 2, borderRadius: 1, bgcolor: "primary.main", opacity: 0.3, position: "absolute", rotate: "45deg" }}
-        />
-      </Box>
-    </Box>
-    <Typography variant="h2" component="h1" sx={{ fontFamily: "timemachine-wa" }}>
-      Space
-    </Typography>
-  </>
-);
-
-const Actions = ({ sx, ...props }: BoxProps) => (
-  <Box sx={{ color: "text.secondary", ...sx }} {...props}>
-    <Button
-      color="inherit"
-      variant="outlined"
-      sx={{ borderRadius: 2, display: "flex", alignItems: "center", gap: 1, p: 1.5, mb: 2 }}
-      href="https://github.com/1ureka"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      <GithubIcon fontSize="large" />
-      <Typography variant="h6" component="span">
-        GitHub
-      </Typography>
-    </Button>
-
-    <ThemeButtonGroup />
+const PositionTitleAndCTA = ({ children }: { children: React.ReactNode }) => (
+  <Box
+    sx={{
+      position: "absolute",
+      inset: "0 0 auto 0",
+      minHeight: "fit-content",
+      height: "57.5dvh",
+      display: "grid",
+      placeItems: "center",
+      ...parallaxItemSx(-100),
+    }}
+  >
+    <Box sx={{ pt: 10, textAlign: "center" }}>{children}</Box>
   </Box>
 );
 
 function App() {
-  const isMd = useMediaQuery(theme.breakpoints.up("md"));
-  const isSm = useMediaQuery(theme.breakpoints.up("sm"));
-  useEffect(() => {
-    document.documentElement.style.fontSize = isSm ? "16px" : "14px";
-  }, [isSm]);
-
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Toaster />
+    <AppWrapper>
+      <Box sx={parallaxScrollContainerSx}>
+        <PositionTitleAndCTA>
+          <HeroTitle />
+          <HeroCTA />
+        </PositionTitleAndCTA>
 
-      <Box
-        sx={{
-          p: { xs: 2.5, sm: 3.5, md: 5 },
-          display: "flex",
-          flexDirection: { xs: "column", md: "row" },
-          height: "100dvh",
-          overflowY: "auto",
-          overflowX: "hidden",
-        }}
-      >
-        <Stack
-          sx={{
-            position: { xs: "relative", md: "sticky" },
-            top: 0,
-            flexDirection: { xs: "row", md: "column" },
-            justifyContent: "space-between",
-            height: 1,
-            width: { xs: 1, md: "13rem", lg: "15rem" },
-          }}
-        >
-          <Box>
-            <Title />
-            {isMd && (
-              <Typography variant="body1" component="p" sx={{ color: "text.primary", mt: 2, opacity: 0.9 }}>
-                這是一個模組化的 UI/UX
-                展示平台，透過各種類型的樣板，探索多種真實場景中的介面開發與使用者流程設計。專案將持續打磨，期盼從視覺層次、結構邏輯到互動細節，逐步走向更完整、細膩且具啟發性的使用體驗。
-              </Typography>
-            )}
-          </Box>
-
-          {isSm && <Actions />}
+        <Stack sx={{ minHeight: "100dvh", justifyContent: "space-between", bgcolor: "coloredBg.main" }}>
+          <HeroHeader />
+          <DemoBlocks />
         </Stack>
 
-        {!isMd && (
-          <Typography variant="body1" component="p" sx={{ color: "text.primary", mt: 2, opacity: 0.9 }}>
-            這是一個模組化的 UI/UX
-            展示平台，透過各種類型的樣板，探索多種真實場景中的介面開發與使用者流程設計。專案將持續打磨，期盼從視覺層次、結構邏輯到互動細節，逐步走向更完整、細膩且具啟發性的使用體驗。
-          </Typography>
-        )}
+        <Box sx={{ bgcolor: "coloredBg.main" }}>
+          <Box
+            sx={{
+              borderRadius: "2rem",
+              borderBottomLeftRadius: 0,
+              borderBottomRightRadius: 0,
+              border: "5px dashed",
+              borderBottom: 0,
+              borderColor: "border.main",
+              borderLeft: "5px solid transparent",
+              borderRight: "5px solid transparent",
+              bgcolor: "background.default",
+              p: lgSpace,
+              pb: smSpace,
+            }}
+          >
+            <ListControlBar />
+          </Box>
+        </Box>
 
-        {!isSm && <Actions sx={{ mt: 2 }} />}
-
-        {isMd ? (
-          <Divider orientation="vertical" flexItem sx={{ mx: 5 }} />
-        ) : (
-          <Divider orientation="horizontal" flexItem sx={{ my: 3 }} />
-        )}
-
-        <Box component="main" sx={{ flex: 1 }}>
-          <ListControlBar />
+        <Box sx={{ p: lgSpace, pt: smSpace }}>
           <ProjectList />
         </Box>
       </Box>
-    </ThemeProvider>
+    </AppWrapper>
   );
 }
 
