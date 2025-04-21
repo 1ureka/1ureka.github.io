@@ -4,29 +4,20 @@ export const smSpace = { xs: 1, sm: 1.5 };
 export const mdSpace = { xs: 2, sm: 3.5 };
 export const lgSpace = { xs: 2.5, sm: 5 };
 
-export const parallaxScrollContainerSx = {
-  position: "relative",
-  height: "100dvh",
-  overflowY: "auto",
-  overflowX: "hidden",
-  scrollTimelineName: "--scroll",
-  scrollTimelineAxis: "block",
-} as const;
+type GenerateKeyFrameParams = { from?: number; to?: number };
+const generateKeyframes = ({ from, to }: GenerateKeyFrameParams) =>
+  keyframes({
+    "0%": { transform: `translateY(${(from ?? 0) * 2}px)` },
+    "100%": { transform: `translateY(${(to ?? 0) * 2}px)` },
+  });
 
-const parallaxItemKeyframes = (offset: number) => keyframes`
-  from {
-    transform: translateY(0);
-  }
-  to {
-    transform: translateY(${offset}px);
-  }
-`;
-
-export const parallaxItemSx = (offset: number) => {
-  return {
-    animation: `${parallaxItemKeyframes(offset)} linear`,
-    animationTimeline: "--scroll",
-    animationRange: "entry 0% exit 100%",
-    willChange: "transform",
-  } as const;
-};
+type ViewTimelineSxParams = { targetView: `--${string}`; range?: string } & GenerateKeyFrameParams;
+export const viewTimelineSx = ({ targetView, range = "entry", ...params }: ViewTimelineSxParams) =>
+  ({
+    animationTimeline: targetView,
+    animationName: `${generateKeyframes(params ?? {})}`,
+    animationFillMode: "both",
+    animationDuration: "1ms",
+    animationTimingFunction: "linear",
+    animationRange: range,
+  } as const);
