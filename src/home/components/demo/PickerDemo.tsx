@@ -197,7 +197,7 @@ const TopicSelectContent = ({ type, onConfirm }: SelectContentProps) => {
 
     if (type === "add") return [self, ...others];
     return others;
-  }, [tags, userTags, type, searchTags, searchUserTags, value]);
+  }, [type, searchTags, searchUserTags, value]);
 
   const disableConfirm =
     value.trim() === "" || (type === "query" && !tags.map(({ name }) => name).includes(value.trim()));
