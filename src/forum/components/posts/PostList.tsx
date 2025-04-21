@@ -49,7 +49,7 @@ const PostList = () => {
     <Stack sx={{ alignItems: "stretch", mb: 1.5 }}>
       {data.pages.map((page) => page.posts.map((postId) => <ExpandedPost key={postId} postId={postId} />))}
       {isFetchingNextPage && (
-        <Stack sx={{ alignItems: "stretch", mt: 1.5 }}>
+        <Stack sx={{ alignItems: "stretch" }}>
           {[...Array(3)].map((_, i) => (
             <ExpandedLoadingPost key={i} />
           ))}
