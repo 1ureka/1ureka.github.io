@@ -4,14 +4,14 @@ import DataExplorationRoundedIcon from "@mui/icons-material/DataExplorationRound
 import CameraRoundedIcon from "@mui/icons-material/CameraRounded";
 
 import { AnimatePresence } from "motion/react";
-import { ProjectCard, type ProjectCardProps } from "@/home/components/ProjectCard";
+import { ProjectCard, type ProjectCardProps } from "./ProjectCard";
 
 import { sortObjectArray } from "@/utils/array";
 import { routes } from "@/routes";
 import { useUrl } from "@/hooks/url";
 import { useSearch, type Highlight } from "@/hooks/fuse";
 import { useMemo } from "react";
-import { useOrderState, useFilterState, filterSchema } from "../hooks/useControl";
+import { useOrderState, useFilterState, filterSchema } from "@/home/hooks/useControl";
 import { z } from "zod";
 
 type Project = Omit<ProjectCardProps, "title" | "description"> & {

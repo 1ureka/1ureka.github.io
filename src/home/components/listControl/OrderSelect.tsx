@@ -4,7 +4,7 @@ import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
 import ArrowUpwardRoundedIcon from "@mui/icons-material/ArrowUpwardRounded";
 
 import { fromEntries } from "@/utils/typedBuiltins";
-import { useOrderState } from "../hooks/useControl";
+import { useOrderState } from "@/home/hooks/useControl";
 
 const orderByOptions = [
   { value: "time", label: "時間" },

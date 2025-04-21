@@ -5,7 +5,7 @@ import DesktopWindowsRoundedIcon from "@mui/icons-material/DesktopWindowsRounded
 import DevicesRoundedIcon from "@mui/icons-material/DevicesRounded";
 
 import { fromEntries } from "@/utils/typedBuiltins";
-import { useFilterState } from "../hooks/useControl";
+import { useFilterState } from "@/home/hooks/useControl";
 
 const filterOptions = [
   {
