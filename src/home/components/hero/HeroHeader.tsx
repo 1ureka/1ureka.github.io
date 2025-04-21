@@ -9,7 +9,7 @@ import { lgSpace, mdSpace } from "@/home/utils/commonSx";
 const iconButtonProps = { centerRipple: false, sx: { borderRadius: 2 } };
 
 const HeroHeader = () => (
-  <Box sx={{ p: mdSpace, px: lgSpace, bgcolor: "coloredBg.main" }}>
+  <Box sx={{ position: "relative", p: mdSpace, px: lgSpace }}>
     <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
         <AssistantRoundedIcon color="primary" fontSize="large" />
@@ -17,7 +17,16 @@ const HeroHeader = () => (
       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
         <ThemeSwitch />
 
-        <IconButton {...iconButtonProps} href="#search">
+        <IconButton
+          {...iconButtonProps}
+          href="#projects"
+          onClick={(e) => {
+            e.preventDefault();
+            document.querySelector("#projects")?.scrollIntoView({ behavior: "smooth" });
+            const search = document.querySelector("#search") as HTMLInputElement | null;
+            search?.focus({ preventScroll: true });
+          }}
+        >
           <SearchRoundedIcon />
         </IconButton>
 
