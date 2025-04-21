@@ -5,6 +5,7 @@ import { AppWrapper } from "../components/AppWrapper";
 import { HeroTitle } from "../components/hero/HeroTitle";
 import { HeroCTA } from "../components/hero/HeroCTA";
 import { HeroHeader } from "../components/hero/HeroHeader";
+import { HeroBackground } from "../components/hero/HeroBackground";
 import { DemoBlocks } from "../components/hero/DemoBlocks";
 
 import { ListControlBar } from "@/home/components/listControl/ListControlBar";
@@ -30,6 +31,8 @@ function App() {
   return (
     <AppWrapper>
       <Box sx={parallaxScrollContainerSx}>
+        <HeroBackground />
+
         <PositionTitleAndCTA>
           <HeroTitle />
           <HeroCTA />
