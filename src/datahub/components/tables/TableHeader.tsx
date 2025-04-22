@@ -96,15 +96,15 @@ const TableHeader = () => {
           </TableCell>
 
           {columnsForTable.map((column, i) => {
-            const { cid, name, type } = column;
+            const { cid, name, type, align } = column;
             const isPk = column.pk >= 1;
-            const align = type !== "text" && !isPk ? "flex-end" : undefined;
             const active = orderBy === i;
             const scale = active ? (order === "desc" ? 1 : -1) : -1;
+            const justifyContent = align === "right" ? "flex-end" : "flex-start";
 
             return (
               <TableCell key={cid} sx={{ border: "none", minWidth: "10rem" }}>
-                <Box sx={{ display: "flex", alignItems: "center", justifyContent: align }}>
+                <Box sx={{ display: "flex", alignItems: "center", justifyContent }}>
                   <TableSortLabel
                     active={active}
                     direction={active ? order : "asc"}

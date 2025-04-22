@@ -108,7 +108,13 @@ const useTableColumns = () => {
     if (!columnsForSelect) return null;
 
     const filtered = columnsForSelect.filter((column) => !column.hidden);
-    return filtered.toSorted((a, b) => {
+    const result = filtered.map(({ hidden, ...column }) => {
+      const isPk = column.pk >= 1;
+      const align = (column.type !== "text" && !isPk ? "right" : "left") as "left" | "right";
+      return { ...column, align };
+    });
+
+    return result.toSorted((a, b) => {
       if (a.pk !== b.pk) return b.pk - a.pk;
       if (a.type === "text" && b.type !== "text") return -1;
       if (a.type !== "text" && b.type === "text") return 1;
