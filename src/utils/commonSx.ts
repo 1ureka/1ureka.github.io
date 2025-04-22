@@ -11,3 +11,9 @@ export const ellipsisSx = {
   textOverflow: "ellipsis",
   wordBreak: "break-all",
 } as const;
+
+export const generateMuiColorMix = (color1: string, color2: string, percentage: number) => {
+  return `color-mix(in srgb, var(--mui-palette-${color1}) ${percentage}%, var(--mui-palette-${color2}) ${
+    100 - percentage
+  }%)`;
+};
