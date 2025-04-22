@@ -1,21 +1,10 @@
-import {
-  Box,
-  Button,
-  ButtonProps,
-  Divider,
-  Stack,
-  Table,
-  TableBody,
-  TableContainer,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { Box, Button, ButtonProps, Divider, Stack, Tooltip, Typography } from "@mui/material";
 import ArrowDropDownRoundedIcon from "@mui/icons-material/ArrowDropDownRounded";
 
-import { lgSpace, mdSpace, smSpace } from "./commonSx";
-import { TableSelect } from "./TableSelect";
+import { mdSpace, smSpace } from "./commonSx";
 import { ColumnSelect } from "./ColumnSelect";
-import { TableHeader } from "./TableHeader";
+import { TableSelect } from "./TableSelect";
+import { Table } from "./Table";
 
 const secondaryButtonSx: (color: string) => ButtonProps["sx"] = (color) => ({
   "--temporary-color": color,
@@ -33,7 +22,7 @@ const primaryButtonSx: (color: string) => ButtonProps["sx"] = (color) => ({
   px: 1.5,
 });
 
-const Tables = () => {
+const Layout = () => {
   return (
     <Stack>
       <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: mdSpace }}>
@@ -59,29 +48,9 @@ const Tables = () => {
         </Box>
       </Box>
 
-      <TableContainer sx={{ mt: lgSpace }}>
-        <Table>
-          <TableHeader />
-          <TableBody>
-            {/* {rows.map((row) => (
-            <TableRow
-              key={row.name}
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
-              <TableCell component="th" scope="row">
-                {row.name}
-              </TableCell>
-              <TableCell align="right">{row.calories}</TableCell>
-              <TableCell align="right">{row.fat}</TableCell>
-              <TableCell align="right">{row.carbs}</TableCell>
-              <TableCell align="right">{row.protein}</TableCell>
-            </TableRow>
-          ))} */}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <Table />
     </Stack>
   );
 };
 
-export default Tables;
+export default Layout;

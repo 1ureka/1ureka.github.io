@@ -12,7 +12,7 @@ const SmallTiles = lazy(() =>
 );
 const SchemaSidebar = lazy(() => import("../components/schema/Sidebar"));
 const SchemaFlowChart = lazy(() => import("../components/schema/FlowChart"));
-const Tables = lazy(() => import("../components/tables/Tables"));
+const Tables = lazy(() => import("../components/tables/TablesLayout"));
 
 const paperSx = { borderRadius: 4, boxShadow: "none", flex: 1 } as const;
 
