@@ -83,7 +83,7 @@ const useHiddenColumns = () => {
 };
 
 /**
- * 給 ColumnSelect(提供狀態) 與 TableHeader(提供狀態) 與 useTableRows(提供狀態) 使用
+ * 給 ColumnSelect(提供狀態) 與 Table(提供狀態) 使用
  */
 const useTableColumns = () => {
   const { selected: selectedTable, isFetching: isFetchingObj } = useSelectedTable();

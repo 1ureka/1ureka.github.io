@@ -1,13 +1,21 @@
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getRows, type GetRowsResult, type GetRowsParams } from "../data/select";
-import type { useTableColumns } from "./table";
+import { useSort } from "./table";
+
+import { getRows } from "../data/select";
+import type { GetRowsResult } from "../data/select";
+import type { TableColumnInfo } from "../data/read";
 
 const staleTime = 1 * 60 * 1000;
 
-type UseRowsParams = { params: GetRowsParams; columns: Columns };
+type Columns = (TableColumnInfo & { align: "left" | "right" })[];
+type SortedRows = { column: string; value: string | number; align: "left" | "right" }[][];
 
-const useTableRows = ({ params, columns }: UseRowsParams) => {
+const useTableRows = ({ table, columns }: { table: string; columns: Columns }) => {
+  const { orderBy: orderByIndex, order } = useSort(columns.length);
+  const orderBy = columns[orderByIndex].name;
+
+  const params = { table, order, orderBy };
   const { data, isFetched } = useQuery({
     queryKey: ["getRows", params],
     queryFn: () => getRows(params),
@@ -18,11 +26,7 @@ const useTableRows = ({ params, columns }: UseRowsParams) => {
   return { isFetching: !isFetched, data };
 };
 
-type Rows = GetRowsResult["rows"];
-type Columns = Exclude<ReturnType<typeof useTableColumns>["columnsForTable"], null>;
-type SortedRows = { column: string; value: string | number; align: "left" | "right" }[][];
-
-const useTableRowsByColumns = ({ rows, columns }: { rows: Rows | null; columns: Columns }) => {
+const useTableRowsByColumns = ({ rows, columns }: { rows: GetRowsResult["rows"] | null; columns: Columns }) => {
   const sortedRows = useMemo(() => {
     if (!rows) return [];
 
