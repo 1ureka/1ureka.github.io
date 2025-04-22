@@ -7,6 +7,7 @@ import { ChartDemo } from "../demo/ChartDemo";
 import { PickerDemo } from "../demo/PickerDemo";
 import { PostDemo } from "../demo/PostDemo";
 import { TreeDemo } from "../demo/TreeDemo";
+import { SidebarDemo } from "../demo/SidebarDemo";
 
 const demoBlockSx: BoxProps["sx"] = {
   p: smSpace,
@@ -51,15 +52,10 @@ const DimensionProvider = ({ children }: { children: React.ReactNode }) => (
 
 const GridLayout = () => (
   <Box sx={{ display: "grid", gridTemplateColumns: "1.2fr 2.2fr 2fr 1.2fr", width: 1, height: 1 }}>
-    <Box
-      sx={{
-        ...demoBlockSx,
-        display: "grid",
-        height: 0.95,
-        ...viewTimelineSx({ targetView: "--hero", range: "exit-crossing", from: 0, to: -50 }),
-      }}
-    >
-      <DemoPaper />
+    <Box sx={{ ...demoBlockSx, ...viewTimelineSx({ targetView: "--hero", range: "exit-crossing", from: 0, to: -50 }) }}>
+      <DemoPaper sx={{ height: "calc(0.9 * 700px)", overflowY: "auto" }}>
+        <SidebarDemo />
+      </DemoPaper>
     </Box>
 
     <Stack sx={{ ...demoBlockSx, alignItems: "flex-start", justifyContent: "flex-end", gap: smSpace }}>
