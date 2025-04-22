@@ -5,13 +5,13 @@ import { useTableColumns } from "./table";
 
 const staleTime = 1 * 60 * 1000;
 
-const useTableRows = (params: GetRowsParams) => {
-  const { columnsForTable, isFetching: isFetchingColumns } = useTableColumns();
+const useTableRows = (params: Omit<GetRowsParams, "table"> = {}) => {
+  const { selectedTable, columnsForTable, isFetching: isFetchingColumns } = useTableColumns();
   const { data: rawData, isFetching: isFetchingRows } = useQuery({
-    queryKey: ["getRows", params],
-    queryFn: () => getRows(params),
+    queryKey: ["getRows", selectedTable, params],
+    queryFn: () => getRows({ ...params, table: selectedTable!.name }),
     staleTime,
-    enabled: columnsForTable !== null && columnsForTable.length > 0,
+    enabled: columnsForTable !== null && columnsForTable.length > 0 && selectedTable !== null,
   });
 
   const isFetching = isFetchingRows || isFetchingColumns;
@@ -35,12 +35,7 @@ const useTableRows = (params: GetRowsParams) => {
     return result;
   }, [isFetching, columnsForTable, rawData]);
 
-  const metadata = useMemo(() => {
-    if (isFetching) return null;
-    if (rawData === undefined) return null;
-    const { totalRows, totalPages } = rawData;
-    return { totalRows, totalPages };
-  }, [isFetching, rawData]);
+  const metadata = { totalPages: rawData?.totalPages, totalRows: rawData?.totalRows };
 
   return { isFetching, rawData, sortedRows, metadata };
 };

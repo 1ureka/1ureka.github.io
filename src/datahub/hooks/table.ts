@@ -86,23 +86,23 @@ const useHiddenColumns = () => {
  * 給 ColumnSelect(提供狀態) 與 TableHeader(提供狀態) 與 useTableRows(提供狀態) 使用
  */
 const useTableColumns = () => {
-  const { selected, isFetching: isFetchingObj } = useSelectedTable();
+  const { selected: selectedTable, isFetching: isFetchingObj } = useSelectedTable();
   const { data: tableInfo, isFetching: isFetchingInfo } = useTableInfo({ types: ["table", "view"] });
-  const isFetching = isFetchingInfo || !tableInfo || isFetchingObj || !selected;
+  const isFetching = isFetchingInfo || !tableInfo || isFetchingObj || !selectedTable;
 
   const { hiddenColumns } = useHiddenColumns();
 
   const columnsForSelect = useMemo(() => {
-    if (!tableInfo || !selected) return null;
+    if (!tableInfo || !selectedTable) return null;
 
-    const table = tableInfo.find(({ table }) => table === selected.name);
+    const table = tableInfo.find(({ table }) => table === selectedTable.name);
     if (!table) return null;
 
     const { columns: rawColumns } = table;
     const columns = rawColumns.map((info) => ({ ...info, hidden: hiddenColumns.includes(info.cid) }));
 
     return columns.toSorted((a, b) => a.cid - b.cid);
-  }, [tableInfo, selected, hiddenColumns]);
+  }, [tableInfo, selectedTable, hiddenColumns]);
 
   const columnsForTable = useMemo(() => {
     if (!columnsForSelect) return null;
@@ -116,7 +116,7 @@ const useTableColumns = () => {
     });
   }, [columnsForSelect]);
 
-  return { isFetching, columnsForSelect, columnsForTable };
+  return { isFetching, selectedTable, columnsForSelect, columnsForTable };
 };
 
 /**
