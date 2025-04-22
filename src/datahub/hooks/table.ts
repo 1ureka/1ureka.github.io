@@ -108,6 +108,7 @@ const useTableColumns = () => {
     if (!columnsForSelect) return null;
 
     const filtered = columnsForSelect.filter((column) => !column.hidden);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const result = filtered.map(({ hidden, ...column }) => {
       const isPk = column.pk >= 1;
       const align = (column.type !== "text" && !isPk ? "right" : "left") as "left" | "right";
