@@ -1,40 +1,40 @@
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getRows, type GetRowsParams } from "../data/select";
-import { useTableColumns } from "./table";
+import { getRows, type GetRowsResult, type GetRowsParams } from "../data/select";
+import type { useTableColumns } from "./table";
 
 const staleTime = 1 * 60 * 1000;
 
-type SortedRows = { column: string; value: string | number; align: "left" | "right" }[][];
+type UseRowsParams = { params: GetRowsParams; columns: Columns };
 
-const useTableRows = (params: Omit<GetRowsParams, "table"> = {}) => {
-  const { selectedTable, columnsForTable, isFetching: isFetchingColumns } = useTableColumns();
-  const { data: rawData, isFetching: isFetchingRows } = useQuery({
-    queryKey: ["getRows", selectedTable, params],
-    queryFn: () => getRows({ ...params, table: selectedTable!.name }),
+const useTableRows = ({ params, columns }: UseRowsParams) => {
+  const { data, isFetched } = useQuery({
+    queryKey: ["getRows", params],
+    queryFn: () => getRows(params),
     staleTime,
-    enabled: columnsForTable !== null && columnsForTable.length > 0 && selectedTable !== null,
+    enabled: columns.length > 0,
   });
 
-  const isFetching = isFetchingRows || isFetchingColumns;
+  return { isFetching: !isFetched, data };
+};
 
+type Rows = GetRowsResult["rows"];
+type Columns = Exclude<ReturnType<typeof useTableColumns>["columnsForTable"], null>;
+type SortedRows = { column: string; value: string | number; align: "left" | "right" }[][];
+
+const useTableRowsByColumns = ({ rows, columns }: { rows: Rows | null; columns: Columns }) => {
   const sortedRows = useMemo(() => {
-    if (isFetching) return [];
-    if (rawData === undefined || columnsForTable === null) return [];
+    if (!rows) return [];
 
-    const orders = columnsForTable.map(({ name }) => name);
-
-    const { rows } = rawData;
+    const orders = columns.map(({ name }) => name);
     const result: SortedRows = rows.map((row) =>
-      orders.map((col, i) => ({ column: col, value: row[col], align: columnsForTable[i].align }))
+      orders.map((col, i) => ({ column: col, value: row[col], align: columns[i].align }))
     );
 
     return result;
-  }, [isFetching, columnsForTable, rawData]);
+  }, [columns, rows]);
 
-  const metadata = { totalPages: rawData?.totalPages, totalRows: rawData?.totalRows };
-
-  return { isFetching, rawData, sortedRows, metadata };
+  return { sortedRows };
 };
 
-export { useTableRows };
+export { useTableRows, useTableRowsByColumns };
