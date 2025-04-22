@@ -6,6 +6,7 @@ import { ToastDemo } from "../demo/ToastDemo";
 import { ChartDemo } from "../demo/ChartDemo";
 import { PickerDemo } from "../demo/PickerDemo";
 import { PostDemo } from "../demo/PostDemo";
+import { TreeDemo } from "../demo/TreeDemo";
 
 const demoBlockSx: BoxProps["sx"] = {
   p: smSpace,
@@ -85,15 +86,10 @@ const GridLayout = () => (
       </DemoPaper>
     </Stack>
 
-    <Box
-      sx={{
-        ...demoBlockSx,
-        display: "grid",
-        height: 0.95,
-        ...viewTimelineSx({ targetView: "--hero", range: "exit-crossing", from: 0, to: -50 }),
-      }}
-    >
-      <DemoPaper />
+    <Box sx={{ ...demoBlockSx, ...viewTimelineSx({ targetView: "--hero", range: "exit-crossing", from: 0, to: -50 }) }}>
+      <DemoPaper sx={{ height: "calc(0.9 * 700px)" }}>
+        <TreeDemo />
+      </DemoPaper>
     </Box>
   </Box>
 );
