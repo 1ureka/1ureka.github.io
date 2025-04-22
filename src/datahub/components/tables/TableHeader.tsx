@@ -65,9 +65,13 @@ const Background = () => (
   />
 );
 
-const TableHeader = () => {
-  const { columnsForTable, isFetching } = useTableColumns();
-  const { order, orderBy, createToggleHandler } = useSort(columnsForTable?.length ?? 0);
+type TableHeaderProps = {
+  loading: boolean;
+  columns: ReturnType<typeof useTableColumns>["columnsForTable"];
+};
+
+const TableHeader = ({ loading, columns }: TableHeaderProps) => {
+  const { order, orderBy, createToggleHandler } = useSort(columns?.length ?? 0);
 
   const checked = Math.random() > 0.5;
   const indeterminate = Math.random() > 0.5;
@@ -77,7 +81,7 @@ const TableHeader = () => {
     <TableHead sx={{ position: "relative" }}>
       <Background />
 
-      {isFetching || !columnsForTable ? (
+      {loading || !columns ? (
         <TableHeaderLoading />
       ) : (
         <TableRow>
@@ -95,7 +99,7 @@ const TableHeader = () => {
             />
           </TableCell>
 
-          {columnsForTable.map((column, i) => {
+          {columns.map((column, i) => {
             const { cid, name, type, align } = column;
             const isPk = column.pk >= 1;
             const active = orderBy === i;
