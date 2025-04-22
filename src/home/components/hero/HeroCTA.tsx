@@ -9,6 +9,7 @@ const HeroCTA = () => (
     variant="contained"
     size="large"
     sx={{ borderRadius: 99, color: "background.default", p: 1.5, px: 2, "&:hover": { bgcolor: "primary.main" } }}
+    onClick={() => document.querySelector("#projects")?.scrollIntoView({ behavior: "smooth" })}
   >
     <Box sx={{ position: "relative", display: "flex", alignItems: "center", gap: 1 }}>
       <Typography
