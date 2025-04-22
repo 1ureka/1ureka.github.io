@@ -2,37 +2,9 @@ import { Checkbox, Skeleton, TableCell, TableRow, Typography } from "@mui/materi
 import { CheckboxProps } from "@mui/material";
 import { useTableRows, useTableRowsByColumns } from "@/datahub/hooks/tableRows";
 import { ellipsisSx } from "@/utils/commonSx";
+import { tableRowsStyles } from "./commonSx";
 
-const generateMuiColorMix = (color1: string, color2: string, percentage: number) => {
-  return `color-mix(in srgb, var(--mui-palette-${color1}) ${percentage}%, var(--mui-palette-${color2}) ${
-    100 - percentage
-  }%)`;
-};
-
-const styles = {
-  checkboxCell: { borderRadius: 2, borderTopRightRadius: 0, borderBottomRightRadius: 0 },
-  checkbox: (checked: boolean) => ({
-    color: checked ? generateMuiColorMix("text-primary", "primary-main", 30) : undefined,
-  }),
-
-  row: (selected: boolean, index: number) =>
-    ({
-      "& td, & th": { border: 0 },
-      position: "relative",
-      borderRadius: 2,
-      bgcolor: selected
-        ? generateMuiColorMix("action-hover", "primary-light", 80)
-        : index % 2 === 0
-        ? "color-mix(in srgb, var(--mui-palette-action-hover), transparent)"
-        : "action.hover",
-    } as const),
-
-  rowCellFull: { py: 8, borderRadius: 2 },
-  rowCell: (isFinal: boolean) => ({
-    py: 3,
-    ...(isFinal ? { borderRadius: 2, borderTopLeftRadius: 0, borderBottomLeftRadius: 0 } : {}),
-  }),
-};
+const styles = tableRowsStyles;
 
 const CheckboxCell = ({ checked, ...props }: CheckboxProps) => (
   <TableCell padding="checkbox" sx={styles.checkboxCell}>
@@ -48,7 +20,7 @@ const TableRows = (params: Parameters<typeof useTableRows>[0]) => {
   if (isFetching || !data) {
     return (
       <>
-        {[...Array(5)].map((_, i) => (
+        {[...Array(10)].map((_, i) => (
           <TableRow key={i} sx={styles.row(false, i)}>
             <CheckboxCell disabled />
 
