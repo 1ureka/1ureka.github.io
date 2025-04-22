@@ -5,6 +5,8 @@ import { useTableColumns } from "./table";
 
 const staleTime = 1 * 60 * 1000;
 
+type SortedRows = { column: string; value: string | number; align: "left" | "right" }[][];
+
 const useTableRows = (params: Omit<GetRowsParams, "table"> = {}) => {
   const { selectedTable, columnsForTable, isFetching: isFetchingColumns } = useTableColumns();
   const { data: rawData, isFetching: isFetchingRows } = useQuery({
@@ -23,14 +25,9 @@ const useTableRows = (params: Omit<GetRowsParams, "table"> = {}) => {
     const orders = columnsForTable.map(({ name }) => name);
 
     const { rows } = rawData;
-    const result: (string | number)[][] = rows.map((row) => {
-      return orders.map((col) => {
-        const value = row[col];
-        if (value === null || value === undefined) return "";
-        if (typeof value === "string" || typeof value === "number") return value;
-        return String(value);
-      });
-    });
+    const result: SortedRows = rows.map((row) =>
+      orders.map((col, i) => ({ column: col, value: row[col], align: columnsForTable[i].align }))
+    );
 
     return result;
   }, [isFetching, columnsForTable, rawData]);
