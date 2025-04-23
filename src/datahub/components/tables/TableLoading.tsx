@@ -4,17 +4,17 @@ import { generateHeadCellSx, tableRowsStyles } from "./commonSx";
 
 export const TableHeaderLoading = () => (
   <TableRow>
-    <TableCell padding="checkbox" sx={generateHeadCellSx("first")}>
+    <TableCell padding="checkbox" sx={generateHeadCellSx("top-left")}>
       <Checkbox disabled size="small" />
     </TableCell>
 
-    <TableCell sx={generateHeadCellSx("middle")}>
+    <TableCell sx={generateHeadCellSx("no-radius")}>
       <Skeleton variant="rounded" animation="wave" sx={{ maxWidth: "none", width: 0.5 }}>
         <Typography variant="body2">載入中. . .</Typography>
       </Skeleton>
     </TableCell>
     {[...Array(4)].map((_, i) => (
-      <TableCell key={i} sx={generateHeadCellSx(i === 3 ? "last" : "middle")}>
+      <TableCell key={i} sx={generateHeadCellSx(i === 3 ? "top-right" : "no-radius")}>
         <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
           <Skeleton variant="rounded" animation="wave" sx={{ maxWidth: "none", width: 0.5 }}>
             <Typography variant="body2">載入中. . .</Typography>

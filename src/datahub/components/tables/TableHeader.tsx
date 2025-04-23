@@ -34,7 +34,7 @@ const TableHeader = ({ columns }: TableHeaderProps) => {
 
   return (
     <TableRow>
-      <TableCell padding="checkbox" sx={generateHeadCellSx("first")}>
+      <TableCell padding="checkbox" sx={generateHeadCellSx("top-left")}>
         <Checkbox
           color="default"
           indeterminate={indeterminate}
@@ -57,7 +57,7 @@ const TableHeader = ({ columns }: TableHeaderProps) => {
         const isLast = i === columns.length - 1;
 
         return (
-          <TableCell key={cid} sx={{ minWidth: "10rem", ...generateHeadCellSx(isLast ? "last" : "middle") }}>
+          <TableCell key={cid} sx={{ minWidth: "10rem", ...generateHeadCellSx(isLast ? "top-right" : "no-radius") }}>
             <Box sx={{ display: "flex", alignItems: "center", justifyContent }}>
               <TableSortLabel
                 active={active}

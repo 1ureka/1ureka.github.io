@@ -1,37 +1,30 @@
-import { generateMuiColorMix } from "@/utils/commonSx";
+import { generateMuiColorMix, generateRadius } from "@/utils/commonSx";
+import type { SxProps, Theme } from "@mui/material";
 
 export const smSpace = { xs: 0.5, sm: 1 };
 export const mdSpace = { xs: 1, md: 1.5 };
 export const lgSpace = { xs: 1.5, md: 2 };
 
-export const generateHeadCellSx = (type: "first" | "last" | "middle") => {
-  const borderRadius =
-    type === "first"
-      ? {
-          borderRadius: 3,
-          borderBottomLeftRadius: "calc(1 * var(--mui-shape-borderRadius))",
-          borderTopRightRadius: 0,
-          borderBottomRightRadius: 0,
-        }
-      : type === "last"
-      ? {
-          borderRadius: 3,
-          borderBottomRightRadius: "calc(1 * var(--mui-shape-borderRadius))",
-          borderTopLeftRadius: 0,
-          borderBottomLeftRadius: 0,
-        }
-      : { borderRadius: 0 };
+type RadiusKey = "top-left" | "top-right" | "mid-left" | "mid-right" | "no-radius";
 
-  return {
+const radius: Record<RadiusKey, SxProps<Theme>> = {
+  "top-left": generateRadius([3, 0, 0, 1]),
+  "top-right": generateRadius([0, 3, 1, 0]),
+  "mid-left": generateRadius([2, 0, 0, 2]),
+  "mid-right": generateRadius([0, 2, 2, 0]),
+  "no-radius": generateRadius([0, 0, 0, 0]),
+} as const;
+
+export const generateHeadCellSx = (type: RadiusKey) =>
+  ({
     position: "relative",
     border: "none",
     bgcolor: "color-mix(in srgb, var(--mui-palette-divider) 80%, transparent 20%)",
-    ...borderRadius,
-  } as const;
-};
+    ...radius[type],
+  } as const);
 
 export const tableRowsStyles = {
-  checkboxCell: { borderRadius: 2, borderTopRightRadius: 0, borderBottomRightRadius: 0 },
+  checkboxCell: radius["mid-left"],
   checkbox: (checked: boolean) => ({
     color: checked ? generateMuiColorMix("text-primary", "primary-main", 30) : undefined,
   }),
@@ -40,7 +33,6 @@ export const tableRowsStyles = {
     ({
       "& td, & th": { border: 0 },
       position: "relative",
-      borderRadius: 2,
       bgcolor: selected
         ? generateMuiColorMix("action-hover", "primary-light", 80)
         : index % 2 === 0
@@ -49,8 +41,5 @@ export const tableRowsStyles = {
     } as const),
 
   rowCellFull: { py: 8, borderRadius: 2 },
-  rowCell: (isFinal: boolean) => ({
-    py: 3,
-    ...(isFinal ? { borderRadius: 2, borderTopLeftRadius: 0, borderBottomLeftRadius: 0 } : {}),
-  }),
+  rowCell: (isFinal: boolean) => ({ py: 3, ...(isFinal ? radius["mid-right"] : {}) }),
 };
