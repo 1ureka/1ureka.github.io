@@ -12,11 +12,12 @@ class ScreenWidthError extends Error {
 type WidthNotSupportProps = {
   minWidth: number;
   render: (error: ScreenWidthError) => React.ReactNode;
+  children: React.ReactNode;
 };
 
-const WidthNotSupport = ({ minWidth, render }: WidthNotSupportProps) => {
+const WidthNotSupport = ({ minWidth, render, children }: WidthNotSupportProps) => {
   const isSupport = useMediaQuery(`(min-width:${minWidth}px)`);
-  if (isSupport) return null;
+  if (isSupport) return children;
   return render(new ScreenWidthError(minWidth));
 };
 
