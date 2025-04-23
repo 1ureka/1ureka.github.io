@@ -1,9 +1,10 @@
-import { Table, TableBody, TableContainer, TableHead } from "@mui/material";
+import { Table, TableBody, TableContainer, TableFooter, TableHead, TableRow } from "@mui/material";
 import { lgSpace } from "./commonSx";
 import { TableHeader } from "./TableHeader";
 import { TableRows } from "./TableRows";
 import { useTableColumns } from "@/datahub/hooks/table";
 import { TableHeaderLoading, TableRowsLoading } from "./TableLoading";
+import { Pagination } from "./Pagination";
 
 const TableComponent = () => {
   const { isFetching, selectedTable: table, columnsForTable: columns } = useTableColumns();
@@ -15,7 +16,12 @@ const TableComponent = () => {
         <TableHead sx={{ position: "relative" }}>
           {!loading ? <TableHeader columns={columns} /> : <TableHeaderLoading />}
         </TableHead>
+
         <TableBody>{!loading ? <TableRows table={table.name} columns={columns} /> : <TableRowsLoading />}</TableBody>
+
+        <TableFooter>
+          <TableRow>{!loading && <Pagination table={table.name} columns={columns} />}</TableRow>
+        </TableFooter>
       </Table>
     </TableContainer>
   );
