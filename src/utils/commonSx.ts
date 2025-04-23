@@ -1,3 +1,5 @@
+import type { SxProps, Theme } from "@mui/material";
+
 export const underlineSx = {
   "&:hover": { textDecoration: "underline" },
   cursor: "pointer",
@@ -17,3 +19,7 @@ export const generateMuiColorMix = (color1: string, color2: string, percentage: 
     100 - percentage
   }%)`;
 };
+
+export const generateRadius = (numbers: [number, number, number, number]): SxProps<Theme> => ({
+  borderRadius: ({ shape }) => numbers.map((n) => `${n * shape.borderRadius}px`).join(" "),
+});
