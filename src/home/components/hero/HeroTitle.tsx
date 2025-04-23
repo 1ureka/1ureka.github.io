@@ -1,10 +1,13 @@
+import { BoxM } from "@/components/Motion";
 import { Typography } from "@mui/material";
 
 const sharedSx = {
   whiteSpace: "pre-line",
   textAlign: "center",
   fontFamily: "timemachine-wa",
-};
+} as const;
+
+const subTitle = "專為探索而設計的網站作品集";
 
 const HeroTitle = () => (
   <>
@@ -19,7 +22,11 @@ const HeroTitle = () => (
         letterSpacing: "clamp(0.1rem, 0.2vw, 0.15rem)",
       }}
     >
-      專為探索而設計的網站作品集
+      {subTitle.split("").map((char, index) => (
+        <BoxM key={index} sx={{ display: "inline-block" }} variants={{ initial: { scale: 0 }, animate: { scale: 1 } }}>
+          {char}
+        </BoxM>
+      ))}
     </Typography>
     <Typography
       variant="h1"
