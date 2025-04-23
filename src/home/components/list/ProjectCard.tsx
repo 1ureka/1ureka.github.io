@@ -55,7 +55,7 @@ export const ProjectCard = ({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -50 }}
       layout
-      sx={{ height: "400px", position: "relative", borderRadius: 2, overflow: "hidden" }}
+      sx={{ height: "400px", position: "relative", borderRadius: 2.5, overflow: "hidden" }}
     >
       <Box sx={{ position: "absolute", inset: 0, bgcolor: color, opacity: 0.4, pointerEvents: "none", zIndex: 1 }} />
 
