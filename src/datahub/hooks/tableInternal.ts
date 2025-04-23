@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useObjects, useTableInfo } from "./read";
 import { useUrl } from "@/hooks/url";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { z } from "zod";
 import { tryCatchSync } from "@/utils/tryCatch";
@@ -150,11 +150,21 @@ const usePage = (totalPages: number) => {
 };
 
 const useRows = (params: GetRowsParams) => {
+  const queryClient = useQueryClient();
+
   const { data, isFetching } = useQuery({
     queryKey: ["getRows", params],
     queryFn: () => getRows(params),
     staleTime,
   });
+
+  if (params.page) {
+    const nextPageParams = { ...params, page: params.page + 1 };
+    queryClient.prefetchQuery({
+      queryKey: ["getRows", nextPageParams],
+      queryFn: () => getRows(nextPageParams),
+    });
+  }
 
   return { isFetching, data };
 };
