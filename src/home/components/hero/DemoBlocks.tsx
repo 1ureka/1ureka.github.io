@@ -1,4 +1,4 @@
-import { Box, Paper, Stack } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import type { BoxProps, PaperProps } from "@mui/material";
 
 import { mdSpace, smSpace, viewTimelineSx } from "@/home/utils/commonSx";
@@ -8,6 +8,7 @@ import { PickerDemo } from "../demo/PickerDemo";
 import { PostDemo } from "../demo/PostDemo";
 import { TreeDemo } from "../demo/TreeDemo";
 import { SidebarDemo } from "../demo/SidebarDemo";
+import { PaperM } from "@/components/Motion";
 
 const demoBlockSx: BoxProps["sx"] = {
   p: smSpace,
@@ -22,10 +23,19 @@ const paperSx: PaperProps["sx"] = {
   pointerEvents: "auto",
 } as const;
 
-const DemoPaper = ({ children, sx, ...props }: PaperProps) => (
-  <Paper elevation={6} sx={{ ...paperSx, ...sx }} {...props}>
+const DemoPaper = ({ children, sx, ...props }: React.ComponentProps<typeof PaperM>) => (
+  <PaperM
+    transition={{ type: "spring", bounce: 0, visualDuration: 0.75 }}
+    variants={{
+      initial: { opacity: 0, scale: 0.9, y: 200 },
+      animate: { opacity: 1, scale: 1, y: 0 },
+    }}
+    elevation={6}
+    sx={{ ...paperSx, ...sx }}
+    {...props}
+  >
     {children}
-  </Paper>
+  </PaperM>
 );
 
 const CenterAbsoluteInMid = ({ children }: { children: React.ReactNode }) => (
@@ -59,27 +69,29 @@ const GridLayout = () => (
     </Box>
 
     <Stack sx={{ ...demoBlockSx, alignItems: "flex-start", justifyContent: "flex-end", gap: smSpace }}>
-      <DemoPaper
-        sx={{ width: 0.6, ...viewTimelineSx({ targetView: "--hero", range: "exit-crossing", from: 0, to: -100 }) }}
-      >
-        <ToastDemo />
-      </DemoPaper>
-      <DemoPaper sx={{ width: 1 }}>
-        <ChartDemo />
-      </DemoPaper>
+      <Box sx={{ width: 0.6, ...viewTimelineSx({ targetView: "--hero", range: "exit-crossing", from: 0, to: -100 }) }}>
+        <DemoPaper>
+          <ToastDemo />
+        </DemoPaper>
+      </Box>
+      <Box sx={{ width: 1 }}>
+        <DemoPaper>
+          <ChartDemo />
+        </DemoPaper>
+      </Box>
     </Stack>
 
     <Stack sx={{ ...demoBlockSx, alignItems: "flex-end", justifyContent: "flex-end", gap: smSpace }}>
-      <DemoPaper
-        sx={{ width: 0.6, ...viewTimelineSx({ targetView: "--hero", range: "exit-crossing", from: 0, to: -120 }) }}
-      >
-        <PickerDemo />
-      </DemoPaper>
-      <DemoPaper
-        sx={{ width: 1, ...viewTimelineSx({ targetView: "--hero", range: "exit-crossing", from: 0, to: -25 }) }}
-      >
-        <PostDemo />
-      </DemoPaper>
+      <Box sx={{ width: 0.6, ...viewTimelineSx({ targetView: "--hero", range: "exit-crossing", from: 0, to: -120 }) }}>
+        <DemoPaper>
+          <PickerDemo />
+        </DemoPaper>
+      </Box>
+      <Box sx={{ width: 1, ...viewTimelineSx({ targetView: "--hero", range: "exit-crossing", from: 0, to: -25 }) }}>
+        <DemoPaper>
+          <PostDemo />
+        </DemoPaper>
+      </Box>
     </Stack>
 
     <Box sx={{ ...demoBlockSx, ...viewTimelineSx({ targetView: "--hero", range: "exit-crossing", from: 0, to: -50 }) }}>
