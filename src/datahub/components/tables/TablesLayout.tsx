@@ -1,18 +1,11 @@
-import { Box, Button, ButtonProps, Divider, Stack, Tooltip, Typography } from "@mui/material";
+import { Box, Button, ButtonProps, Divider, Stack } from "@mui/material";
 import ArrowDropDownRoundedIcon from "@mui/icons-material/ArrowDropDownRounded";
 
-import { mdSpace, smSpace } from "./commonSx";
+import { mdSpace } from "./commonSx";
 import { ColumnSelect } from "./ColumnSelect";
 import { TableSelect } from "./TableSelect";
 import { Table } from "./Table";
-
-const secondaryButtonSx: (color: string) => ButtonProps["sx"] = (color) => ({
-  "--temporary-color": color,
-  bgcolor: "color-mix(in srgb, var(--temporary-color) 30%, transparent 70%)",
-  "&:hover": { bgcolor: "color-mix(in srgb, var(--temporary-color) 40%, transparent 60%)" },
-  color: "color-mix(in srgb, var(--temporary-color) 40%, var(--mui-palette-text-primary) 60%)",
-  px: 1.5,
-});
+import { SelectActions } from "./SelectActions";
 
 const primaryButtonSx: (color: string) => ButtonProps["sx"] = (color) => ({
   "--temporary-color": color,
@@ -32,14 +25,7 @@ const Layout = () => {
         </Box>
 
         <Box sx={{ display: "flex", alignItems: "center", gap: mdSpace }}>
-          <Typography sx={{ color: "text.secondary" }}>已選取 0 個:</Typography>
-
-          <Box sx={{ display: "flex", alignItems: "center", gap: smSpace }}>
-            <Tooltip title="以指定值覆蓋選取資料的某個欄位" arrow>
-              <Button sx={secondaryButtonSx("var(--mui-palette-primary-main)")}>覆蓋欄位</Button>
-            </Tooltip>
-            <Button sx={secondaryButtonSx("var(--mui-palette-error-main)")}>刪除紀錄</Button>
-          </Box>
+          <SelectActions />
 
           <Divider flexItem orientation="vertical" />
           <Button sx={primaryButtonSx("var(--mui-palette-primary-main)")} endIcon={<ArrowDropDownRoundedIcon />}>
