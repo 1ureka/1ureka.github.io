@@ -14,6 +14,7 @@ import { useUrl } from "@/hooks/url";
 import { useMemo } from "react";
 
 type Project = Omit<ProjectCardProps, "title" | "description" | "icon"> & {
+  id: string;
   title: string;
   description: string;
   icon: React.FC<{ sx: IconProps["sx"] }>;
@@ -23,6 +24,7 @@ type Project = Omit<ProjectCardProps, "title" | "description" | "icon"> & {
 
 const projectsArray: Project[] = [
   {
+    id: "datahub",
     title: "資料樣板",
     description: "探索資料結構、互動體驗與儀表板 UX 的設計樣板，結合可視化與開發工具的一站式後台模組",
     color: "#66cccc",
@@ -33,6 +35,7 @@ const projectsArray: Project[] = [
     type: "desktop",
   },
   {
+    id: "forum",
     title: "論壇樣板",
     description: "模擬真實社群互動平台，展示從發文、留言到通知的完整 UI/UX 流程與資料驅動的體驗",
     color: "#ff9d69",
@@ -43,6 +46,7 @@ const projectsArray: Project[] = [
     type: "rwd",
   },
   {
+    id: "photos",
     title: "相簿樣板",
     description: "探索相簿的 UI/UX 設計樣板，嘗試在瀏覽器中實現 windows 的相簿體驗",
     color: "#d077a1",
