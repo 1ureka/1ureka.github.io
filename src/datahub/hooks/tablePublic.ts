@@ -105,7 +105,7 @@ const useTableRows = (table: string, columns: TableColumns) => {
   const page = usePage(totalPages ?? 0);
 
   const { orderByIndex, order } = useOrder(columns.length);
-  const orderBy = columns[orderByIndex].name;
+  const orderBy = columns[orderByIndex]?.name;
 
   const params = { table, order, orderBy, page, limit: rowsPerPage };
   const { data, isFetching: f2 } = useRows(params);
