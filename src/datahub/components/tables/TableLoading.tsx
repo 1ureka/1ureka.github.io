@@ -1,6 +1,7 @@
 import { Box, Checkbox, Skeleton, TablePagination, Typography } from "@mui/material";
 import { TableCell, TableRow } from "@mui/material";
 import { generateHeadCellSx, tableRowsStyles } from "./commonSx";
+import { rowsPerPage } from "@/datahub/hooks/tableRows";
 
 export const TableHeaderLoading = () => (
   <TableRow>
@@ -27,7 +28,7 @@ export const TableHeaderLoading = () => (
 
 export const TableRowsLoading = () => (
   <>
-    {[...Array(7)].map((_, i) => (
+    {[...Array(rowsPerPage)].map((_, i) => (
       <TableRow key={i} sx={tableRowsStyles.row(false, i)}>
         <TableCell padding="checkbox" sx={tableRowsStyles.checkboxCell}>
           <Checkbox disabled size="small" />

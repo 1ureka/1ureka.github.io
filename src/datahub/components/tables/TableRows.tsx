@@ -1,6 +1,6 @@
 import { Checkbox, Skeleton, TableCell, TableRow, Typography } from "@mui/material";
 import { CheckboxProps } from "@mui/material";
-import { useTableRows, useTableRowsByColumns } from "@/datahub/hooks/tableRows";
+import { rowsPerPage, useTableRows, useTableRowsByColumns } from "@/datahub/hooks/tableRows";
 import { ellipsisSx } from "@/utils/commonSx";
 import { tableRowsStyles } from "./commonSx";
 
@@ -20,7 +20,7 @@ const TableRows = (params: Parameters<typeof useTableRows>[0]) => {
   if (isFetching || !data) {
     return (
       <>
-        {[...Array(7)].map((_, i) => (
+        {[...Array(rowsPerPage)].map((_, i) => (
           <TableRow key={i} sx={styles.row(false, i)}>
             <CheckboxCell disabled />
 

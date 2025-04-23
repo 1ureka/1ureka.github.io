@@ -7,6 +7,8 @@ import { getRows } from "../data/select";
 import type { GetRowsResult } from "../data/select";
 import type { TableColumnInfo } from "../data/read";
 
+export const rowsPerPage = 7;
+
 const useTablePage = ({ totalPages }: { totalPages: number }) => {
   const { searchParams, updateSearchParams } = useUrl();
 
@@ -39,7 +41,7 @@ const useTableRows = ({ table, columns }: { table: string; columns: Columns }) =
   const { orderBy: orderByIndex, order } = useSort(columns.length);
   const orderBy = columns[orderByIndex].name;
 
-  const params = { table, order, orderBy, page };
+  const params = { table, order, orderBy, page, limit: rowsPerPage };
   const { data, isFetched } = useQuery({
     queryKey: ["getRows", params],
     queryFn: () => getRows(params),

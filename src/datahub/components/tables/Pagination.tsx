@@ -1,4 +1,4 @@
-import { useTableRows } from "@/datahub/hooks/tableRows";
+import { rowsPerPage, useTableRows } from "@/datahub/hooks/tableRows";
 import { TablePagination } from "@mui/material";
 
 const Pagination = (params: Parameters<typeof useTableRows>[0]) => {
@@ -9,8 +9,8 @@ const Pagination = (params: Parameters<typeof useTableRows>[0]) => {
     <TablePagination
       colSpan={columns.length + 1} // 補上 checkbox 的 colSpan
       count={data?.totalRows ?? 0}
-      rowsPerPage={7}
-      rowsPerPageOptions={[7]}
+      rowsPerPage={rowsPerPage}
+      rowsPerPageOptions={[rowsPerPage]}
       page={page}
       showFirstButton
       showLastButton
