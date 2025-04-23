@@ -10,9 +10,11 @@ import { DemoBlocks } from "../components/hero/DemoBlocks";
 
 import { ListControlBar } from "@/home/components/listControl/ListControlBar";
 import { ProjectList } from "@/home/components/list/ProjectList";
+import { BoxM } from "@/components/Motion";
 
 const PositionTitleAndCTA = ({ children }: { children: React.ReactNode }) => (
-  <Box
+  <BoxM
+    variants={{ animate: { transition: { staggerChildren: 0.15 } } }}
     sx={{
       position: "absolute",
       inset: "0 0 auto 0",
@@ -24,13 +26,16 @@ const PositionTitleAndCTA = ({ children }: { children: React.ReactNode }) => (
     }}
   >
     <Box sx={{ pt: 10, textAlign: "center" }}>{children}</Box>
-  </Box>
+  </BoxM>
 );
 
 function App() {
   return (
     <AppWrapper>
-      <Box
+      <BoxM
+        variants={{ animate: { transition: { staggerChildren: 0.25, delayChildren: 0.25 } } }}
+        initial="initial"
+        animate="animate"
         sx={{
           position: "relative",
           height: "100dvh",
@@ -97,7 +102,7 @@ function App() {
             <ProjectList />
           </Box>
         </Box>
-      </Box>
+      </BoxM>
     </AppWrapper>
   );
 }
