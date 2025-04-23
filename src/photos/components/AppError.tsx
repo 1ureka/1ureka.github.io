@@ -5,22 +5,15 @@ import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 import ErrorOutlineRoundedIcon from "@mui/icons-material/ErrorOutlineRounded";
 
 import type { FallbackProps } from "react-error-boundary";
-import { ScreenWidthError } from "@/utils/error";
 import { useResponsiveFontSize } from "../utils/theme";
 import { routes } from "@/routes";
-import { useEffect } from "react";
 
 const AppError = ({ error, resetErrorBoundary }: Partial<FallbackProps>) => {
-  const { isSm, isMd } = useResponsiveFontSize();
-
+  const { isMd } = useResponsiveFontSize();
+  const isScreenWidthError = error.name === "ScreenWidthError";
   const isError = error instanceof Error;
-  const isScreenWidthError = error instanceof ScreenWidthError;
   const type = isError ? error.name : "UnknownError";
   const isFatal = type === "AbortError" || type === "NetworkError" || type === "TypeError" || isScreenWidthError;
-
-  useEffect(() => {
-    if (isScreenWidthError && isSm) resetErrorBoundary?.();
-  }, [isScreenWidthError, isSm, resetErrorBoundary]);
 
   return (
     <Box
@@ -83,15 +76,15 @@ const AppError = ({ error, resetErrorBoundary }: Partial<FallbackProps>) => {
             </Typography>
           </Stack>
 
+          {isFatal && (
+            <Typography variant="body1" sx={{ color: "text.secondary" }}>
+              * 該錯誤無法透過重新載入修正
+            </Typography>
+          )}
+
           <Box sx={{ display: "flex", gap: 2, mt: 2, color: "text.secondary" }}>
             {!isFatal && (
-              <Button
-                variant="outlined"
-                color="inherit"
-                disableElevation
-                href={routes.photos_home}
-                startIcon={<ArrowBackRoundedIcon />}
-              >
+              <Button variant="outlined" color="inherit" href={routes.photos_home} startIcon={<ArrowBackRoundedIcon />}>
                 返回首頁
               </Button>
             )}
@@ -106,13 +99,8 @@ const AppError = ({ error, resetErrorBoundary }: Partial<FallbackProps>) => {
               </Button>
             )}
             {isFatal && (
-              <Button
-                variant="outlined"
-                color="inherit"
-                startIcon={<ErrorOutlineRoundedIcon />}
-                sx={{ pointerEvents: "none" }}
-              >
-                該錯誤無法透過重新載入修正
+              <Button variant="outlined" color="inherit" startIcon={<ErrorOutlineRoundedIcon />} href={routes.home}>
+                返回作品集首頁
               </Button>
             )}
           </Box>
