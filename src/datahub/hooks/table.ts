@@ -33,6 +33,7 @@ const useSelectedTable = () => {
       hiddenColumns: null,
       orderBy: null,
       order: null,
+      page: null,
     });
   };
 
