@@ -1,4 +1,4 @@
-import { CssBaseline, ThemeProvider, useMediaQuery } from "@mui/material";
+import { CssBaseline, ThemeProvider, useColorScheme, useMediaQuery } from "@mui/material";
 import { useEffect } from "react";
 import { theme } from "@/home/utils/theme";
 import { Toaster } from "@/components/Toast";
@@ -15,13 +15,19 @@ function AppLogic() {
   return null;
 }
 
+function CheckTheme({ children }: { children: React.ReactNode }) {
+  const { mode } = useColorScheme();
+  if (mode === undefined) return null;
+  return children;
+}
+
 function AppWrapper({ children }: { children: React.ReactNode }) {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Toaster />
       <AppLogic />
-      {children}
+      <CheckTheme>{children}</CheckTheme>
     </ThemeProvider>
   );
 }
