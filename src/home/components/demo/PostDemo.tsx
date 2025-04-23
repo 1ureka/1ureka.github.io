@@ -20,7 +20,11 @@ const LikeButton = () => {
   };
 
   return (
-    <Tooltip title={<Typography>{state.liked ? "取消喜歡" : "喜歡"}</Typography>} arrow placement="left">
+    <Tooltip
+      title={<Typography variant="body2">{state.liked ? "取消喜歡" : "喜歡"}</Typography>}
+      arrow
+      placement="left"
+    >
       <span>
         <Button
           startIcon={<ThumbUpRoundedIcon />}
@@ -84,7 +88,7 @@ const PostHeader = () => {
       </Typography>
       <Box sx={{ flex: 1 }} />
       {isUpdated ? (
-        <Tooltip title={<Typography>{`上次編輯於 ${updatedAt.toLocaleString()}`}</Typography>} arrow>
+        <Tooltip title={<Typography variant="body2">{`上次編輯於 ${updatedAt.toLocaleString()}`}</Typography>} arrow>
           <Typography variant="body2" sx={{ color: "text.secondary", opacity: 0.9, ...underlineSx }}>
             {formatRelativeTime(createdAt)} (已編輯)
           </Typography>

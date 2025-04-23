@@ -1,8 +1,10 @@
-import { Box, Stack, Tooltip, type TooltipProps, Typography, type TypographyProps } from "@mui/material";
+import { Box, IconButton, Stack, Tooltip, type TooltipProps, Typography, type TypographyProps } from "@mui/material";
 import TypeSpecimenRoundedIcon from "@mui/icons-material/TypeSpecimenRounded";
+import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
 
 import { ellipsisSx } from "@/utils/commonSx";
 import { StripedBackground } from "@/datahub/components/home/charts/StripedBackground";
+import { routes } from "@/routes";
 
 const TileTitle = ({ children, sx, ...props }: { children: React.ReactNode } & TypographyProps) => (
   <Typography variant="subtitle1" component="h3" sx={{ color: "text.secondary", textWrap: "nowrap", ...sx }} {...props}>
@@ -57,9 +59,16 @@ const ChartDemo = () => {
       >
         <Stack sx={{ gap: 1 }}>
           <TileTitle>最常使用的型別</TileTitle>
-          <TileContent variant="h4" sx={{ textTransform: "uppercase" }}>
-            {dataArray[0].type}
-          </TileContent>
+          <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+            <TileContent variant="h4" sx={{ textTransform: "uppercase" }}>
+              {dataArray[0].type}
+            </TileContent>
+            <Tooltip title={<Typography variant="body2">查看完整儀表板</Typography>} arrow>
+              <IconButton centerRipple={false} href={routes.datahub_home} sx={{ borderRadius: 2 }}>
+                <OpenInNewRoundedIcon />
+              </IconButton>
+            </Tooltip>
+          </Box>
         </Stack>
 
         <TypeSpecimenRoundedIcon sx={{ ...tileIconCommonSx, mt: 0.5 }} />
