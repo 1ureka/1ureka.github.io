@@ -1,7 +1,7 @@
 import { Box, Checkbox, Skeleton, TablePagination, Typography } from "@mui/material";
 import { TableCell, TableRow } from "@mui/material";
 import { generateHeadCellSx, tableRowsStyles } from "../commonSx";
-import { rowsPerPage } from "@/datahub/hooks/tableRows";
+import { rowsPerPage } from "@/datahub/hooks/tablePublic";
 
 export const TableHeaderLoading = () => (
   <TableRow>

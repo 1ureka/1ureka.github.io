@@ -1,9 +1,9 @@
 import { Box, Checkbox, Typography, TableCell, TableRow, TableSortLabel } from "@mui/material";
 import SortRoundedIcon from "@mui/icons-material/SortRounded";
 
-import { useSort, useTableColumns } from "@/datahub/hooks/table";
 import { generateHeadCellSx, smSpace } from "../commonSx";
 import { ellipsisSx } from "@/utils/commonSx";
+import { type TableColumns, useTableHead } from "@/datahub/hooks/tablePublic";
 
 const captionBgSx = { p: 0.5, borderRadius: 1, bgcolor: "divider" };
 const captionSx = { textTransform: "uppercase", lineHeight: 1, color: "text.secondary" };
@@ -23,10 +23,8 @@ const Captions = ({ isPk, type }: { isPk: boolean; type: string }) => (
   </Box>
 );
 
-type TableHeaderProps = { columns: Exclude<ReturnType<typeof useTableColumns>["columnsForTable"], null> };
-
-const TableHeader = ({ columns }: TableHeaderProps) => {
-  const { order, orderBy, createToggleHandler } = useSort(columns?.length ?? 0);
+const TableHeader = ({ columns }: { columns: TableColumns }) => {
+  const { orderByIndex, order, createToggleHandler } = useTableHead(columns);
 
   const checked = Math.random() > 0.5;
   const indeterminate = Math.random() > 0.5;
@@ -51,7 +49,7 @@ const TableHeader = ({ columns }: TableHeaderProps) => {
       {columns.map((column, i) => {
         const { cid, name, type, align } = column;
         const isPk = column.pk >= 1;
-        const active = orderBy === i;
+        const active = orderByIndex === i;
         const scale = active ? (order === "desc" ? 1 : -1) : -1;
         const justifyContent = align === "right" ? "flex-end" : "flex-start";
         const isLast = i === columns.length - 1;

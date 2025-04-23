@@ -1,8 +1,7 @@
 import { Box, Button, Tooltip, Typography } from "@mui/material";
 import type { ButtonProps } from "@mui/material";
 import { smSpace } from "../commonSx";
-import { useTableRows } from "@/datahub/hooks/tableRows";
-import { useTableColumns } from "@/datahub/hooks/table";
+import { useSelectActions } from "@/datahub/hooks/tablePublic";
 
 const secondaryButtonSx: (color: string) => ButtonProps["sx"] = (color) => ({
   "--temporary-color": color,
@@ -27,14 +26,13 @@ const LoadingDisplay = () => (
   </>
 );
 
-const SelectActions = (params: Parameters<typeof useTableRows>[0]) => {
-  const { isFetching, data } = useTableRows(params);
+const SelectActions = () => {
+  const { isFetching, totalRows } = useSelectActions();
 
-  if (isFetching || !data) {
+  if (isFetching || !totalRows) {
     return <LoadingDisplay />;
   }
 
-  const { totalRows } = data;
   const selectedAmount = 0;
 
   return (
@@ -53,15 +51,4 @@ const SelectActions = (params: Parameters<typeof useTableRows>[0]) => {
   );
 };
 
-const Wrapper = () => {
-  const { isFetching, selectedTable: table, columnsForTable: columns } = useTableColumns();
-  const loading = isFetching || !table || !columns;
-
-  if (loading) {
-    return <LoadingDisplay />;
-  }
-
-  return <SelectActions table={table.name} columns={columns} />;
-};
-
-export { Wrapper as SelectActions };
+export { SelectActions };

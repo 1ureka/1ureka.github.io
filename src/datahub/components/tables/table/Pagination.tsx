@@ -1,14 +1,14 @@
-import { rowsPerPage, useTableRows } from "@/datahub/hooks/tableRows";
+import { type TableColumns, useTableFoot } from "@/datahub/hooks/tablePublic";
+import { rowsPerPage } from "@/datahub/hooks/tablePublic";
 import { TablePagination } from "@mui/material";
 
-const Pagination = (params: Parameters<typeof useTableRows>[0]) => {
-  const { columns } = params;
-  const { data, isFetching, page, handlePageChange } = useTableRows(params);
+const Pagination = ({ columns }: { columns: TableColumns }) => {
+  const { totalRows, isFetching, page, handlePageChange } = useTableFoot();
 
   return (
     <TablePagination
       colSpan={columns.length + 1} // 補上 checkbox 的 colSpan
-      count={data?.totalRows ?? 0}
+      count={totalRows ?? 0}
       rowsPerPage={rowsPerPage}
       rowsPerPageOptions={[rowsPerPage]}
       page={page}
@@ -16,7 +16,7 @@ const Pagination = (params: Parameters<typeof useTableRows>[0]) => {
       showLastButton
       slotProps={{ select: { inputProps: { "aria-label": "rows per page" } } }}
       onPageChange={handlePageChange}
-      disabled={isFetching}
+      disabled={isFetching || !totalRows}
       sx={{ border: 0 }}
     />
   );

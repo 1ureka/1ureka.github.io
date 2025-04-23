@@ -4,9 +4,8 @@ import type { CheckboxProps, IconButtonProps } from "@mui/material";
 import FilterAltRoundedIcon from "@mui/icons-material/FilterAltRounded";
 
 import { useState } from "react";
-import { useHiddenColumns, useTableColumns } from "@/datahub/hooks/table";
 import { smSpace } from "./commonSx";
-import type { TableColumnInfo } from "@/datahub/data/read";
+import { useColumnSelect } from "@/datahub/hooks/tablePublic";
 
 const ListCheckBoxProps: CheckboxProps = {
   edge: "start",
@@ -47,15 +46,20 @@ const ColumnSelectLoading = () => (
   </Tooltip>
 );
 
-const ColumnSelect = ({ columns }: { columns: (TableColumnInfo & { hidden: boolean })[] }) => {
+const ColumnSelect = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const handleOpen = (event: React.MouseEvent<HTMLElement>) =>
-    setAnchorEl((prev) => (prev ? null : event.currentTarget));
-  const handleClose = () => setAnchorEl(null);
 
-  const { createToggleAllColumns, createToggleHandler } = useHiddenColumns();
-  const isAllNotHidden = columns.every((col) => !col.hidden);
-  const isAllHidden = columns.every((col) => col.hidden);
+  const handleOpen = (e: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl((prev) => (prev ? null : e.currentTarget));
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const { isFetching, options, allChecked, allUnchecked, createToggleAllColumns, createToggleHandler } =
+    useColumnSelect();
+
+  if (isFetching || !options) return <ColumnSelectLoading />;
 
   return (
     <>
@@ -84,26 +88,22 @@ const ColumnSelect = ({ columns }: { columns: (TableColumnInfo & { hidden: boole
           </ListItem>
 
           <ListItem disablePadding>
-            <ListItemButton role={undefined} onClick={createToggleAllColumns(columns.length)} dense>
-              <Checkbox
-                {...ListCheckBoxProps}
-                checked={isAllNotHidden}
-                indeterminate={!isAllNotHidden && !isAllHidden}
-              />
+            <ListItemButton role={undefined} onClick={createToggleAllColumns(options.length)} dense>
+              <Checkbox {...ListCheckBoxProps} checked={allChecked} indeterminate={!allChecked && !allUnchecked} />
               <ListItemText primary={"顯示所有"} />
             </ListItemButton>
           </ListItem>
 
           <Divider sx={{ my: 0.5 }} />
 
-          {columns.map((column) => (
-            <ListItem key={column.cid} disablePadding>
-              <ListItemButton role={undefined} onClick={createToggleHandler(column.cid)} dense>
-                <Checkbox {...ListCheckBoxProps} checked={!column.hidden} />
+          {options.map(({ cid, hidden, name, type }) => (
+            <ListItem key={cid} disablePadding>
+              <ListItemButton role={undefined} onClick={createToggleHandler(cid)} dense>
+                <Checkbox {...ListCheckBoxProps} checked={!hidden} />
                 <ListItemText
                   sx={{ display: "flex", width: 1, gap: smSpace, justifyContent: "space-between", my: 0.5 }}
-                  primary={column.name}
-                  secondary={column.type.toUpperCase()}
+                  primary={name}
+                  secondary={type.toUpperCase()}
                 />
               </ListItemButton>
             </ListItem>
@@ -114,10 +114,4 @@ const ColumnSelect = ({ columns }: { columns: (TableColumnInfo & { hidden: boole
   );
 };
 
-const ColumnSelectWrapper = () => {
-  const { columnsForSelect, isFetching } = useTableColumns();
-  if (isFetching) return <ColumnSelectLoading />;
-  return <ColumnSelect columns={columnsForSelect ?? []} />;
-};
-
-export { ColumnSelectWrapper as ColumnSelect };
+export { ColumnSelect };

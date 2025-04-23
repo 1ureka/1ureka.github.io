@@ -2,8 +2,9 @@ import { Box, CircularProgress, Divider, InputAdornment, MenuItem, TextField, Ty
 import type { InputProps, TextFieldProps } from "@mui/material";
 import ArrowDropDownRoundedIcon from "@mui/icons-material/ArrowDropDownRounded";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
-import { useSelectedTable } from "@/datahub/hooks/table";
+
 import { smSpace } from "./commonSx";
+import { useTableSelect } from "@/datahub/hooks/tablePublic";
 
 const inputSx: InputProps["sx"] = {
   borderRadius: 1,
@@ -30,14 +31,14 @@ const TableSelectLoading = () => (
 );
 
 const TableSelect = () => {
-  const { data, selected, handleChange, isFetching } = useSelectedTable();
+  const { options, selectedOption, handleChange, isFetching } = useTableSelect();
 
-  if (!data || !selected || isFetching) return <TableSelectLoading />;
+  if (!options || !selectedOption || isFetching) return <TableSelectLoading />;
 
   return (
     <TextField
       select
-      value={selected.name}
+      value={selectedOption.name}
       onChange={handleChange}
       {...FieldProps}
       slotProps={{
@@ -54,7 +55,7 @@ const TableSelect = () => {
                 color="inherit"
                 sx={{ p: 0.5, borderRadius: 1, bgcolor: "divider", textTransform: "uppercase" }}
               >
-                {selected.type}
+                {selectedOption.type}
               </Typography>
             </InputAdornment>
           ),
@@ -65,7 +66,7 @@ const TableSelect = () => {
         <AddRoundedIcon fontSize="small" sx={{ mr: 0.5 }} /> 新增資料表
       </MenuItem>
       <Divider />
-      {data.map(({ name }, i) => (
+      {options.map(({ name }, i) => (
         <MenuItem key={i} value={name} dense>
           {name}
         </MenuItem>

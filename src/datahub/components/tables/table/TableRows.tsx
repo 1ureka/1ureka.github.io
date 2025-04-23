@@ -1,8 +1,8 @@
 import { Checkbox, Skeleton, TableCell, TableRow, Typography } from "@mui/material";
 import { CheckboxProps } from "@mui/material";
-import { rowsPerPage, useTableRows, useTableRowsByColumns } from "@/datahub/hooks/tableRows";
 import { ellipsisSx } from "@/utils/commonSx";
 import { tableRowsStyles } from "../commonSx";
+import { type TableColumns, useTableRows, rowsPerPage } from "@/datahub/hooks/tablePublic";
 
 const styles = tableRowsStyles;
 
@@ -12,12 +12,10 @@ const CheckboxCell = ({ checked, ...props }: CheckboxProps) => (
   </TableCell>
 );
 
-const TableRows = (params: Parameters<typeof useTableRows>[0]) => {
-  const { columns } = params;
-  const { data, isFetching } = useTableRows(params);
-  const { sortedRows } = useTableRowsByColumns({ rows: data?.rows ?? null, columns });
+const TableRows = ({ table, columns }: { table: string; columns: TableColumns }) => {
+  const { sortedRows, isFetching } = useTableRows(table, columns);
 
-  if (isFetching || !data) {
+  if (isFetching || !sortedRows) {
     return (
       <>
         {[...Array(rowsPerPage)].map((_, i) => (

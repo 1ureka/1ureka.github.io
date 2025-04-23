@@ -1,15 +1,15 @@
 import { Table, TableBody, TableContainer, TableFooter, TableHead, TableRow } from "@mui/material";
-import { useTableColumns } from "@/datahub/hooks/table";
 import { lgSpace } from "../commonSx";
 
 import { TableHeader } from "./TableHeader";
 import { TableRows } from "./TableRows";
 import { Pagination } from "./Pagination";
 import { PaginationLoading, TableHeaderLoading, TableRowsLoading } from "./TableLoading";
+import { useTable } from "@/datahub/hooks/tablePublic";
 
 const TableComponent = () => {
-  const { isFetching, selectedTable: table, columnsForTable: columns } = useTableColumns();
-  const loading = isFetching || !table || !columns;
+  const { isFetching, columns, table } = useTable();
+  const loading = isFetching || !columns || !table;
 
   return (
     <TableContainer sx={{ mt: lgSpace }}>
@@ -18,10 +18,10 @@ const TableComponent = () => {
           {!loading ? <TableHeader columns={columns} /> : <TableHeaderLoading />}
         </TableHead>
 
-        <TableBody>{!loading ? <TableRows table={table.name} columns={columns} /> : <TableRowsLoading />}</TableBody>
+        <TableBody>{!loading ? <TableRows columns={columns} table={table} /> : <TableRowsLoading />}</TableBody>
 
         <TableFooter>
-          <TableRow>{!loading ? <Pagination table={table.name} columns={columns} /> : <PaginationLoading />}</TableRow>
+          <TableRow>{!loading ? <Pagination columns={columns} /> : <PaginationLoading />}</TableRow>
         </TableFooter>
       </Table>
     </TableContainer>
