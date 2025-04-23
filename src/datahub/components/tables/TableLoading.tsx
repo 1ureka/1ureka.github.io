@@ -1,4 +1,4 @@
-import { Box, Checkbox, Skeleton, Typography } from "@mui/material";
+import { Box, Checkbox, Skeleton, TablePagination, Typography } from "@mui/material";
 import { TableCell, TableRow } from "@mui/material";
 import { generateHeadCellSx, tableRowsStyles } from "./commonSx";
 
@@ -27,7 +27,7 @@ export const TableHeaderLoading = () => (
 
 export const TableRowsLoading = () => (
   <>
-    {[...Array(5)].map((_, i) => (
+    {[...Array(7)].map((_, i) => (
       <TableRow key={i} sx={tableRowsStyles.row(false, i)}>
         <TableCell padding="checkbox" sx={tableRowsStyles.checkboxCell}>
           <Checkbox disabled size="small" />
@@ -50,4 +50,20 @@ export const TableRowsLoading = () => (
       </TableRow>
     ))}
   </>
+);
+
+export const PaginationLoading = () => (
+  <TablePagination
+    colSpan={6}
+    count={0}
+    rowsPerPage={10}
+    rowsPerPageOptions={[10]}
+    page={0}
+    showFirstButton
+    showLastButton
+    slotProps={{ select: { inputProps: { "aria-label": "rows per page" } } }}
+    onPageChange={() => {}}
+    disabled
+    sx={{ border: 0 }}
+  />
 );

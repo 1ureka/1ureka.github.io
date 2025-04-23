@@ -36,7 +36,7 @@ type GetRowsResult = {
 
 type GetRows = (params: GetRowsParams) => Promise<GetRowsResult>;
 
-const getRows: GetRows = async ({ table, page = 0, limit = 10, orderBy, order = "asc" }) => {
+const getRows: GetRows = async ({ table, page = 0, limit = 7, orderBy, order = "asc" }) => {
   const client = getClient();
 
   // 獲取資料表的總行數，若格式錯誤、不正常的資料，則會拋出錯誤

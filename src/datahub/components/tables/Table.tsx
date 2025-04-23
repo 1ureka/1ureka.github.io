@@ -3,7 +3,7 @@ import { lgSpace } from "./commonSx";
 import { TableHeader } from "./TableHeader";
 import { TableRows } from "./TableRows";
 import { useTableColumns } from "@/datahub/hooks/table";
-import { TableHeaderLoading, TableRowsLoading } from "./TableLoading";
+import { PaginationLoading, TableHeaderLoading, TableRowsLoading } from "./TableLoading";
 import { Pagination } from "./Pagination";
 
 const TableComponent = () => {
@@ -20,7 +20,7 @@ const TableComponent = () => {
         <TableBody>{!loading ? <TableRows table={table.name} columns={columns} /> : <TableRowsLoading />}</TableBody>
 
         <TableFooter>
-          <TableRow>{!loading && <Pagination table={table.name} columns={columns} />}</TableRow>
+          <TableRow>{!loading ? <Pagination table={table.name} columns={columns} /> : <PaginationLoading />}</TableRow>
         </TableFooter>
       </Table>
     </TableContainer>

@@ -20,7 +20,7 @@ const TableRows = (params: Parameters<typeof useTableRows>[0]) => {
   if (isFetching || !data) {
     return (
       <>
-        {[...Array(10)].map((_, i) => (
+        {[...Array(7)].map((_, i) => (
           <TableRow key={i} sx={styles.row(false, i)}>
             <CheckboxCell disabled />
 
