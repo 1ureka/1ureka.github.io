@@ -26,7 +26,7 @@ const iconButtonSx: IconButtonProps["sx"] = {
 };
 
 const ColumnSelectLoading = () => (
-  <Tooltip title="篩選欄位" arrow>
+  <Tooltip title={<Typography variant="body2">篩選欄位</Typography>} arrow>
     <span style={{ position: "relative" }}>
       <IconButton loading centerRipple={false} size="small" sx={iconButtonSx}>
         <FilterAltRoundedIcon fontSize="small" />
@@ -59,7 +59,7 @@ const ColumnSelect = ({ columns }: { columns: (TableColumnInfo & { hidden: boole
 
   return (
     <>
-      <Tooltip title="篩選欄位" arrow>
+      <Tooltip title={<Typography variant="body2">篩選欄位</Typography>} arrow>
         <span>
           <IconButton onClick={handleOpen} centerRipple={false} size="small" sx={iconButtonSx}>
             <FilterAltRoundedIcon fontSize="small" />
