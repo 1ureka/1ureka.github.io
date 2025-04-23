@@ -1,4 +1,5 @@
 import { Box, Chip, keyframes, LinearProgress, Stack, Typography, useMediaQuery } from "@mui/material";
+import type { IconProps } from "@mui/material";
 import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
 import HardwareRoundedIcon from "@mui/icons-material/HardwareRounded";
 import { BoxM } from "@/components/Motion";
@@ -27,7 +28,7 @@ export type ProjectCardProps = {
   description: Highlight[];
   progress?: number;
   color: string;
-  icon: React.ReactNode;
+  icon: React.FC<{ sx: IconProps["sx"] }>;
   /** CTA 的文字，例如「開始探索」 */
   actionLabel?: string;
   actionHref: string;
@@ -46,6 +47,7 @@ export const ProjectCard = ({
   images = [...Array(16)].map(() => ""),
 }: ProjectCardProps) => {
   const isSm = useMediaQuery((theme) => theme.breakpoints.up("sm"));
+  const Icon = icon;
 
   return (
     <BoxM
@@ -59,9 +61,9 @@ export const ProjectCard = ({
 
       <Stack sx={{ height: 1 }}>
         <Box sx={{ display: "flex", gap: 2, alignItems: "center", p: 2, pb: { xs: 0, sm: 2 } }}>
-          {icon}
+          <Icon sx={{ fontSize: "4em", color: color }} />
           <Box sx={{ display: "flex", alignItems: "flex-end", gap: 1 }}>
-            <Typography variant="h4" component="h2" sx={{ fontFamily: "timemachine-wa", textWrap: "nowrap" }}>
+            <Typography variant="h4" component="h4" sx={{ fontFamily: "timemachine-wa", textWrap: "nowrap" }}>
               {title.map(({ text, highlight }, i) => (
                 <Typography
                   key={i}
