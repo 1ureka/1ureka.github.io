@@ -1,4 +1,4 @@
-import { Box, Divider, IconButton, Typography, useMediaQuery } from "@mui/material";
+import { Box, Divider, IconButton, Typography } from "@mui/material";
 import CameraRoundedIcon from "@mui/icons-material/CameraRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import DragHandleRoundedIcon from "@mui/icons-material/DragHandleRounded";
@@ -13,7 +13,6 @@ import { useSpring } from "motion/react";
 import { ThemeSwitch } from "../components/appbar/ThemeSwitch";
 import { AccountMenu } from "../components/appbar/AccountMenu";
 import { Sidebar } from "../components/sidebar/Sidebar";
-import { ScreenWidthError } from "@/utils/error";
 
 const appbarHeight = 72;
 
@@ -119,19 +118,11 @@ const Content = () => {
   );
 };
 
-const ScreenWidthCheck = () => {
-  const isSm = useMediaQuery((theme) => theme.breakpoints.up("sm"));
-  if (isSm) return null;
-  throw new ScreenWidthError(600);
-};
-
 function App() {
   useResponsiveFontSize();
 
   return (
     <AppWrapper>
-      <ScreenWidthCheck />
-
       <Box
         component="header"
         sx={{
