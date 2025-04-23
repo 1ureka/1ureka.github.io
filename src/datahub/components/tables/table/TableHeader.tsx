@@ -2,7 +2,7 @@ import { Box, Checkbox, Typography, TableCell, TableRow, TableSortLabel } from "
 import SortRoundedIcon from "@mui/icons-material/SortRounded";
 
 import { useSort, useTableColumns } from "@/datahub/hooks/table";
-import { generateHeadCellSx, smSpace } from "./commonSx";
+import { generateHeadCellSx, smSpace } from "../commonSx";
 import { ellipsisSx } from "@/utils/commonSx";
 
 const captionBgSx = { p: 0.5, borderRadius: 1, bgcolor: "divider" };

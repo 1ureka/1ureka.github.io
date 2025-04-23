@@ -1,10 +1,11 @@
 import { Table, TableBody, TableContainer, TableFooter, TableHead, TableRow } from "@mui/material";
-import { lgSpace } from "./commonSx";
+import { useTableColumns } from "@/datahub/hooks/table";
+import { lgSpace } from "../commonSx";
+
 import { TableHeader } from "./TableHeader";
 import { TableRows } from "./TableRows";
-import { useTableColumns } from "@/datahub/hooks/table";
-import { PaginationLoading, TableHeaderLoading, TableRowsLoading } from "./TableLoading";
 import { Pagination } from "./Pagination";
+import { PaginationLoading, TableHeaderLoading, TableRowsLoading } from "./TableLoading";
 
 const TableComponent = () => {
   const { isFetching, selectedTable: table, columnsForTable: columns } = useTableColumns();

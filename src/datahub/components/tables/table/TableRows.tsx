@@ -2,7 +2,7 @@ import { Checkbox, Skeleton, TableCell, TableRow, Typography } from "@mui/materi
 import { CheckboxProps } from "@mui/material";
 import { rowsPerPage, useTableRows, useTableRowsByColumns } from "@/datahub/hooks/tableRows";
 import { ellipsisSx } from "@/utils/commonSx";
-import { tableRowsStyles } from "./commonSx";
+import { tableRowsStyles } from "../commonSx";
 
 const styles = tableRowsStyles;
 

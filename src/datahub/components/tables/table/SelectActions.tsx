@@ -1,6 +1,6 @@
 import { Box, Button, Tooltip, Typography } from "@mui/material";
 import type { ButtonProps } from "@mui/material";
-import { smSpace } from "./commonSx";
+import { smSpace } from "../commonSx";
 import { useTableRows } from "@/datahub/hooks/tableRows";
 import { useTableColumns } from "@/datahub/hooks/table";
 

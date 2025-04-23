@@ -4,8 +4,8 @@ import ArrowDropDownRoundedIcon from "@mui/icons-material/ArrowDropDownRounded";
 import { mdSpace } from "./commonSx";
 import { ColumnSelect } from "./ColumnSelect";
 import { TableSelect } from "./TableSelect";
-import { Table } from "./Table";
-import { SelectActions } from "./SelectActions";
+import { Table } from "./table/Table";
+import { SelectActions } from "./table/SelectActions";
 
 const primaryButtonSx: (color: string) => ButtonProps["sx"] = (color) => ({
   "--temporary-color": color,
