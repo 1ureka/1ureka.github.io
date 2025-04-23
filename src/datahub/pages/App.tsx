@@ -4,7 +4,6 @@ import { useSqliteInitializer } from "../hooks/init";
 
 import { APPBAR_HEIGHT } from "../components/appbar/appbarSx";
 import { AppWrapper } from "@/datahub/components/AppWrapper";
-import { AppNotSupported } from "../components/AppError";
 import { Appbar } from "../components/appbar/Appbar";
 import { Sidebar } from "../components/aside/Sidebar";
 import { Header } from "../components/aside/Header";
@@ -16,14 +15,7 @@ const SqlInitializer = () => {
 };
 
 function App() {
-  const { isSm } = useResponsiveFontSize();
-
-  if (!isSm)
-    return (
-      <AppWrapper>
-        <AppNotSupported />
-      </AppWrapper>
-    );
+  useResponsiveFontSize();
 
   return (
     <AppWrapper>

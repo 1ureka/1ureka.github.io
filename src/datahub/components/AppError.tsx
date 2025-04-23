@@ -2,6 +2,7 @@ import { Box, Button, Stack, Typography } from "@mui/material";
 import DataExplorationRoundedIcon from "@mui/icons-material/DataExplorationRounded";
 import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
+import ErrorOutlineRoundedIcon from "@mui/icons-material/ErrorOutlineRounded";
 import type { FallbackProps } from "react-error-boundary";
 import { useResponsiveFontSize } from "../utils/theme";
 import { routes } from "@/routes";
@@ -9,8 +10,12 @@ import { routes } from "@/routes";
 /**
  * 錯誤顯示組件，適用於 ErrorBoundary 的 fallbackRender
  */
-function AppError({ error, resetErrorBoundary, isFatal }: Partial<FallbackProps> & { isFatal?: boolean }) {
+function AppError({ error, resetErrorBoundary }: Partial<FallbackProps>) {
   useResponsiveFontSize();
+  const isScreenWidthError = error.name === "ScreenWidthError";
+  const isError = error instanceof Error;
+  const type = isError ? error.name : "UnknownError";
+  const isFatal = type === "AbortError" || type === "NetworkError" || type === "TypeError" || isScreenWidthError;
 
   return (
     <Box
@@ -96,6 +101,12 @@ function AppError({ error, resetErrorBoundary, isFatal }: Partial<FallbackProps>
             </Typography>
           </Stack>
 
+          {isFatal && (
+            <Typography variant="body1" sx={{ color: "text.secondary" }}>
+              * 該錯誤無法透過重新載入修正
+            </Typography>
+          )}
+
           <Box sx={{ display: "flex", gap: 2, mt: 2, color: "text.secondary" }}>
             {!isFatal && (
               <Button
@@ -108,7 +119,7 @@ function AppError({ error, resetErrorBoundary, isFatal }: Partial<FallbackProps>
                 返回首頁
               </Button>
             )}
-            {resetErrorBoundary && (
+            {!isFatal && resetErrorBoundary && (
               <Button
                 variant="text"
                 color="inherit"
@@ -118,6 +129,11 @@ function AppError({ error, resetErrorBoundary, isFatal }: Partial<FallbackProps>
                 重新載入
               </Button>
             )}
+            {isFatal && (
+              <Button variant="outlined" color="inherit" startIcon={<ErrorOutlineRoundedIcon />} href={routes.home}>
+                返回作品集首頁
+              </Button>
+            )}
           </Box>
         </Stack>
       </Box>
@@ -125,8 +141,4 @@ function AppError({ error, resetErrorBoundary, isFatal }: Partial<FallbackProps>
   );
 }
 
-const AppNotSupported = () => (
-  <AppError error={{ message: "請使用寬度超過 700px 的裝置或將視窗放大，以使用此應用程式。" }} isFatal />
-);
-
-export { AppError, AppNotSupported };
+export { AppError };
