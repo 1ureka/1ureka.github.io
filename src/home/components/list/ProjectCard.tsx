@@ -1,27 +1,11 @@
-import { Box, Chip, keyframes, LinearProgress, Stack, Typography, useMediaQuery } from "@mui/material";
+import { Box, Chip, LinearProgress, Stack, Typography, useColorScheme } from "@mui/material";
 import type { IconProps } from "@mui/material";
 import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
 import HardwareRoundedIcon from "@mui/icons-material/HardwareRounded";
+import WebStoriesRoundedIcon from "@mui/icons-material/WebStoriesRounded";
+
 import { BoxM } from "@/components/Motion";
 import type { Highlight } from "@/hooks/fuse";
-
-const scrollKeyframes = keyframes`
-  from {
-    translate: -50% 0;
-  }
-  to {
-    translate: 50% 0;
-  }
-`;
-
-const getProgressLabel = (p: number): string => {
-  if (p <= 10) return "剛起步";
-  if (p <= 30) return "初步架構完成";
-  if (p <= 50) return "功能建構中";
-  if (p <= 70) return "進入整合階段";
-  if (p <= 90) return "細節優化中";
-  return "快完成了！";
-};
 
 export type ProjectCardProps = {
   title: Highlight[];
@@ -36,6 +20,9 @@ export type ProjectCardProps = {
   images?: string[];
 };
 
+const hoverTransition = "all 0.3s ease" as const;
+const hoverTextColor = { ".project-card:hover &": { color: "#fff" }, transition: hoverTransition } as const;
+
 export const ProjectCard = ({
   title,
   description,
@@ -44,142 +31,135 @@ export const ProjectCard = ({
   icon,
   actionLabel = "開始探索",
   actionHref,
-  images = [...Array(16)].map(() => ""),
 }: ProjectCardProps) => {
-  const isSm = useMediaQuery((theme) => theme.breakpoints.up("sm"));
+  const { mode, systemMode } = useColorScheme();
+  const isLight = mode === "light" || (mode === "system" && systemMode === "light");
   const Icon = icon;
 
   return (
     <BoxM
+      className="project-card"
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -50 }}
       layout
-      sx={{ height: "400px", position: "relative", borderRadius: 2.5, overflow: "hidden" }}
+      sx={{ position: "relative", bgcolor: "action.hover", borderRadius: 3, overflow: "hidden" }}
     >
-      <Box sx={{ position: "absolute", inset: 0, bgcolor: color, opacity: 0.4, pointerEvents: "none", zIndex: 1 }} />
+      <Box
+        className="mode-light"
+        sx={{
+          clipPath: { xs: "circle(65.0% at 50% 5%)", sm: "circle(65.0% at 50% -2%)" },
+          ".project-card:hover > &": { clipPath: { xs: "circle(90.0% at 50% 50%)", sm: "circle(90.0% at 50% 50%)" } },
+          transition: "clip-path 0.5s ease",
+          position: "absolute",
+          inset: 0,
+          pointerEvents: "none",
+          bgcolor: isLight ? color : `color-mix(in srgb, ${color} 75%, black)`,
+        }}
+      >
+        <Box sx={{ position: "absolute", width: 1, display: "flex", justifyContent: "flex-end", p: 2 }}>
+          <Chip
+            variant="outlined"
+            avatar={
+              <Box sx={{ display: "grid", placeItems: "center" }}>
+                <WebStoriesRoundedIcon fontSize="small" sx={{ color: "background.default" }} />
+              </Box>
+            }
+            label={"專案"}
+            sx={{ color: "background.default", borderColor: "background.default", fontSize: "1rem" }}
+          />
+        </Box>
 
-      <Stack sx={{ height: 1 }}>
-        <Box sx={{ display: "flex", gap: 2, alignItems: "center", p: 2, pb: { xs: 0, sm: 2 } }}>
-          <Icon sx={{ fontSize: "4em", color: color }} />
-          <Box sx={{ display: "flex", alignItems: "flex-end", gap: 1 }}>
-            <Typography variant="h4" component="h4" sx={{ fontFamily: "timemachine-wa", textWrap: "nowrap" }}>
+        <Box sx={{ height: 0.65, display: "grid", placeItems: "flex-start center", mt: -1.5 }}>
+          <Box sx={{ height: 1, aspectRatio: 1 }}>
+            <Icon sx={{ display: "block", width: 1, height: 1, color: "background.default", opacity: 0.35 }} />
+          </Box>
+        </Box>
+      </Box>
+
+      <Stack sx={{ position: "relative", height: 1, justifyContent: "space-between" }}>
+        <Box sx={{ height: 0.65, display: "grid", placeItems: "flex-start center", mt: -4 }}>
+          <Box sx={{ height: 1, aspectRatio: 1 }}>
+            <Icon sx={{ display: "block", width: 1, height: 1, color: "background.default", opacity: 0 }} />
+          </Box>
+        </Box>
+
+        <Stack sx={{ p: 2, pt: 0, gap: 1.5 }}>
+          <Box sx={{ ".project-card:hover &": { textShadow: "0 0 10px #0005" }, transition: hoverTransition }}>
+            <Typography
+              variant="h4"
+              component="h4"
+              sx={{ fontFamily: "timemachine-wa", textWrap: "nowrap", ...hoverTextColor }}
+            >
               {title.map(({ text, highlight }, i) => (
-                <Typography
+                <Box
                   key={i}
-                  variant="h4"
                   component="span"
                   sx={{
-                    fontFamily: "inherit",
-                    color: highlight ? `color-mix(in srgb, yellow, var(--mui-palette-text-primary))` : undefined,
+                    bgcolor: highlight ? "color-mix(in srgb, yellow 20%, transparent)" : undefined,
+                    borderRadius: 2,
                   }}
                 >
                   {text}
-                </Typography>
-              ))}
-            </Typography>
-          </Box>
-        </Box>
-
-        <Typography variant="body2" component="p" sx={{ color: "text.secondary", p: 2, pt: 0 }}>
-          {description.map(({ text, highlight }, i) => (
-            <Typography
-              key={i}
-              variant="body2"
-              component="span"
-              sx={{
-                color: highlight ? `color-mix(in srgb, ${color}, var(--mui-palette-text-secondary))` : undefined,
-              }}
-            >
-              {text}
-            </Typography>
-          ))}
-        </Typography>
-
-        <Stack sx={{ alignItems: "center", flex: 1, gap: 1 }}>
-          {[...Array(1)].map((_, index) => (
-            <Box
-              key={index}
-              sx={{ display: "flex", flex: 1 }}
-              onMouseEnter={(e) => {
-                const targets = e.currentTarget.children;
-                Array.from(targets).forEach((e) => {
-                  const target = e as HTMLElement;
-                  target.style.animationPlayState = "paused";
-                });
-              }}
-              onMouseLeave={(e) => {
-                const targets = e.currentTarget.children;
-                Array.from(targets).forEach((e) => {
-                  const target = e as HTMLElement;
-                  target.style.animationPlayState = "running";
-                });
-              }}
-            >
-              {[...Array(2)].map((_, i) => (
-                <Box
-                  key={i}
-                  sx={{
-                    display: "flex",
-                    height: 1,
-                    animation: `${scrollKeyframes} 20s linear infinite`,
-                    animationDirection: index === 1 ? "reverse" : "normal",
-                  }}
-                >
-                  {images.slice(index * 8, index * 8 + 8).map((_, i) => (
-                    <Box key={i} sx={{ position: "relative", aspectRatio: "16/9", height: 1, px: 0.5 }}>
-                      <Box
-                        sx={{
-                          width: 1,
-                          height: 1,
-                          borderRadius: 2,
-                          overflow: "hidden",
-                          bgcolor: "divider",
-                          opacity: 0.7,
-                        }}
-                      ></Box>
-                    </Box>
-                  ))}
                 </Box>
               ))}
-            </Box>
-          ))}
-        </Stack>
+            </Typography>
 
-        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", p: 2 }}>
-          <Box sx={{ display: "flex", gap: 1, alignItems: "center", pr: { xs: 1, sm: 0 } }}>
-            <HardwareRoundedIcon sx={{ fontSize: "1.5em", color: "text.secondary" }} />
-            <Typography variant={isSm ? "subtitle1" : "body2"} sx={{ opacity: 0.7 }}>
-              {progress === 0 && "準備中"}
-              {progress > 0 && progress < 100 && `目前進度 ${progress}%（${getProgressLabel(progress)}）`}
-              {progress === 100 && "已完成 ✅"}
+            <Typography
+              variant="body1"
+              component="p"
+              sx={{ color: "text.secondary", ".project-card:hover &": { color: "#fffc" }, transition: hoverTransition }}
+            >
+              {description.map(({ text, highlight }, i) => (
+                <Box
+                  key={i}
+                  component="span"
+                  sx={{
+                    bgcolor: highlight ? "color-mix(in srgb, yellow 20%, transparent)" : undefined,
+                    borderRadius: 2,
+                  }}
+                >
+                  {text}
+                </Box>
+              ))}
             </Typography>
           </Box>
 
-          <Chip
-            clickable
-            label={actionLabel}
-            variant="filled"
-            icon={<OpenInNewRoundedIcon />}
-            sx={{
-              p: 1,
-              height: "auto",
-              borderRadius: 99,
-              "&:hover": { scale: "1.05" },
-              scale: "1.001",
-              transition: "all 0.2s ease",
-            }}
-            component="a"
-            href={actionHref}
-          />
+          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
+            <Box sx={{ display: "flex", gap: 1, alignItems: "center", pr: { xs: 1, sm: 0 } }}>
+              <HardwareRoundedIcon sx={{ fontSize: "1.5em", color: "text.secondary", ...hoverTextColor }} />
+              <Typography variant={"body2"} sx={{ opacity: 0.7, ...hoverTextColor }}>
+                {progress === 0 && "準備中"}
+                {progress > 0 && progress < 100 && `完成進度 ${progress}%`}
+                {progress === 100 && "已完成 ✅"}
+              </Typography>
+            </Box>
 
-          <LinearProgress
-            sx={{ position: "absolute", inset: "auto 0 0 0", opacity: 0.2 }}
-            variant="determinate"
-            value={progress}
-            color="inherit"
-          />
-        </Box>
+            <Chip
+              clickable
+              label={actionLabel}
+              variant="filled"
+              icon={<OpenInNewRoundedIcon sx={{ ...hoverTextColor }} />}
+              sx={{
+                p: 1,
+                height: "auto",
+                borderRadius: 99,
+                "&:hover": { scale: "1.05" },
+                scale: "1.001",
+                ...hoverTextColor,
+              }}
+              component="a"
+              href={actionHref}
+            />
+
+            <LinearProgress
+              sx={{ position: "absolute", inset: "auto 0 0 0", opacity: 0.2 }}
+              variant="determinate"
+              value={progress}
+              color="inherit"
+            />
+          </Box>
+        </Stack>
       </Stack>
     </BoxM>
   );
