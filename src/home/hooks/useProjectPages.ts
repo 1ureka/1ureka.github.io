@@ -37,6 +37,7 @@ const titleMap: Record<keyof typeof routes, string> = {
 };
 
 type ProjectProp = "icon" | "color" | "type" | "time" | "progress";
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const getProjectProperty = (key: keyof typeof routes, prop: ProjectProp): any => {
   // 尋找相應的專案
   const prefix = key.split("_")[0];
