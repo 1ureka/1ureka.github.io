@@ -2,12 +2,13 @@ import { Box } from "@mui/material";
 import { AnimatePresence } from "motion/react";
 
 import { ProjectCard } from "./ProjectCard";
+import { PageCard } from "./PageCard";
 import { useProjects } from "@/home/hooks/useProjects";
-// import { useProjectPages } from "@/home/hooks/useProjectPages";
+import { useProjectPages } from "@/home/hooks/useProjectPages";
 
 const ProjectList = () => {
   const { projects } = useProjects();
-  //   const { projectPages } = useProjectPages();
+  const { projectPages } = useProjectPages();
 
   return (
     <Box
@@ -26,8 +27,10 @@ const ProjectList = () => {
         {projects.map(({ time, title, description, highlights, ...project }) => (
           <ProjectCard key={`${time}${title}${description}`} {...project} {...highlights} />
         ))}
-        <Box key={"divider2"} sx={{ gridColumn: "1 / -1" }} />
-        {/* TODO: pageCards */}
+        <Box key={"divider2"} sx={{ gridColumn: "1 / -1", p: 1.25 }} />
+        {projectPages.map(({ href, Icon, color, highlights }) => (
+          <PageCard key={href} href={href} Icon={Icon} color={color} title={highlights.title} />
+        ))}
       </AnimatePresence>
     </Box>
   );

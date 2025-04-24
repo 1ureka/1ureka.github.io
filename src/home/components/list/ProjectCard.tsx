@@ -16,8 +16,6 @@ export type ProjectCardProps = {
   /** CTA 的文字，例如「開始探索」 */
   actionLabel?: string;
   actionHref: string;
-  /** 預覽圖片的url */
-  images?: string[];
 };
 
 const hoverTransition = "all 0.3s ease" as const;
@@ -39,7 +37,7 @@ export const ProjectCard = ({
   return (
     <BoxM
       className="project-card"
-      initial={{ opacity: 0, y: 50 }}
+      initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -50 }}
       layout
