@@ -11,7 +11,7 @@ export const useOrderState = () => {
   const orderState = useMemo(() => {
     const { data: orderBy } = orderBySchema.safeParse(searchParams.get("orderBy"));
     const { data: order } = orderSchema.safeParse(searchParams.get("order"));
-    return { orderBy: orderBy ?? "time", order: order ?? "asc" };
+    return { orderBy: orderBy ?? "title", order: order ?? "asc" };
   }, [searchParams]);
 
   const handleChange = useCallback(
