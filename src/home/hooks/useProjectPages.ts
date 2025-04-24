@@ -1,4 +1,3 @@
-import WebStoriesRoundedIcon from "@mui/icons-material/WebStoriesRounded";
 import WebAssetRoundedIcon from "@mui/icons-material/WebAssetRounded";
 
 import { z } from "zod";
@@ -6,17 +5,15 @@ import { routes } from "@/routes";
 import { sortObjectArray } from "@/utils/array";
 import { toEntries } from "@/utils/typedBuiltins";
 import { projectsArray } from "./useProjects";
-import type { IconProps } from "@mui/material";
+import type { PageCardProps } from "@/home/components/list/PageCard";
 
 import { useFilterState, useOrderState, filterSchema } from "@/home/hooks/useControl";
 import { useSearch, type Highlight } from "@/hooks/fuse";
 import { useUrl } from "@/hooks/url";
 import { useMemo } from "react";
 
-type Page = {
+type Page = Omit<PageCardProps, "title"> & {
   title: string; // 論壇樣板 | 所有貼文
-  href: string;
-  icon: React.FC<{ sx: IconProps["sx"] }>;
   time: number;
   type: z.infer<typeof filterSchema>;
   progress: number;
@@ -39,49 +36,38 @@ const titleMap: Record<keyof typeof routes, string> = {
   photos_home: "相簿樣板 | 首頁",
 };
 
-const getIcon = (key: keyof typeof routes) => {
-  const isHome = key === "home";
-  if (isHome) return WebStoriesRoundedIcon;
+type ProjectProp = "icon" | "color" | "type" | "time" | "progress";
+const getProjectProperty = (key: keyof typeof routes, prop: ProjectProp): any => {
+  // 尋找相應的專案
   const prefix = key.split("_")[0];
   const result = projectsArray.find((project) => project.id.toLowerCase().includes(prefix));
-  if (!result) return WebAssetRoundedIcon;
-  return result.icon;
-};
 
-const getType = (key: keyof typeof routes) => {
-  const isHome = key === "home";
-  if (isHome) return "rwd";
-  const prefix = key.split("_")[0];
-  const result = projectsArray.find((project) => project.id.toLowerCase().includes(prefix));
-  if (!result) return "desktop";
-  return result.type;
-};
+  // 如果找不到相應專案，提供預設值
+  if (result === undefined) {
+    if (prop === "icon") return WebAssetRoundedIcon;
+    if (prop === "color") return "primary.main";
+    if (prop === "type") return "desktop";
+    if (prop === "time") return Date.now();
+    if (prop === "progress") return 100;
+    return undefined as never;
+  }
 
-const getTime = (key: keyof typeof routes) => {
-  const isHome = key === "home";
-  if (isHome) return Date.now();
-  const prefix = key.split("_")[0];
-  const result = projectsArray.find((project) => project.id.toLowerCase().includes(prefix));
-  if (!result) return Date.now();
-  return result.time;
-};
-
-const getProgress = (key: keyof typeof routes) => {
-  const isHome = key === "home";
-  if (isHome) return 100;
-  const prefix = key.split("_")[0];
-  const result = projectsArray.find((project) => project.id.toLowerCase().includes(prefix));
-  if (!result) return 100;
-  return result.progress ?? 100;
+  // 返回找到的專案屬性
+  if (prop === "icon") return result.icon;
+  if (prop === "color") return result.color;
+  if (prop === "type") return result.type;
+  if (prop === "time") return result.time;
+  if (prop === "progress") return result.progress ?? 100;
 };
 
 const pagesArray: Page[] = toEntries(routes).map(([key, value]) => ({
   title: titleMap[key],
   href: value,
-  icon: getIcon(key),
-  time: getTime(key),
-  type: getType(key),
-  progress: getProgress(key),
+  Icon: getProjectProperty(key, "icon"),
+  color: getProjectProperty(key, "color"),
+  time: getProjectProperty(key, "time"),
+  type: getProjectProperty(key, "type"),
+  progress: getProjectProperty(key, "progress"),
 }));
 
 const pagesArrayForSearch = pagesArray.map((project) => ({ title: project.title }));
