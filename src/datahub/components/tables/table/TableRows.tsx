@@ -1,8 +1,11 @@
-import { Checkbox, Skeleton, TableCell, TableRow, Typography } from "@mui/material";
+import { Box, Checkbox, Skeleton, TableCell, TableRow, Typography } from "@mui/material";
 import { CheckboxProps } from "@mui/material";
+
 import { ellipsisSx } from "@/utils/commonSx";
 import { tableRowsStyles } from "../commonSx";
-import { type TableColumns, useTableRows, rowsPerPage } from "@/datahub/hooks/tablePublic";
+import { useTableRowSelect } from "@/datahub/hooks/tableSelect";
+import { useTableRows } from "@/datahub/hooks/tableRows";
+import type { TableControlParams } from "@/datahub/hooks/tableControl";
 
 const styles = tableRowsStyles;
 
@@ -12,33 +15,45 @@ const CheckboxCell = ({ checked, ...props }: CheckboxProps) => (
   </TableCell>
 );
 
-const TableRows = ({ table, columns }: { table: string; columns: TableColumns }) => {
-  const { sortedRows, isFetching } = useTableRows(table, columns);
+type RowProps = {
+  id: string;
+  values: { value: string | number; align: "left" | "right" }[];
+  index: number;
+};
 
-  if (isFetching || !sortedRows) {
+const Row = ({ id, values, index }: RowProps) => {
+  const { checked, toggle } = useTableRowSelect(id);
+
+  return (
+    <TableRow sx={styles.row(checked, index)}>
+      <CheckboxCell checked={checked} onChange={toggle} />
+
+      {values.map(({ value, align }, j) => (
+        <TableCell key={j} align={align} sx={styles.rowCell(j === values.length - 1)}>
+          <Typography sx={ellipsisSx}>{value}</Typography>
+        </TableCell>
+      ))}
+    </TableRow>
+  );
+};
+
+const TableRows = ({ params }: { params: TableControlParams }) => {
+  const { rows, colSpan, isFetching } = useTableRows(params);
+
+  if (isFetching || !rows) {
     return (
-      <>
-        {[...Array(rowsPerPage)].map((_, i) => (
-          <TableRow key={i} sx={styles.row(false, i)}>
-            <CheckboxCell disabled />
-
-            {columns.map((_, j) => (
-              <TableCell key={j} sx={styles.rowCell(j === columns.length - 1)}>
-                <Skeleton animation="wave" variant="rounded" sx={{ width: 1, maxWidth: "none" }}>
-                  <Typography>載入中...</Typography>
-                </Skeleton>
-              </TableCell>
-            ))}
-          </TableRow>
-        ))}
-      </>
+      <TableRow sx={styles.row(false, 1)}>
+        <TableCell sx={styles.rowCellFull} colSpan={colSpan}>
+          <Typography sx={{ color: "text.secondary", textAlign: "center" }}>載入中...</Typography>
+        </TableCell>
+      </TableRow>
     );
   }
 
-  if (!sortedRows.length) {
+  if (!rows.length) {
     return (
       <TableRow sx={styles.row(false, 1)}>
-        <TableCell sx={styles.rowCellFull} colSpan={columns.length + 1}>
+        <TableCell sx={styles.rowCellFull} colSpan={colSpan}>
           <Typography sx={{ color: "text.secondary", textAlign: "center" }}>
             該資料表 / 檢視表目前沒有任何資料
           </Typography>
@@ -49,21 +64,9 @@ const TableRows = ({ table, columns }: { table: string; columns: TableColumns })
 
   return (
     <>
-      {sortedRows.map((row, i) => {
-        const checked = false;
-
-        return (
-          <TableRow key={`data${i}`} sx={styles.row(checked, i)}>
-            <CheckboxCell checked={checked} />
-
-            {row.map(({ value, align }, j) => (
-              <TableCell key={j} align={align} sx={styles.rowCell(j === columns.length - 1)}>
-                <Typography sx={ellipsisSx}>{value}</Typography>
-              </TableCell>
-            ))}
-          </TableRow>
-        );
-      })}
+      {rows.map((rowProps, i) => (
+        <Row key={rowProps.id} {...rowProps} index={i} />
+      ))}
     </>
   );
 };

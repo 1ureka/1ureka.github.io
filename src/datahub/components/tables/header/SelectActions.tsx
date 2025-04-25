@@ -1,7 +1,10 @@
 import { Box, Button, Tooltip, Typography } from "@mui/material";
 import type { ButtonProps } from "@mui/material";
+
 import { smSpace } from "../commonSx";
-import { useSelectActions } from "@/datahub/hooks/tablePublic";
+import { useTableSelectCount } from "@/datahub/hooks/tableSelect";
+import { useLoadTableControls, useTableControls } from "@/datahub/hooks/tableControl";
+import type { TableControlParams } from "@/datahub/hooks/tableControl";
 
 const secondaryButtonSx: (color: string) => ButtonProps["sx"] = (color) => ({
   "--temporary-color": color,
@@ -26,29 +29,40 @@ const LoadingDisplay = () => (
   </>
 );
 
-const SelectActions = () => {
-  const { isFetching, totalRows } = useSelectActions();
+const Wrapper = () => {
+  const { isFetching, tableControlParams } = useLoadTableControls();
 
-  if (isFetching || !totalRows) {
+  if (isFetching || !tableControlParams) {
     return <LoadingDisplay />;
   }
 
-  const selectedAmount = 0;
+  return <SelectActions params={tableControlParams} />;
+};
+
+const SelectActions = ({ params }: { params: TableControlParams }) => {
+  const { totalRows } = useTableControls(params);
+  const checkedAmount = useTableSelectCount(totalRows);
 
   return (
     <>
       <Typography sx={{ color: "text.secondary" }}>
-        已選取 {selectedAmount} 個 / {totalRows} 個:
+        已選取 {checkedAmount} 個 / {totalRows} 個:
       </Typography>
 
       <Box sx={{ display: "flex", alignItems: "center", gap: smSpace }}>
         <Tooltip title={<Typography variant="body2">以指定值覆蓋選取資料的某個欄位</Typography>} arrow>
-          <Button sx={secondaryButtonSx("var(--mui-palette-primary-main)")}>覆蓋欄位</Button>
+          <span>
+            <Button sx={secondaryButtonSx("var(--mui-palette-primary-main)")} disabled={checkedAmount <= 0}>
+              覆蓋欄位
+            </Button>
+          </span>
         </Tooltip>
-        <Button sx={secondaryButtonSx("var(--mui-palette-error-main)")}>刪除紀錄</Button>
+        <Button sx={secondaryButtonSx("var(--mui-palette-error-main)")} disabled={checkedAmount <= 0}>
+          刪除紀錄
+        </Button>
       </Box>
     </>
   );
 };
 
-export { SelectActions };
+export { Wrapper as SelectActions };
