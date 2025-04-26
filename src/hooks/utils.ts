@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 const useAnchorEl = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -52,4 +52,15 @@ const useStateWithHistory = <T extends State>(initialValue: T, maxLength: number
   return [state, setState, history, prevState] as const;
 };
 
-export { useAnchorEl, useStateWithPrev, useStateWithHistory };
+const useDebounce = <T>(value: T, delay: number): T => {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedValue(value), delay);
+    return () => clearTimeout(timer);
+  }, [value, delay]);
+
+  return debouncedValue;
+};
+
+export { useAnchorEl, useStateWithPrev, useStateWithHistory, useDebounce };
