@@ -58,6 +58,50 @@ function countLinesAndCharsInFile(filePath) {
   }
 }
 
+// 遞歸檢查空資料夾
+function findEmptyDirectories(dir, emptyDirs = []) {
+  try {
+    const entries = readdirSync(dir, { withFileTypes: true });
+
+    // 如果沒有任何項目，這是一個空資料夾
+    if (entries.length === 0) {
+      emptyDirs.push(relative(rootDir, dir));
+      return emptyDirs;
+    }
+
+    let hasNonEmptyContent = false;
+
+    for (const entry of entries) {
+      const fullPath = join(dir, entry.name);
+
+      if (entry.isDirectory()) {
+        // 遞迴檢查子資料夾
+        const subDirEmptyDirs = findEmptyDirectories(fullPath, []);
+
+        // 如果子資料夾有內容或找到了非空資料夾，則當前資料夾非空
+        if (subDirEmptyDirs.length > 0) {
+          emptyDirs.push(...subDirEmptyDirs);
+        } else {
+          hasNonEmptyContent = true;
+        }
+      } else if (entry.isFile()) {
+        // 有檔案就不是空資料夾
+        hasNonEmptyContent = true;
+      }
+    }
+
+    // 如果只包含空資料夾但自身沒有檔案，則也視為空資料夾
+    if (!hasNonEmptyContent) {
+      emptyDirs.push(relative(rootDir, dir));
+    }
+
+    return emptyDirs;
+  } catch (error) {
+    console.error(`檢查空資料夾時出錯 ${dir}:`, error.message);
+    return emptyDirs;
+  }
+}
+
 // 遞歸統計目錄中所有文件的行數和字元數
 function countLinesInDirectory(dir) {
   let totalLines = 0;
@@ -117,3 +161,13 @@ console.log(`開始統計行數及非空字元數（僅包含以下副檔名：$
 const result = countLinesInDirectory(srcDir);
 console.log(`\n總計: ${result.files} 個檔案, ${result.lines} 行程式碼, ${result.nonEmptyChars} 非空字元`);
 console.log(`跳過: ${result.skipped} 個不在白名單中的檔案`);
+
+// 檢查空資料夾
+console.log("\n檢查空資料夾...");
+const emptyDirs = findEmptyDirectories(srcDir);
+if (emptyDirs.length > 0) {
+  console.log(`找到 ${emptyDirs.length} 個空資料夾:`);
+  emptyDirs.forEach((dir) => console.log(` - ${dir}`));
+} else {
+  console.log("沒有找到空資料夾");
+}
