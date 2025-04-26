@@ -34,8 +34,15 @@ export const createUseDynamicSelect = () => {
       }
     },
     toggleAll: () => {
-      const { selectAll } = get();
-      set({ selectAll: !selectAll, checked: new Set(), unchecked: new Set() });
+      const { selectAll: wasSelectAll, unchecked } = get();
+
+      let selectAll = true;
+      // 如果本來就是全選，且真的沒取消任何勾選 → 取消全選
+      if (wasSelectAll && unchecked.size === 0) {
+        selectAll = false;
+      }
+
+      set({ selectAll, checked: new Set(), unchecked: new Set() });
     },
     reset: () => {
       set({ selectAll: false, checked: new Set(), unchecked: new Set() });
