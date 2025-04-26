@@ -3,8 +3,8 @@ import type { InputProps, TextFieldProps } from "@mui/material";
 import ArrowDropDownRoundedIcon from "@mui/icons-material/ArrowDropDownRounded";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 
-import { smSpace } from "./commonSx";
-import { useTableSelect } from "@/datahub/hooks/tablePublic";
+import { smSpace } from "../commonSx";
+import { useTablePicker } from "@/datahub/hooks/tableSelect";
 
 const inputSx: InputProps["sx"] = {
   borderRadius: 1,
@@ -21,7 +21,7 @@ const FieldProps: TextFieldProps = {
   variant: "filled",
 };
 
-const TableSelectLoading = () => (
+const LoadingDisplay = () => (
   <Box sx={{ position: "relative" }}>
     <TextField {...FieldProps} disabled slotProps={{ input: { sx: inputSx } }} />
     <Box sx={{ position: "absolute", inset: 0, display: "grid", placeItems: "center", color: "text.secondary" }}>
@@ -30,10 +30,10 @@ const TableSelectLoading = () => (
   </Box>
 );
 
-const TableSelect = () => {
-  const { options, selectedOption, handleChange, isFetching } = useTableSelect();
+const TablePicker = () => {
+  const { options, selectedOption, handleChange, isFetching } = useTablePicker();
 
-  if (!options || !selectedOption || isFetching) return <TableSelectLoading />;
+  if (!options || !selectedOption || isFetching) return <LoadingDisplay />;
 
   return (
     <TextField
@@ -75,4 +75,4 @@ const TableSelect = () => {
   );
 };
 
-export { TableSelect };
+export { TablePicker };

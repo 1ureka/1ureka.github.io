@@ -3,7 +3,11 @@ import SortRoundedIcon from "@mui/icons-material/SortRounded";
 
 import { generateHeadCellSx, smSpace } from "../commonSx";
 import { ellipsisSx } from "@/utils/commonSx";
-import { type TableColumns, useTableHead } from "@/datahub/hooks/tablePublic";
+
+import { useMemo } from "react";
+import { useTableAllSelect } from "@/datahub/hooks/tableSelect";
+import { useTableControls } from "@/datahub/hooks/tableControl";
+import type { TableControlParams } from "@/datahub/hooks/tableControl";
 
 const captionBgSx = { p: 0.5, borderRadius: 1, bgcolor: "divider" };
 const captionSx = { textTransform: "uppercase", lineHeight: 1, color: "text.secondary" };
@@ -23,18 +27,23 @@ const Captions = ({ isPk, type }: { isPk: boolean; type: string }) => (
   </Box>
 );
 
-const TableHeader = ({ columns }: { columns: TableColumns }) => {
-  const { orderByIndex, order, createToggleHandler } = useTableHead(columns);
+const useTableHeadCheckbox = (params: TableControlParams) => {
+  const { checked, indeterminate, toggle: toggleCheckedAll } = useTableAllSelect(params.totalRows);
+  const unchecked = useMemo(() => !checked && !indeterminate, [checked, indeterminate]);
 
-  const checked = Math.random() > 0.5;
-  const indeterminate = Math.random() > 0.5;
-  const unchecked = !checked && !indeterminate;
+  return { toggleCheckedAll, checked, unchecked, indeterminate };
+};
+
+const TableHead = ({ params }: { params: TableControlParams }) => {
+  const { tableColumns, orderByIndex, order, createOrderToggler } = useTableControls(params);
+  const { toggleCheckedAll, checked, unchecked, indeterminate } = useTableHeadCheckbox(params);
 
   return (
     <TableRow>
       <TableCell padding="checkbox" sx={generateHeadCellSx("top-left")}>
         <Checkbox
           color="default"
+          onChange={toggleCheckedAll}
           indeterminate={indeterminate}
           checked={checked}
           size="small"
@@ -46,13 +55,13 @@ const TableHeader = ({ columns }: { columns: TableColumns }) => {
         />
       </TableCell>
 
-      {columns.map((column, i) => {
+      {tableColumns.map((column, i) => {
         const { cid, name, type, align } = column;
         const isPk = column.pk >= 1;
         const active = orderByIndex === i;
         const scale = active ? (order === "desc" ? 1 : -1) : -1;
         const justifyContent = align === "right" ? "flex-end" : "flex-start";
-        const isLast = i === columns.length - 1;
+        const isLast = i === tableColumns.length - 1;
 
         return (
           <TableCell key={cid} sx={{ minWidth: "10rem", ...generateHeadCellSx(isLast ? "top-right" : "no-radius") }}>
@@ -62,7 +71,7 @@ const TableHeader = ({ columns }: { columns: TableColumns }) => {
                 direction={active ? order : "asc"}
                 IconComponent={SortRoundedIcon}
                 slotProps={{ icon: { sx: { transform: `scaleY(${scale})` } } }}
-                onClick={createToggleHandler(i)}
+                onClick={createOrderToggler(i)}
               >
                 <Typography variant="body2">{name}</Typography>
               </TableSortLabel>
@@ -71,8 +80,10 @@ const TableHeader = ({ columns }: { columns: TableColumns }) => {
           </TableCell>
         );
       })}
+
+      {tableColumns.length === 0 && <TableCell sx={generateHeadCellSx("top-right")} colSpan={1} />}
     </TableRow>
   );
 };
 
-export { TableHeader };
+export { TableHead };

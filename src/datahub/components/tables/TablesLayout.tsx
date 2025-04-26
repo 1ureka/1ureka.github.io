@@ -2,10 +2,10 @@ import { Box, Button, ButtonProps, Divider, Stack } from "@mui/material";
 import ArrowDropDownRoundedIcon from "@mui/icons-material/ArrowDropDownRounded";
 
 import { mdSpace } from "./commonSx";
-import { ColumnSelect } from "./ColumnSelect";
-import { TableSelect } from "./TableSelect";
+import { TablePicker } from "./header/TablePicker";
+import { ColumnPicker } from "./header/ColumnPicker";
+import { SelectActions } from "./header/SelectActions";
 import { Table } from "./table/Table";
-import { SelectActions } from "./table/SelectActions";
 
 const primaryButtonSx: (color: string) => ButtonProps["sx"] = (color) => ({
   "--temporary-color": color,
@@ -20,8 +20,8 @@ const Layout = () => {
     <Stack>
       <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: mdSpace }}>
         <Box sx={{ display: "flex", alignItems: "stretch", gap: mdSpace }}>
-          <TableSelect />
-          <ColumnSelect />
+          <TablePicker />
+          <ColumnPicker />
         </Box>
 
         <Box sx={{ display: "flex", alignItems: "center", gap: mdSpace }}>

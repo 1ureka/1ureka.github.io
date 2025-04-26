@@ -3,9 +3,10 @@ import { List, ListItem, ListItemButton, ListItemText } from "@mui/material";
 import type { CheckboxProps, IconButtonProps } from "@mui/material";
 import FilterAltRoundedIcon from "@mui/icons-material/FilterAltRounded";
 
+import { smSpace } from "../commonSx";
 import { useState } from "react";
-import { smSpace } from "./commonSx";
-import { useColumnSelect } from "@/datahub/hooks/tablePublic";
+import { useLoadTableControls, useTableControls } from "@/datahub/hooks/tableControl";
+import type { TableControlParams } from "@/datahub/hooks/tableControl";
 
 const ListCheckBoxProps: CheckboxProps = {
   edge: "start",
@@ -24,7 +25,7 @@ const iconButtonSx: IconButtonProps["sx"] = {
   aspectRatio: 1,
 };
 
-const ColumnSelectLoading = () => (
+const LoadingDisplay = () => (
   <Tooltip title={<Typography variant="body2">篩選欄位</Typography>} arrow>
     <span style={{ position: "relative" }}>
       <IconButton loading centerRipple={false} size="small" sx={iconButtonSx}>
@@ -46,9 +47,18 @@ const ColumnSelectLoading = () => (
   </Tooltip>
 );
 
-const ColumnSelect = () => {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+const Wrapper = () => {
+  const { isFetching, tableControlParams } = useLoadTableControls();
 
+  if (isFetching || !tableControlParams) {
+    return <LoadingDisplay />;
+  }
+
+  return <ColumnPicker params={tableControlParams} />;
+};
+
+const ColumnPicker = ({ params }: { params: TableControlParams }) => {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const handleOpen = (e: React.MouseEvent<HTMLElement>) => {
     setAnchorEl((prev) => (prev ? null : e.currentTarget));
   };
@@ -56,10 +66,9 @@ const ColumnSelect = () => {
     setAnchorEl(null);
   };
 
-  const { isFetching, options, allChecked, allUnchecked, createToggleAllColumns, createToggleHandler } =
-    useColumnSelect();
-
-  if (isFetching || !options) return <ColumnSelectLoading />;
+  const { selectableColumns, toggleAllColumns, createColumnToggler } = useTableControls(params);
+  const checked = selectableColumns.every((column) => !column.hidden);
+  const indeterminate = selectableColumns.some((column) => !column.hidden) && !checked;
 
   return (
     <>
@@ -88,17 +97,17 @@ const ColumnSelect = () => {
           </ListItem>
 
           <ListItem disablePadding>
-            <ListItemButton role={undefined} onClick={createToggleAllColumns(options.length)} dense>
-              <Checkbox {...ListCheckBoxProps} checked={allChecked} indeterminate={!allChecked && !allUnchecked} />
+            <ListItemButton role={undefined} onClick={toggleAllColumns} dense>
+              <Checkbox {...ListCheckBoxProps} checked={checked} indeterminate={indeterminate} />
               <ListItemText primary={"顯示所有"} />
             </ListItemButton>
           </ListItem>
 
           <Divider sx={{ my: 0.5 }} />
 
-          {options.map(({ cid, hidden, name, type }) => (
+          {selectableColumns.map(({ cid, hidden, name, type }) => (
             <ListItem key={cid} disablePadding>
-              <ListItemButton role={undefined} onClick={createToggleHandler(cid)} dense>
+              <ListItemButton role={undefined} onClick={createColumnToggler(cid)} dense>
                 <Checkbox {...ListCheckBoxProps} checked={!hidden} />
                 <ListItemText
                   sx={{ display: "flex", width: 1, gap: smSpace, justifyContent: "space-between", my: 0.5 }}
@@ -114,4 +123,4 @@ const ColumnSelect = () => {
   );
 };
 
-export { ColumnSelect };
+export { Wrapper as ColumnPicker };
