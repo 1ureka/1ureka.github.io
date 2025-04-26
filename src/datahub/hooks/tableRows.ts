@@ -47,7 +47,7 @@ const useTableRows = (params: TableControlParams) => {
     }));
   }, [tableColumns, data, isFetching]);
 
-  return { rows, colSpan: tableColumns.length + 1, isFetching };
+  return { rows, columns: tableColumns, isFetching };
 };
 
 export { useTableRows, rowsPerPage };

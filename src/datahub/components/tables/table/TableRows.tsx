@@ -4,7 +4,7 @@ import { CheckboxProps } from "@mui/material";
 import { ellipsisSx } from "@/utils/commonSx";
 import { tableRowsStyles } from "../commonSx";
 import { useTableRowSelect } from "@/datahub/hooks/tableSelect";
-import { useTableRows } from "@/datahub/hooks/tableRows";
+import { rowsPerPage, useTableRows } from "@/datahub/hooks/tableRows";
 import type { TableControlParams } from "@/datahub/hooks/tableControl";
 
 const styles = tableRowsStyles;
@@ -38,15 +38,28 @@ const Row = ({ id, values, index }: RowProps) => {
 };
 
 const TableRows = ({ params }: { params: TableControlParams }) => {
-  const { rows, colSpan, isFetching } = useTableRows(params);
+  const { rows, columns, isFetching } = useTableRows(params);
+  const colSpan = columns.length + 1; // +1 是 checkbox
 
   if (isFetching || !rows) {
     return (
-      <TableRow sx={styles.row(false, 1)}>
-        <TableCell sx={styles.rowCellFull} colSpan={colSpan}>
-          <Typography sx={{ color: "text.secondary", textAlign: "center" }}>載入中...</Typography>
-        </TableCell>
-      </TableRow>
+      <>
+        {[...Array(rowsPerPage)].map((_, i) => (
+          <TableRow key={i} sx={tableRowsStyles.row(false, i)}>
+            <CheckboxCell checked={false} disabled />
+
+            {columns.map(({ align }, j) => (
+              <TableCell key={j} sx={styles.rowCell(j === columns.length - 1)}>
+                <Box sx={{ display: "flex", justifyContent: align === "right" ? "flex-end" : "flex-start" }}>
+                  <Skeleton variant="rounded" animation="wave" sx={{ maxWidth: "none", width: 0.5 }}>
+                    <Typography sx={ellipsisSx}>載入中. . .</Typography>
+                  </Skeleton>
+                </Box>
+              </TableCell>
+            ))}
+          </TableRow>
+        ))}
+      </>
     );
   }
 
