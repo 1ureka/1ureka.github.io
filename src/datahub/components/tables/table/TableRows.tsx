@@ -41,6 +41,16 @@ const TableRows = ({ params }: { params: TableControlParams }) => {
   const { rows, columns, isFetching } = useTableRows(params);
   const colSpan = columns.length + 1; // +1 是 checkbox
 
+  if (columns.length === 0) {
+    return (
+      <TableRow sx={styles.row(false, 1)}>
+        <TableCell sx={styles.rowCellFull} colSpan={2}>
+          <Typography sx={{ color: "text.secondary", textAlign: "center" }}>至少要選取一個欄位才能顯示資料</Typography>
+        </TableCell>
+      </TableRow>
+    );
+  }
+
   if (isFetching || !rows) {
     return (
       <>

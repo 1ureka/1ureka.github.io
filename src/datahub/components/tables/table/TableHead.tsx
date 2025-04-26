@@ -80,6 +80,8 @@ const TableHead = ({ params }: { params: TableControlParams }) => {
           </TableCell>
         );
       })}
+
+      {tableColumns.length === 0 && <TableCell sx={generateHeadCellSx("top-right")} colSpan={1} />}
     </TableRow>
   );
 };
