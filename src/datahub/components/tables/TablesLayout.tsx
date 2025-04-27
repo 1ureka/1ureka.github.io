@@ -1,19 +1,11 @@
-import { Box, Button, ButtonProps, Divider, Stack } from "@mui/material";
-import ArrowDropDownRoundedIcon from "@mui/icons-material/ArrowDropDownRounded";
-
+import { Box, Divider, Stack } from "@mui/material";
 import { mdSpace } from "./commonSx";
+
 import { TablePicker } from "./header/TablePicker";
 import { ColumnPicker } from "./header/ColumnPicker";
 import { SelectActions } from "./header/SelectActions";
+import { TableActions } from "./header/TableActions";
 import { Table } from "./table/Table";
-
-const primaryButtonSx: (color: string) => ButtonProps["sx"] = (color) => ({
-  "--temporary-color": color,
-  bgcolor: "color-mix(in srgb, var(--temporary-color) 90%, var(--mui-palette-text-primary) 10%)",
-  "&:hover": { bgcolor: "color-mix(in srgb, var(--temporary-color) 80%, var(--mui-palette-text-primary) 20%)" },
-  color: "color-mix(in srgb, var(--temporary-color) 5%, var(--mui-palette-background-paper) 95%)",
-  px: 1.5,
-});
 
 const Layout = () => {
   return (
@@ -26,11 +18,8 @@ const Layout = () => {
 
         <Box sx={{ display: "flex", alignItems: "center", gap: mdSpace }}>
           <SelectActions />
-
           <Divider flexItem orientation="vertical" />
-          <Button sx={primaryButtonSx("var(--mui-palette-primary-main)")} endIcon={<ArrowDropDownRoundedIcon />}>
-            標準化
-          </Button>
+          <TableActions />
         </Box>
       </Box>
 

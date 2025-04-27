@@ -4,7 +4,7 @@ import type { CheckboxProps, IconButtonProps } from "@mui/material";
 import FilterAltRoundedIcon from "@mui/icons-material/FilterAltRounded";
 
 import { smSpace } from "../commonSx";
-import { useState } from "react";
+import { useAnchorEl } from "@/hooks/utils";
 import { useLoadTableControls, useTableControls } from "@/datahub/hooks/tableControl";
 import type { TableControlParams } from "@/datahub/hooks/tableControl";
 
@@ -58,13 +58,7 @@ const Wrapper = () => {
 };
 
 const ColumnPicker = ({ params }: { params: TableControlParams }) => {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const handleOpen = (e: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl((prev) => (prev ? null : e.currentTarget));
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  const { anchorEl, handleClose, handleOpen } = useAnchorEl();
 
   const { selectableColumns, toggleAllColumns, createColumnToggler } = useTableControls(params);
   const checked = selectableColumns.every((column) => !column.hidden);
