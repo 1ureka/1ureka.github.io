@@ -94,14 +94,15 @@ function App() {
         >
           <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
             <AutoAwesomeRoundedIcon
+              className="mode-light"
               sx={{ fontSize: "2.8rem", bgcolor: "text.secondary", borderRadius: 1, color: "background.default", p: 1 }}
             />
             <Typography
               variant="h4"
               component="h2"
-              sx={{ fontFamily: "timemachine-wa", fontSize: "1.85rem", display: { xs: "none", sm: "block" } }}
+              sx={{ fontSize: "1.85rem", lineHeight: 1, translate: "0 2px", display: { xs: "none", sm: "block" } }}
             >
-              對話樣板
+              Blender RAG
             </Typography>
           </Box>
 
@@ -133,6 +134,7 @@ function App() {
         >
           <Stack sx={{ alignItems: "center" }}>
             <AutoAwesomeRoundedIcon
+              className="mode-light"
               sx={{
                 fontSize: "6rem",
                 bgcolor: "text.secondary",
