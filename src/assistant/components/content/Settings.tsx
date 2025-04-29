@@ -1,9 +1,19 @@
-import { Box, IconButton, Popover, Stack, Switch, TextField, Tooltip, Typography } from "@mui/material";
+import { Box, Button, IconButton, Popover, Stack, Switch, TextField, Tooltip, Typography } from "@mui/material";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import { useAnchorEl } from "@/hooks/utils";
+import { useState } from "react";
 
 const Settings = () => {
   const { anchorEl, handleOpen, handleClose } = useAnchorEl();
+  const [enabled, setEnabled] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const handleSave = async () => {
+    setLoading(true);
+    await new Promise((res) => setTimeout(res, 1500));
+    setLoading(false);
+    handleClose();
+  };
 
   return (
     <>
@@ -36,7 +46,7 @@ const Settings = () => {
             </Typography>
           </Box>
 
-          <Switch />
+          <Switch checked={enabled} onChange={(e) => setEnabled(e.target.checked)} />
         </Box>
 
         <Stack sx={{ gap: 2 }}>
@@ -47,8 +57,33 @@ const Settings = () => {
             </Typography>
           </Box>
 
-          <TextField variant="outlined" size="small" placeholder="http://localhost:7860" fullWidth />
+          <Tooltip title={!enabled && <Typography variant="body2">請先啟用自訂 API 服務位址</Typography>} followCursor>
+            <TextField
+              disabled={!enabled}
+              variant="outlined"
+              size="small"
+              placeholder="http://localhost:7860"
+              fullWidth
+            />
+          </Tooltip>
         </Stack>
+
+        <Box sx={{ display: "flex", mt: 4, gap: 1.5, color: "text.secondary" }}>
+          <Button
+            variant="contained"
+            fullWidth
+            disableElevation
+            color="inherit"
+            onClick={handleClose}
+            disabled={loading}
+            sx={{ "&:hover": { bgcolor: "action.selected" } }}
+          >
+            取消
+          </Button>
+          <Button variant="contained" fullWidth disableElevation onClick={handleSave} loading={loading}>
+            確認
+          </Button>
+        </Box>
       </Popover>
     </>
   );
