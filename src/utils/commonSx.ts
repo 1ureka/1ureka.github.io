@@ -23,3 +23,7 @@ export const generateMuiColorMix = (color1: string, color2: string, percentage: 
 export const generateRadius = (numbers: [number, number, number, number]): SxProps<Theme> => ({
   borderRadius: ({ shape }) => numbers.map((n) => `${n * shape.borderRadius}px`).join(" "),
 });
+
+export const generateStretchRadius = ([horizontal, vertical]: [number, number]): SxProps<Theme> => ({
+  borderRadius: ({ shape }) => `${horizontal * shape.borderRadius}px / ${vertical * shape.borderRadius}px`,
+});
