@@ -9,6 +9,7 @@ import { generateStretchRadius } from "@/utils/commonSx";
 import { useApiStatus } from "@/assistant/hooks/api";
 import { useState } from "react";
 import { z } from "zod";
+import { ChatMessage } from "../chat/ChatMessage";
 
 const examples = [
   { Icon: DescriptionRoundedIcon, title: "在 Blender 中，材質節點是什麼？", description: "功能概要介紹" },
@@ -26,12 +27,17 @@ const OutlinedInteractionSx = {
   transition: "outline 0.15s ease",
 } as const;
 
+const warningMessage = `
+API 已斷開連線或正在啟動中，詳情請參考：
+https://github.com/1ureka/1ureka.blender.docs.rag
+`;
+
 const ExampleBlock = ({ Icon, title, description }: (typeof examples)[number]) => {
   const apiStatus = useApiStatus();
   const isConnected = apiStatus === "connected";
 
   const handleClick = () => {
-    if (!isConnected) return console.warn("API 已斷開連線或正在啟動中");
+    if (!isConnected) return console.warn(warningMessage);
     console.log("API 已連線，執行相關操作");
   };
 
@@ -88,14 +94,14 @@ const CTA = () => {
   const handleClick = () => {
     const result = InputSchema.safeParse(input);
     if (!result.success) return console.warn(result.error.issues[0].message);
-    if (!isConnected) return console.warn("API 已斷開連線或正在啟動中");
+    if (!isConnected) return console.warn(warningMessage);
 
     console.log("API 已連線，執行相關操作");
     setInput("");
   };
 
   return (
-    <Box sx={{ display: "flex", alignItems: "flex-end", gap: 2 }}>
+    <Box sx={{ display: "flex", alignItems: "flex-end", gap: 2, width: 1, maxWidth: 750 }}>
       <TextField
         variant="outlined"
         fullWidth
@@ -134,7 +140,7 @@ const Main = () => {
       component="main"
       sx={{ position: "relative", justifyContent: "space-between", alignItems: "center", flex: 1, p: 3.5, gap: 10 }}
     >
-      <Stack sx={{ alignItems: "center" }}>
+      <Stack sx={{ alignItems: "center", textAlign: "center" }}>
         <AutoAwesomeRoundedIcon
           className="mode-light"
           sx={{
@@ -157,12 +163,34 @@ const Main = () => {
         </Typography>
       </Stack>
 
-      <Stack sx={{ alignItems: "stretch", maxWidth: 750, gap: 5 }}>
-        <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 2 }}>
+      <Stack sx={{ alignItems: "center", gap: 5, width: 1 }}>
+        {/* <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr 1fr" },
+            gap: 2,
+            width: 1,
+            maxWidth: 750,
+          }}
+        >
           {examples.map(({ Icon, title, description }, i) => (
             <ExampleBlock key={i} Icon={Icon} title={title} description={description} />
           ))}
-        </Box>
+        </Box> */}
+
+        <ChatMessage
+          content="在 Blender 中，材質節點是什麼？"
+          isUser={true}
+          timestamp={Date.now()}
+          isThinking={false}
+        />
+
+        <ChatMessage
+          content="材質節點是 Blender 中用來定義材質的工具，透過節點連接，可以創建複雜的材質效果。 材質節點是 Blender 中用來定義材質的工具，透過節點連接，可以創建複雜的材質效果。 材質節點是 Blender 中用來定義材質的工具，透過節點連接，可以創建複雜的材質效果。 材質節點是 Blender 中用來定義材質的工具，透過節點連接，可以創建複雜的材質效果。"
+          isUser={false}
+          timestamp={Date.now()}
+          isThinking={true}
+        />
 
         <CTA />
       </Stack>
