@@ -11,7 +11,7 @@ function AppWrapper({ children }: { children: React.ReactNode }) {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Toaster />
+      <Toaster position="bottom-right" />
       <QueryClientProvider client={queryClient}>
         <ErrorBoundary fallbackRender={(props) => <AppError {...props} />}>{children}</ErrorBoundary>
       </QueryClientProvider>
