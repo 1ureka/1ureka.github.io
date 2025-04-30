@@ -4,7 +4,11 @@ import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
 import PsychologyRoundedIcon from "@mui/icons-material/PsychologyRounded";
 import QuestionMarkRoundedIcon from "@mui/icons-material/QuestionMarkRounded";
 import NavigationRoundedIcon from "@mui/icons-material/NavigationRounded";
+
 import { generateStretchRadius } from "@/utils/commonSx";
+import { useApiStatus } from "@/assistant/hooks/api";
+import { useState } from "react";
+import { z } from "zod";
 
 const examples = [
   { Icon: DescriptionRoundedIcon, title: "在 Blender 中，材質節點是什麼？", description: "功能概要介紹" },
@@ -22,39 +26,107 @@ const OutlinedInteractionSx = {
   transition: "outline 0.15s ease",
 } as const;
 
-const ExampleBlock = ({ Icon, title, description }: (typeof examples)[number]) => (
-  <Stack
-    sx={{
-      position: "relative",
-      p: 3,
-      bgcolor: "background.paper",
-      overflow: "hidden",
-      ...OutlinedInteractionSx,
-      ...generateStretchRadius([2, 1.8]),
-    }}
-  >
-    <Box sx={{ pb: 1.5 }}>
-      <Icon
+const ExampleBlock = ({ Icon, title, description }: (typeof examples)[number]) => {
+  const apiStatus = useApiStatus();
+  const isConnected = apiStatus === "connected";
+
+  const handleClick = () => {
+    if (!isConnected) return console.warn("API 已斷開連線或正在啟動中");
+    console.log("API 已連線，執行相關操作");
+  };
+
+  return (
+    <Stack
+      sx={{
+        position: "relative",
+        p: 3,
+        bgcolor: "background.paper",
+        overflow: "hidden",
+        ...OutlinedInteractionSx,
+        ...generateStretchRadius([2, 1.8]),
+      }}
+    >
+      <Box sx={{ pb: 1.5 }}>
+        <Icon
+          sx={{
+            fontSize: "3rem",
+            bgcolor: "text.secondary",
+            color: "background.default",
+            p: 1,
+            ...generateStretchRadius([1.8, 1.6]),
+          }}
+        />
+      </Box>
+
+      <Typography variant="h6" component="h6">
+        {title}
+      </Typography>
+      <Typography variant="body1" component="p" sx={{ color: "text.secondary" }}>
+        {description}
+      </Typography>
+
+      <IconButton
+        centerRipple={false}
+        sx={{ position: "absolute", inset: 0, ...generateStretchRadius([2, 1.8]) }}
+        onClick={handleClick}
+      />
+    </Stack>
+  );
+};
+
+const InputSchema = z.string().max(500, "問題過長，請簡化後再試一次").trim().min(1, "請輸入問題");
+
+const CTA = () => {
+  const apiStatus = useApiStatus();
+  const isConnected = apiStatus === "connected";
+
+  const [input, setInput] = useState<string>("");
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInput(e.target.value);
+  };
+
+  const handleClick = () => {
+    const result = InputSchema.safeParse(input);
+    if (!result.success) return console.warn(result.error.issues[0].message);
+    if (!isConnected) return console.warn("API 已斷開連線或正在啟動中");
+
+    console.log("API 已連線，執行相關操作");
+    setInput("");
+  };
+
+  return (
+    <Box sx={{ display: "flex", alignItems: "flex-end", gap: 2 }}>
+      <TextField
+        variant="outlined"
+        fullWidth
+        multiline
+        maxRows={5}
+        placeholder="問我任何關於 Blender 手冊的問題..."
+        value={input}
+        onChange={handleInputChange}
         sx={{
-          fontSize: "3rem",
-          bgcolor: "text.secondary",
-          color: "background.default",
-          p: 1,
-          ...generateStretchRadius([1.8, 1.6]),
+          "& fieldset": { border: "none" },
+          "& > div": { px: 3 },
+          bgcolor: "background.paper",
+          ...OutlinedInteractionSx,
+          ...generateStretchRadius([2, 1.8]),
         }}
       />
+
+      <Box sx={{ ...OutlinedInteractionSx, ...generateStretchRadius([2, 1.8]), height: 56, outlineOffset: -1 }}>
+        <Button
+          variant="contained"
+          endIcon={<NavigationRoundedIcon sx={{ rotate: "90deg" }} />}
+          sx={{ textWrap: "nowrap", height: 1, ...generateStretchRadius([2, 1.8]) }}
+          disableElevation
+          onClick={handleClick}
+        >
+          <Typography>送出</Typography>
+        </Button>
+      </Box>
     </Box>
-
-    <Typography variant="h6" component="h6">
-      {title}
-    </Typography>
-    <Typography variant="body1" component="p" sx={{ color: "text.secondary" }}>
-      {description}
-    </Typography>
-
-    <IconButton centerRipple={false} sx={{ position: "absolute", inset: 0, ...generateStretchRadius([2, 1.8]) }} />
-  </Stack>
-);
+  );
+};
 
 const Main = () => {
   return (
@@ -92,32 +164,7 @@ const Main = () => {
           ))}
         </Box>
 
-        <Box sx={{ display: "flex", alignItems: "flex-end", gap: 2 }}>
-          <TextField
-            variant="outlined"
-            fullWidth
-            multiline
-            maxRows={5}
-            placeholder="問我任何關於 Blender 手冊的問題..."
-            sx={{
-              "& fieldset": { border: "none" },
-              "& > div": { px: 3 },
-              bgcolor: "background.paper",
-              ...OutlinedInteractionSx,
-              ...generateStretchRadius([2, 1.8]),
-            }}
-          />
-          <Box sx={{ ...OutlinedInteractionSx, ...generateStretchRadius([2, 1.8]), height: 56, outlineOffset: -1 }}>
-            <Button
-              variant="contained"
-              endIcon={<NavigationRoundedIcon sx={{ rotate: "90deg" }} />}
-              sx={{ textWrap: "nowrap", height: 1, ...generateStretchRadius([2, 1.8]) }}
-              disableElevation
-            >
-              <Typography>送出</Typography>
-            </Button>
-          </Box>
-        </Box>
+        <CTA />
       </Stack>
     </Stack>
   );
