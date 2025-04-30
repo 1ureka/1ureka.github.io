@@ -1,0 +1,1 @@
+import{r as l}from"./Toast-DyYNk4-H.js";const c=()=>{const[n,e]=l.useState(null),r=l.useCallback(s=>e(a=>a?null:s.currentTarget),[]),t=l.useCallback(()=>e(null),[]);return{anchorEl:n,handleOpen:r,handleClose:t}};export{c as u};
