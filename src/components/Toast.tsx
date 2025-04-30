@@ -1,7 +1,7 @@
 import "@/components/toast.css";
 import toast from "react-hot-toast";
 import { Toaster as T, type ToasterProps } from "react-hot-toast";
-import { useEffect, useRef, useState } from "react";
+import { isValidElement, useEffect, useRef, useState } from "react";
 
 import { Box, IconButton, LinearProgress, Stack, Typography } from "@mui/material";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
@@ -70,7 +70,7 @@ const ToastContent = ({ type, duration, args, onClose }: ToastContentProps) => {
 
       <Box sx={{ pt: 1, pb: 0.5 }}>
         <Typography variant="body2" sx={{ opacity: 0.8, ml: "-20px", ...ellipsisSx, WebkitLineClamp: 3 }}>
-          {args.join(", ")}
+          {args.length > 1 ? args.join(", ") : isValidElement(args[0]) ? args[0] : String(args[0])}
         </Typography>
       </Box>
 
