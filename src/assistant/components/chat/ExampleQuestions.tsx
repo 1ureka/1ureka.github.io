@@ -1,12 +1,17 @@
 import { Box } from "@mui/material";
 import { ExampleQuestion } from "./ExampleQuestion";
 import { exampleQuestions } from "@/assistant/utils/examples";
-import { useApiStatus } from "@/assistant/hooks/api";
+import { useApiStatus, useChatMessages } from "@/assistant/hooks/api";
 import { warningMessage } from "./WarnMessage";
 
 const ExampleQuestions = () => {
   const apiStatus = useApiStatus();
   const isConnected = apiStatus === "connected";
+  const messages = useChatMessages();
+
+  if (messages.length > 0) {
+    return null;
+  }
 
   return (
     <Box
