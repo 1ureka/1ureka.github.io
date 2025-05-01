@@ -7,14 +7,7 @@ const ChatMessages = () => {
   return (
     <>
       {messages.map(({ timestamp, role, content, status }) => (
-        <ChatMessage
-          key={timestamp}
-          timestamp={timestamp}
-          isUser={role === "user"}
-          isThinking={status === "loading"}
-          isError={status === "error"}
-          content={content}
-        />
+        <ChatMessage key={timestamp} timestamp={timestamp} isUser={role === "user"} status={status} content={content} />
       ))}
     </>
   );

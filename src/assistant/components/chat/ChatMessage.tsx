@@ -1,6 +1,7 @@
 import { Avatar, Box, keyframes, Stack, Typography } from "@mui/material";
 import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
 import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
+import RestartAltRoundedIcon from "@mui/icons-material/RestartAltRounded";
 
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -10,6 +11,7 @@ import { formatRelativeTime } from "@/utils/formatters";
 import { generateStretchRadius } from "@/utils/commonSx";
 import { useThinkingMessage } from "@/assistant/hooks/utils";
 import { components } from "../markdown/MarkdownComponents";
+import { FilledButton } from "./FilledButton";
 
 const fadeIn = keyframes`
   0% {
@@ -61,12 +63,11 @@ type ChatMessageProps = {
   content: string;
   isUser: boolean;
   timestamp: number;
-  isThinking: boolean;
-  isError: boolean;
+  status: "loading" | "streaming" | "finished" | "error";
 };
 
-const ChatMessage = ({ content, isUser, timestamp, isThinking, isError }: ChatMessageProps) => {
-  const thinkingText = useThinkingMessage(isThinking);
+const ChatMessage = ({ content, isUser, timestamp, status }: ChatMessageProps) => {
+  const thinkingText = useThinkingMessage(status === "loading");
 
   return (
     <Stack
@@ -103,11 +104,11 @@ const ChatMessage = ({ content, isUser, timestamp, isThinking, isError }: ChatMe
             }}
           />
 
-          {isThinking ? (
+          {status === "loading" ? (
             <Typography variant="subtitle1" component="span" sx={shimmerTextSx}>
               {thinkingText}
             </Typography>
-          ) : isError ? (
+          ) : status === "error" ? (
             <Typography variant="subtitle1" component="span" sx={{ color: "error.main" }}>
               發生錯誤，請稍後再試
             </Typography>
@@ -118,6 +119,8 @@ const ChatMessage = ({ content, isUser, timestamp, isThinking, isError }: ChatMe
           )}
         </Box>
       </Box>
+
+      {!isUser && status === "finished" && <FilledButton title="重新生成" Icon={RestartAltRoundedIcon} />}
     </Stack>
   );
 };
