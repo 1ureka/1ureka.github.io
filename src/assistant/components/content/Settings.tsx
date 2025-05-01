@@ -13,7 +13,8 @@ const SettingsMenu = ({ onClose }: { onClose: () => void }) => {
   const handleSave = async () => {
     if (!enabled) {
       setApiUrl(defaultApiUrl);
-      return onClose();
+      onClose();
+      return;
     }
 
     const urlSchema = z.string().url();
@@ -25,7 +26,13 @@ const SettingsMenu = ({ onClose }: { onClose: () => void }) => {
   };
 
   return (
-    <>
+    <Box
+      component="form"
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleSave();
+      }}
+    >
       <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 1.5, mb: 3 }}>
         <Box>
           <Typography variant="subtitle1">啟用自訂 API 服務位址</Typography>
@@ -69,11 +76,11 @@ const SettingsMenu = ({ onClose }: { onClose: () => void }) => {
         >
           取消
         </Button>
-        <Button variant="contained" fullWidth disableElevation onClick={handleSave}>
+        <Button variant="contained" fullWidth disableElevation type="submit">
           確認
         </Button>
       </Box>
-    </>
+    </Box>
   );
 };
 
