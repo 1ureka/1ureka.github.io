@@ -1,15 +1,13 @@
 import { Box } from "@mui/material";
 import { ExampleQuestion } from "./ExampleQuestion";
 import { exampleQuestions } from "@/assistant/utils/examples";
-import { useApiStatus, useChatMessages, useSubmitChat } from "@/assistant/hooks/api";
-import { warningMessage } from "./WarnMessage";
+import { useChatMessages, useServerMetadata, useSubmitChat } from "@/assistant/hooks/api";
 
 const ExampleQuestions = () => {
-  const apiStatus = useApiStatus();
-  const isConnected = apiStatus === "connected";
-  const messages = useChatMessages();
   const { handleSubmit } = useSubmitChat();
+  const { enabled } = useServerMetadata();
 
+  const messages = useChatMessages();
   if (messages.length > 0) {
     return null;
   }
@@ -31,8 +29,7 @@ const ExampleQuestions = () => {
           title={title}
           description={description}
           onClick={() => {
-            if (!isConnected) return console.error(warningMessage);
-            handleSubmit(title);
+            if (enabled) handleSubmit(title);
           }}
         />
       ))}
