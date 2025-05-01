@@ -3,7 +3,7 @@ import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
 
 import { generateStretchRadius } from "@/utils/commonSx";
 import { ExampleQuestions } from "../chat/ExampleQuestions";
-import { ChatMessage } from "../chat/ChatMessage";
+import { ChatMessages } from "../chat/ChatMessages";
 import { ChatCTA } from "../chat/ChatCTA";
 
 const Main = () => {
@@ -38,19 +38,7 @@ const Main = () => {
       <Stack sx={{ alignItems: "center", gap: 5, width: 1 }}>
         <ExampleQuestions />
 
-        {/* <ChatMessage
-          content="在 Blender 中，材質節點是什麼？"
-          isUser={true}
-          timestamp={Date.now()}
-          isThinking={false}
-        />
-
-        <ChatMessage
-          content="材質節點是 Blender 中用來定義材質的工具，透過節點連接，可以創建複雜的材質效果。 材質節點是 Blender 中用來定義材質的工具，透過節點連接，可以創建複雜的材質效果。 材質節點是 Blender 中用來定義材質的工具，透過節點連接，可以創建複雜的材質效果。 材質節點是 Blender 中用來定義材質的工具，透過節點連接，可以創建複雜的材質效果。"
-          isUser={false}
-          timestamp={Date.now()}
-          isThinking={true}
-        /> */}
+        <ChatMessages />
 
         <ChatCTA />
       </Stack>
