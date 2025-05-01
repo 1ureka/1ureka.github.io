@@ -1,11 +1,15 @@
 import { Avatar, Box, keyframes, Stack, Typography } from "@mui/material";
 import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
 import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
-import { formatRelativeTime } from "@/utils/formatters";
+
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+
 import { memo, useEffect, useMemo, useState } from "react";
+import { formatRelativeTime } from "@/utils/formatters";
 import { generateStretchRadius } from "@/utils/commonSx";
 import { useThinkingMessage } from "@/assistant/hooks/utils";
-import { BoxM } from "@/components/Motion";
+import { components } from "../markdown/MarkdownComponents";
 
 const fadeIn = keyframes`
   0% {
@@ -86,9 +90,15 @@ const ChatMessage = ({ content, isUser, timestamp, isThinking, isError }: ChatMe
       </Box>
 
       <Box sx={{ width: 1, display: "flex", justifyContent: isUser ? "flex-end" : "flex-start" }}>
-        <Box sx={{ position: "relative", p: 2.5, zIndex: 1 }}>
-          <BoxM
-            layout
+        <Box
+          sx={{
+            position: "relative",
+            p: isUser ? 2.5 : 3.5,
+            transform: "translateZ(0)",
+            width: isUser ? undefined : 1,
+          }}
+        >
+          <Box
             sx={{
               position: "absolute",
               inset: 0,
@@ -101,11 +111,17 @@ const ChatMessage = ({ content, isUser, timestamp, isThinking, isError }: ChatMe
           />
 
           {isThinking ? (
-            <Typography variant="subtitle1" component="p" sx={shimmerTextSx}>
+            <Typography variant="subtitle1" component="span" sx={shimmerTextSx}>
               {thinkingText}
             </Typography>
+          ) : isError ? (
+            <Typography variant="subtitle1" component="span" sx={{ color: "error.main" }}>
+              發生錯誤，請稍後再試
+            </Typography>
           ) : (
-            <Typography sx={{ color: isError ? "error.light" : undefined }}>{content}</Typography>
+            <ReactMarkdown components={components} remarkPlugins={[remarkGfm]}>
+              {content}
+            </ReactMarkdown>
           )}
         </Box>
       </Box>
