@@ -1,4 +1,9 @@
+import { useMemo } from "react";
 import { create } from "zustand";
+
+// -------------------------------------------------------
+// Server Metadata Store
+// -------------------------------------------------------
 
 interface ApiUrlState {
   apiUrl: string;
@@ -12,4 +17,36 @@ const useApiUrl = create<ApiUrlState>((set) => ({
   setApiUrl: (url) => set({ apiUrl: url }),
 }));
 
-export { useApiUrl, defaultApiUrl };
+// -------------------------------------------------------
+// Chat Message Store
+// -------------------------------------------------------
+
+interface ChatMessage {
+  content: string;
+  role: "user" | "assistant";
+  status: "loading" | "streaming" | "finished" | "error";
+  timestamp: number;
+}
+
+const useChatStore = create<{
+  messageMap: Record<number, ChatMessage>;
+  setMessage: (message: ChatMessage) => void;
+}>((set) => ({
+  messageMap: {},
+
+  setMessage: ({ timestamp, ...msg }) =>
+    set(({ messageMap }) => ({
+      messageMap: { ...messageMap, [timestamp]: { ...messageMap[timestamp], timestamp, ...msg } },
+    })),
+}));
+
+const useChatMessages = () => {
+  const { messageMap, setMessage } = useChatStore();
+  const messages = useMemo(() => {
+    return Object.values(messageMap).toSorted((a, b) => a.timestamp - b.timestamp);
+  }, [messageMap]);
+
+  return { messages, setMessage };
+};
+
+export { useApiUrl, defaultApiUrl, useChatStore };
