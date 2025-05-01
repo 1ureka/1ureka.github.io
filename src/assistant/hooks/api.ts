@@ -48,13 +48,27 @@ const useSubmitChat = () => {
     if (loading) return console.error("請稍等，正在處理中...");
     setLoading(true);
 
+    const rootElement = document.querySelector("#root")!;
+    (async () => {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      rootElement.scrollTo(0, rootElement.scrollHeight);
+    })();
+
     const timestamp = Date.now();
     setMessage({ content: question, role: "user", status: "finished", timestamp: timestamp - 1 });
     setMessage({ content: "", role: "assistant", status: "loading", timestamp });
 
+    let isThrottling = false;
     queryApi(question, {
-      onMessage: (fullResponse) =>
-        setMessage({ content: fullResponse, role: "assistant", status: "streaming", timestamp }),
+      onMessage: (fullResponse) => {
+        if (isThrottling) return;
+        isThrottling = true;
+        requestAnimationFrame(() => {
+          setMessage({ content: fullResponse, role: "assistant", status: "streaming", timestamp });
+          rootElement.scrollTo(0, rootElement.scrollHeight);
+          isThrottling = false;
+        });
+      },
       onComplete: (fullResponse) => {
         setMessage({ content: fullResponse, role: "assistant", status: "finished", timestamp });
         setLoading(false);
