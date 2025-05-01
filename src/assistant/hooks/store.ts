@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { create } from "zustand";
 
 // -------------------------------------------------------
@@ -39,14 +38,5 @@ const useChatStore = create<{
       messageMap: { ...messageMap, [timestamp]: { ...messageMap[timestamp], timestamp, ...msg } },
     })),
 }));
-
-const useChatMessages = () => {
-  const { messageMap, setMessage } = useChatStore();
-  const messages = useMemo(() => {
-    return Object.values(messageMap).toSorted((a, b) => a.timestamp - b.timestamp);
-  }, [messageMap]);
-
-  return { messages, setMessage };
-};
 
 export { useApiUrl, defaultApiUrl, useChatStore };
