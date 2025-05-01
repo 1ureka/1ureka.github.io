@@ -1,7 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { getApiInfo, queryApi } from "../data/api";
-import { useApiUrl, useChatStore } from "./store";
-import { useMemo, useState } from "react";
+import { useApiUrl, useChatStore, useLoadingStore } from "./store";
+import { useMemo } from "react";
+
+// -------------------------------------------------------
+// Server Metadata Hooks
+// -------------------------------------------------------
 
 const Interval = { fetch: 6000, offline: 6000, start: 3000, ready: 10000 } as const;
 
@@ -40,9 +44,13 @@ const useApiStatus = (): ApiStatus => {
   return "error"; // 因為理論上不該到達這裡，所以回傳 error，若真的到達這裡，可以發現問題
 };
 
+// -------------------------------------------------------
+// Chat Message Hooks
+// -------------------------------------------------------
+
 const useSubmitChat = () => {
   const setMessage = useChatStore((state) => state.setMessage);
-  const [loading, setLoading] = useState(false);
+  const { loading, setLoading } = useLoadingStore();
 
   const handleSubmit = async (question: string) => {
     if (loading) return console.error("請稍等，正在處理中...");
