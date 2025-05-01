@@ -1,3 +1,4 @@
+import { generateMuiColorMix } from "@/utils/commonSx";
 import { Typography, Link as MuiLink, List, ListItem, Box, Paper, Divider } from "@mui/material";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 
@@ -11,7 +12,14 @@ export const components: Record<string, React.ComponentType<any>> = {
   h6: ({ node, ...props }) => <Typography variant="subtitle2" sx={{ my: 1, mt: 3 }} {...props} />,
   hr: ({ node, ...props }) => <Divider sx={{ my: 3 }} {...props} />,
   a: ({ node, href, ...props }) => <MuiLink href={href} target="_blank" rel="noopener noreferrer" {...props} />,
-  strong: ({ node, ...props }) => <Typography component="strong" fontWeight="bold" display="inline" {...props} />,
+  strong: ({ node, ...props }) => (
+    <Typography
+      component="strong"
+      color={generateMuiColorMix("text-primary", "primary-main", 60)}
+      display="inline"
+      {...props}
+    />
+  ),
   em: ({ node, ...props }) => <Typography component="em" fontStyle="italic" display="inline" {...props} />,
   del: ({ node, ...props }) => (
     <Typography component="del" sx={{ textDecoration: "line-through" }} display="inline" {...props} />
@@ -40,11 +48,12 @@ export const components: Record<string, React.ComponentType<any>> = {
       component="code"
       sx={{
         fontFamily: "CascadiaCode",
-        p: 1,
+        p: 0.75,
+        m: 0.5,
         bgcolor: "action.hover",
         borderRadius: 1,
         "pre &": { bgcolor: "transparent" },
-        fontSize: "0.875rem",
+        fontSize: "0.85rem",
       }}
       {...props}
     >
