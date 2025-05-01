@@ -1,11 +1,11 @@
 import { Box, Button, TextField, Typography } from "@mui/material";
 import NavigationRoundedIcon from "@mui/icons-material/NavigationRounded";
 
-import { useApiStatus } from "@/assistant/hooks/api";
+import { useApiStatus, useSubmitChat } from "@/assistant/hooks/api";
 import { useState } from "react";
 import { generateStretchRadius } from "@/utils/commonSx";
 import { OutlinedInteractionSx } from "@/assistant/utils/commonSx";
-import { warningMessage } from "../chat/WarnMessage";
+import { warningMessage } from "./WarnMessage";
 
 import { z } from "zod";
 const InputSchema = z.string().max(500, "問題過長，請簡化後再試一次").trim().min(1, "請輸入問題");
@@ -19,13 +19,14 @@ const ChatCTA = () => {
     setInput(e.target.value);
   };
 
+  const { handleSubmit, loading } = useSubmitChat();
   const handleClick = () => {
     const result = InputSchema.safeParse(input);
-    if (!result.success) return console.warn(result.error.issues[0].message);
-    if (!isConnected) return console.warn(warningMessage);
+    if (!result.success) return console.error(result.error.issues[0].message);
+    if (!isConnected) return console.error(warningMessage);
 
-    console.log("API 已連線，執行相關操作");
     setInput("");
+    handleSubmit(result.data);
   };
 
   return (
@@ -54,6 +55,7 @@ const ChatCTA = () => {
           sx={{ textWrap: "nowrap", height: 1, ...generateStretchRadius([2, 1.8]) }}
           disableElevation
           onClick={handleClick}
+          loading={loading}
         >
           <Typography>送出</Typography>
         </Button>
