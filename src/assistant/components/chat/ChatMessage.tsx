@@ -90,14 +90,7 @@ const ChatMessage = ({ content, isUser, timestamp, isThinking, isError }: ChatMe
       </Box>
 
       <Box sx={{ width: 1, display: "flex", justifyContent: isUser ? "flex-end" : "flex-start" }}>
-        <Box
-          sx={{
-            position: "relative",
-            p: isUser ? 2.5 : 3.5,
-            transform: "translateZ(0)",
-            width: isUser ? undefined : 1,
-          }}
-        >
+        <Box sx={{ position: "relative", p: isUser ? 2.5 : 3.5, transform: "translateZ(0)" }}>
           <Box
             sx={{
               position: "absolute",
