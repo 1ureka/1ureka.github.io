@@ -1,7 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { getApiInfo, queryApi } from "../data/api";
-import { useApiUrl, useChatStore, useLoadingStore } from "./store";
+import { useMetadataStore, useChatStore, useLoadingStore } from "./store";
 import { useMemo } from "react";
+import { warningMessage } from "../components/chat/WarnMessage";
 
 // -------------------------------------------------------
 // Server Metadata Hooks
@@ -9,12 +10,14 @@ import { useMemo } from "react";
 
 const Interval = { fetch: 6000, offline: 6000, start: 3000, ready: 10000 } as const;
 
-const useApiInfo = () => {
-  const apiUrl = useApiUrl((state) => state.apiUrl);
+const usePollingStatus = () => {
+  const url = useMetadataStore((state) => state.url);
+  const enabled = useMetadataStore((state) => state.enabled);
 
   const { data } = useQuery({
-    queryKey: ["apiState", apiUrl],
-    queryFn: () => getApiInfo(apiUrl),
+    queryKey: ["apiState", url],
+    queryFn: () => getApiInfo(url),
+    enabled: enabled,
     refetchInterval: ({ state }) => {
       const { data } = state;
 
@@ -26,22 +29,34 @@ const useApiInfo = () => {
     },
   });
 
-  return data;
+  return enabled ? data : null;
 };
 
 type ApiStatus = "loading" | "offline" | "connected" | "error";
 
 const useApiStatus = (): ApiStatus => {
-  const apiInfo = useApiInfo();
-  if (apiInfo === undefined) return "loading";
-  if (apiInfo === null) return "offline";
+  const data = usePollingStatus();
+  if (data === undefined) return "loading";
+  if (data === null) return "offline";
 
-  const { status } = apiInfo;
+  const { status } = data;
   if (status === "ok") return "connected";
   if (status === "error") return "error";
   if (["loading", "idle"].includes(status)) return "loading";
 
   return "error"; // 因為理論上不該到達這裡，所以回傳 error，若真的到達這裡，可以發現問題
+};
+
+const useServerMetadata = () => {
+  const { url, enabled } = useMetadataStore();
+
+  function handleChangeServer(enabled: true, url: string): void;
+  function handleChangeServer(enabled: false): void;
+  function handleChangeServer(enabled: boolean, url?: string): void {
+    useMetadataStore.setState({ enabled, url });
+  }
+
+  return { url, enabled, handleChangeServer };
 };
 
 // -------------------------------------------------------
@@ -50,9 +65,11 @@ const useApiStatus = (): ApiStatus => {
 
 const useSubmitChat = () => {
   const setMessage = useChatStore((state) => state.setMessage);
+  const status = useApiStatus();
   const { loading, setLoading } = useLoadingStore();
 
   const handleSubmit = async (question: string) => {
+    if (status !== "connected") return console.error(warningMessage);
     if (loading) return console.error("請稍等，正在處理中...");
     setLoading(true);
 
@@ -100,5 +117,5 @@ const useChatMessages = () => {
   return messages;
 };
 
-export { useApiInfo, useApiStatus, useSubmitChat, useChatMessages };
+export { useApiStatus, useSubmitChat, useChatMessages, useServerMetadata };
 export type { ApiStatus };

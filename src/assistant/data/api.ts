@@ -1,5 +1,5 @@
 import { tryCatch } from "@/utils/tryCatch";
-import { useApiUrl } from "../hooks/store";
+import { useMetadataStore } from "../hooks/store";
 import { createDeferred } from "@/utils/async";
 
 interface ApiEndpoint {
@@ -35,7 +35,7 @@ const queryApi = (question: string, options: QueryOptions) => {
   const { onMessage, onComplete, onError } = options;
 
   const encodedQuestion = encodeURIComponent(question);
-  const apiUrl = useApiUrl.getState().apiUrl;
+  const apiUrl = useMetadataStore.getState().url;
   const url = new URL(`${apiUrl}/query?question=${encodedQuestion}`);
 
   let fullResponse = "";
