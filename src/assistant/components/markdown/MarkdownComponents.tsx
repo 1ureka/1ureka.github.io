@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { generateMuiColorMix } from "@/utils/commonSx";
 import { Typography, Link as MuiLink, List, ListItem, Box, Paper, Divider } from "@mui/material";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
