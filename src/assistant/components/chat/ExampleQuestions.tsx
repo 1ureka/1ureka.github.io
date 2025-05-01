@@ -25,7 +25,7 @@ const ExampleQuestions = () => {
           title={title}
           description={description}
           onClick={() => {
-            if (!isConnected) return console.warn(warningMessage);
+            if (!isConnected) return console.error(warningMessage);
           }}
         />
       ))}
