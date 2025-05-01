@@ -58,9 +58,10 @@ type ChatMessageProps = {
   isUser: boolean;
   timestamp: number;
   isThinking: boolean;
+  isError: boolean;
 };
 
-const ChatMessage = ({ content, isUser, timestamp, isThinking }: ChatMessageProps) => {
+const ChatMessage = ({ content, isUser, timestamp, isThinking, isError }: ChatMessageProps) => {
   const thinkingText = useThinkingMessage(isThinking);
 
   return (
@@ -104,7 +105,7 @@ const ChatMessage = ({ content, isUser, timestamp, isThinking }: ChatMessageProp
               {thinkingText}
             </Typography>
           ) : (
-            <Typography>{content}</Typography>
+            <Typography sx={{ color: isError ? "error.light" : undefined }}>{content}</Typography>
           )}
         </Box>
       </Box>
