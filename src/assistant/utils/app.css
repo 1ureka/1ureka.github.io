@@ -23,6 +23,14 @@
   font-display: swap;
 }
 
+/* CascadiaCode */
+@font-face {
+  font-family: "CascadiaCode";
+  src: url("../../assets/fonts/CascadiaCode-VariableFont_wght.ttf") format("truetype");
+  font-style: normal;
+  font-display: swap;
+}
+
 * {
   scrollbar-width: thin;
   scrollbar-color: gray transparent;
@@ -38,6 +46,7 @@ body {
   overflow-y: auto;
   overflow-x: hidden;
   scrollbar-gutter: stable;
+  scroll-behavior: smooth;
 }
 
 .noise {
