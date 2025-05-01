@@ -35,7 +35,7 @@ const queryApi = (question: string, options: QueryOptions) => {
   const { onMessage, onComplete, onError } = options;
 
   const encodedQuestion = encodeURIComponent(question);
-  const apiUrl = useApiUrl();
+  const apiUrl = useApiUrl.getState().apiUrl;
   const url = new URL(`${apiUrl}/query?question=${encodedQuestion}`);
 
   let fullResponse = "";
