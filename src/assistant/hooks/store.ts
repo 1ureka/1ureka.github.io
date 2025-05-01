@@ -4,16 +4,20 @@ import { create } from "zustand";
 // Server Metadata Store
 // -------------------------------------------------------
 
-interface ApiUrlState {
-  apiUrl: string;
-  setApiUrl: (url: string) => void;
+interface ServerMetadata {
+  enabled: boolean;
+  url: string;
+  setEnabled: (enabled: boolean) => void;
+  setUrl: (url: string) => void;
 }
 
 const defaultApiUrl = "http://localhost:7860";
 
-const useApiUrl = create<ApiUrlState>((set) => ({
-  apiUrl: defaultApiUrl,
-  setApiUrl: (url) => set({ apiUrl: url }),
+const useMetadataStore = create<ServerMetadata>((set) => ({
+  enabled: false,
+  url: defaultApiUrl,
+  setEnabled: (enabled) => set({ enabled }),
+  setUrl: (url) => set({ url }),
 }));
 
 // -------------------------------------------------------
@@ -44,4 +48,4 @@ const useLoadingStore = create<{ loading: boolean; setLoading: (loading: boolean
   setLoading: (loading) => set({ loading }),
 }));
 
-export { useApiUrl, defaultApiUrl, useChatStore, useLoadingStore };
+export { useMetadataStore, defaultApiUrl, useChatStore, useLoadingStore };
