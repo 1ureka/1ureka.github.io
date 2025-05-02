@@ -95,8 +95,11 @@ const useSubmitChat = () => {
         });
       },
       onComplete: (fullResponse) => {
-        setMessage({ content: fullResponse, role: "assistant", status: "finished", timestamp });
-        setLoading(false);
+        requestAnimationFrame(() => {
+          setMessage({ content: fullResponse, role: "assistant", status: "finished", timestamp });
+          rootElement.scrollTo(0, rootElement.scrollHeight);
+          setLoading(false);
+        });
       },
       onError: (error) => {
         setMessage({ content: error, role: "assistant", status: "error", timestamp });
