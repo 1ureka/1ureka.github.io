@@ -1,19 +1,15 @@
 import { Box, Button, TextField, Typography } from "@mui/material";
 import NavigationRoundedIcon from "@mui/icons-material/NavigationRounded";
 
-import { useApiStatus, useSubmitChat } from "@/assistant/hooks/api";
+import { useSubmitChat } from "@/assistant/hooks/api";
 import { useState } from "react";
 import { generateStretchRadius } from "@/utils/commonSx";
 import { OutlinedInteractionSx } from "@/assistant/utils/commonSx";
-import { warningMessage } from "./WarnMessage";
 
 import { z } from "zod";
 const InputSchema = z.string().max(500, "問題過長，請簡化後再試一次").trim().min(1, "請輸入問題");
 
 const ChatCTA = () => {
-  const apiStatus = useApiStatus();
-  const isConnected = apiStatus === "connected";
-
   const [input, setInput] = useState<string>("");
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput(e.target.value);
@@ -23,7 +19,6 @@ const ChatCTA = () => {
   const handleClick = () => {
     const result = InputSchema.safeParse(input);
     if (!result.success) return console.error(result.error.issues[0].message);
-    if (!isConnected) return console.error(warningMessage);
 
     setInput("");
     handleSubmit(result.data);
