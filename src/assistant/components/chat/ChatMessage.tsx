@@ -12,6 +12,7 @@ import { generateStretchRadius } from "@/utils/commonSx";
 import { useThinkingMessage } from "@/assistant/hooks/utils";
 import { components } from "../markdown/MarkdownComponents";
 import { FilledButton } from "./FilledButton";
+import { useChatMessages, useSubmitChat } from "@/assistant/hooks/api";
 
 const fadeIn = keyframes`
   0% {
@@ -56,6 +57,25 @@ const TimestampDisplay = ({ timestamp }: { timestamp: number }) => {
     <Typography variant="caption" sx={{ color: "text.secondary" }}>
       {formattedTime}
     </Typography>
+  );
+};
+
+const Actions = ({ timestamp }: { timestamp: number }) => {
+  const { handleSubmit, loading } = useSubmitChat();
+
+  const messages = useChatMessages();
+  const message = messages.find((msg) => msg.timestamp === timestamp - 1);
+  if (!message) return null;
+
+  const question = message.content;
+
+  return (
+    <FilledButton
+      title="重新生成"
+      Icon={RestartAltRoundedIcon}
+      loading={loading}
+      onClick={() => handleSubmit(question)}
+    />
   );
 };
 
@@ -120,7 +140,7 @@ const ChatMessage = ({ content, isUser, timestamp, status }: ChatMessageProps) =
         </Box>
       </Box>
 
-      {!isUser && status === "finished" && <FilledButton title="重新生成" Icon={RestartAltRoundedIcon} />}
+      {!isUser && status === "finished" && <Actions timestamp={timestamp} />}
     </Stack>
   );
 };
