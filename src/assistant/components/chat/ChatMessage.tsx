@@ -1,7 +1,8 @@
-import { Avatar, Box, keyframes, Stack, Typography } from "@mui/material";
+import { Avatar, Box, keyframes, Stack, Tooltip, Typography } from "@mui/material";
 import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
 import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 import RestartAltRoundedIcon from "@mui/icons-material/RestartAltRounded";
+import CopyAllRoundedIcon from "@mui/icons-material/CopyAllRounded";
 
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -11,8 +12,8 @@ import { formatRelativeTime } from "@/utils/formatters";
 import { generateStretchRadius } from "@/utils/commonSx";
 import { useThinkingMessage } from "@/assistant/hooks/utils";
 import { components } from "../markdown/MarkdownComponents";
-import { FilledButton } from "./FilledButton";
 import { useChatMessages, useSubmitChat } from "@/assistant/hooks/api";
+import { FilledButton } from "../shared/FilledButton";
 
 const fadeIn = keyframes`
   0% {
@@ -60,7 +61,7 @@ const TimestampDisplay = ({ timestamp }: { timestamp: number }) => {
   );
 };
 
-const Actions = ({ timestamp }: { timestamp: number }) => {
+const RegenerateButton = ({ timestamp }: { timestamp: number }) => {
   const { handleSubmit, loading } = useSubmitChat();
 
   const messages = useChatMessages();
@@ -70,12 +71,9 @@ const Actions = ({ timestamp }: { timestamp: number }) => {
   const question = message.content;
 
   return (
-    <FilledButton
-      title="重新生成"
-      Icon={RestartAltRoundedIcon}
-      loading={loading}
-      onClick={() => handleSubmit(question)}
-    />
+    <Tooltip title={<Typography variant="body2">重新生成</Typography>} arrow>
+      <FilledButton Icon={RestartAltRoundedIcon} loading={loading} onClick={() => handleSubmit(question)} />
+    </Tooltip>
   );
 };
 
@@ -140,7 +138,18 @@ const ChatMessage = ({ content, isUser, timestamp, status }: ChatMessageProps) =
         </Box>
       </Box>
 
-      {!isUser && status === "finished" && <Actions timestamp={timestamp} />}
+      <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+        <Tooltip title={<Typography variant="body2">複製內容</Typography>} arrow>
+          <FilledButton
+            Icon={CopyAllRoundedIcon}
+            onClick={async () => {
+              await navigator.clipboard.writeText(content);
+              console.log("已複製到剪貼簿");
+            }}
+          />
+        </Tooltip>
+        {!isUser && status === "finished" && <RegenerateButton timestamp={timestamp} />}
+      </Box>
     </Stack>
   );
 };
