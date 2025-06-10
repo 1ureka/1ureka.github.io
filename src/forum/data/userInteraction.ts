@@ -88,17 +88,20 @@ const updateUserInteraction: UpdateUserInteraction = async ({ followerId, follow
     throw new Error("使用者不能追蹤自己");
   }
 
+  const now = new Date().toISOString();
+
   // 若 value 為 true，表示要新增追蹤關係
   if (value) {
     // 使用 INSERT OR IGNORE 避免重複插入的錯誤
     const insertSql = `
-          INSERT OR IGNORE INTO user_interactions (followerId, followeeId, type)
-          VALUES ($followerId, $followeeId, 'follow')
+          INSERT OR IGNORE INTO user_interactions (followerId, followeeId, type, createdAt)
+          VALUES ($followerId, $followeeId, 'follow', $createdAt)
         `;
 
     await sqlite.exec(insertSql, {
       $followerId: followerId,
       $followeeId: followeeId,
+      $createdAt: now,
     });
   } else {
     // 若 value 為 false，表示要移除追蹤關係
