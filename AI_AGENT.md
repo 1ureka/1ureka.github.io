@@ -280,6 +280,15 @@ const options = {
 ```typescript
 import { tryCatch } from "@/utils/tryCatch";
 
+// ✅ CORRECT: Pass Promise objects to tryCatch
+const { data, error } = await tryCatch(client.exec("SELECT * FROM users"));
+const { data: result, error: dbError } = await tryCatch(sqlite.exec(query, params));
+const { data: response, error: apiError } = await tryCatch(fetch("/api/data"));
+
+// ❌ INCORRECT: Passing functions to tryCatch
+const { data, error } = await tryCatch(() => client.exec("SELECT * FROM users"));
+const { data, error } = await tryCatch(() => someAsyncOperation());
+
 // ✅ CORRECT: Standardized error handling
 const { data, error } = await tryCatch(someAsyncOperation());
 if (error) {
@@ -478,6 +487,126 @@ export const generateMuiColorMix = (color1: string, color2: string, percentage: 
 
 **Demo-specific utilities**: Each demo may have additional styling utilities in their own `utils/commonSx.ts` for specialized patterns.
 
+### MUI Component Best Practices
+
+#### Font Weight Guidelines
+Avoid using `fontWeight` in `sx` properties. Follow the variant's default font weight instead:
+
+```typescript
+// ✅ CORRECT: Use Typography variant defaults
+<Typography variant="h6">標題文字</Typography>
+<Typography variant="body1">內文字體</Typography>
+<Typography variant="button">按鈕文字</Typography>
+
+// ❌ INCORRECT: Override font weight with sx
+<Typography sx={{ fontWeight: 600 }}>標題文字</Typography>
+<Typography variant="body1" sx={{ fontWeight: "bold" }}>內文字體</Typography>
+```
+
+#### Latest MUI API Usage
+Follow the latest MUI API patterns and avoid deprecated properties:
+
+```typescript
+// ✅ CORRECT: Use slotProps for modern MUI components
+<Autocomplete
+  slotProps={{
+    paper: { sx: { borderRadius: 2 } },
+    popper: { placement: "bottom-start" }
+  }}
+/>
+
+<DatePicker
+  slotProps={{
+    textField: { variant: "outlined" },
+    openPickerButton: { color: "primary" }
+  }}
+/>
+
+// ❌ INCORRECT: Using deprecated props
+<Autocomplete PaperProps={{ sx: { borderRadius: 2 } }} />
+<DatePicker TextFieldProps={{ variant: "outlined" }} />
+
+// ✅ CORRECT: Modern component patterns
+<Dialog slotProps={{ backdrop: { sx: { backgroundColor: "rgba(0,0,0,0.8)" } } }}>
+<Select slotProps={{ root: { sx: { minWidth: 120 } } }}>
+<Tooltip slotProps={{ tooltip: { sx: { fontSize: 14 } } }}>
+
+// ❌ INCORRECT: Deprecated patterns  
+<Dialog BackdropProps={{ sx: { backgroundColor: "rgba(0,0,0,0.8)" } }}>
+<Select SelectProps={{ sx: { minWidth: 120 } }}>
+```
+
+#### Gap Instead of Spacing
+For layout components like Stack, Box, and Paper, use `gap` instead of the `spacing` property in `sx`:
+
+```typescript
+// ✅ CORRECT: Use gap for spacing
+<Stack sx={{ gap: 2 }}>
+  <Box>項目一</Box>
+  <Box>項目二</Box>
+</Stack>
+
+<Box sx={{ gap: { xs: 1, md: 2 }, display: "flex", flexDirection: "column" }}>
+  <Paper>卡片一</Paper>
+  <Paper>卡片二</Paper>
+</Box>
+
+// ❌ INCORRECT: Using spacing in sx
+<Stack sx={{ spacing: 2 }}>
+<Box sx={{ spacing: { xs: 1, md: 2 } }}>
+```
+
+#### Avoid Line Breaks in Code
+Keep imports and sx properties on single lines for better readability:
+
+```typescript
+// ✅ CORRECT: Single line imports
+import { Box, Chip, List, ListItem, ListItemText, Typography, Alert, CircularProgress } from "@mui/material";
+
+// ✅ CORRECT: Compact sx properties
+sx={{ ...underlineSx, color: "primary.main", cursor: "pointer" }}
+
+// ❌ INCORRECT: Multi-line imports
+import {
+  Box,
+  Chip,
+  List,
+  ListItem,
+  ListItemText,
+  Typography,
+  Alert,
+  CircularProgress
+} from "@mui/material";
+
+// ❌ INCORRECT: Multi-line sx with unnecessary breaks
+sx={{
+    ...underlineSx,
+    color: "primary.main",
+    cursor: "pointer",
+}}
+```
+
+#### Use Icon Components Instead of Emojis
+Replace emoji characters with proper MUI icon components for better accessibility and consistency:
+
+```typescript
+// ✅ CORRECT: Use icon components
+import EditIcon from '@mui/icons-material/Edit';
+import WarningIcon from '@mui/icons-material/Warning';
+import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
+
+<Button startIcon={<EditIcon />}>編輯文章</Button>
+<Alert severity="warning" icon={<WarningIcon />}>警告訊息</Alert>
+<Fab color="primary"><AddIcon /></Fab>
+
+// ❌ INCORRECT: Using emoji characters
+<Typography>📝 編輯文章</Typography>
+<Typography>⚠️ 警告訊息</Typography>
+<Typography>➕ 新增項目</Typography>
+<Typography>🗑️ 刪除項目</Typography>
+```
+
 ### Common Layout Patterns
 ```typescript
 // ✅ CORRECT: Responsive container patterns
@@ -652,6 +781,7 @@ When implementing new features, ensure all of the following requirements are met
 ### ⚠️ Error Handling & Logging
 - [ ] Use unified logging: `console.log()` for user notifications (NEVER `toast.*()` directly)
 - [ ] Handle all database operation errors (don't ignore `{data, error}` pattern)
+- [ ] Use `tryCatch` with Promise objects, NOT functions (e.g., `tryCatch(client.exec(...))`)
 - [ ] Provide user-friendly error messages in Chinese
 - [ ] NEVER throw unhandled errors in React components
 - [ ] Log errors appropriately for debugging while keeping user messages clear
@@ -683,6 +813,11 @@ When implementing new features, ensure all of the following requirements are met
 - [ ] Use shared styling utilities from `/src/utils/commonSx.ts` when applicable
 - [ ] Follow multi-theme architecture patterns (each demo has its own theme)
 - [ ] Include proper theme extensions for custom properties when needed
+- [ ] NEVER use `fontWeight` in `sx` properties (follow variant defaults)
+- [ ] Use latest MUI API patterns (e.g., `slotProps.paper` instead of `PaperProps`)
+- [ ] Use `gap` instead of `spacing` in `sx` for Stack, Box, Paper components
+- [ ] Avoid line breaks in imports and `sx` properties for better readability
+- [ ] Use MUI icon components instead of emoji characters
 
 ### 🔧 Development & Build
 - [ ] Maintain TypeScript strict mode compliance
