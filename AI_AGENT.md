@@ -478,6 +478,95 @@ export const generateMuiColorMix = (color1: string, color2: string, percentage: 
 
 **Demo-specific utilities**: Each demo may have additional styling utilities in their own `utils/commonSx.ts` for specialized patterns.
 
+### Code Formatting Standards
+
+#### 1. 避免換行 (Avoid Line Breaks)
+Keep props and imports on single lines for better readability and consistency:
+
+**✅ CORRECT: Single line sx props**
+```typescript
+sx={{ ...underlineSx, color: "primary.main", cursor: "pointer" }}
+```
+
+**❌ INCORRECT: Multi-line sx props**
+```typescript
+sx={{
+    ...underlineSx,
+    color: "primary.main",
+    cursor: "pointer",
+}}
+```
+
+**✅ CORRECT: Single line imports**
+```typescript
+import { Box, Chip, List, ListItem, ListItemText, Typography, Alert, CircularProgress } from "@mui/material";
+```
+
+**❌ INCORRECT: Multi-line imports**
+```typescript
+import {
+  Box,
+  Chip,
+  List,
+  ListItem,
+  ListItemText,
+  Typography,
+  Alert,
+  CircularProgress
+} from "@mui/material";
+```
+
+#### 2. 避免使用原生 HTML 標籤 (Avoid Native HTML Tags)
+Use Material-UI components instead of native HTML tags for consistency with the design system:
+
+**❌ NOT RECOMMENDED: Native HTML tags**
+- `<strong>`, `<b>` → Use `<Typography variant="subtitle1" fontWeight="bold">`
+- `<i>`, `<em>` → Use `<Typography fontStyle="italic">`
+- `<u>` → Use `<Typography sx={{ textDecoration: "underline" }}`
+- `<br />` → Use spacing props or separate Typography components
+
+**✅ RECOMMENDED: Material-UI Typography**
+```typescript
+// Instead of <strong>Bold text</strong>
+<Typography variant="subtitle1" fontWeight="bold">Bold text</Typography>
+
+// Instead of <i>Italic text</i>
+<Typography fontStyle="italic">Italic text</Typography>
+
+// Instead of <u>Underlined text</u>
+<Typography sx={{ textDecoration: "underline" }}>Underlined text</Typography>
+```
+
+#### 3. 避免使用表情符號，使用 Icon 元件 (Avoid Emojis, Use Icon Components)
+Use Material-UI icons instead of emoji characters for better accessibility and consistency:
+
+**❌ NOT RECOMMENDED: Emoji characters**
+```typescript
+<Typography>📝 編輯文章</Typography>
+<Typography>⚠️ 警告訊息</Typography>
+<Typography>✅ 操作成功</Typography>
+```
+
+**✅ RECOMMENDED: Material-UI Icons**
+```typescript
+import { Edit, Warning, CheckCircle } from "@mui/icons-material";
+
+<Typography sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+  <Edit fontSize="small" />
+  編輯文章
+</Typography>
+
+<Typography sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+  <Warning fontSize="small" />
+  警告訊息
+</Typography>
+
+<Typography sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+  <CheckCircle fontSize="small" />
+  操作成功
+</Typography>
+```
+
 ### Common Layout Patterns
 ```typescript
 // ✅ CORRECT: Responsive container patterns
@@ -683,6 +772,9 @@ When implementing new features, ensure all of the following requirements are met
 - [ ] Use shared styling utilities from `/src/utils/commonSx.ts` when applicable
 - [ ] Follow multi-theme architecture patterns (each demo has its own theme)
 - [ ] Include proper theme extensions for custom properties when needed
+- [ ] **Code Formatting**: Keep sx props and imports on single lines (avoid line breaks)
+- [ ] **HTML Tags**: Use Material-UI Typography instead of native HTML tags (`<strong>`, `<b>`, `<i>`, `<u>`, `<br />`)
+- [ ] **Icons**: Use Material-UI icon components instead of emoji characters for better accessibility
 
 ### 🔧 Development & Build
 - [ ] Maintain TypeScript strict mode compliance
