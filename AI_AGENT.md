@@ -138,10 +138,10 @@ const formElementsSchema = {
   username: z
     .string()
     .trim()
-    .min(4, "使用者名稱至少 4 個字元")
-    .max(20, "使用者名稱最多 20 個字元")
-    .regex(/^[a-zA-Z0-9 ]+$/, "使用者名稱只能包含英文字母與數字"),
-  email: z.string().email("請輸入有效的電子郵件"),
+    .min(4, "Username must be at least 4 characters")
+    .max(20, "Username must be at most 20 characters")
+    .regex(/^[a-zA-Z0-9 ]+$/, "Username can only contain letters and numbers"),
+  email: z.string().email("Please enter a valid email address"),
 };
 
 const formSchema = z.object(formElementsSchema);
@@ -159,7 +159,7 @@ const form = useForm({
     // Handle success (navigation, etc.)
   },
   onSubmitInvalid: () => {
-    console.error("請檢查表單是否填寫正確");
+    console.error("Please check if the form is filled correctly");
   },
 });
 ```
@@ -480,7 +480,7 @@ export const generateMuiColorMix = (color1: string, color2: string, percentage: 
 
 ### Code Formatting Standards
 
-#### 1. 避免換行 (Avoid Line Breaks)
+#### 1. Avoid Line Breaks
 Keep props and imports on single lines for better readability and consistency:
 
 **✅ CORRECT: Single line sx props**
@@ -516,7 +516,7 @@ import {
 } from "@mui/material";
 ```
 
-#### 2. 避免使用原生 HTML 標籤 (Avoid Native HTML Tags)
+#### 2. Avoid Native HTML Tags
 Use Material-UI components instead of native HTML tags for consistency with the design system:
 
 **❌ NOT RECOMMENDED: Native HTML tags**
@@ -537,14 +537,14 @@ Use Material-UI components instead of native HTML tags for consistency with the 
 <Typography sx={{ textDecoration: "underline" }}>Underlined text</Typography>
 ```
 
-#### 3. 避免使用表情符號，使用 Icon 元件 (Avoid Emojis, Use Icon Components)
+#### 3. Avoid Emojis, Use Icon Components
 Use Material-UI icons instead of emoji characters for better accessibility and consistency:
 
 **❌ NOT RECOMMENDED: Emoji characters**
 ```typescript
-<Typography>📝 編輯文章</Typography>
-<Typography>⚠️ 警告訊息</Typography>
-<Typography>✅ 操作成功</Typography>
+<Typography>📝 Edit Article</Typography>
+<Typography>⚠️ Warning Message</Typography>
+<Typography>✅ Operation Success</Typography>
 ```
 
 **✅ RECOMMENDED: Material-UI Icons**
@@ -553,17 +553,17 @@ import { Edit, Warning, CheckCircle } from "@mui/icons-material";
 
 <Typography sx={{ display: "flex", alignItems: "center", gap: 1 }}>
   <Edit fontSize="small" />
-  編輯文章
+  Edit Article
 </Typography>
 
 <Typography sx={{ display: "flex", alignItems: "center", gap: 1 }}>
   <Warning fontSize="small" />
-  警告訊息
+  Warning Message
 </Typography>
 
 <Typography sx={{ display: "flex", alignItems: "center", gap: 1 }}>
   <CheckCircle fontSize="small" />
-  操作成功
+  Operation Success
 </Typography>
 ```
 
@@ -638,7 +638,7 @@ Error boundaries are automatically configured in `AppWrapper`:
 - ✅ ALWAYS use `console.log("...")` for user-facing notifications.  
 - ✅ Messages must be **clear to both developers and end users**.  
 - ❌ Never log raw debug info (e.g., `"fetching data..."`).  
-- ✅ Instead, use semantic messages (e.g., `"載入留言失敗，請稍後再試"`).
+- ✅ Instead, use semantic messages (e.g., `"Failed to load comments, please try again later"`).
 
 ### Implementation Details
 The unified logging system is implemented in `/src/components/Toast.tsx`:
@@ -649,13 +649,13 @@ The unified logging system is implemented in `/src/components/Toast.tsx`:
 ### Correct Usage Examples
 ```typescript
 // ✅ CORRECT: User-friendly messages
-console.log("成功標記為已讀");
-console.error("登入失敗，請檢查用戶名稱與密碼");
-console.warn("此操作無法復原，請確認後再繼續");
+console.log("Successfully marked as read");
+console.error("Login failed, please check username and password");
+console.warn("This operation cannot be undone, please confirm before continuing");
 
 // ❌ INCORRECT: Direct toast calls
-toast.success("操作成功");
-toast.error("操作失敗");
+toast.success("Operation successful");
+toast.error("Operation failed");
 
 // ❌ INCORRECT: Debug messages for users
 console.log("Fetching user data...");
@@ -741,7 +741,7 @@ When implementing new features, ensure all of the following requirements are met
 ### ⚠️ Error Handling & Logging
 - [ ] Use unified logging: `console.log()` for user notifications (NEVER `toast.*()` directly)
 - [ ] Handle all database operation errors (don't ignore `{data, error}` pattern)
-- [ ] Provide user-friendly error messages in Chinese
+- [ ] Provide user-friendly error messages
 - [ ] NEVER throw unhandled errors in React components
 - [ ] Log errors appropriately for debugging while keeping user messages clear
 
