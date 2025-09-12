@@ -2,10 +2,45 @@
 
 Assistant 是一個 AI 驅動的智能助手演示，專門設計用於文件查詢與問答。本模組展示了如何整合 RAG (Retrieval-Augmented Generation) 技術，提供準確且相關的 AI 回應。
 
+## ⚠️ 重要：本地 RAG 服務需求
+
+**此演示需要本地部署 RAG 後端服務才能正常運作**。本 Assistant 前端介面必須搭配 [1ureka.blender.docs.rag](https://github.com/1ureka/1ureka.blender.docs.rag) 專案的本地部署使用。
+
+## 🛠️ 前置需求
+
+### 本地 RAG 服務部署
+此 Assistant 演示需要本地運行 [1ureka.blender.docs.rag](https://github.com/1ureka/1ureka.blender.docs.rag) 服務：
+
+1. **系統需求**:
+   - Docker Desktop for Windows (支援 WSL2)
+   - NVIDIA GPU 支援 (建議)
+
+2. **快速部署**:
+   ```bash
+   # 1. Clone RAG 專案
+   git clone https://github.com/1ureka/1ureka.blender.docs.rag.git
+   cd 1ureka.blender.docs.rag
+   
+   # 2. 建立資料索引 (首次使用)
+   docker compose --profile build up blender-rag-build
+   
+   # 3. 啟動服務
+   docker compose up
+   
+   # 4. 拉取 Ollama 模型 (首次使用)
+   curl -X POST http://localhost:11434/api/pull \
+     -H "Content-Type: application/json" \
+     -d '{"model": "gemma3:4b-it-q8_0"}'
+   ```
+
+3. **服務確認**:
+   - Ollama 服務: http://localhost:11434
+   - RAG API 服務: http://localhost:7860
+
 ## 🎯 主要用途
 
-- **文件查詢**: 透過自然語言查詢大型文件庫
-- **AI 問答**: 基於 RAG 技術的智能問答系統
+- **文件查詢**: 透過自然語言查詢 Blender 官方文件
+- **AI 問答**: 基於本地 RAG 技術的智能問答系統
 - **多語言支援**: 支援繁體中文查詢與回應
 - **即時對話**: 流式回應與即時互動體驗
 
@@ -114,23 +149,23 @@ const queryBlenderRAG = (question: string, options: QueryOptions) => {
 
 ## 🚀 快速開始
 
-1. **啟動開發伺服器**
-   ```bash
-   npm run dev
-   ```
+### 1. 啟動本地 RAG 服務
+首先確保 RAG 後端服務正在運行（請參考前置需求章節）：
+```bash
+# 在 1ureka.blender.docs.rag 專案目錄中
+docker compose up
+```
 
-2. **存取 Assistant**
-   開啟瀏覽器並前往 AI 助手頁面
+### 2. 啟動 Assistant 前端
+```bash
+npm run dev
+```
 
-3. **設定 API**
-   - 點擊設定按鈕
-   - 輸入 API 端點 URL
-   - 測試連接狀態
-
-4. **開始對話**
-   - 輸入您的問題
-   - 等待 AI 回應
-   - 檢視對話歷史
+### 3. 設定與使用
+- 開啟瀏覽器並前往 AI 助手頁面
+- 點擊設定按鈕，確認 API 端點為 `http://localhost:7860`
+- 等待 API 狀態顯示為 "ok" 後開始對話
+- 輸入您的問題並等待 AI 回應
 
 ## 📋 使用範例
 
@@ -235,17 +270,40 @@ const handleApiError = (error: Error) => {
 - **懶載入**: 按需載入資源
 - **記憶體管理**: 高效的狀態管理
 
-## 📚 參考資源
+## 📚 RAG 後端服務整合
 
-本 Assistant 模組基於 [1ureka.blender.docs.rag](https://github.com/1ureka/1ureka.blender.docs.rag) 專案的前端實作，該專案提供：
+本 Assistant 模組是 [1ureka.blender.docs.rag](https://github.com/1ureka/1ureka.blender.docs.rag) 專案的前端實作。RAG 後端提供：
 
-- **完整的 RAG 後端服務**: 文件處理與向量檢索
-- **Blender 文件支援**: 專門針對 Blender 官方文件優化
-- **Docker 部署方案**: 容器化的部署解決方案
-- **多語言支援**: 繁體中文查詢與回應
+### 核心架構
+- **本地 Ollama 服務**: 執行 LLM 模型 (gemma3:4b-it-q8_0)
+- **FAISS 向量資料庫**: 儲存 Blender 文件的向量索引
+- **文件處理流程**: 自動下載、清理、分段 Blender 官方手冊
+- **API 服務**: 提供 `/query` 端點進行 RAG 查詢
+
+### 本地部署優勢
+- **資料隱私**: 所有處理完全在本地進行
+- **離線使用**: 無需網路連接即可查詢
+- **自訂模型**: 可更換不同的 Ollama 模型
+- **效能控制**: 可根據硬體調整效能參數
+
+### 服務監控
+API 提供狀態端點監控服務健康：
+- `idle`: 尚未開始載入
+- `loading`: 模型與向量資料載入中  
+- `ok`: 已可正常查詢
+- `error`: 啟動過程發生錯誤
+
+Assistant 前端會即時監控這些狀態，提供適當的使用者介面回饋。
 
 ## 📝 開發注意事項
 
+### RAG 服務相依性
+- **必須先啟動**: 確保 RAG 後端服務在 localhost:7860 運行
+- **模型載入時間**: 首次啟動需要時間載入模型與索引
+- **GPU 需求**: 建議使用 NVIDIA GPU 以獲得最佳效能
+- **Docker 環境**: 確保 Docker Desktop 正確設定 WSL2 整合
+
+### 開發建議
 - 確保 API 端點的正確設定
 - 處理網路延遲與連接錯誤
 - 實作適當的載入狀態指示
