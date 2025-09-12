@@ -313,45 +313,199 @@ const { promise, resolve } = createDeferred<string>();
 
 ## 🎨 Component Patterns & Styling
 
-### Material-UI Integration
-- **Theme System**: Use MUI's theme system consistently
-- **Responsive Design**: Mobile-first approach with desktop enhancements
-- **Component Props**: Leverage MUI's `sx` prop for styling
-- **Dark/Light Mode**: Support both modes with `className="mode-dark"`
+### Multi-Theme Architecture
+Each demo has its own theme configuration with consistent patterns but different color schemes:
+
+**Theme Location Pattern**: `/src/[demo]/utils/theme.ts`
+- **Forum**: Orange/blue theme (#FF772E, #2f5d6f)
+- **Assistant**: Purple theme (#8179d2) with extended palette (`border`, `bgOpacity`)
+- **Datahub**: Teal theme (#66cccc) with custom breakpoints (`ml: 1440`)
+- **Photos**: Individual theme configuration
+- **Home**: Landing page theme
+
+**Common Theme Features**:
+```typescript
+const theme = createTheme({
+  cssVariables: { colorSchemeSelector: ".mode-%s" },
+  typography: { fontFamily: `Comfortaa, "jf openhuninn"` },
+  colorSchemes: { light: { /* ... */ }, dark: { /* ... */ } },
+  components: {
+    MuiInputBase: { 
+      defaultProps: { 
+        sx: { "&.Mui-disabled::before": { borderBottomStyle: "solid" } } 
+      } 
+    },
+  },
+  spacing: "0.5rem",
+});
+```
+
+### Font Loading Pattern
+Each demo loads fonts via its own `app.css`:
+```css
+/* /src/[demo]/utils/app.css */
+@font-face {
+  font-family: "Comfortaa";
+  src: url("../../assets/fonts/Comfortaa-VariableFont_wght.ttf") format("truetype");
+  font-weight: 300 700;
+  font-display: block;
+}
+
+@font-face {
+  font-family: "jf openhuninn";
+  src: url("../../assets/fonts/jf-openhuninn-2.1.ttf") format("truetype");
+  font-display: swap;
+}
+```
+
+### AppWrapper Pattern
+**CRITICAL**: Every demo uses the `AppWrapper` component for consistent setup:
+
+```typescript
+// /src/[demo]/components/AppWrapper.tsx
+import { CssBaseline, ThemeProvider } from "@mui/material";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ErrorBoundary } from "react-error-boundary";
+import { theme } from "../utils/theme";
+import { Toaster } from "@/components/Toast";
+import { AppError } from "./AppError";
+
+const queryClient = new QueryClient();
+
+function AppWrapper({ children }: { children: React.ReactNode }) {
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Toaster position="bottom-right" />
+      <QueryClientProvider client={queryClient}>
+        <ErrorBoundary fallbackRender={(props) => <AppError {...props} />}>
+          {children}
+        </ErrorBoundary>
+      </QueryClientProvider>
+    </ThemeProvider>
+  );
+}
+```
+
+**Exception**: The `home` demo uses a simplified AppWrapper without QueryClient/ErrorBoundary.
+
+### Responsive Font Size Pattern
+Every demo implements responsive font sizing:
+
+```typescript
+// Pattern used in all demos
+const useResponsiveFontSize = () => {
+  const isLg = useMediaQuery(theme.breakpoints.up("lg"));
+  const isMd = useMediaQuery(theme.breakpoints.up("md"));
+  const isSm = useMediaQuery(theme.breakpoints.up("sm"));
+
+  useEffect(() => {
+    if (isLg) document.documentElement.style.fontSize = "16px";
+    else if (isMd) document.documentElement.style.fontSize = "15px";
+    else document.documentElement.style.fontSize = "13px";
+  }, [isLg, isMd, isSm]);
+
+  return { isLg, isMd, isSm };
+};
+```
 
 ### Component Organization
 ```
 components/
-├── feature/           # Group by feature/domain
+├── AppWrapper.tsx    # Required: Theme + providers setup
+├── AppError.tsx      # Required: Error boundary fallback
+├── feature/          # Group by feature/domain
 │   ├── FeatureList.tsx
 │   ├── FeatureItem.tsx
 │   └── FeatureForm.tsx
 ├── shared/           # Shared within demo
-└── layout/           # Layout components
+└── layout/           # Layout components (appbar, sidebar, etc.)
 ```
 
-### Common Styling Patterns
+### Styling Utilities
+**Shared utilities** (`/src/utils/commonSx.ts`):
 ```typescript
-// ✅ CORRECT: Use shared styling utilities
-import { commonSx } from "@/demo/utils/commonSx"; // or similar
+export const ellipsisSx = {
+  display: "-webkit-box",
+  WebkitLineClamp: 1,
+  WebkitBoxOrient: "vertical",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  wordBreak: "break-all",
+} as const;
 
-// ✅ CORRECT: Responsive patterns
-<Container maxWidth="lg">
-  <Stack direction={{ xs: "column", md: "row" }}>
-    <Box sx={{ flex: 1 }}>...</Box>
+export const underlineSx = {
+  "&:hover": { textDecoration: "underline" },
+  cursor: "pointer",
+} as const;
+
+export const generateMuiColorMix = (color1: string, color2: string, percentage: number) => {
+  return `color-mix(in srgb, var(--mui-palette-${color1}) ${percentage}%, var(--mui-palette-${color2}) ${100 - percentage}%)`;
+};
+```
+
+**Demo-specific utilities**: Each demo may have additional styling utilities in their own `utils/commonSx.ts` for specialized patterns.
+
+### Common Layout Patterns
+```typescript
+// ✅ CORRECT: Responsive container patterns
+<Container
+  maxWidth={false}
+  sx={{
+    maxWidth: 1400,
+    flexDirection: { xs: "column-reverse", md: "row" },
+  }}
+>
+  <Box sx={{ flex: 1 }}>
+    <Paper sx={{ py: 3, borderRadius: 3, border: "1px solid", borderColor: "divider" }}>
+      {/* Content */}
+    </Paper>
+  </Box>
+  
+  <Stack sx={{ gap: { xs: 1, md: 4 }, maxWidth: { xs: 1, md: 400 } }}>
+    {/* Sidebar */}
   </Stack>
 </Container>
+
+// ✅ CORRECT: Responsive component rendering
+const { isMd } = useResponsiveFontSize();
+return isMd ? <DesktopComponent /> : <MobileComponent />;
+```
+
+### Theme Extension Patterns
+For demos requiring custom theme properties:
+
+```typescript
+// Extend MUI theme types
+declare module "@mui/material/styles" {
+  interface Palette {
+    border: Palette["primary"];
+    bgOpacity: Palette["primary"];
+  }
+  interface PaletteOptions {
+    border?: PaletteOptions["primary"];
+    bgOpacity?: PaletteOptions["primary"];
+  }
+}
+
+// Use in theme configuration
+const theme = createTheme({
+  colorSchemes: {
+    light: {
+      palette: {
+        border: { main: "var(--mui-palette-divider)" },
+        bgOpacity: { main: "0.45" },
+      },
+    },
+  },
+});
 ```
 
 ### Error Boundaries
-Wrap page-level components with error boundaries:
-```typescript
-import { ErrorBoundary } from "react-error-boundary";
-
-<ErrorBoundary fallback={<ErrorFallback />}>
-  <YourComponent />
-</ErrorBoundary>
-```
+Error boundaries are automatically configured in `AppWrapper`:
+- **Automatic**: All demos use ErrorBoundary via AppWrapper
+- **Fallback**: Each demo has its own `AppError.tsx` component
+- **Exception**: Home demo doesn't use ErrorBoundary (landing page)
 
 ## 🛎️ Logging & Notifications (Critical Project Rule)
 
@@ -445,18 +599,21 @@ npm run build:deploy     # Production build with deployment prep
 ## 🚧 TODOs & Known Gaps
 
 ### Shared Utilities
-- **TODO**: Move form validation helpers from `/src/forum/utils/form.ts` to `/src/utils/`
-- **TODO**: Standardize theme/styling utilities across all demos
-- **TODO**: Create shared component library for common UI patterns
+- ~~**TODO**: Move form validation helpers from `/src/forum/utils/form.ts` to `/src/utils/`~~ *(Form helpers remain demo-specific for now)*
+- **TODO**: Standardize theme/styling utilities across all demos *(Current: Each demo has own theme.ts and may have own commonSx.ts)*
+- **TODO**: Create shared component library for common UI patterns *(Current: AppWrapper pattern exists but could be abstracted)*
+- **TODO**: Consolidate font loading - all demos load same fonts via separate app.css files
 
 ### Documentation
 - **TODO**: Document database schema patterns and relationships
 - **TODO**: Create migration patterns for database schema changes
 - **TODO**: Document testing patterns (currently no test infrastructure identified)
+- ~~**TODO**: Document theme extension patterns~~ *(Now documented)*
+- ~~**TODO**: Document AppWrapper pattern and responsive font sizing~~ *(Now documented)*
 
 ### Error Handling
 - **TODO**: Standardize error logging and user feedback patterns
-- **TODO**: Create global error boundary configuration
+- ~~**TODO**: Create global error boundary configuration~~ *(Already implemented via AppWrapper)*
 - **TODO**: Document offline handling patterns for IndexedDB
 
 ### Performance
@@ -469,6 +626,11 @@ npm run build:deploy     # Production build with deployment prep
 - **TODO**: Create guidelines for permission handling
 - **TODO**: Standardize logout/cleanup procedures
 
+### Styling & Theming
+- **TODO**: Consider consolidating duplicate theme configurations into shared base theme
+- **TODO**: Standardize responsive font size implementations across demos
+- **TODO**: Document when to extend theme vs use demo-specific styling utilities
+
 ---
 
 ## 📋 Quick Reference Checklist
@@ -476,15 +638,20 @@ npm run build:deploy     # Production build with deployment prep
 When implementing new features, ensure:
 
 - [ ] **Use `console.log("...")` for user notifications, NEVER `toast.*()` directly**
+- [ ] **Use `AppWrapper` component for all demo page setup (theme, providers, error boundary)**
+- [ ] **Implement `useResponsiveFontSize()` hook in each demo's main App component**
 - [ ] Database operations use `SQLiteClient` with `tryCatch`
 - [ ] React Query hooks follow naming conventions
 - [ ] Forms use Zod validation with standardized error handling
 - [ ] Routes are defined in `routes.json` and accessed via `routes` object
 - [ ] Error handling follows `{data, error}` pattern
-- [ ] Components use MUI theming and responsive patterns
+- [ ] Components use MUI theming and responsive patterns with demo-specific theme
 - [ ] Import paths use consistent `@/` aliases
-- [ ] New utilities are placed in appropriate shared folders
+- [ ] New utilities are placed in appropriate shared folders (or demo-specific if needed)
 - [ ] TypeScript strict mode requirements are met
 - [ ] No hardcoded strings for routes or error messages
+- [ ] Each demo has its own `theme.ts` with consistent structure but demo-specific colors
+- [ ] Font loading via demo-specific `app.css` files
+- [ ] Use shared styling utilities from `/src/utils/commonSx.ts` when possible
 
 **Remember**: This project simulates dynamic websites using static technologies. Always maintain the illusion of a real backend while keeping the frontend-only nature transparent to users.
