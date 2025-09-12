@@ -15,7 +15,9 @@ import { toEntries } from "@/utils/typedBuiltins";
 import { routes } from "@/routes";
 import { useUrl } from "@/hooks/url";
 import { useDbBytes, useObjects, useRowCounts } from "@/datahub/hooks/read";
-import { useMemo } from "react";
+import { useAnalysisSummary } from "@/datahub/hooks/analysis";
+import { IssueAnalysisDrawer } from "../analysis/IssueAnalysisDrawer";
+import { useMemo, useState } from "react";
 
 const smallTileCommonSx: BoxProps["sx"] = {
   display: "flex",
@@ -137,7 +139,48 @@ const Tile2 = () => {
   );
 };
 
-const fakeLoadErrorState = true;
+const Tile3 = () => {
+  const { data: analysisData, isFetching } = useAnalysisSummary();
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const handleClick = () => {
+    setDrawerOpen(true);
+  };
+
+  const totalIssues = analysisData?.totalIssues ?? 0;
+
+  return (
+    <>
+      <Stack sx={{ alignItems: "flex-start" }}>
+        <TileTitle>潛在問題</TileTitle>
+        {isFetching ? (
+          <SkeletonWrapper>
+            <TileContent sx={{ textWrap: "nowrap", color: "warning.main", ...underlineSx }}>載入中</TileContent>
+          </SkeletonWrapper>
+        ) : (
+          <TileContent 
+            sx={{ 
+              textWrap: "nowrap", 
+              color: totalIssues > 0 ? "warning.main" : "success.main", 
+              display: "inline-block", 
+              ...underlineSx,
+              cursor: "pointer"
+            }}
+            onClick={handleClick}
+          >
+            {totalIssues}
+            <OpenInNewRoundedIcon fontSize="small" sx={{ verticalAlign: "middle", ml: 0.5 }} />
+          </TileContent>
+        )}
+      </Stack>
+
+      <IssueAnalysisDrawer 
+        open={drawerOpen} 
+        onClose={() => setDrawerOpen(false)} 
+      />
+    </>
+  );
+};
 
 const SmallTiles = () => {
   return (
@@ -163,20 +206,7 @@ const SmallTiles = () => {
         sx={{ gridRow: { xs: "1", lg: "auto" }, gridColumn: { xs: "5 / span 2", lg: "auto" }, ...smallTileCommonSx }}
       >
         <HealthAndSafetyRoundedIcon sx={tileIconCommonSx} />
-
-        <Stack sx={{ alignItems: "flex-start" }}>
-          <TileTitle>潛在問題</TileTitle>
-          {fakeLoadErrorState ? (
-            <TileContent sx={{ textWrap: "nowrap", color: "warning.main", display: "inline-block", ...underlineSx }}>
-              2
-              <OpenInNewRoundedIcon fontSize="small" sx={{ verticalAlign: "middle", ml: 0.5 }} />
-            </TileContent>
-          ) : (
-            <SkeletonWrapper>
-              <TileContent sx={{ textWrap: "nowrap", color: "warning.main", ...underlineSx }}>載入中</TileContent>
-            </SkeletonWrapper>
-          )}
-        </Stack>
+        <Tile3 />
       </Box>
     </Box>
   );
