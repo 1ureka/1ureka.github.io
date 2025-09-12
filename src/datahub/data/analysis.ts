@@ -1,5 +1,6 @@
 import { getClient } from "./client";
 import { tryCatch } from "@/utils/tryCatch";
+import { getObjectsByTypes, getTotalRowCount, getTableInfo, getTableIndexInfo } from "./read";
 import dayjs from "dayjs";
 
 // --------------------------------------------------------
@@ -32,26 +33,18 @@ const checkDateFormats = async (): Promise<Issue[]> => {
   const client = getClient();
   const issues: Issue[] = [];
 
-  // 獲取所有表格
-  const { data: tables } = await tryCatch(
-    client.exec(`
-    SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%' ORDER BY name;
-  `)
-  );
-
+  // 使用 read.ts 的函數獲取所有表格
+  const { data: tables } = await tryCatch(getObjectsByTypes(["table"]));
   if (!tables) return issues;
 
-  for (const row of tables) {
-    const tableName = row.name;
-    if (typeof tableName !== "string") continue;
+  for (const tableObj of tables) {
+    const tableName = tableObj.name;
 
-    // 獲取表格結構
-    const { data: columns } = await tryCatch(client.exec(`PRAGMA table_info(${tableName});`, undefined, true));
+    // 使用 read.ts 的函數獲取表格結構
+    const { data: columns } = await tryCatch(getTableInfo(tableName));
     if (!columns) continue;
 
     for (const column of columns) {
-      if (typeof column.name !== "string" || typeof column.type !== "string") continue;
-
       // 檢查可能包含日期的欄位
       const columnType = column.type.toLowerCase();
       console.log("columnType", columnType);
@@ -115,8 +108,8 @@ const checkForeignKeyIntegrity = async (): Promise<{ isValid: boolean; issues: I
   if (!isValid && violations) {
     const violationsByTable: { [table: string]: number } = {};
 
-    violations.forEach((violation: any) => {
-      const table = violation.table as string;
+    violations.forEach((violation: { table: string }) => {
+      const table = violation.table;
       violationsByTable[table] = (violationsByTable[table] || 0) + 1;
     });
 
@@ -144,7 +137,7 @@ const checkFreelistCount = async (): Promise<Issue[]> => {
   const { data: freelistResult } = await tryCatch(client.exec("PRAGMA freelist_count;"));
 
   if (freelistResult && freelistResult.length > 0) {
-    const freelistCount = Number((freelistResult[0] as any).freelist_count || 0);
+    const freelistCount = Number((freelistResult[0] as { freelist_count?: number }).freelist_count || 0);
 
     if (freelistCount > 100) {
       issues.push({
@@ -164,45 +157,35 @@ const checkFreelistCount = async (): Promise<Issue[]> => {
 
 // 檢查索引健康狀況
 const checkIndexHealth = async (): Promise<Issue[]> => {
-  const client = getClient();
   const issues: Issue[] = [];
 
-  // 獲取所有表格
-  const { data: tables } = await tryCatch(
-    client.exec(`
-    SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%' ORDER BY name;
-  `)
-  );
-
+  // 使用 read.ts 的函數獲取所有表格
+  const { data: tables } = await tryCatch(getObjectsByTypes(["table"]));
   if (!tables) return issues;
 
-  for (const row of tables) {
-    const tableName = row.name;
-    if (typeof tableName !== "string") continue;
+  // 使用 read.ts 的函數獲取所有表格的行數
+  const { data: rowCounts } = await tryCatch(getTotalRowCount(["table"]));
+  if (!rowCounts) return issues;
 
-    // 檢查表格的索引
-    const { data: indexes } = await tryCatch(client.exec(`PRAGMA index_list(${tableName});`, undefined, true));
+  for (const tableObj of tables) {
+    const tableName = tableObj.name;
 
-    // 簡單的啟發式檢查：如果表格沒有索引但有大量資料，可能需要索引
-    const { data: countResult } = await tryCatch(
-      client.exec(`SELECT COUNT(*) as count FROM "${tableName}";`, undefined, true)
-    );
+    // 使用 read.ts 的函數檢查表格的索引
+    const { data: indexes } = await tryCatch(getTableIndexInfo(tableName));
 
-    if (countResult && countResult.length > 0) {
-      const rowCount = Number((countResult[0] as any).count || 0);
+    const rowCount = rowCounts[tableName] || 0;
 
-      // 如果表格有超過 1000 筆資料但沒有索引，標記為潛在問題
-      if (rowCount > 1000 && (!indexes || indexes.length === 0)) {
-        issues.push({
-          id: `index_missing_${tableName}`,
-          table: tableName,
-          type: "index_missing",
-          level: "potential",
-          title: "可能需要索引優化",
-          description: `表格有 ${rowCount} 筆資料但沒有索引，可能影響查詢效能`,
-          count: rowCount,
-        });
-      }
+    // 如果表格有超過 1000 筆資料但沒有索引，標記為潛在問題
+    if (rowCount > 1000 && (!indexes || indexes.length === 0)) {
+      issues.push({
+        id: `index_missing_${tableName}`,
+        table: tableName,
+        type: "index_missing",
+        level: "potential",
+        title: "可能需要索引優化",
+        description: `表格有 ${rowCount} 筆資料但沒有索引，可能影響查詢效能`,
+        count: rowCount,
+      });
     }
   }
 
@@ -229,7 +212,7 @@ export const getAnalysisSummary = async (): Promise<AnalysisSummary> => {
   // 獲取 freelist 計數
   const client = getClient();
   const { data: freelistResult } = await tryCatch(client.exec("PRAGMA freelist_count;"));
-  const freelistCount = freelistResult?.[0] ? Number((freelistResult[0] as any).freelist_count || 0) : 0;
+  const freelistCount = freelistResult?.[0] ? Number((freelistResult[0] as { freelist_count?: number }).freelist_count || 0) : 0;
 
   return {
     totalIssues: allIssues.length,
