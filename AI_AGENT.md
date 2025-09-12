@@ -353,13 +353,38 @@ import { ErrorBoundary } from "react-error-boundary";
 </ErrorBoundary>
 ```
 
-### Toast Notifications
-```typescript
-import toast from "react-hot-toast";
+## 🛎️ Logging & Notifications (Critical Project Rule)
 
-// Success/error notifications
+⚠️ This project uses a **custom unified logging system** where  
+`console.log`, `console.error`, `console.warn` is automatically intercepted and shown as **toast notifications**.
+
+### Rules
+- ❌ DO NOT call `toast.success()`, `toast.error()`, or `toast.*` directly.  
+- ✅ ALWAYS use `console.log("...")` for user-facing notifications.  
+- ✅ Messages must be **clear to both developers and end users**.  
+- ❌ Never log raw debug info (e.g., `"fetching data..."`).  
+- ✅ Instead, use semantic messages (e.g., `"載入留言失敗，請稍後再試"`).
+
+### Implementation Details
+The unified logging system is implemented in `/src/components/Toast.tsx`:
+- `console.log()` → Shows as info toast (green, 10 seconds)
+- `console.error()` → Shows as error toast (red, 15 seconds)  
+- `console.warn()` → Shows as warning toast (orange, 10 seconds)
+
+### Correct Usage Examples
+```typescript
+// ✅ CORRECT: User-friendly messages
+console.log("成功標記為已讀");
+console.error("登入失敗，請檢查用戶名稱與密碼");
+console.warn("此操作無法復原，請確認後再繼續");
+
+// ❌ INCORRECT: Direct toast calls
 toast.success("操作成功");
 toast.error("操作失敗");
+
+// ❌ INCORRECT: Debug messages for users
+console.log("Fetching user data...");
+console.error(error.stack);
 ```
 
 ## 🔧 Build System & Development
@@ -450,6 +475,7 @@ npm run build:deploy     # Production build with deployment prep
 
 When implementing new features, ensure:
 
+- [ ] **Use `console.log("...")` for user notifications, NEVER `toast.*()` directly**
 - [ ] Database operations use `SQLiteClient` with `tryCatch`
 - [ ] React Query hooks follow naming conventions
 - [ ] Forms use Zod validation with standardized error handling
