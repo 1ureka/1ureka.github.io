@@ -30,8 +30,7 @@ const parseData = (issuesByTable: { [table: string]: number } | null) => {
     };
   }
 
-  const sortedEntries = Object.entries(issuesByTable)
-    .sort(([, a], [, b]) => b - a);
+  const sortedEntries = Object.entries(issuesByTable).sort(([, a], [, b]) => b - a);
 
   const topTables = sortedEntries.slice(0, 3);
   const bottomTables = sortedEntries.slice(3, 6);
@@ -59,16 +58,16 @@ const parseData = (issuesByTable: { [table: string]: number } | null) => {
     dataArray.push(...emptyItems);
   }
 
-  return { 
-    dataArray, 
+  return {
+    dataArray,
     topTables: topTables.map(([name]) => name),
-    bottomTables: bottomTables.map(([name]) => name)
+    bottomTables: bottomTables.map(([name]) => name),
   };
 };
 
 const BarChartItem = ({ label, issues, percentage, loading, noData }: DataArray[0]) => {
   const { update } = useUrl();
-  
+
   const handleClick = () => {
     if (label && !loading && !noData) {
       update(routes.datahub_tables, (prev) => ({ db: prev.db ?? null, table: label }));
@@ -108,7 +107,7 @@ const BarChartItem = ({ label, issues, percentage, loading, noData }: DataArray[
 
 const BarChartItemLabel = ({ label, issues, loading, noData }: DataArray[0]) => {
   const { update } = useUrl();
-  
+
   const handleClick = () => {
     if (label && !loading && !noData) {
       update(routes.datahub_tables, (prev) => ({ db: prev.db ?? null, table: label }));
@@ -118,12 +117,12 @@ const BarChartItemLabel = ({ label, issues, loading, noData }: DataArray[0]) => 
   if (noData) return <Box sx={{ flex: 1 }} />;
 
   return (
-    <Stack 
-      sx={{ 
-        flex: 1, 
-        alignItems: "center", 
+    <Stack
+      sx={{
+        flex: 1,
+        alignItems: "center",
         cursor: label && !loading && !noData ? "pointer" : "default",
-        ...(!loading && !noData && label ? underlineSx : {})
+        ...(!loading && !noData && label ? underlineSx : {}),
       }}
       onClick={handleClick}
     >
@@ -139,7 +138,7 @@ const BarChartItemLabel = ({ label, issues, loading, noData }: DataArray[0]) => 
 
 const BottomTablesList = ({ tables }: { tables: string[] }) => {
   const { update } = useUrl();
-  
+
   if (tables.length === 0) return null;
 
   return (
@@ -169,8 +168,8 @@ const BottomTablesList = ({ tables }: { tables: string[] }) => {
 
 const IssueBarChart = () => {
   const { data, isFetching } = useAnalysisSummary();
-  const { dataArray, bottomTables } = useMemo(() => 
-    parseData(isFetching ? null : data?.issuesByTable ?? null), 
+  const { dataArray, bottomTables } = useMemo(
+    () => parseData(isFetching ? null : data?.issuesByTable ?? null),
     [data?.issuesByTable, isFetching]
   );
 

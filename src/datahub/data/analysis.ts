@@ -33,9 +33,11 @@ const checkDateFormats = async (): Promise<Issue[]> => {
   const issues: Issue[] = [];
 
   // 獲取所有表格
-  const { data: tables } = await tryCatch(() => client.exec(`
+  const { data: tables } = await tryCatch(
+    client.exec(`
     SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%' ORDER BY name;
-  `));
+  `)
+  );
 
   if (!tables) return issues;
 
@@ -44,21 +46,27 @@ const checkDateFormats = async (): Promise<Issue[]> => {
     if (typeof tableName !== "string") continue;
 
     // 獲取表格結構
-    const { data: columns } = await tryCatch(() => client.exec(`PRAGMA table_info(${tableName});`));
+    const { data: columns } = await tryCatch(client.exec(`PRAGMA table_info(${tableName});`, undefined, true));
     if (!columns) continue;
-    
+
     for (const column of columns) {
       if (typeof column.name !== "string" || typeof column.type !== "string") continue;
-      
+
       // 檢查可能包含日期的欄位
       const columnType = column.type.toLowerCase();
+      console.log("columnType", columnType);
+
       if (!columnType.includes("date") && !columnType.includes("time") && !columnType.includes("timestamp")) {
         continue;
       }
 
       // 檢查該欄位的資料格式
-      const { data: rows } = await tryCatch(() => 
-        client.exec(`SELECT "${column.name}" FROM "${tableName}" WHERE "${column.name}" IS NOT NULL LIMIT 100;`)
+      const { data: rows } = await tryCatch(
+        client.exec(
+          `SELECT "${column.name}" FROM "${tableName}" WHERE "${column.name}" IS NOT NULL LIMIT 100;`,
+          undefined,
+          true
+        )
       );
 
       if (!rows) continue;
@@ -95,20 +103,18 @@ const checkDateFormats = async (): Promise<Issue[]> => {
 // 檢查外鍵完整性
 const checkForeignKeyIntegrity = async (): Promise<{ isValid: boolean; issues: Issue[] }> => {
   const client = getClient();
-  
+
   // 啟用外鍵檢查
   await client.exec("PRAGMA foreign_keys = ON;");
-  
-  const { data: violations } = await tryCatch(() => 
-    client.exec("PRAGMA foreign_key_check;")
-  );
+
+  const { data: violations } = await tryCatch(client.exec("PRAGMA foreign_key_check;"));
 
   const isValid = !violations || violations.length === 0;
   const issues: Issue[] = [];
 
   if (!isValid && violations) {
     const violationsByTable: { [table: string]: number } = {};
-    
+
     violations.forEach((violation: any) => {
       const table = violation.table as string;
       violationsByTable[table] = (violationsByTable[table] || 0) + 1;
@@ -135,13 +141,11 @@ const checkFreelistCount = async (): Promise<Issue[]> => {
   const client = getClient();
   const issues: Issue[] = [];
 
-  const { data: freelistResult } = await tryCatch(() => 
-    client.exec("PRAGMA freelist_count;")
-  );
+  const { data: freelistResult } = await tryCatch(client.exec("PRAGMA freelist_count;"));
 
   if (freelistResult && freelistResult.length > 0) {
     const freelistCount = Number((freelistResult[0] as any).freelist_count || 0);
-    
+
     if (freelistCount > 100) {
       issues.push({
         id: "freelist_high",
@@ -164,9 +168,11 @@ const checkIndexHealth = async (): Promise<Issue[]> => {
   const issues: Issue[] = [];
 
   // 獲取所有表格
-  const { data: tables } = await tryCatch(() => client.exec(`
+  const { data: tables } = await tryCatch(
+    client.exec(`
     SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%' ORDER BY name;
-  `));
+  `)
+  );
 
   if (!tables) return issues;
 
@@ -175,16 +181,16 @@ const checkIndexHealth = async (): Promise<Issue[]> => {
     if (typeof tableName !== "string") continue;
 
     // 檢查表格的索引
-    const { data: indexes } = await tryCatch(() => client.exec(`PRAGMA index_list(${tableName});`));
-    
+    const { data: indexes } = await tryCatch(client.exec(`PRAGMA index_list(${tableName});`, undefined, true));
+
     // 簡單的啟發式檢查：如果表格沒有索引但有大量資料，可能需要索引
-    const { data: countResult } = await tryCatch(() => 
-      client.exec(`SELECT COUNT(*) as count FROM "${tableName}";`)
+    const { data: countResult } = await tryCatch(
+      client.exec(`SELECT COUNT(*) as count FROM "${tableName}";`, undefined, true)
     );
 
     if (countResult && countResult.length > 0) {
       const rowCount = Number((countResult[0] as any).count || 0);
-      
+
       // 如果表格有超過 1000 筆資料但沒有索引，標記為潛在問題
       if (rowCount > 1000 && (!indexes || indexes.length === 0)) {
         issues.push({
@@ -212,12 +218,7 @@ export const getAnalysisSummary = async (): Promise<AnalysisSummary> => {
     checkIndexHealth(),
   ]);
 
-  const allIssues = [
-    ...dateIssues,
-    ...foreignKeyResult.issues,
-    ...freelistIssues,
-    ...indexIssues,
-  ];
+  const allIssues = [...dateIssues, ...foreignKeyResult.issues, ...freelistIssues, ...indexIssues];
 
   // 按表格統計問題數量
   const issuesByTable: { [table: string]: number } = {};
@@ -227,9 +228,7 @@ export const getAnalysisSummary = async (): Promise<AnalysisSummary> => {
 
   // 獲取 freelist 計數
   const client = getClient();
-  const { data: freelistResult } = await tryCatch(() => 
-    client.exec("PRAGMA freelist_count;")
-  );
+  const { data: freelistResult } = await tryCatch(client.exec("PRAGMA freelist_count;"));
   const freelistCount = freelistResult?.[0] ? Number((freelistResult[0] as any).freelist_count || 0) : 0;
 
   return {

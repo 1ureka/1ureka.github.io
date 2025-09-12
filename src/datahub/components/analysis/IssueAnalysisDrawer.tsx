@@ -1,17 +1,9 @@
-import { 
-  Box, 
-  Drawer, 
-  IconButton, 
-  Paper, 
-  Stack, 
-  Typography,
-  Divider
-} from "@mui/material";
+import { Box, Drawer, IconButton, Paper, Stack, Typography, Divider } from "@mui/material";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { IssueBarChart } from "./IssueBarChart";
 import { ForeignKeyStatusBlock } from "./ForeignKeyStatusBlock";
 import { RiskList } from "./RiskList";
-import { mdSpace, lgSpace } from "../home/commonSx";
+import { mdSpace, smSpace } from "../home/commonSx";
 
 interface IssueAnalysisDrawerProps {
   open: boolean;
@@ -24,24 +16,25 @@ const IssueAnalysisDrawer = ({ open, onClose }: IssueAnalysisDrawerProps) => {
       anchor="right"
       open={open}
       onClose={onClose}
-      PaperProps={{
-        sx: {
-          width: { xs: "100%", sm: 480, md: 600 },
-          maxWidth: "90vw",
-        }
+      slotProps={{
+        paper: {
+          sx: { width: { xs: "100%", sm: 480, md: 600 }, maxWidth: "90vw" },
+        },
       }}
     >
       <Box sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
         {/* Header */}
-        <Box sx={{ 
-          display: "flex", 
-          alignItems: "center", 
-          justifyContent: "space-between",
-          p: mdSpace,
-          borderBottom: "1px solid",
-          borderColor: "divider"
-        }}>
-          <Typography variant="h5" component="h2" sx={{ fontWeight: "medium" }}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            p: smSpace,
+            borderBottom: "1px solid",
+            borderColor: "divider",
+          }}
+        >
+          <Typography variant="h5" component="h2">
             SQLite 資料庫分析
           </Typography>
           <IconButton onClick={onClose} size="small">
@@ -50,29 +43,15 @@ const IssueAnalysisDrawer = ({ open, onClose }: IssueAnalysisDrawerProps) => {
         </Box>
 
         {/* Content */}
-        <Box sx={{ flex: 1, overflow: "auto", p: mdSpace }}>
-          <Stack spacing={lgSpace}>
+        <Box sx={{ flex: 1, overflow: "auto", p: smSpace }}>
+          <Stack gap={mdSpace}>
             {/* 第一個 Stat Block: 潛在風險直條圖 */}
-            <Paper 
-              sx={{ 
-                p: mdSpace, 
-                borderRadius: 2, 
-                border: "1px solid", 
-                borderColor: "divider" 
-              }}
-            >
+            <Paper sx={{ p: mdSpace, borderRadius: 2, border: "1px solid", borderColor: "divider", boxShadow: "none" }}>
               <IssueBarChart />
             </Paper>
 
             {/* 第二個 Stat Block: 外鍵完整性測試 */}
-            <Paper 
-              sx={{ 
-                p: mdSpace, 
-                borderRadius: 2, 
-                border: "1px solid", 
-                borderColor: "divider" 
-              }}
-            >
+            <Paper sx={{ p: mdSpace, borderRadius: 2, border: "1px solid", borderColor: "divider", boxShadow: "none" }}>
               <Typography variant="h6" component="h3" sx={{ mb: mdSpace }}>
                 外鍵完整性檢查
               </Typography>

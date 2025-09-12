@@ -1,13 +1,4 @@
-import { 
-  Box, 
-  Chip, 
-  List, 
-  ListItem, 
-  ListItemText, 
-  Typography, 
-  Alert,
-  CircularProgress
-} from "@mui/material";
+import { Box, Chip, List, ListItem, ListItemText, Typography, Alert, CircularProgress } from "@mui/material";
 import { useAnalysisSummary } from "@/datahub/hooks/analysis";
 import type { Issue, RiskLevel } from "@/datahub/data/analysis";
 import { useUrl } from "@/hooks/url";
@@ -29,49 +20,45 @@ const RiskLevelExplanation = () => (
     </Typography>
     <Typography variant="body2" component="div">
       • <strong>嚴重</strong>：會導致資料錯誤或遺失的問題（如外鍵錯誤、日期格式錯誤）
-      <br />
-      • <strong>潛在</strong>：可能影響效能或未來擴展的問題（如冗餘索引、缺少索引）
+      <br />• <strong>潛在</strong>：可能影響效能或未來擴展的問題（如冗餘索引、缺少索引）
     </Typography>
   </Alert>
 );
 
 const IssueListItem = ({ issue }: { issue: Issue }) => {
   const { update } = useUrl();
-  
+
   const handleTableClick = () => {
     if (issue.table !== "database") {
       update(routes.datahub_tables, (prev) => ({ db: prev.db ?? null, table: issue.table }));
     }
   };
 
-  const tableDisplay = issue.table === "database" ? (
-    <Typography variant="body2" sx={{ color: "text.secondary" }}>
-      {issue.table}
-    </Typography>
-  ) : (
-    <Typography 
-      variant="body2" 
-      sx={{ 
-        ...underlineSx, 
-        color: "primary.main",
-        cursor: "pointer",
-      }}
-      onClick={handleTableClick}
-    >
-      {issue.table}
-    </Typography>
-  );
+  const tableDisplay =
+    issue.table === "database" ? (
+      <Typography variant="body2" sx={{ color: "text.secondary" }}>
+        {issue.table}
+      </Typography>
+    ) : (
+      <Typography
+        variant="body2"
+        sx={{
+          ...underlineSx,
+          color: "primary.main",
+          cursor: "pointer",
+        }}
+        onClick={handleTableClick}
+      >
+        {issue.table}
+      </Typography>
+    );
 
   return (
     <ListItem sx={{ px: 0, alignItems: "flex-start" }}>
       <ListItemText
         primary={
           <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.5 }}>
-            <Chip 
-              label={getRiskLevelText(issue.level)} 
-              color={getRiskLevelColor(issue.level)}
-              size="small"
-            />
+            <Chip label={getRiskLevelText(issue.level)} color={getRiskLevelColor(issue.level)} size="small" />
             <Typography variant="subtitle2" sx={{ fontWeight: "medium" }}>
               {issue.title}
             </Typography>
@@ -98,7 +85,7 @@ const IssueListItem = ({ issue }: { issue: Issue }) => {
                 </>
               )}
             </Box>
-            
+
             {/* TODO: 預留 actions 按鈕空間 */}
             {issue.actions && issue.actions.length > 0 && (
               <Box sx={{ mt: 1 }}>
@@ -130,7 +117,7 @@ const RiskList = () => {
     return (
       <Box sx={{ textAlign: "center", py: 4 }}>
         <Typography variant="body1" sx={{ color: "success.main", fontWeight: "medium" }}>
-          🎉 沒有發現潛在風險
+          沒有發現潛在風險
         </Typography>
         <Typography variant="body2" sx={{ color: "text.secondary", mt: 1 }}>
           您的資料庫健康狀況良好
@@ -140,13 +127,13 @@ const RiskList = () => {
   }
 
   // 按風險等級分組
-  const seriousIssues = data.issues.filter(issue => issue.level === "serious");
-  const potentialIssues = data.issues.filter(issue => issue.level === "potential");
+  const seriousIssues = data.issues.filter((issue) => issue.level === "serious");
+  const potentialIssues = data.issues.filter((issue) => issue.level === "potential");
 
   return (
     <Box>
       <RiskLevelExplanation />
-      
+
       {seriousIssues.length > 0 && (
         <Box sx={{ mb: 3 }}>
           <Typography variant="h6" sx={{ mb: 2, color: "error.main" }}>
