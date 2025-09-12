@@ -629,61 +629,66 @@ The build system includes specialized scripts for production deployment:
 3. `node src/build.js` - Post-build file organization
 4. Output ready in `/deploy` directory for deployment
 
-## ⚠️ Critical Don'ts
-
-### Database Security
-- ❌ **NEVER** use string interpolation in SQL queries
-- ❌ **NEVER** skip parameter binding
-- ❌ **NEVER** disable foreign keys without good reason
-
-### Error Handling
-- ❌ **NEVER** ignore errors from database operations
-- ❌ **NEVER** throw unhandled errors in React components
-- ❌ **NEVER** skip error logging
-
-### Performance
-- ❌ **NEVER** skip React Query stale time configuration
-- ❌ **NEVER** fetch data in render functions
-- ❌ **NEVER** ignore cache invalidation after mutations
-
-### Code Organization
-- ❌ **NEVER** mix React hooks in `data/` layer functions
-- ❌ **NEVER** import demo-specific code in shared utilities
-- ❌ **NEVER** hardcode routes (always use `routes` object)
-
-### URL State Management
-- ❌ **NEVER** use local component state for shareable UI state that should persist across navigation
-- ❌ **NEVER** hardcode URL paths in components (use `routes` object)
-- ❌ **NEVER** ignore URL state when implementing filters, pagination, or navigation state
-
-### Form & UI Patterns  
-- ❌ **NEVER** call `toast.success()`, `toast.error()`, etc. directly (use `console.log/error/warn`)
-- ❌ **NEVER** skip form validation with Zod schemas
-- ❌ **NEVER** implement responsive layouts without using `useResponsiveFontSize()` hook
-
 ---
 
 ## 📋 Quick Reference Checklist
 
-When implementing new features, ensure:
+When implementing new features, ensure all of the following requirements are met:
 
-- [ ] **Use `console.log("...")` for user notifications, NEVER `toast.*()` directly**
-- [ ] **Use `AppWrapper` component for all demo page setup (theme, providers, error boundary)**
-- [ ] **Implement `useResponsiveFontSize()` hook in each demo's main App component**
-- [ ] **Follow UI = f(state) + f(url) philosophy: map shareable UI state to URL parameters**
-- [ ] Database operations use `SQLiteClient` with `tryCatch`
-- [ ] React Query hooks follow naming conventions
-- [ ] Forms use Zod validation with standardized error handling
-- [ ] Routes are defined in `routes.json` and accessed via `routes` object
-- [ ] Error handling follows `{data, error}` pattern
-- [ ] Components use MUI theming and responsive patterns with demo-specific theme
-- [ ] Import paths use consistent `@/` aliases
-- [ ] New utilities are placed in appropriate shared folders (or demo-specific if needed)
-- [ ] TypeScript strict mode requirements are met
-- [ ] No hardcoded strings for routes or error messages
-- [ ] Each demo has its own `theme.ts` with consistent structure but demo-specific colors
-- [ ] Font loading via demo-specific `app.css` files
-- [ ] Use shared styling utilities from `/src/utils/commonSx.ts` when possible
-- [ ] URL state management for filters, pagination, and navigation state (not local component state)
+### 🗄️ Database & Data Operations
+- [ ] Use `SQLiteClient` with parameterized queries (NEVER string interpolation)
+- [ ] Wrap all database operations with `tryCatch` for error handling
+- [ ] Enable foreign keys with `PRAGMA foreign_keys = ON;`
+- [ ] Use proper parameter binding (e.g., `$userId`) in all SQL queries
+- [ ] Place pure async functions in `data/` folders (NO React hooks)
+
+### 🔄 React Query & Performance
+- [ ] Configure `staleTime: 1000 * 60 * 5` (5 minutes) for all queries
+- [ ] Follow naming conventions: `use[Entity]` for queries, `use[Action][Entity]` for mutations
+- [ ] Invalidate cache properly after mutations (`queryClient.invalidateQueries`)
+- [ ] NEVER fetch data directly in render functions (use React Query hooks)
+- [ ] Use consistent query keys: `["entity"]`, `["entity", id]`, `["entity", filters]`
+
+### ⚠️ Error Handling & Logging
+- [ ] Use unified logging: `console.log()` for user notifications (NEVER `toast.*()` directly)
+- [ ] Handle all database operation errors (don't ignore `{data, error}` pattern)
+- [ ] Provide user-friendly error messages in Chinese
+- [ ] NEVER throw unhandled errors in React components
+- [ ] Log errors appropriately for debugging while keeping user messages clear
+
+### 🧭 URL State Management
+- [ ] Follow UI = f(state) + f(url) philosophy for shareable UI state
+- [ ] Use `useUrl()` hook for URL parameter management
+- [ ] Map filters, pagination, and navigation state to URL parameters
+- [ ] NEVER use local component state for shareable UI state that should persist across navigation
+- [ ] Use `routes` object for all routing (NEVER hardcode URL paths)
+
+### 📝 Form & UI Patterns
+- [ ] Use Zod schemas for all form validation (`formElementsSchema` + `formSchema`)
+- [ ] Implement TanStack Form with standardized error handling helpers
+- [ ] Use `getFormIsError` and `getFormErrorHelperText` utilities
+- [ ] Apply responsive design with `useResponsiveFontSize()` hook in all demos
+- [ ] NEVER skip form validation or responsive layout implementation
+
+### 🏗️ Project Structure & Organization
+- [ ] Use `AppWrapper` component for all demo page setup (theme, providers, error boundary)
+- [ ] Follow consistent module structure: `components/`, `data/`, `hooks/`, `pages/`, `utils/`
+- [ ] Place shared utilities in `/src/utils/`, demo-specific in `[demo]/utils/`
+- [ ] NEVER import demo-specific code in shared utilities
+- [ ] Use consistent `@/` import aliases for all paths
+
+### 🎨 Theme & Styling
+- [ ] Implement demo-specific `theme.ts` with consistent structure but unique colors
+- [ ] Load fonts via demo-specific `app.css` files
+- [ ] Use shared styling utilities from `/src/utils/commonSx.ts` when applicable
+- [ ] Follow multi-theme architecture patterns (each demo has its own theme)
+- [ ] Include proper theme extensions for custom properties when needed
+
+### 🔧 Development & Build
+- [ ] Maintain TypeScript strict mode compliance
+- [ ] Define routes in `routes.json` and access via `routes` object
+- [ ] Use proper entry point structure: `index.html` → `main.tsx` → `App.tsx`
+- [ ] Test with development server and build process
+- [ ] Ensure SQLite databases are placed in `/src/assets/db/[demo_name].db`
 
 **Remember**: This project simulates dynamic websites using static technologies. Always maintain the illusion of a real backend while keeping the frontend-only nature transparent to users.
