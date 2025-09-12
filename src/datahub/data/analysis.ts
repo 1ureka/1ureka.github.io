@@ -1,6 +1,6 @@
 import { getClient } from "./client";
 import { tryCatch } from "@/utils/tryCatch";
-import { getObjectsByTypes, getTotalRowCount, getTableInfo, getTableIndexInfo } from "./read";
+import type { SQLiteObjectType, TableColumnInfo, TableIndexInfo } from "./read";
 import dayjs from "dayjs";
 
 // --------------------------------------------------------
@@ -24,31 +24,22 @@ export type AnalysisSummary = {
   totalIssues: number;
   issuesByTable: { [table: string]: number };
   foreignKeyIntegrity: boolean;
-  freelistCount: number;
   issues: Issue[];
 };
 
 // 檢查日期格式是否為完整 ISO 8601
-const checkDateFormats = async (): Promise<Issue[]> => {
+const checkDateFormats = async (
+  tables: string[],
+  tableInfos: { table: string; columns: TableColumnInfo[] }[]
+): Promise<Issue[]> => {
   const client = getClient();
   const issues: Issue[] = [];
 
-  // 使用 read.ts 的函數獲取所有表格
-  const { data: tables } = await tryCatch(getObjectsByTypes(["table"]));
-  if (!tables) return issues;
-
-  for (const tableObj of tables) {
-    const tableName = tableObj.name;
-
-    // 使用 read.ts 的函數獲取表格結構
-    const { data: columns } = await tryCatch(getTableInfo(tableName));
-    if (!columns) continue;
-
+  for (const tableName of tables) {
+    const columns = tableInfos.find((info) => info.table === tableName)?.columns || [];
     for (const column of columns) {
       // 檢查可能包含日期的欄位
       const columnType = column.type.toLowerCase();
-      console.log("columnType", columnType);
-
       if (!columnType.includes("date") && !columnType.includes("time") && !columnType.includes("timestamp")) {
         continue;
       }
@@ -108,8 +99,8 @@ const checkForeignKeyIntegrity = async (): Promise<{ isValid: boolean; issues: I
   if (!isValid && violations) {
     const violationsByTable: { [table: string]: number } = {};
 
-    violations.forEach((violation: { table: string }) => {
-      const table = violation.table;
+    violations.forEach((violation) => {
+      const table = violation.table as string;
       violationsByTable[table] = (violationsByTable[table] || 0) + 1;
     });
 
@@ -156,26 +147,17 @@ const checkFreelistCount = async (): Promise<Issue[]> => {
 };
 
 // 檢查索引健康狀況
-const checkIndexHealth = async (): Promise<Issue[]> => {
+const checkIndexHealth = async (
+  tables: string[],
+  rowCounts: { [table: string]: number },
+  tableIndexes: { table: string; indexes: TableIndexInfo[] }[]
+): Promise<Issue[]> => {
   const issues: Issue[] = [];
 
-  // 使用 read.ts 的函數獲取所有表格
-  const { data: tables } = await tryCatch(getObjectsByTypes(["table"]));
-  if (!tables) return issues;
-
-  // 使用 read.ts 的函數獲取所有表格的行數
-  const { data: rowCounts } = await tryCatch(getTotalRowCount(["table"]));
-  if (!rowCounts) return issues;
-
-  for (const tableObj of tables) {
-    const tableName = tableObj.name;
-
-    // 使用 read.ts 的函數檢查表格的索引
-    const { data: indexes } = await tryCatch(getTableIndexInfo(tableName));
-
+  for (const tableName of tables) {
+    const indexes = tableIndexes.find((info) => info.table === tableName)?.indexes || [];
     const rowCount = rowCounts[tableName] || 0;
 
-    // 如果表格有超過 1000 筆資料但沒有索引，標記為潛在問題
     if (rowCount > 1000 && (!indexes || indexes.length === 0)) {
       issues.push({
         id: `index_missing_${tableName}`,
@@ -193,12 +175,24 @@ const checkIndexHealth = async (): Promise<Issue[]> => {
 };
 
 // 獲取完整的分析摘要
-export const getAnalysisSummary = async (): Promise<AnalysisSummary> => {
+export const getAnalysisSummary = async (data: {
+  tables: { name: string; type: SQLiteObjectType }[];
+  tableInfos: { table: string; columns: TableColumnInfo[] }[];
+  rowCounts: { [table: string]: number };
+  indexes: { table: string; indexes: TableIndexInfo[] }[];
+}): Promise<AnalysisSummary> => {
   const [dateIssues, foreignKeyResult, freelistIssues, indexIssues] = await Promise.all([
-    checkDateFormats(),
+    checkDateFormats(
+      data.tables.map((table) => table.name),
+      data.tableInfos
+    ),
     checkForeignKeyIntegrity(),
     checkFreelistCount(),
-    checkIndexHealth(),
+    checkIndexHealth(
+      data.tables.map((table) => table.name),
+      data.rowCounts,
+      data.indexes
+    ),
   ]);
 
   const allIssues = [...dateIssues, ...foreignKeyResult.issues, ...freelistIssues, ...indexIssues];
@@ -209,16 +203,10 @@ export const getAnalysisSummary = async (): Promise<AnalysisSummary> => {
     issuesByTable[issue.table] = (issuesByTable[issue.table] || 0) + 1;
   });
 
-  // 獲取 freelist 計數
-  const client = getClient();
-  const { data: freelistResult } = await tryCatch(client.exec("PRAGMA freelist_count;"));
-  const freelistCount = freelistResult?.[0] ? Number((freelistResult[0] as { freelist_count?: number }).freelist_count || 0) : 0;
-
   return {
     totalIssues: allIssues.length,
     issuesByTable,
     foreignKeyIntegrity: foreignKeyResult.isValid,
-    freelistCount,
     issues: allIssues,
   };
 };
