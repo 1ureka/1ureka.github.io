@@ -192,6 +192,38 @@ import { getFormIsError, getFormErrorHelperText } from "@/forum/utils/form";
 
 ## 🧭 Routing Management & URL Utils
 
+### Project Philosophy: UI = f(state) + f(url)
+
+This project follows a core UI philosophy:
+
+```
+UI = f(state) + f(url)
+```
+
+**Key Principles:**
+- Any UI state that needs to be shared across components (and is not from data sources) should be semantically mapped to URLs
+- URLs serve as the single source of truth for shareable application state
+- This enables deep linking, bookmarking, and consistent state management across page refreshes
+- Component state should derive from URL parameters when applicable
+
+**Examples in Practice:**
+```typescript
+// ✅ CORRECT: Reading UI state from URL
+const { searchParams } = useUrl();
+const topic = searchParams.get("topic") ?? undefined;
+const orderBy = searchParams.get("orderBy") ?? "title";
+const orderDesc = searchParams.get("orderDesc") === "true";
+const followPrior = searchParams.get("followPrior") === "true";
+
+// ✅ CORRECT: Updating URL to reflect UI state changes
+const handleFilterChange = (newTopic: string) => {
+  updateSearchParams({ topic: newTopic });
+};
+
+// ❌ INCORRECT: Using local state for shareable UI state
+const [currentFilter, setCurrentFilter] = useState("all"); // Should be in URL
+```
+
 ### Route Definition (`/src/routes.json`)
 ```json
 {
@@ -572,7 +604,30 @@ npm run lint             # ESLint checking
 npm run build:type       # TypeScript compilation check
 npm run build:analyze    # Production build for analysis
 npm run build:deploy     # Production build with deployment prep
+npm run stat             # Code statistics and analysis
 ```
+
+### Build & Deployment Pipeline
+The build system includes specialized scripts for production deployment:
+
+**`/src/build.js`** - Post-build processing:
+- Reorganizes built files from dev paths to production paths
+- Moves HTML files based on `routes.json` mapping
+- Cleans up temporary `/dist/src` directory
+- Prepares `/deploy` directory for GitHub Pages deployment
+- Preserves `.git` directory in deployment folder
+
+**`/src/stat.js`** - Project analysis:
+- Counts lines of code and non-empty characters
+- Analyzes file structure across allowed extensions
+- Identifies empty directories
+- Provides development insights and project metrics
+
+**Build Flow:**
+1. `tsc -b` - TypeScript compilation
+2. `vite build` - Production bundle creation  
+3. `node src/build.js` - Post-build file organization
+4. Output ready in `/deploy` directory for deployment
 
 ## ⚠️ Critical Don'ts
 
@@ -596,6 +651,16 @@ npm run build:deploy     # Production build with deployment prep
 - ❌ **NEVER** import demo-specific code in shared utilities
 - ❌ **NEVER** hardcode routes (always use `routes` object)
 
+### URL State Management
+- ❌ **NEVER** use local component state for shareable UI state that should persist across navigation
+- ❌ **NEVER** hardcode URL paths in components (use `routes` object)
+- ❌ **NEVER** ignore URL state when implementing filters, pagination, or navigation state
+
+### Form & UI Patterns  
+- ❌ **NEVER** call `toast.success()`, `toast.error()`, etc. directly (use `console.log/error/warn`)
+- ❌ **NEVER** skip form validation with Zod schemas
+- ❌ **NEVER** implement responsive layouts without using `useResponsiveFontSize()` hook
+
 ---
 
 ## 📋 Quick Reference Checklist
@@ -605,6 +670,7 @@ When implementing new features, ensure:
 - [ ] **Use `console.log("...")` for user notifications, NEVER `toast.*()` directly**
 - [ ] **Use `AppWrapper` component for all demo page setup (theme, providers, error boundary)**
 - [ ] **Implement `useResponsiveFontSize()` hook in each demo's main App component**
+- [ ] **Follow UI = f(state) + f(url) philosophy: map shareable UI state to URL parameters**
 - [ ] Database operations use `SQLiteClient` with `tryCatch`
 - [ ] React Query hooks follow naming conventions
 - [ ] Forms use Zod validation with standardized error handling
@@ -618,5 +684,6 @@ When implementing new features, ensure:
 - [ ] Each demo has its own `theme.ts` with consistent structure but demo-specific colors
 - [ ] Font loading via demo-specific `app.css` files
 - [ ] Use shared styling utilities from `/src/utils/commonSx.ts` when possible
+- [ ] URL state management for filters, pagination, and navigation state (not local component state)
 
 **Remember**: This project simulates dynamic websites using static technologies. Always maintain the illusion of a real backend while keeping the frontend-only nature transparent to users.
