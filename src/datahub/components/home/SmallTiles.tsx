@@ -16,7 +16,7 @@ import { routes } from "@/routes";
 import { useUrl } from "@/hooks/url";
 import { useDbBytes, useObjects, useRowCounts } from "@/datahub/hooks/read";
 import { useAnalysisSummary } from "@/datahub/hooks/analysis";
-import { IssueAnalysisDrawer } from "../analysis/IssueAnalysisDrawer";
+import { IssueAnalysisDrawer } from "@/datahub/components/home/issue/IssueDrawer";
 import { useMemo, useState } from "react";
 
 const smallTileCommonSx: BoxProps["sx"] = {
@@ -158,13 +158,13 @@ const Tile3 = () => {
             <TileContent sx={{ textWrap: "nowrap", color: "warning.main", ...underlineSx }}>載入中</TileContent>
           </SkeletonWrapper>
         ) : (
-          <TileContent 
-            sx={{ 
-              textWrap: "nowrap", 
-              color: totalIssues > 0 ? "warning.main" : "success.main", 
-              display: "inline-block", 
+          <TileContent
+            sx={{
+              textWrap: "nowrap",
+              color: totalIssues > 0 ? "warning.main" : "success.main",
+              display: "inline-block",
               ...underlineSx,
-              cursor: "pointer"
+              cursor: "pointer",
             }}
             onClick={handleClick}
           >
@@ -174,10 +174,7 @@ const Tile3 = () => {
         )}
       </Stack>
 
-      <IssueAnalysisDrawer 
-        open={drawerOpen} 
-        onClose={() => setDrawerOpen(false)} 
-      />
+      <IssueAnalysisDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
     </>
   );
 };

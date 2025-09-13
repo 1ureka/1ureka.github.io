@@ -1,8 +1,8 @@
-import { Box, Divider, Skeleton, Stack, Typography } from "@mui/material";
+import { Box, Paper, Divider, Skeleton, Stack, Typography } from "@mui/material";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import ErrorRoundedIcon from "@mui/icons-material/ErrorRounded";
 import { useForeignKeyCheck } from "@/datahub/hooks/analysis";
-import { smSpace } from "../home/commonSx";
+import { smSpace } from "@/datahub/components/home/commonSx";
 
 const ForeignKeyStatusBlock = () => {
   const { data: isValid, isFetching } = useForeignKeyCheck();
@@ -52,4 +52,24 @@ const ForeignKeyStatusBlock = () => {
   );
 };
 
-export { ForeignKeyStatusBlock };
+const IssueDrawerStat = () => {
+  return (
+    <>
+      <Paper sx={{ p: 2, borderRadius: 2, border: "1px solid", borderColor: "divider", boxShadow: "none" }}>
+        <Typography variant="h6" component="h3" sx={{ mb: 2 }}>
+          外鍵完整性檢查
+        </Typography>
+        <ForeignKeyStatusBlock />
+      </Paper>
+
+      <Paper sx={{ p: 2, borderRadius: 2, border: "1px solid", borderColor: "divider", boxShadow: "none" }}>
+        <Typography variant="h6" component="h3" sx={{ mb: 2 }}>
+          冗餘資料頁面檢查
+        </Typography>
+        <ForeignKeyStatusBlock />
+      </Paper>
+    </>
+  );
+};
+
+export { IssueDrawerStat };
