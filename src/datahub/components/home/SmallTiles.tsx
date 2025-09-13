@@ -15,9 +15,9 @@ import { toEntries } from "@/utils/typedBuiltins";
 import { routes } from "@/routes";
 import { useUrl } from "@/hooks/url";
 import { useDbBytes, useObjects, useRowCounts } from "@/datahub/hooks/read";
-import { useAnalysisSummary } from "@/datahub/hooks/analysis";
 import { IssueAnalysisDrawer } from "@/datahub/components/home/issue/IssueDrawer";
 import { useMemo, useState } from "react";
+import { useCheckTimeFormat, useForeignKeyCheck, useFreelistCheck } from "@/datahub/hooks/analysis";
 
 const smallTileCommonSx: BoxProps["sx"] = {
   display: "flex",
@@ -140,38 +140,37 @@ const Tile2 = () => {
 };
 
 const Tile3 = () => {
-  const { data: analysisData, isFetching } = useAnalysisSummary();
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const handleClick = () => setDrawerOpen(true);
 
-  const handleClick = () => {
-    setDrawerOpen(true);
-  };
+  const { data: fIssues, isFetching: isFetchingF } = useForeignKeyCheck();
+  const { data: dIssues, isFetching: isFetchingD } = useCheckTimeFormat();
+  const { data: freelistCount, isFetching: isFetchingL } = useFreelistCheck();
 
-  const totalIssues = analysisData?.totalIssues ?? 0;
+  const isFetching = isFetchingF || isFetchingD || isFetchingL;
+  const counts = useMemo(() => {
+    if (fIssues === undefined || dIssues === undefined || freelistCount === undefined) return null;
+    return fIssues.length + dIssues.length + freelistCount;
+  }, [fIssues, dIssues, freelistCount]);
 
   return (
     <>
       <Stack sx={{ alignItems: "flex-start" }}>
         <TileTitle>潛在問題</TileTitle>
-        {isFetching ? (
-          <SkeletonWrapper>
-            <TileContent sx={{ textWrap: "nowrap", color: "warning.main", ...underlineSx }}>載入中</TileContent>
-          </SkeletonWrapper>
-        ) : (
+        <TileTooltip title={<Typography>查看詳細資料，分析中也能先開啟</Typography>}>
           <TileContent
+            onClick={handleClick}
             sx={{
               textWrap: "nowrap",
-              color: totalIssues > 0 ? "warning.main" : "success.main",
+              color: isFetching || !counts ? undefined : counts > 0 ? "warning.main" : "success.main",
               display: "inline-block",
               ...underlineSx,
-              cursor: "pointer",
             }}
-            onClick={handleClick}
           >
-            {totalIssues}
+            {isFetching || !counts ? "分析中" : counts}
             <OpenInNewRoundedIcon fontSize="small" sx={{ verticalAlign: "middle", ml: 0.5 }} />
           </TileContent>
-        )}
+        </TileTooltip>
       </Stack>
 
       <IssueAnalysisDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
