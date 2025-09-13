@@ -1,98 +1,79 @@
 import { getClient } from "./client";
 import { tryCatch } from "@/utils/tryCatch";
-import type { SQLiteObjectType, TableColumnInfo, TableIndexInfo } from "./read";
+import type { TableColumnInfo } from "./read";
 
 // --------------------------------------------------------
 // SQLite 健康檢查與風險分析
 // --------------------------------------------------------
 
-export type RiskLevel = "serious" | "potential";
-
-export type Issue = {
+type Issue = {
   id: string;
   table: string;
-  type: "date_format" | "foreign_key" | "freelist" | "index_redundant" | "index_missing" | "performance";
-  level: RiskLevel;
-  title: string;
-  description: string;
-  count?: number;
-  actions?: string[]; // TODO: 預留擴展空間
+  type: "date_format" | "foreign_key" | "freelist";
+  count: number | string; // 比如 "99+"
 };
 
-export type AnalysisSummary = {
-  totalIssues: number;
-  issuesByTable: { [table: string]: number };
-  foreignKeyIntegrity: boolean;
-  issues: Issue[];
-};
-
-// 檢查日期格式是否為完整 ISO 8601
-const checkDateFormats = async (
-  tables: string[],
-  tableInfos: { table: string; columns: TableColumnInfo[] }[]
-): Promise<Issue[]> => {
+// 100 有可能真的是 100 或 100 以上，所以記得要標註為 "99+"
+const checkSingleColumnDateFormat = async (table: string, column: TableColumnInfo): Promise<number> => {
   const client = getClient();
-  const issues: Issue[] = [];
-
-  for (const tableName of tables) {
-    const columns = tableInfos.find((info) => info.table === tableName)?.columns || [];
-    for (const column of columns) {
-      // 檢查可能包含日期的欄位
-      const columnType = column.type.toLowerCase();
-      if (!columnType.includes("date") && !columnType.includes("time") && !columnType.includes("timestamp")) {
-        continue;
-      }
-
-      // 檢查該欄位的資料格式
-      const { data: invalidRows } = await tryCatch(
-        client.exec(
-          `
+  const { data: invalidRows } = await tryCatch(
+    client.exec(
+      `
           SELECT "${column.name}"
-          FROM "${tableName}"
+          FROM "${table}"
           WHERE "${column.name}" IS NOT NULL
             AND "${column.name}" NOT GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9]Z'
           LIMIT 100;
-          `,
-          undefined,
-          true
-        )
+          `
+    )
+  );
+
+  return invalidRows ? invalidRows.length : 0;
+};
+
+// 檢查日期格式是否為完整 ISO 8601
+export const checkDateFormats = async (
+  tableInfos: { table: string; columns: TableColumnInfo[] }[]
+): Promise<Issue[]> => {
+  const issues: Issue[] = [];
+
+  await Promise.all(
+    tableInfos.map(async (tableInfo) => {
+      const { table, columns } = tableInfo;
+
+      const dateColumns = columns.filter((col) => {
+        const colType = col.type.toLowerCase();
+        return colType.includes("date") || colType.includes("time") || colType.includes("timestamp");
+      });
+
+      await Promise.all(
+        dateColumns.map(async (column) => {
+          const invalidCount = await checkSingleColumnDateFormat(table, column);
+          const id = `date_${table}_${column.name}`;
+          issues.push({ id, table, type: "date_format", count: invalidCount > 99 ? "99+" : invalidCount });
+        })
       );
+    })
+  );
 
-      if (!invalidRows) continue;
+  return issues.toSorted((a, b) => {
+    const numA = typeof a.count === "number" ? a.count : 100;
+    const numB = typeof b.count === "number" ? b.count : 100;
 
-      const invalidCount = invalidRows.length;
-      const isAbove99 = invalidCount === 100; // 因為有 LIMIT 100
-
-      if (invalidCount > 0) {
-        issues.push({
-          id: `date_${tableName}_${column.name}`,
-          table: tableName,
-          type: "date_format",
-          level: "serious",
-          title: `日期格式不符合 ISO 8601`,
-          description: `欄位 ${column.name} 有 ${isAbove99 ? "99+" : invalidCount} 筆資料非完整 ISO 8601 格式`,
-          count: invalidCount,
-        });
-      }
-    }
-  }
-
-  return issues;
+    if (numA !== numB) return numB - numA; // 數字大的排前面
+    return a.table.localeCompare(b.table);
+  });
 };
 
 // 檢查外鍵完整性
-const checkForeignKeyIntegrity = async (): Promise<{ isValid: boolean; issues: Issue[] }> => {
+export const checkForeignKeyIntegrity = async (): Promise<Issue[]> => {
   const client = getClient();
 
-  // 啟用外鍵檢查
   await client.exec("PRAGMA foreign_keys = ON;");
-
   const { data: violations } = await tryCatch(client.exec("PRAGMA foreign_key_check;"));
-
-  const isValid = !violations || violations.length === 0;
   const issues: Issue[] = [];
 
-  if (!isValid && violations) {
+  if (violations && violations.length > 0) {
     const violationsByTable: { [table: string]: number } = {};
 
     violations.forEach((violation) => {
@@ -101,114 +82,22 @@ const checkForeignKeyIntegrity = async (): Promise<{ isValid: boolean; issues: I
     });
 
     Object.entries(violationsByTable).forEach(([table, count]) => {
-      issues.push({
-        id: `fk_${table}`,
-        table,
-        type: "foreign_key",
-        level: "serious",
-        title: "外鍵完整性錯誤",
-        description: `${count} 筆資料違反外鍵約束`,
-        count,
-      });
+      issues.push({ id: `fk_${table}`, table, type: "foreign_key", count });
     });
   }
 
-  return { isValid, issues };
+  return issues;
 };
 
 // 檢查 freelist 計數
-const checkFreelistCount = async (): Promise<Issue[]> => {
+export const checkFreelistCount = async (): Promise<number> => {
   const client = getClient();
-  const issues: Issue[] = [];
 
   const { data: freelistResult } = await tryCatch(client.exec("PRAGMA freelist_count;"));
-
   if (freelistResult && freelistResult.length > 0) {
     const freelistCount = Number((freelistResult[0] as { freelist_count?: number }).freelist_count || 0);
-
-    if (freelistCount > 100) {
-      issues.push({
-        id: "freelist_high",
-        table: "database",
-        type: "freelist",
-        level: "potential",
-        title: "可回收空間過多",
-        description: `有 ${freelistCount} 個可回收頁面，建議執行 VACUUM 清理`,
-        count: freelistCount,
-      });
-    }
+    return freelistCount;
   }
 
-  return issues;
-};
-
-// 檢查索引健康狀況
-const checkIndexHealth = async (
-  tables: string[],
-  rowCounts: { [table: string]: number },
-  tableIndexes: { table: string; indexes: TableIndexInfo[] }[]
-): Promise<Issue[]> => {
-  const issues: Issue[] = [];
-
-  for (const tableName of tables) {
-    const indexes = tableIndexes.find((info) => info.table === tableName)?.indexes || [];
-    const rowCount = rowCounts[tableName] || 0;
-
-    if (rowCount > 1000 && (!indexes || indexes.length === 0)) {
-      issues.push({
-        id: `index_missing_${tableName}`,
-        table: tableName,
-        type: "index_missing",
-        level: "potential",
-        title: "可能需要索引優化",
-        description: `表格有 ${rowCount} 筆資料但沒有索引，可能影響查詢效能`,
-        count: rowCount,
-      });
-    }
-  }
-
-  return issues;
-};
-
-// 獲取完整的分析摘要
-export const getAnalysisSummary = async (data: {
-  tables: { name: string; type: SQLiteObjectType }[];
-  tableInfos: { table: string; columns: TableColumnInfo[] }[];
-  rowCounts: { [table: string]: number };
-  indexes: { table: string; indexes: TableIndexInfo[] }[];
-}): Promise<AnalysisSummary> => {
-  const [dateIssues, foreignKeyResult, freelistIssues, indexIssues] = await Promise.all([
-    checkDateFormats(
-      data.tables.map((table) => table.name),
-      data.tableInfos
-    ),
-    checkForeignKeyIntegrity(),
-    checkFreelistCount(),
-    checkIndexHealth(
-      data.tables.map((table) => table.name),
-      data.rowCounts,
-      data.indexes
-    ),
-  ]);
-
-  const allIssues = [...dateIssues, ...foreignKeyResult.issues, ...freelistIssues, ...indexIssues];
-
-  // 按表格統計問題數量
-  const issuesByTable: { [table: string]: number } = {};
-  allIssues.forEach((issue) => {
-    issuesByTable[issue.table] = (issuesByTable[issue.table] || 0) + 1;
-  });
-
-  return {
-    totalIssues: allIssues.length,
-    issuesByTable,
-    foreignKeyIntegrity: foreignKeyResult.isValid,
-    issues: allIssues,
-  };
-};
-
-// 僅檢查外鍵完整性 (用於 stat block)
-export const checkForeignKeyOnly = async (): Promise<boolean> => {
-  const result = await checkForeignKeyIntegrity();
-  return result.isValid;
+  return 0;
 };

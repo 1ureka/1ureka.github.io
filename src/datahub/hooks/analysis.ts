@@ -1,37 +1,35 @@
 import { useQuery } from "@tanstack/react-query";
-import { getAnalysisSummary, checkForeignKeyOnly } from "../data/analysis";
-import { useObjects, useTableInfo, useRowCounts, useIndexes } from "./read";
-import type { AnalysisSummary } from "../data/analysis";
+import { checkDateFormats, checkForeignKeyIntegrity, checkFreelistCount } from "../data/analysis";
+import { useTableInfo } from "./read";
 
 const staleTime = 5 * 60 * 1000; // 5 minutes
 
-// 獲取完整的分析摘要
-export const useAnalysisSummary = () => {
-  const { data: tables = [], isFetching: isFetchingTables } = useObjects({ types: ["table"] });
-  const { data: tableInfos = [], isFetching: isFetchingTableInfos } = useTableInfo({ types: ["table"] });
-  const { data: rowCounts = {}, isFetching: isFetchingRowCounts } = useRowCounts({ types: ["table"] });
-  const { data: indexes = [], isFetching: isFetchingIndexes } = useIndexes({ types: ["table"] });
-
+export const useCheckTimeFormat = () => {
+  const { data: tableInfo = [], isFetching: isFetchingTableInfo } = useTableInfo({ types: ["table"] });
   const { data, isFetching } = useQuery({
-    queryKey: ["analysisSummary", tables, tableInfos, rowCounts, indexes],
-    queryFn: async () => getAnalysisSummary({ tables, tableInfos, rowCounts, indexes }),
-    enabled: tables.length > 0 && tableInfos.length > 0, // 確保有基本資料才執行
+    queryKey: ["checkTimeFormat", tableInfo],
+    queryFn: () => checkDateFormats(tableInfo),
+    enabled: tableInfo.length > 0 && !isFetchingTableInfo,
     staleTime,
   });
 
-  return {
-    data,
-    isFetching: isFetching || isFetchingTables || isFetchingTableInfos || isFetchingRowCounts || isFetchingIndexes,
-  };
+  return { data, isFetching: isFetching || isFetchingTableInfo };
 };
 
-// 僅檢查外鍵完整性 (用於 stat block)
+// 檢查外鍵完整性
 export const useForeignKeyCheck = () => {
   return useQuery({
     queryKey: ["foreignKeyCheck"],
-    queryFn: checkForeignKeyOnly,
+    queryFn: checkForeignKeyIntegrity,
     staleTime,
   });
 };
 
-export type { AnalysisSummary };
+// 檢查 freelist 計數
+export const useFreelistCheck = () => {
+  return useQuery({
+    queryKey: ["freelistCheck"],
+    queryFn: checkFreelistCount,
+    staleTime,
+  });
+};
