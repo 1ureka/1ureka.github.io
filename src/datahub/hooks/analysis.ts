@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { checkDateFormats, checkForeignKeyIntegrity, checkFreelistCount } from "../data/analysis";
-import { useTableInfo } from "./read";
+import { useObjects, useTableInfo } from "./read";
 
 const staleTime = 5 * 60 * 1000; // 5 minutes
 
@@ -18,11 +18,15 @@ export const useCheckTimeFormat = () => {
 
 // 檢查外鍵完整性
 export const useForeignKeyCheck = () => {
-  return useQuery({
-    queryKey: ["foreignKeyCheck"],
+  const { data: tables = [], isFetching: isFetchingTables } = useObjects({ types: ["table"] });
+
+  const { data, isFetching } = useQuery({
+    queryKey: ["foreignKeyCheck", tables],
     queryFn: checkForeignKeyIntegrity,
     staleTime,
   });
+
+  return { data, isFetching: isFetching || isFetchingTables, total: tables.length };
 };
 
 // 檢查 freelist 計數
