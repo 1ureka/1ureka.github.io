@@ -1,7 +1,6 @@
 import { getClient } from "./client";
 import { tryCatch } from "@/utils/tryCatch";
 import type { SQLiteObjectType, TableColumnInfo, TableIndexInfo } from "./read";
-import dayjs from "dayjs";
 
 // --------------------------------------------------------
 // SQLite 健康檢查與風險分析
@@ -45,27 +44,24 @@ const checkDateFormats = async (
       }
 
       // 檢查該欄位的資料格式
-      const { data: rows } = await tryCatch(
+      const { data: invalidRows } = await tryCatch(
         client.exec(
-          `SELECT "${column.name}" FROM "${tableName}" WHERE "${column.name}" IS NOT NULL LIMIT 100;`,
+          `
+          SELECT "${column.name}"
+          FROM "${tableName}"
+          WHERE "${column.name}" IS NOT NULL
+            AND "${column.name}" NOT GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9]Z'
+          LIMIT 100;
+          `,
           undefined,
           true
         )
       );
 
-      if (!rows) continue;
+      if (!invalidRows) continue;
 
-      let invalidCount = 0;
-      for (const row of rows) {
-        const value = row[column.name as string];
-        if (typeof value === "string" && value.trim()) {
-          // 檢查是否為完整的 ISO 8601 格式
-          const date = dayjs(value);
-          if (!date.isValid() || !value.includes("T") || !value.includes("Z")) {
-            invalidCount++;
-          }
-        }
-      }
+      const invalidCount = invalidRows.length;
+      const isAbove99 = invalidCount === 100; // 因為有 LIMIT 100
 
       if (invalidCount > 0) {
         issues.push({
@@ -74,7 +70,7 @@ const checkDateFormats = async (
           type: "date_format",
           level: "serious",
           title: `日期格式不符合 ISO 8601`,
-          description: `欄位 ${column.name} 有 ${invalidCount} 筆資料非完整 ISO 8601 格式`,
+          description: `欄位 ${column.name} 有 ${isAbove99 ? "99+" : invalidCount} 筆資料非完整 ISO 8601 格式`,
           count: invalidCount,
         });
       }
