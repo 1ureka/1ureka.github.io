@@ -1,5 +1,4 @@
-import { Box, Drawer, Divider } from "@mui/material";
-import { IssueDrawerList } from "./IssueDrawerList";
+import { Box, Drawer } from "@mui/material";
 import { IssueDrawerStat } from "./IssueDrawerStat";
 import { IssueDrawerHeader } from "./IssueDrawerHeader";
 
@@ -18,12 +17,7 @@ const IssueAnalysisDrawer = ({ open, onClose }: IssueAnalysisDrawerProps) => {
     >
       <Box sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
         <IssueDrawerHeader onClose={onClose} />
-
-        <Box sx={{ flex: 1, overflow: "auto", p: 2, display: "flex", flexDirection: "column", gap: 2 }}>
-          <IssueDrawerStat />
-          <Divider />
-          <IssueDrawerList />
-        </Box>
+        <IssueDrawerStat />
       </Box>
     </Drawer>
   );
