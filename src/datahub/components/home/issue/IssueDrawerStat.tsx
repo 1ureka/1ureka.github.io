@@ -1,5 +1,6 @@
 import { Paper, Stack, Typography } from "@mui/material";
 import { ForeignKeyCheck } from "./ForeignKeyCheck";
+import { FreeListCheck } from "./FreeListCheck";
 
 const IssueDrawerStat = () => {
   return (
@@ -22,7 +23,7 @@ const IssueDrawerStat = () => {
         <Typography variant="h6" component="h3" sx={{ mb: 2 }}>
           冗餘分頁檢查
         </Typography>
-        <ForeignKeyCheck />
+        <FreeListCheck />
       </Paper>
     </Stack>
   );
