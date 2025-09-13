@@ -29,7 +29,7 @@ const OverviewItem = ({ data, total, isFetching }: ReturnType<typeof useForeignK
       {issues.length === 0 ? (
         <CheckCircleRoundedIcon sx={{ color: "success.main", fontSize: 20 }} />
       ) : (
-        <ErrorRoundedIcon sx={{ color: "error.main", fontSize: 20 }} />
+        <ErrorRoundedIcon sx={{ color: "warning.main", fontSize: 20 }} />
       )}
       <Typography variant="h6" component="span">
         {issues.length} 個問題

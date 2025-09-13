@@ -28,8 +28,8 @@ const FreeListCheck = () => {
               </>
             ) : (
               <>
-                <ErrorRoundedIcon sx={{ color: "error.main", fontSize: 20 }} />
-                <Typography variant="h6" sx={{ color: "error.main" }}>
+                <ErrorRoundedIcon sx={{ color: "warning.main", fontSize: 20 }} />
+                <Typography variant="h6" sx={{ color: "warning.main" }}>
                   {counts} 個冗餘分頁
                 </Typography>
               </>
