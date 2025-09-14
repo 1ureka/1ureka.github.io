@@ -8,8 +8,9 @@ import type { TableColumnInfo } from "./read";
 
 type Issue = {
   id: string;
-  table: string;
   type: "date_format" | "foreign_key" | "freelist";
+  table: string;
+  column?: string;
   count: number | string; // 比如 "99+"
 };
 
@@ -50,7 +51,14 @@ export const checkDateFormats = async (
         dateColumns.map(async (column) => {
           const invalidCount = await checkSingleColumnDateFormat(table, column);
           const id = `date_${table}_${column.name}`;
-          issues.push({ id, table, type: "date_format", count: invalidCount > 99 ? "99+" : invalidCount });
+          if (invalidCount > 0)
+            issues.push({
+              id,
+              table,
+              type: "date_format",
+              column: column.name,
+              count: invalidCount > 99 ? "99+" : invalidCount,
+            });
         })
       );
     })
