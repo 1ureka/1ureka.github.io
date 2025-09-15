@@ -2,6 +2,10 @@ import { Box, Divider, Skeleton, Stack, Typography } from "@mui/material";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import ErrorRoundedIcon from "@mui/icons-material/ErrorRounded";
 import { useForeignKeyCheck } from "@/datahub/hooks/analysis";
+import { underlineSx } from "@/utils/commonSx";
+import { useUrl } from "@/hooks/url";
+import { routes } from "@/routes";
+import { TileTooltip } from "../TileTooltip";
 
 const CheckState = ({ isFetching }: { isFetching: boolean }) => (
   <Stack sx={{ alignItems: "flex-start" }}>
@@ -27,23 +31,38 @@ const OverviewItem = ({ data, total, isFetching }: ReturnType<typeof useForeignK
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
       {issues.length === 0 ? (
-        <CheckCircleRoundedIcon sx={{ color: "success.main", fontSize: 20 }} />
+        <>
+          <CheckCircleRoundedIcon sx={{ color: "success.main", fontSize: 20 }} />
+          <Typography variant="h6" component="span" sx={{ color: "success.main" }}>
+            {issues.length} 個問題
+          </Typography>
+        </>
       ) : (
-        <ErrorRoundedIcon sx={{ color: "warning.main", fontSize: 20 }} />
+        <>
+          <ErrorRoundedIcon sx={{ color: "warning.main", fontSize: 20 }} />
+          <Typography variant="h6" component="span" sx={{ color: "warning.main" }}>
+            {issues.length} 個問題
+          </Typography>
+        </>
       )}
-      <Typography variant="h6" component="span">
-        {issues.length} 個問題
-      </Typography>
       <Divider orientation="vertical" flexItem />
-      <Typography variant="h6" component="span" sx={{ color: "text.secondary" }}>
+      <Typography variant="h6" component="span">
         共 {total} 個資料表
       </Typography>
     </Box>
   );
 };
 
+const useHandleClick = () => {
+  const { update } = useUrl();
+  const createHandler = (label: string) => () =>
+    update(routes.datahub_tables, (prev) => ({ db: prev.db ?? null, table: label }));
+  return createHandler;
+};
+
 const ForeignKeyCheck = () => {
   const { data, total, isFetching } = useForeignKeyCheck();
+  const createHandler = useHandleClick();
 
   return (
     <Box>
@@ -58,7 +77,29 @@ const ForeignKeyCheck = () => {
         <CheckState isFetching={isFetching} />
       </Box>
 
-      {/* TODO: list */}
+      {data && data.length > 0 && (
+        <Box sx={{ mt: 3 }}>
+          <Typography variant="body2" sx={{ color: "text.secondary", mb: 1 }}>
+            受影響的資料表
+          </Typography>
+          <Stack sx={{ gap: 1 }}>
+            {data.slice(0, 6).map((issue) => (
+              <Typography key={issue.id}>
+                <TileTooltip title={<Typography variant="body2">點擊前往資料表</Typography>}>
+                  <Typography component="span" sx={underlineSx} onClick={createHandler(issue.table)}>
+                    資料表 {issue.table}
+                  </Typography>
+                </TileTooltip>
+                <Typography component="span">{" ・ "}</Typography>
+                <Typography component="span" sx={{ color: "text.secondary" }}>
+                  {typeof issue.count === "number" ? issue.count : "99+"} 筆資料
+                </Typography>
+              </Typography>
+            ))}
+            {data.length > 6 && <Typography>...</Typography>}
+          </Stack>
+        </Box>
+      )}
     </Box>
   );
 };
