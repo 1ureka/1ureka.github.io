@@ -15,7 +15,9 @@ import { toEntries } from "@/utils/typedBuiltins";
 import { routes } from "@/routes";
 import { useUrl } from "@/hooks/url";
 import { useDbBytes, useObjects, useRowCounts } from "@/datahub/hooks/read";
-import { useMemo } from "react";
+import { IssueAnalysisDrawer } from "@/datahub/components/home/issue/IssueDrawer";
+import { useMemo, useState } from "react";
+import { useCheckTimeFormat, useForeignKeyCheck, useFreelistCheck } from "@/datahub/hooks/analysis";
 
 const smallTileCommonSx: BoxProps["sx"] = {
   display: "flex",
@@ -137,7 +139,44 @@ const Tile2 = () => {
   );
 };
 
-const fakeLoadErrorState = true;
+const Tile3 = () => {
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const handleClick = () => setDrawerOpen(true);
+
+  const { data: fIssues, isFetching: isFetchingF } = useForeignKeyCheck();
+  const { data: dIssues, isFetching: isFetchingD } = useCheckTimeFormat();
+  const { data: freelistCount, isFetching: isFetchingL } = useFreelistCheck();
+
+  const isFetching = isFetchingF || isFetchingD || isFetchingL;
+  const counts = useMemo(() => {
+    if (fIssues === undefined || dIssues === undefined || freelistCount === undefined) return null;
+    return fIssues.length + dIssues.length + freelistCount;
+  }, [fIssues, dIssues, freelistCount]);
+
+  return (
+    <>
+      <Stack sx={{ alignItems: "flex-start" }}>
+        <TileTitle>潛在問題</TileTitle>
+        <TileTooltip title={<Typography>查看詳細資料，分析中也能先開啟</Typography>}>
+          <TileContent
+            onClick={handleClick}
+            sx={{
+              textWrap: "nowrap",
+              color: isFetching || !counts ? undefined : counts > 0 ? "warning.main" : "success.main",
+              display: "inline-block",
+              ...underlineSx,
+            }}
+          >
+            {isFetching || !counts ? "分析中" : counts}
+            <OpenInNewRoundedIcon fontSize="small" sx={{ verticalAlign: "middle", ml: 0.5 }} />
+          </TileContent>
+        </TileTooltip>
+      </Stack>
+
+      <IssueAnalysisDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
+    </>
+  );
+};
 
 const SmallTiles = () => {
   return (
@@ -163,20 +202,7 @@ const SmallTiles = () => {
         sx={{ gridRow: { xs: "1", lg: "auto" }, gridColumn: { xs: "5 / span 2", lg: "auto" }, ...smallTileCommonSx }}
       >
         <HealthAndSafetyRoundedIcon sx={tileIconCommonSx} />
-
-        <Stack sx={{ alignItems: "flex-start" }}>
-          <TileTitle>潛在問題</TileTitle>
-          {fakeLoadErrorState ? (
-            <TileContent sx={{ textWrap: "nowrap", color: "warning.main", display: "inline-block", ...underlineSx }}>
-              2
-              <OpenInNewRoundedIcon fontSize="small" sx={{ verticalAlign: "middle", ml: 0.5 }} />
-            </TileContent>
-          ) : (
-            <SkeletonWrapper>
-              <TileContent sx={{ textWrap: "nowrap", color: "warning.main", ...underlineSx }}>載入中</TileContent>
-            </SkeletonWrapper>
-          )}
-        </Stack>
+        <Tile3 />
       </Box>
     </Box>
   );
