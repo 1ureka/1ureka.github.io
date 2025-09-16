@@ -1,11 +1,13 @@
 import { Box, Checkbox, Skeleton, TableCell, TableRow, Typography } from "@mui/material";
 import { CheckboxProps } from "@mui/material";
+import { useState } from "react";
 
 import { ellipsisSx } from "@/utils/commonSx";
 import { tableRowsStyles } from "../commonSx";
 import { useTableRowSelect } from "@/datahub/hooks/tableSelect";
 import { rowsPerPage, useTableRows } from "@/datahub/hooks/tableRows";
 import type { TableControlParams } from "@/datahub/hooks/tableControl";
+import { EditDataDrawer } from "../EditDataDrawer";
 
 const styles = tableRowsStyles;
 
@@ -19,14 +21,38 @@ type RowProps = {
   id: string;
   values: { value: string | number; align: "left" | "right" }[];
   index: number;
+  onEdit: () => void;
 };
 
-const Row = ({ id, values, index }: RowProps) => {
+const Row = ({ id, values, index, onEdit }: RowProps) => {
   const { checked, toggle } = useTableRowSelect(id);
 
+  const handleRowClick = (e: React.MouseEvent) => {
+    // 如果點擊的是 checkbox，不觸發編輯
+    if ((e.target as HTMLElement).closest('input[type="checkbox"]')) {
+      return;
+    }
+    onEdit();
+  };
+
   return (
-    <TableRow sx={styles.row(checked, index)}>
-      <CheckboxCell checked={checked} onChange={toggle} />
+    <TableRow 
+      sx={{
+        ...styles.row(checked, index),
+        cursor: "pointer",
+        "&:hover": {
+          bgcolor: "action.hover",
+        },
+      }}
+      onClick={handleRowClick}
+    >
+      <CheckboxCell 
+        checked={checked} 
+        onChange={(e) => {
+          e.stopPropagation();
+          toggle();
+        }} 
+      />
 
       {values.map(({ value, align }, j) => (
         <TableCell key={j} align={align} sx={styles.rowCell(j === values.length - 1)}>
@@ -40,6 +66,18 @@ const Row = ({ id, values, index }: RowProps) => {
 const TableRows = ({ params }: { params: TableControlParams }) => {
   const { rows, columns, isFetching } = useTableRows(params);
   const colSpan = columns.length + 1; // +1 是 checkbox
+  const [editDrawerOpen, setEditDrawerOpen] = useState(false);
+  const [editingRowData, setEditingRowData] = useState<Record<string, any> | null>(null);
+
+  const handleRowEdit = (rowId: string) => {
+    try {
+      const rowData = JSON.parse(rowId);
+      setEditingRowData(rowData);
+      setEditDrawerOpen(true);
+    } catch (error) {
+      console.error("無法解析行資料:", error);
+    }
+  };
 
   if (columns.length === 0) {
     return (
@@ -88,8 +126,23 @@ const TableRows = ({ params }: { params: TableControlParams }) => {
   return (
     <>
       {rows.map((rowProps, i) => (
-        <Row key={rowProps.id} {...rowProps} index={i} />
+        <Row 
+          key={rowProps.id} 
+          {...rowProps} 
+          index={i} 
+          onEdit={() => handleRowEdit(rowProps.id)}
+        />
       ))}
+      
+      <EditDataDrawer
+        open={editDrawerOpen}
+        onClose={() => {
+          setEditDrawerOpen(false);
+          setEditingRowData(null);
+        }}
+        params={params}
+        rowData={editingRowData}
+      />
     </>
   );
 };

@@ -7,6 +7,7 @@ const {
   useRowSelection: useTableRowSelect,
   useAllSelections: useTableAllSelect,
   useSelectedCount: useTableSelectCount,
+  useSubmit: useTableSubmit,
   useReset,
 } = createUseDynamicSelect();
 
@@ -41,4 +42,4 @@ const useTablePicker = () => {
   return { options, selectedOption, handleChange, isFetching };
 };
 
-export { useTablePicker, useCurrentTable, useTableRowSelect, useTableAllSelect, useTableSelectCount };
+export { useTablePicker, useCurrentTable, useTableRowSelect, useTableAllSelect, useTableSelectCount, useTableSubmit };
