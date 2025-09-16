@@ -9,7 +9,7 @@ import {
   Alert,
   FormHelperText,
 } from "@mui/material";
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import { useForm } from "@tanstack/react-form";
 import { z } from "zod";
@@ -23,7 +23,6 @@ interface AddDataDrawerProps {
 }
 
 const AddDataDrawer = ({ open, onClose, params }: AddDataDrawerProps) => {
-  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const insertMutation = useInsertRow();
 
   // 建立表單欄位的驗證規則
@@ -69,8 +68,6 @@ const AddDataDrawer = ({ open, onClose, params }: AddDataDrawerProps) => {
     defaultValues,
     onSubmit: async ({ value }) => {
       if (insertMutation.isPending) return;
-      
-      setFormErrors({});
       
       // 轉換資料型別
       const processedData: Record<string, any> = {};
@@ -118,11 +115,10 @@ const AddDataDrawer = ({ open, onClose, params }: AddDataDrawerProps) => {
 
   const handleClose = () => {
     form.reset();
-    setFormErrors({});
     onClose();
   };
 
-  const getFieldHelper = (fieldName: string, type: string) => {
+  const getFieldHelper = (type: string) => {
     switch (type) {
       case "integer":
         return "請輸入整數，例如：123";
@@ -195,7 +191,7 @@ const AddDataDrawer = ({ open, onClose, params }: AddDataDrawerProps) => {
                       helperText={
                         field.state.meta.errors.length > 0
                           ? field.state.meta.errors[0]?.toString()
-                          : getFieldHelper(column.name, column.type)
+                          : getFieldHelper(column.type)
                       }
                       required={column.pk >= 1 && !column.name.toLowerCase().includes("id")}
                       disabled={insertMutation.isPending}

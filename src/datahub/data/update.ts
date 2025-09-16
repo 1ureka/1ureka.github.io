@@ -29,7 +29,7 @@ const insertRow = async (params: {
       columns.map(col => [`$${col}`, data[col]])
     );
 
-    const { data: result, error } = await tryCatch(
+    const { data: _, error } = await tryCatch(
       client.exec(sql, sqlParams)
     );
 
@@ -156,7 +156,6 @@ const deleteRowsByIds = async (params: {
 }): Promise<{ success: boolean; error: string | null; rowsAffected?: number }> => {
   try {
     const { table, rowIds } = params;
-    const client = getClient();
 
     if (rowIds.length === 0) {
       return { success: true, error: null, rowsAffected: 0 };

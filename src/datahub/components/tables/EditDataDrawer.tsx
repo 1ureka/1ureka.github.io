@@ -9,7 +9,7 @@ import {
   Alert,
   FormHelperText,
 } from "@mui/material";
-import { useState, useMemo, useEffect } from "react";
+import { useMemo, useEffect } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import { useForm } from "@tanstack/react-form";
 import { z } from "zod";
@@ -24,7 +24,6 @@ interface EditDataDrawerProps {
 }
 
 const EditDataDrawer = ({ open, onClose, params, rowData }: EditDataDrawerProps) => {
-  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const updateMutation = useUpdateRow();
 
   // 建立表單欄位的驗證規則
@@ -90,8 +89,6 @@ const EditDataDrawer = ({ open, onClose, params, rowData }: EditDataDrawerProps)
     onSubmit: async ({ value }) => {
       if (updateMutation.isPending) return;
       
-      setFormErrors({});
-      
       // 轉換資料型別
       const processedData: Record<string, any> = {};
       for (const [key, val] of Object.entries(value)) {
@@ -152,11 +149,10 @@ const EditDataDrawer = ({ open, onClose, params, rowData }: EditDataDrawerProps)
   }, [rowData, open, params.columns]);
 
   const handleClose = () => {
-    setFormErrors({});
     onClose();
   };
 
-  const getFieldHelper = (fieldName: string, type: string) => {
+  const getFieldHelper = (type: string) => {
     switch (type) {
       case "integer":
         return "請輸入整數，例如：123";
@@ -231,7 +227,7 @@ const EditDataDrawer = ({ open, onClose, params, rowData }: EditDataDrawerProps)
                       helperText={
                         field.state.meta.errors.length > 0
                           ? field.state.meta.errors[0]?.toString()
-                          : getFieldHelper(column.name, column.type)
+                          : getFieldHelper(column.type)
                       }
                       disabled={updateMutation.isPending || column.pk >= 1}
                       size="small"
