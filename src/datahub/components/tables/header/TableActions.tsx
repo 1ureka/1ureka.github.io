@@ -1,12 +1,14 @@
 import { Button, Divider, List, ListItem, ListItemButton, ListItemText, Popover, Typography } from "@mui/material";
 import type { ButtonProps } from "@mui/material";
 import ArrowDropDownRoundedIcon from "@mui/icons-material/ArrowDropDownRounded";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 
 import { smSpace } from "../commonSx";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useAnchorEl } from "@/hooks/utils";
 import { useLoadTableControls, useTableControls } from "@/datahub/hooks/tableControl";
 import type { TableControlParams } from "@/datahub/hooks/tableControl";
+import { DatabaseUploadDrawer } from "../DatabaseUploadDrawer";
 
 const primaryButtonSx: (color: string) => ButtonProps["sx"] = (color) => ({
   "--temporary-color": color,
@@ -60,9 +62,18 @@ const ColumnList = ({ params }: { params: TableControlParams }) => {
 const TableActions = () => {
   const { anchorEl, handleClose, handleOpen } = useAnchorEl();
   const { isFetching, tableControlParams } = useLoadTableControls();
+  const [uploadDrawerOpen, setUploadDrawerOpen] = useState(false);
 
   return (
     <>
+      <Button
+        sx={primaryButtonSx("var(--mui-palette-secondary-main)")}
+        startIcon={<CloudUploadIcon />}
+        onClick={() => setUploadDrawerOpen(true)}
+      >
+        上傳資料庫
+      </Button>
+
       <Button
         sx={primaryButtonSx("var(--mui-palette-primary-main)")}
         endIcon={<ArrowDropDownRoundedIcon />}
@@ -85,6 +96,11 @@ const TableActions = () => {
           <ColumnList params={tableControlParams} />
         </Popover>
       )}
+
+      <DatabaseUploadDrawer 
+        open={uploadDrawerOpen} 
+        onClose={() => setUploadDrawerOpen(false)} 
+      />
     </>
   );
 };
