@@ -129,7 +129,7 @@ export const ProjectCard = ({
               <Typography variant={"body2"} sx={{ opacity: 0.7, ...hoverTextColor }}>
                 {progress === 0 && "準備中"}
                 {progress > 0 && progress < 100 && `完成進度 ${progress}%`}
-                {progress === 100 && "已完成 ✅"}
+                {progress === 100 && "已完成 ✔"}
               </Typography>
             </Box>
 

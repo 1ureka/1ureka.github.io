@@ -54,9 +54,5 @@
   "photos_home": {
     "dev": "/src/photos/pages/index.html",
     "prod": "/photos"
-  },
-  "assistant_home": {
-    "dev": "/src/assistant/pages/index.html",
-    "prod": "/assistant"
   }
 }

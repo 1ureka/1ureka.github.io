@@ -1,6 +1,19 @@
 import fs from "fs";
 import path from "path";
 
+/**
+ * 簡單的日誌工具，提供不同顏色的輸出
+ */
+const Log = {
+  success: (msg) => console.log(`\x1b[32m[DONE]\x1b[0m ${msg}`),
+  info: (msg) => console.log(`\x1b[34m[INFO]\x1b[0m ${msg}`),
+  warn: (msg) => console.log(`\x1b[33m[WARN]\x1b[0m ${msg}`),
+  step: (msg) => console.log(`\x1b[36m > \x1b[0m${msg}`),
+  header: (msg) => console.log(`\n\x1b[1m\x1b[35m── ${msg} ──\x1b[0m`),
+};
+
+// --------------------------------------------------------------------------------------
+
 // 載入 routes.json
 const routesJsonPath = path.resolve("src/routes.json");
 const routesJson = JSON.parse(fs.readFileSync(routesJsonPath, "utf8"));
@@ -29,7 +42,7 @@ function moveHtml(fromRelative, toRelative) {
   const toPath = path.join(distRoot, stripLeadingSlash(toRelative), "index.html");
 
   if (!fs.existsSync(fromPath)) {
-    console.warn(`⚠️ 檔案不存在：${fromPath}`);
+    Log.warn(`File missing: ${fromPath}`);
     return;
   }
 
@@ -39,44 +52,22 @@ function moveHtml(fromRelative, toRelative) {
 
   const relativeFromPath = fromPath.replace(distRoot, "dist");
   const relativeToPath = toPath.replace(distRoot, "dist");
-  console.log(`✅ 移動: ${relativeFromPath} ➜ ${relativeToPath}`);
+  Log.success(`Moved: ${relativeFromPath} ➜ ${relativeToPath}`);
 }
+
+// --------------------------------------------------------------------------------------
 
 // 對每個路徑 key 做對應搬移
 Object.keys(prod).forEach((key) => {
   moveHtml(dev[key], prod[key]);
 });
 
-// 移除 /dist/src 資料夾
+// 移除搬移後殘留的 /dist/src 資料夾
 const srcDir = path.join(distRoot, "src");
 if (fs.existsSync(srcDir)) {
   fs.rmSync(srcDir, { recursive: true, force: true });
-  console.log("🧹 清除: /dist/src");
+  Log.success("Cleared: /dist/src");
 }
 
-// 清空 /deploy 資料夾
-const deployDir = path.resolve("deploy");
-if (fs.existsSync(deployDir)) {
-  // 讀取 deploy 目錄中除了 .git 之外的所有檔案和資料夾
-  const items = fs.readdirSync(deployDir);
-
-  // 刪除每個非 .git 的項目
-  for (const item of items) {
-    if (item !== ".git") {
-      const itemPath = path.join(deployDir, item);
-      fs.rmSync(itemPath, { recursive: true, force: true });
-      console.log(`🧹 清除: /deploy/${item}`);
-    }
-  }
-} else {
-  fs.mkdirSync(deployDir, { recursive: true });
-  console.log(`📁 創建: /deploy 資料夾`);
-}
-
-// 移動 /dist 資料夾內容到 /deploy 資料夾
-fs.mkdirSync(deployDir, { recursive: true });
-if (fs.existsSync(distRoot)) {
-  // 複製所有檔案到 deploy 資料夾
-  fs.cpSync(distRoot, deployDir, { recursive: true });
-  console.log(`📦 複製: /dist ➜ /deploy`);
-}
+Log.header("Build Success");
+Log.info(`Final artifacts are ready in: \x1b[1m${distRoot}\x1b[0m`);

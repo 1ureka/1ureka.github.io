@@ -1,7 +1,6 @@
 import ForumRoundedIcon from "@mui/icons-material/ForumRounded";
 import DataExplorationRoundedIcon from "@mui/icons-material/DataExplorationRounded";
 import CameraRoundedIcon from "@mui/icons-material/CameraRounded";
-import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
 
 import { z } from "zod";
 import { routes } from "@/routes";
@@ -57,17 +56,6 @@ const projectsArray: Project[] = [
     time: 1744579200000,
     type: "desktop",
   },
-  {
-    id: "assistant",
-    title: "對話樣板",
-    description: "最近流行的大語言模型對話樣板，模擬即時對話與AI回應體驗 (目前需要本地端有部屬 API 才能使用)",
-    color: "#8179d2",
-    icon: AutoAwesomeRoundedIcon,
-    actionHref: routes.assistant_home,
-    progress: 1,
-    time: 1745915983183,
-    type: "rwd",
-  },
 ];
 
 const projectsArrayForSearch = projectsArray.map((project) => ({
@@ -104,7 +92,7 @@ const useProjects = () => {
           title: [{ text: project.title, highlight: false }],
           description: [{ text: project.description, highlight: false }],
         },
-      })
+      }),
     );
   }, [searchParams, orderState, search]);
 
