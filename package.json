@@ -7,8 +7,7 @@
     "lint": "eslint .",
     "build:deploy": "tsc -b && vite build && node src/build.js",
     "build:analyze": "tsc -b && vite build",
-    "build:type": "tsc -b",
-    "stat": "node src/stat.js"
+    "build:type": "tsc -b"
   },
   "dependencies": {
     "@dagrejs/dagre": "^1.1.4",

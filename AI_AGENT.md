@@ -7,7 +7,6 @@ This document outlines the development standards, patterns, and conventions used
 ### Multi-Demo Structure
 The project contains 5 independent demo modules under `/src/`:
 - `home/` - Landing page demo
-- `assistant/` - AI assistant demo  
 - `datahub/` - Data management demo
 - `forum/` - Forum/community demo
 - `photos/` - Photo gallery demo
@@ -350,7 +349,6 @@ Each demo has its own theme configuration with consistent patterns but different
 
 **Theme Location Pattern**: `/src/[demo]/utils/theme.ts`
 - **Forum**: Orange/blue theme (#FF772E, #2f5d6f)
-- **Assistant**: Purple theme (#8179d2) with extended palette (`border`, `bgOpacity`)
 - **Datahub**: Teal theme (#66cccc) with custom breakpoints (`ml: 1440`)
 - **Photos**: Individual theme configuration
 - **Home**: Landing page theme
@@ -362,10 +360,10 @@ const theme = createTheme({
   typography: { fontFamily: `Comfortaa, "jf openhuninn"` },
   colorSchemes: { light: { /* ... */ }, dark: { /* ... */ } },
   components: {
-    MuiInputBase: { 
-      defaultProps: { 
-        sx: { "&.Mui-disabled::before": { borderBottomStyle: "solid" } } 
-      } 
+    MuiInputBase: {
+      defaultProps: {
+        sx: { "&.Mui-disabled::before": { borderBottomStyle: "solid" } }
+      }
     },
   },
   spacing: "0.5rem",
@@ -493,7 +491,7 @@ export const generateMuiColorMix = (color1: string, color2: string, percentage: 
       {/* Content */}
     </Paper>
   </Box>
-  
+
   <Stack sx={{ gap: { xs: 1, md: 4 }, maxWidth: { xs: 1, md: 400 } }}>
     {/* Sidebar */}
   </Stack>
@@ -541,20 +539,20 @@ Error boundaries are automatically configured in `AppWrapper`:
 
 ## 🛎️ Logging & Notifications (Critical Project Rule)
 
-⚠️ This project uses a **custom unified logging system** where  
+⚠️ This project uses a **custom unified logging system** where
 `console.log`, `console.error`, `console.warn` is automatically intercepted and shown as **toast notifications**.
 
 ### Rules
-- ❌ DO NOT call `toast.success()`, `toast.error()`, or `toast.*` directly.  
-- ✅ ALWAYS use `console.log("...")` for user-facing notifications.  
-- ✅ Messages must be **clear to both developers and end users**.  
-- ❌ Never log raw debug info (e.g., `"fetching data..."`).  
+- ❌ DO NOT call `toast.success()`, `toast.error()`, or `toast.*` directly.
+- ✅ ALWAYS use `console.log("...")` for user-facing notifications.
+- ✅ Messages must be **clear to both developers and end users**.
+- ❌ Never log raw debug info (e.g., `"fetching data..."`).
 - ✅ Instead, use semantic messages (e.g., `"載入留言失敗，請稍後再試"`).
 
 ### Implementation Details
 The unified logging system is implemented in `/src/components/Toast.tsx`:
 - `console.log()` → Shows as info toast (green, 10 seconds)
-- `console.error()` → Shows as error toast (red, 15 seconds)  
+- `console.error()` → Shows as error toast (red, 15 seconds)
 - `console.warn()` → Shows as warning toast (orange, 10 seconds)
 
 ### Correct Usage Examples
@@ -600,7 +598,7 @@ import { routes } from "@/routes";               // Route definitions
 ### Build Scripts
 ```bash
 npm run dev              # Development server
-npm run lint             # ESLint checking  
+npm run lint             # ESLint checking
 npm run build:type       # TypeScript compilation check
 npm run build:analyze    # Production build for analysis
 npm run build:deploy     # Production build with deployment prep
@@ -625,7 +623,7 @@ The build system includes specialized scripts for production deployment:
 
 **Build Flow:**
 1. `tsc -b` - TypeScript compilation
-2. `vite build` - Production bundle creation  
+2. `vite build` - Production bundle creation
 3. `node src/build.js` - Post-build file organization
 4. Output ready in `/deploy` directory for deployment
 
