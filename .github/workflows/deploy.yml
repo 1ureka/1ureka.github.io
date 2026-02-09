@@ -1,0 +1,52 @@
+name: Deploy static content to Pages
+
+on:
+  # 手動從 Actions 頁籤觸發
+  workflow_dispatch:
+
+# 設定 GITHUB_TOKEN 的權限
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 確保同一時間只有一個部署在進行，避免衝突
+concurrency:
+  group: "pages" # 同一時間只能有一個 "pages" 工作流程在運行
+  cancel-in-progress: true # 如果有新的部署觸發，取消正在進行的部署
+
+jobs:
+  # 構建階段：負責安裝、編譯並上傳 Artifact
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm" # 自動快取 node_modules，加速後續執行
+
+      - name: Install and Build
+        run: |
+          npm ci
+          npm run build:deploy
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+  # 部屬階段：負責將 Artifact 發佈到伺服器
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build # 確保 build 成功後才執行
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
