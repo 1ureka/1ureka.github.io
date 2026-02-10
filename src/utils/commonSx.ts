@@ -14,6 +14,7 @@ export const ellipsisSx = {
   wordBreak: "break-all",
 } as const;
 
+/** 將兩個 MUI 調色盤顏色按指定比例混合，比例為第一個顏色的百分比 */
 export const generateMuiColorMix = (color1: string, color2: string, percentage: number) => {
   return `color-mix(in srgb, var(--mui-palette-${color1}) ${percentage}%, var(--mui-palette-${color2}) ${
     100 - percentage

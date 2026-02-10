@@ -8,14 +8,14 @@
 
 本專案採用 **Vite 多頁式應用 (MPA)** 架構，每個路由對應一個獨立的 HTML 入口檔。路由系統由以下幾個核心檔案組成：
 
-| 檔案                                | 用途                                                                         |
-| ----------------------------------- | ---------------------------------------------------------------------------- |
-| `src/routes.json`                   | 定義所有路由的 dev/prod 路徑對應                                             |
-| `src/routes.ts`                     | 根據環境變數（dev/prod）匯出當前可用路由物件                                 |
-| `vite.config.ts`                    | 讀取 `routes.json`，將所有 dev 路徑作為 Vite 的 `rollupOptions.input`        |
-| `src/build.js`                      | 建置後腳本，將 dev 路徑的 HTML 檔搬移至 prod 路徑結構（`dist/` → `deploy/`） |
-| `src/home/hooks/useProjectPages.ts` | 首頁的頁面列表，包含每個路由的中文標題 `titleMap`                            |
-| `src/home/hooks/useProjects.ts`     | 首頁的專案列表，包含每個專案模組的入口連結                                   |
+| 檔案                                | 用途                                                                  |
+| ----------------------------------- | --------------------------------------------------------------------- |
+| `src/routes.json`                   | 定義所有路由的 dev/prod 路徑對應                                      |
+| `src/routes.ts`                     | 根據環境變數（dev/prod）匯出當前可用路由物件                          |
+| `vite.config.ts`                    | 讀取 `routes.json`，將所有 dev 路徑作為 Vite 的 `rollupOptions.input` |
+| `src/build.js`                      | 建置後腳本，將 dev 路徑的 HTML 檔搬移至 prod 路徑結構                 |
+| `src/home/hooks/useProjectPages.ts` | 首頁的頁面列表，包含每個路由的中文標題 `titleMap`                     |
+| `src/home/hooks/useProjects.ts`     | 首頁的專案列表，包含每個專案模組的入口連結                            |
 
 ### 路由分為兩種層級
 
