@@ -54,5 +54,9 @@
   "photos_home": {
     "dev": "/src/photos/pages/index.html",
     "prod": "/photos"
+  },
+  "image_sanitizer_home": {
+    "dev": "/src/image-sanitizer/pages/index.html",
+    "prod": "/image-sanitizer"
   }
 }

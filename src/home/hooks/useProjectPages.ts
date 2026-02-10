@@ -34,6 +34,7 @@ const titleMap: Record<keyof typeof routes, string> = {
   forum_verify: "論壇樣板 | 驗證頁面",
   forum_users: "論壇樣板 | 使用者檔案",
   photos_home: "相簿樣板 | 首頁",
+  image_sanitizer_home: "圖片處理 | 首頁",
 };
 
 type ProjectProp = "icon" | "color" | "type" | "time" | "progress";
@@ -46,7 +47,7 @@ const getProjectProperty = (key: keyof typeof routes, prop: ProjectProp): any =>
   // 如果找不到相應專案，提供預設值
   if (result === undefined) {
     if (prop === "icon") return WebAssetRoundedIcon;
-    if (prop === "color") return "primary.main";
+    if (prop === "color") return "#999";
     if (prop === "type") return "desktop";
     if (prop === "time") return Date.now();
     if (prop === "progress") return 100;
