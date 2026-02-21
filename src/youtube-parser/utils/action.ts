@@ -1,0 +1,1 @@
+// TODO: 這裡會是一些 action 的定義，這些 action 會直接操作 store 的狀態，並且提供給 UI 作為事件處理器使用，讓 UI 不需要關心狀態的更新邏輯，達到更好的分離和可維護性。 UI 中，大致會長 import { someActionName } from "@/youtube-parser/utils/action"; 然後直接在事件處理器中 <Box onClick={someActionName}>...</Box>，而 someActionName 會直接操作 store 的狀態，達到 UI = f(store) 的效果。
