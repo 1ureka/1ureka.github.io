@@ -25,7 +25,7 @@ const theme = createTheme({
         text: {
           colored: "color-mix(in srgb, var(--mui-palette-primary-main) 50%, var(--mui-palette-text-primary) 50%)",
         },
-        primary: { main: "#948DE2" },
+        primary: { main: "#ff0000" },
         background: { paper: "#f9f9f9", default: "#f3f3f3" },
       },
     },
@@ -35,7 +35,7 @@ const theme = createTheme({
         text: {
           colored: "color-mix(in srgb, var(--mui-palette-primary-main) 50%, var(--mui-palette-text-primary) 50%)",
         },
-        primary: { main: "#948DE2" },
+        primary: { main: "#ff0000" },
         background: { paper: "#272727", default: "#202020" },
       },
     },
