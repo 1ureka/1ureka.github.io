@@ -6,9 +6,7 @@ import { videoStore } from "@/youtube-parser/utils/store";
 import { handleDragLeave, handleDragOver, handleDrop, handleSubmit } from "@/youtube-parser/utils/action";
 import { handleInputChange, handleKeyDown } from "@/youtube-parser/utils/action";
 
-/**
- * ?
- */
+/** FormSection 內部各元素的 CSS class 名稱，對應 {@link style} 中的選擇器 */
 const classNames = {
   dropArea: "youtube-link-drop-area",
   dropAreaLayout: "youtube-link-drop-area-layout",
@@ -18,9 +16,7 @@ const classNames = {
   inputButton: "link-input-button",
 };
 
-/**
- * ?
- */
+/** 輸入框（`TextField`）的邊框與聚焦樣式覆寫 */
 const inputStyle: SxProps = {
   "& .MuiOutlinedInput-notchedOutline": {
     borderRadius: 2,
@@ -37,9 +33,7 @@ const inputStyle: SxProps = {
   },
 };
 
-/**
- * ?
- */
+/** FormSection 的根元素樣式，包含拖放區域、分隔線、輸入列等子元素的佈局與視覺 */
 const style: SxProps = {
   display: "flex",
   flexDirection: "column",
@@ -93,9 +87,7 @@ const style: SxProps = {
   },
 };
 
-/**
- * ?
- */
+/** 連結輸入列：包含 TextField 與「解析」按鈕，支援 Enter 送出與上下箭頭瀏覽歷史 */
 const Input = memo(() => {
   const inputValue = videoStore((s) => s.inputValue);
   const loading = videoStore((s) => s.loading);
@@ -128,9 +120,7 @@ const Input = memo(() => {
   );
 });
 
-/**
- * ?
- */
+/** 拖放區域：使用者可將 YouTube 連結直接拖入此區觸發解析，拖曳經過時會高亮 */
 const DropArea = memo(() => {
   const dropActive = videoStore((s) => s.dropActive);
 
@@ -151,9 +141,7 @@ const DropArea = memo(() => {
   );
 });
 
-/**
- * ?
- */
+/** 表單區塊：組合拖放區域、分隔線與輸入列，是使用者提交 YouTube 連結的主要介面 */
 const FormSection = memo(() => (
   <Box sx={style}>
     <DropArea />

@@ -2,7 +2,10 @@ import { Alert, Box, Typography } from "@mui/material";
 import { videoStore } from "@/youtube-parser/utils/store";
 
 /**
- * ?
+ * 影片資訊展示區塊：
+ * - 解析失敗時顯示錯誤 Alert
+ * - 尚未解析時顯示空狀態提示
+ * - 成功時以 key-value grid 顯示影片名稱、作者、類型、提供者
  */
 const InfoSection = () => {
   const videoInfo = videoStore((s) => s.videoInfo);
