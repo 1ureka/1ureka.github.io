@@ -2,6 +2,21 @@ import { Box, Button, Divider, type SxProps, TextField, Typography } from "@mui/
 import AddLinkRoundedIcon from "@mui/icons-material/AddLinkRounded";
 import { generateMuiColorMix } from "@/utils/commonSx";
 import { memo } from "react";
+import { videoStore } from "@/youtube-parser/utils/store";
+import { handleDragLeave, handleDragOver, handleDrop, handleSubmit } from "@/youtube-parser/utils/action";
+import { handleInputChange, handleKeyDown } from "@/youtube-parser/utils/action";
+
+/**
+ * ?
+ */
+const classNames = {
+  dropArea: "youtube-link-drop-area",
+  dropAreaLayout: "youtube-link-drop-area-layout",
+  divider: "form-divider",
+  dividerText: "form-divider-text",
+  inputWrapper: "link-input-wrapper",
+  inputButton: "link-input-button",
+};
 
 /**
  * ?
@@ -25,39 +40,7 @@ const inputStyle: SxProps = {
 /**
  * ?
  */
-const Input = memo(() => {
-  return (
-    <TextField
-      id="link-input"
-      placeholder="貼上 YouTube 網址 (支援 youtu.be 或 watch?v=)"
-      variant="outlined"
-      size="small"
-      fullWidth
-      slotProps={{ input: { className: "link-outlined-input" } }}
-      sx={inputStyle}
-    />
-  );
-});
-
-/**
- * ?
- */
-const classNames = {
-  dropArea: "youtube-link-drop-area",
-  dropAreaLayout: "youtube-link-drop-area-layout",
-  divider: "form-divider",
-  dividerText: "form-divider-text",
-  inputWrapper: "link-input-wrapper",
-  inputButton: "link-input-button",
-};
-
-/**
- * ?
- */
 const style: SxProps = {
-  borderRadius: 2,
-  bgcolor: "background.paper",
-  p: 3,
   display: "flex",
   flexDirection: "column",
   gap: 2.5,
@@ -113,9 +96,51 @@ const style: SxProps = {
 /**
  * ?
  */
-const FormSection = memo(() => (
-  <Box sx={style}>
-    <div className={classNames.dropArea}>
+const Input = memo(() => {
+  const inputValue = videoStore((s) => s.inputValue);
+  const loading = videoStore((s) => s.loading);
+
+  return (
+    <div className={classNames.inputWrapper}>
+      <TextField
+        id="link-input"
+        placeholder="貼上 YouTube 網址 (支援 youtu.be 或 watch?v=)"
+        variant="outlined"
+        size="small"
+        fullWidth
+        disabled={loading}
+        value={inputValue}
+        onChange={(e) => handleInputChange(e.target.value)}
+        onKeyDown={handleKeyDown}
+        slotProps={{ input: { className: "link-outlined-input" } }}
+        sx={inputStyle}
+      />
+      <Button
+        className={classNames.inputButton}
+        variant="contained"
+        loading={loading}
+        onClick={handleSubmit}
+        disableElevation
+      >
+        <Typography variant="button">解析</Typography>
+      </Button>
+    </div>
+  );
+});
+
+/**
+ * ?
+ */
+const DropArea = memo(() => {
+  const dropActive = videoStore((s) => s.dropActive);
+
+  return (
+    <div
+      className={classNames.dropArea + (dropActive ? " active" : "")}
+      onDrop={handleDrop}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+    >
       <div className={classNames.dropAreaLayout}>
         <AddLinkRoundedIcon sx={{ fontSize: 40, color: "inherit" }} />
         <Typography variant="subtitle1" component="p" sx={{ color: "inherit" }}>
@@ -123,6 +148,15 @@ const FormSection = memo(() => (
         </Typography>
       </div>
     </div>
+  );
+});
+
+/**
+ * ?
+ */
+const FormSection = memo(() => (
+  <Box sx={style}>
+    <DropArea />
 
     <Divider className={classNames.divider} flexItem>
       <Typography className={classNames.dividerText} variant="body1">
@@ -130,12 +164,7 @@ const FormSection = memo(() => (
       </Typography>
     </Divider>
 
-    <div className={classNames.inputWrapper}>
-      <Input />
-      <Button className={classNames.inputButton} variant="contained" disableElevation>
-        <Typography variant="button">解析</Typography>
-      </Button>
-    </div>
+    <Input />
   </Box>
 ));
 
