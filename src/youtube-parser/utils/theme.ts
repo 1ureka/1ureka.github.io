@@ -31,11 +31,11 @@ const theme = createTheme({
     },
     dark: {
       palette: {
-        border: { main: "transparent" },
+        border: { main: "var(--mui-palette-divider)" },
         text: {
           colored: "color-mix(in srgb, var(--mui-palette-primary-main) 50%, var(--mui-palette-text-primary) 50%)",
         },
-        primary: { main: "#ff0000" },
+        primary: { main: "#ff3333" },
         background: { paper: "#272727", default: "#202020" },
       },
     },

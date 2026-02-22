@@ -1,0 +1,30 @@
+@font-face {
+  font-family: "Comfortaa";
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: block;
+  src: url("../../assets/fonts/Comfortaa-VariableFont_wght.ttf") format("truetype");
+}
+
+/* jf-openhuninn-2.1.ttf */
+@font-face {
+  font-family: "jf openhuninn";
+  src: url("../../assets/fonts/jf-openhuninn-2.1.ttf") format("truetype");
+  font-style: normal;
+  font-display: swap;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: gray transparent;
+  transition: 0.25s background-color cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body {
+  overflow: hidden;
+}
+
+a {
+  text-decoration: none;
+  color: unset;
+}

@@ -2,6 +2,7 @@ import { Box, LinearProgress, type SxProps } from "@mui/material";
 import { AppWrapper } from "@/image-sanitizer/components/AppWrapper";
 import { generateMuiColorMix } from "@/utils/commonSx";
 import { canvasToBlob, loadImage, readFileAsDataURL } from "@/image-sanitizer/utils";
+import AddLinkRoundedIcon from "@mui/icons-material/AddLinkRounded";
 
 /** 拖放區域 id */
 const DROP_ZONE_ID = "drop-zone";
@@ -46,6 +47,12 @@ const style: SxProps = {
       borderColor: "primary.main",
       bgcolor: generateMuiColorMix("primary-main", "background-paper", 10),
       color: "primary.main",
+    },
+
+    "& > div": {
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
     },
 
     transition: "all 0.15s",
@@ -185,7 +192,10 @@ const handleDrop = async (e: React.DragEvent<HTMLDivElement>) => {
 const Layout = () => (
   <Box sx={style} onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop}>
     <div id={DROP_ZONE_ID}>
-      <p>將圖片拖曳到此處</p>
+      <div>
+        <AddLinkRoundedIcon sx={{ fontSize: 40, color: "inherit" }} />
+        <p>將圖片拖曳到此處</p>
+      </div>
     </div>
 
     <LinearProgress id={PROGRESS_BAR_ID} variant="indeterminate" />
