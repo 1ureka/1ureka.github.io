@@ -1,10 +1,12 @@
 import { Box, Button, Tooltip, Typography } from "@mui/material";
 import type { ButtonProps } from "@mui/material";
+import { useState } from "react";
 
 import { smSpace } from "../commonSx";
-import { useTableSelectCount } from "@/datahub/hooks/tableSelect";
+import { useTableSelectCount, useTableSubmit } from "@/datahub/hooks/tableSelect";
 import { useLoadTableControls, useTableControls } from "@/datahub/hooks/tableControl";
 import type { TableControlParams } from "@/datahub/hooks/tableControl";
+import { DeleteConfirmDrawer } from "../DeleteConfirmDrawer";
 
 const secondaryButtonSx: (color: string) => ButtonProps["sx"] = (color) => ({
   "--temporary-color": color,
@@ -31,17 +33,35 @@ const LoadingDisplay = () => (
 
 const Wrapper = () => {
   const { isFetching, tableControlParams } = useLoadTableControls();
+  const submit = useTableSubmit();
 
   if (isFetching || !tableControlParams) {
     return <LoadingDisplay />;
   }
 
-  return <SelectActions params={tableControlParams} />;
+  return <SelectActions params={tableControlParams} submit={submit} />;
 };
 
-const SelectActions = ({ params }: { params: TableControlParams }) => {
+const SelectActions = ({ params, submit }: { params: TableControlParams; submit: () => any }) => {
   const { totalRows } = useTableControls(params);
   const checkedAmount = useTableSelectCount(totalRows);
+  const [deleteDrawerOpen, setDeleteDrawerOpen] = useState(false);
+
+  const handleDeleteClick = () => {
+    setDeleteDrawerOpen(true);
+  };
+
+  const getSelectedRowIds = () => {
+    const selection = submit();
+    if (selection.selectAll) {
+      // TODO: 實現全選時排除某些行的邏輯
+      // 目前簡化處理：如果是全選，返回空陣列（避免刪除全部資料）
+      console.warn("暫不支援全選模式下的刪除操作");
+      return [];
+    } else {
+      return selection.includeIds || [];
+    }
+  };
 
   return (
     <>
@@ -57,10 +77,21 @@ const SelectActions = ({ params }: { params: TableControlParams }) => {
             </Button>
           </span>
         </Tooltip>
-        <Button sx={secondaryButtonSx("var(--mui-palette-error-main)")} disabled={checkedAmount <= 0}>
+        <Button 
+          sx={secondaryButtonSx("var(--mui-palette-error-main)")} 
+          disabled={checkedAmount <= 0}
+          onClick={handleDeleteClick}
+        >
           刪除紀錄
         </Button>
       </Box>
+
+      <DeleteConfirmDrawer
+        open={deleteDrawerOpen}
+        onClose={() => setDeleteDrawerOpen(false)}
+        params={params}
+        selectedRowIds={getSelectedRowIds()}
+      />
     </>
   );
 };

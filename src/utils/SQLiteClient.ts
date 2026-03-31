@@ -144,6 +144,40 @@ export class SQLiteClient {
     return cached ? cached.byteLength : 0;
   }
 
+  /**
+   * 從 ArrayBuffer 載入新的資料庫
+   * @param data SQLite 資料庫的 ArrayBuffer
+   */
+  async loadFromArrayBuffer(data: Uint8Array): Promise<void> {
+    const startTime = Date.now();
+
+    const { error } = await tryCatch(
+      (async () => {
+        const SQL = await initSqlJs({ locateFile: (file) => `https://sql.js.org/dist/${file}` });
+        const db = new SQL.Database(data);
+        
+        // 測試資料庫是否有效 - 嘗試執行簡單查詢
+        db.exec("PRAGMA integrity_check;");
+        
+        // 保存新資料庫到 IndexedDB
+        await this.saveDatabase(db);
+        
+        // 更新實例
+        this.dbPromise = Promise.resolve(db);
+      })()
+    );
+
+    if (error) {
+      throw new Error("Invalid SQLite database file");
+    }
+
+    // 至少等待 TEST_DELAY 毫秒
+    const elapsedTime = Date.now() - startTime;
+    if (elapsedTime < TEST_DELAY) {
+      await new Promise((resolve) => setTimeout(resolve, TEST_DELAY - elapsedTime));
+    }
+  }
+
   // ----------------------------
   // 工具方法 (私有)
   // ----------------------------
