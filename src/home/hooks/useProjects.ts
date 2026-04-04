@@ -25,7 +25,7 @@ const projectsArray: Project[] = [
   {
     id: "datahub",
     title: "資料樣板",
-    description: "探索資料結構、互動體驗與儀表板 UX 的設計樣板，結合可視化與開發工具的一站式後台模組",
+    description: "探索資料結構、互動體驗與儀表板的設計樣板，結合可視化與開發工具的後台模組",
     color: "#66cccc",
     icon: DataExplorationRoundedIcon,
     actionHref: routes.datahub_home,

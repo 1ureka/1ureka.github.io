@@ -157,7 +157,7 @@ const Tile3 = () => {
     <>
       <Stack sx={{ alignItems: "flex-start" }}>
         <TileTitle>潛在問題</TileTitle>
-        <TileTooltip title={<Typography>查看詳細資料，分析中也能先開啟</Typography>}>
+        <TileTooltip title={<Typography>查看詳細資料</Typography>}>
           <TileContent
             onClick={handleClick}
             sx={{

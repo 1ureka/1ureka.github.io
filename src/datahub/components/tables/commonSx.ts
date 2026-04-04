@@ -21,7 +21,7 @@ export const generateHeadCellSx = (type: RadiusKey) =>
     border: "none",
     bgcolor: "color-mix(in srgb, var(--mui-palette-divider) 80%, transparent 20%)",
     ...radius[type],
-  } as const);
+  }) as const;
 
 export const tableRowsStyles = {
   checkboxCell: radius["mid-left"],
@@ -36,10 +36,10 @@ export const tableRowsStyles = {
       bgcolor: selected
         ? generateMuiColorMix("action-hover", "primary-light", 80)
         : index % 2 === 0
-        ? "color-mix(in srgb, var(--mui-palette-action-hover), transparent)"
-        : "action.hover",
-    } as const),
+          ? "color-mix(in srgb, var(--mui-palette-action-hover), transparent)"
+          : "action.hover",
+    }) as const,
 
   rowCellFull: { py: 8, borderRadius: 2 },
-  rowCell: (isFinal: boolean) => ({ py: 3, ...(isFinal ? radius["mid-right"] : {}) }),
+  rowCell: (isFinal: boolean) => ({ py: 2, ...(isFinal ? radius["mid-right"] : {}) }),
 };

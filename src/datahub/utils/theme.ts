@@ -34,7 +34,7 @@ const theme = createTheme({
     values: {
       ...defaultTheme.breakpoints.values,
       sm: 700,
-      ml: 1440,
+      ml: 1280,
     },
   },
   components: {

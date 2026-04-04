@@ -5,20 +5,18 @@ import { TreeItem2Icon } from "@mui/x-tree-view/TreeItem2Icon";
 import { TreeItem2Provider } from "@mui/x-tree-view/TreeItem2Provider";
 
 import { forwardRef, memo } from "react";
-import { Box, ButtonBase, Tooltip, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import ViewColumnRoundedIcon from "@mui/icons-material/ViewColumnRounded";
 import FormatIndentIncreaseRoundedIcon from "@mui/icons-material/FormatIndentIncreaseRounded";
 import VpnKeyRoundedIcon from "@mui/icons-material/VpnKeyRounded";
 import InfoOutlineRoundedIcon from "@mui/icons-material/InfoOutlineRounded";
-import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 import DatasetRoundedIcon from "@mui/icons-material/DatasetRounded";
 import { TreeViewTransition } from "./TreeViewTransition";
 import { ellipsisSx } from "@/utils/commonSx";
 import { iconSize } from "./treeViewSx";
 
 interface CustomTreeItemProps
-  extends Omit<UseTreeItem2Parameters, "rootRef">,
-    Omit<React.HTMLAttributes<HTMLLIElement>, "onFocus"> {
+  extends Omit<UseTreeItem2Parameters, "rootRef">, Omit<React.HTMLAttributes<HTMLLIElement>, "onFocus"> {
   type: "table" | "column" | "columns" | "index" | "indexes" | "key" | "pk";
   hueIndex?: number;
   subtitle?: string;
@@ -26,7 +24,6 @@ interface CustomTreeItemProps
 }
 
 const commonIconSx = { position: "absolute", color: "text.secondary", display: "grid", placeItems: "center" };
-const fakeEditable = false;
 
 const iconMap: Record<CustomTreeItemProps["type"], (hueIndex?: number) => React.ReactNode> = {
   table: (hueIndex?: number) => (
@@ -131,33 +128,6 @@ const CustomTreeItem = forwardRef(function CustomTreeItem(props: CustomTreeItemP
               >
                 {caption}
               </Typography>
-            )}
-            {["table", "columns", "indexes"].includes(type) && (
-              <Tooltip
-                title={
-                  <Typography variant="body2">
-                    {fakeEditable
-                      ? `編輯 ${{ table: "資料表", columns: "欄位", indexes: "索引" }[type as string]}`
-                      : "正被其他網站樣板使用中，無法編輯"}
-                  </Typography>
-                }
-                arrow
-                placement="right"
-              >
-                <ButtonBase
-                  sx={{
-                    display: "grid",
-                    placeItems: "center",
-                    p: iconSize / 2,
-                    borderRadius: 1,
-                    "&:hover": { bgcolor: "action.hover" },
-                    "&:active": { bgcolor: "action.selected" },
-                  }}
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <MoreHorizRoundedIcon sx={{ color: "text.secondary", position: "absolute" }} />
-                </ButtonBase>
-              </Tooltip>
             )}
           </Box>
         </TreeItem2Content>

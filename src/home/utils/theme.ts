@@ -19,7 +19,7 @@ const defaultTheme = createTheme();
 
 const theme = createTheme({
   cssVariables: { colorSchemeSelector: ".mode-%s" },
-  typography: { fontFamily: `Comfortaa, "jf openhuninn"` },
+  typography: { fontFamily: `Comfortaa, "jf openhuninn"`, fontSize: 14 },
   colorSchemes: {
     light: {
       palette: {

@@ -29,3 +29,8 @@
   scroll-behavior: smooth;
   transition: background-color 0.2s ease-in-out;
 }
+
+:root,
+html {
+  font-size: 14px !important;
+}
