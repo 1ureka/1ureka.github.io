@@ -1,6 +1,5 @@
 import ForumRoundedIcon from "@mui/icons-material/ForumRounded";
 import DataExplorationRoundedIcon from "@mui/icons-material/DataExplorationRounded";
-import CameraRoundedIcon from "@mui/icons-material/CameraRounded";
 
 import { z } from "zod";
 import { routes } from "@/routes";
@@ -44,17 +43,6 @@ const projectsArray: Project[] = [
     progress: 85,
     time: 1741968000000,
     type: "rwd",
-  },
-  {
-    id: "photos",
-    title: "相簿樣板",
-    description: "探索相簿的 UI/UX 設計樣板，嘗試在瀏覽器中實現 windows 的相簿體驗",
-    color: "#d077a1",
-    icon: CameraRoundedIcon,
-    actionHref: routes.photos_home,
-    progress: 2,
-    time: 1744579200000,
-    type: "desktop",
   },
 ];
 

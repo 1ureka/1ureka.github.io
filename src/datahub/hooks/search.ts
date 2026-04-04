@@ -7,9 +7,9 @@ import { useAllColumns, useObjects, useRowCounts } from "@/datahub/hooks/read";
 // Url 狀態
 // ------------------------------------------------------
 
-export type SearchTopic = "db" | "table" | "column";
+export type SearchTopic = "table" | "column";
 export const isSearchTopic = (value: string): value is SearchTopic => {
-  return ["db", "table", "column"].includes(value);
+  return ["table", "column"].includes(value);
 };
 
 export const useSearchTopic = () => {
@@ -37,10 +37,7 @@ export const useSearchQuery = () => {
 // 搜尋
 // ------------------------------------------------------
 
-const databases = [
-  { primary: "論壇資料庫", secondary: "來自論壇樣板", id: "forum", type: "資料庫" },
-  { primary: "相簿資料庫", secondary: "來自相簿樣板", id: "photos", type: "資料庫" },
-];
+const databases = [{ primary: "論壇資料庫", secondary: "來自論壇樣板", id: "forum", type: "資料庫" }];
 
 const useSearchDatabases = (q: string) => {
   const search = useSearch(databases, ["primary", "secondary"]);

@@ -1,5 +1,4 @@
 import { Box, Button, Chip, Stack, Typography } from "@mui/material";
-import StorageRoundedIcon from "@mui/icons-material/StorageRounded";
 import BorderAllRoundedIcon from "@mui/icons-material/BorderAllRounded";
 import ViewColumnRoundedIcon from "@mui/icons-material/ViewColumnRounded";
 import ShortcutRoundedIcon from "@mui/icons-material/ShortcutRounded";
@@ -17,7 +16,6 @@ const hightlightColor = "color-mix(in srgb, var(--mui-palette-primary-main) 70%,
 const iconSize = "medium";
 const iconSx = { fontSize: 48, mr: 1, bgcolor: "action.hover", borderRadius: 1.5, color: "action.active", p: 1 };
 const iconMap: Record<SearchTopic, React.ReactNode> = {
-  db: <StorageRoundedIcon fontSize={iconSize} sx={iconSx} />,
   table: <BorderAllRoundedIcon fontSize={iconSize} sx={iconSx} />,
   column: <ViewColumnRoundedIcon fontSize={iconSize} sx={iconSx} />,
 };
@@ -35,14 +33,7 @@ const ResultButton = memo(({ id, variant, primary, secondary, type }: ResultButt
 
   let handleClick: (() => void) | null = null;
 
-  if (variant === "db") {
-    handleClick = () =>
-      update(routes.datahub_home, (prev) => ({
-        db: id,
-        searchTopic: prev.searchTopic ?? null,
-        searchQuery: prev.searchQuery ?? null,
-      }));
-  } else if (variant === "table") {
+  if (variant === "table") {
     handleClick = () =>
       update(routes.datahub_tables, (prev) => ({
         db: prev.db ?? null,

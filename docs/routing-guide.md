@@ -19,7 +19,7 @@
 
 ### 路由分為兩種層級
 
-1. **模組首頁路由**（如 `forum_home`、`photos_home`）
+1. **模組首頁路由**（如 `forum_home`）
    - 有自己的 `pages/index.html` + `pages/main.tsx` + `pages/App.tsx`
 
 2. **模組子頁路由**（如 `forum_login`、`datahub_schema`）

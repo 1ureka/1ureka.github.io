@@ -4,7 +4,6 @@ import { type SearchTopic, useSearchQuery, useSearchTopic } from "@/datahub/hook
 
 const getPlaceholder = (searchTopic: SearchTopic) => {
   const map: Record<SearchTopic, string> = {
-    db: "資料庫",
     table: "所有資料表",
     column: "所有表格欄位",
   };

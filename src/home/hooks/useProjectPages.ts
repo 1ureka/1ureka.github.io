@@ -33,7 +33,6 @@ const titleMap: Record<keyof typeof routes, string> = {
   forum_search: "論壇樣板 | 搜尋頁面",
   forum_verify: "論壇樣板 | 驗證頁面",
   forum_users: "論壇樣板 | 使用者檔案",
-  photos_home: "相簿樣板 | 首頁",
   image_sanitizer_home: "圖像清理工具 | 首頁",
   youtube_parser_home: "Youtube 資訊提取器 | 首頁",
 };
