@@ -5,7 +5,7 @@ import { useTableControls } from "@/datahub/hooks/tableControl";
 import type { TableControlParams } from "@/datahub/hooks/tableControl";
 
 const staleTime = 1000 * 60 * 1;
-const rowsPerPage = 7;
+const rowsPerPage = 10;
 
 const useRows = (params: GetRowsParams | null) => {
   const queryClient = useQueryClient();

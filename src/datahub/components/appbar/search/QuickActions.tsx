@@ -1,7 +1,6 @@
 import { Box, ButtonBase, Divider, Stack, Typography } from "@mui/material";
 import SchemaRoundedIcon from "@mui/icons-material/SchemaRounded";
 import ShortcutRoundedIcon from "@mui/icons-material/ShortcutRounded";
-import TerminalRoundedIcon from "@mui/icons-material/TerminalRounded";
 import { useUrl } from "@/hooks/url";
 import { routes } from "@/routes";
 
@@ -54,7 +53,7 @@ const ActionButton = ({ icon, title, description, onClick }: ActionButtonProps) 
 );
 
 const QuickActions = () => {
-  const { update, updateSearchParams } = useUrl();
+  const { update } = useUrl();
 
   return (
     <Box sx={{ p: 1.5, pt: 0 }}>
@@ -65,24 +64,12 @@ const QuickActions = () => {
           延伸功能
         </Typography>
 
-        <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1.5 }}>
-          <ActionButton
-            icon={<SchemaRoundedIcon color="inherit" />}
-            title="資料庫結構"
-            description="了解資料庫結構與關聯"
-            onClick={() => update(routes.datahub_schema, (prev) => ({ db: prev.db ?? null }))}
-          />
-          <ActionButton
-            icon={<TerminalRoundedIcon color="inherit" />}
-            title="SQL 查詢"
-            description="自行撰寫 SQL 查詢，或使用範本"
-            onClick={() => {
-              console.log("還沒做完");
-              //   updatePath(routes.datahub_query);
-              updateSearchParams({ search: "false" }, { skipTransition: true });
-            }}
-          />
-        </Box>
+        <ActionButton
+          icon={<SchemaRoundedIcon color="inherit" />}
+          title="資料庫結構"
+          description="了解資料庫結構與關聯"
+          onClick={() => update(routes.datahub_schema, (prev) => ({ db: prev.db ?? null }))}
+        />
       </Stack>
     </Box>
   );

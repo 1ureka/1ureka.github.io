@@ -67,6 +67,7 @@ export const PageCard = ({ Icon, title, href, color }: PageCardProps) => {
                   sx={{
                     bgcolor: highlight ? "color-mix(in srgb, yellow 20%, transparent)" : undefined,
                     borderRadius: 2,
+                    ...ellipsisSx,
                   }}
                 >
                   {text}

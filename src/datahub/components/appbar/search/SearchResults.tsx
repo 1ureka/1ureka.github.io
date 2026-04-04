@@ -1,7 +1,7 @@
 import { Box, CircularProgress, Stack, Typography } from "@mui/material";
 import { ResultButton } from "./SearchResultsItem";
 import { useSearchQuery, useSearchTopic, type SearchTopic } from "@/datahub/hooks/search";
-import { useSearchDatabases, useSearchTables, useSearchColumns } from "@/datahub/hooks/search";
+import { useSearchTables, useSearchColumns } from "@/datahub/hooks/search";
 
 const LoadingDisplay = () => (
   <Box sx={{ display: "grid", placeItems: "center", flex: 1, p: 2 }}>
@@ -11,7 +11,6 @@ const LoadingDisplay = () => (
 
 const getSearchPrompt = (searchTopic: SearchTopic, input?: string) => {
   const map: Record<SearchTopic, { label: string; example: string }> = {
-    db: { label: "資料庫", example: "論壇" },
     table: { label: "資料表", example: "users, posts" },
     column: { label: "資料欄位", example: "email, createdAt" },
   };
@@ -23,7 +22,7 @@ const getSearchPrompt = (searchTopic: SearchTopic, input?: string) => {
 };
 
 const createSearchResults = (type: SearchTopic) => {
-  const useResults = type === "db" ? useSearchDatabases : type === "table" ? useSearchTables : useSearchColumns;
+  const useResults = type === "table" ? useSearchTables : useSearchColumns;
 
   return ({ q }: { q: string }) => {
     const { results, isFetching } = useResults(q);
@@ -59,7 +58,6 @@ const createSearchResults = (type: SearchTopic) => {
   };
 };
 
-const SearchDatabases = createSearchResults("db");
 const SearchObjects = createSearchResults("table");
 const SearchColumns = createSearchResults("column");
 
@@ -69,7 +67,6 @@ const SearchResults = () => {
 
   return (
     <Stack sx={{ p: 1.5, flex: 1 }}>
-      {searchTopic === "db" && <SearchDatabases q={searchQuery} />}
       {searchTopic === "table" && <SearchObjects q={searchQuery} />}
       {searchTopic === "column" && <SearchColumns q={searchQuery} />}
     </Stack>

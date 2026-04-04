@@ -38,9 +38,6 @@ const SearchTopicFilter = () => {
         },
       }}
     >
-      <MenuItem value="db" dense>
-        資料庫
-      </MenuItem>
       <MenuItem value="table" dense>
         資料表
       </MenuItem>
@@ -82,9 +79,6 @@ const SearchTopicFilterFilled = () => {
         },
       }}
     >
-      <MenuItem value="db" dense>
-        資料庫
-      </MenuItem>
       <MenuItem value="table" dense>
         資料表
       </MenuItem>

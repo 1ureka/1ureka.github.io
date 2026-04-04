@@ -1,1 +1,1 @@
-export const APPBAR_HEIGHT = 72; // px
+export const APPBAR_HEIGHT = 56; // px

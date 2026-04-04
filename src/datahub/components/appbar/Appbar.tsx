@@ -1,12 +1,10 @@
-import { Badge, Box, IconButton, Tooltip, Typography, useMediaQuery } from "@mui/material";
+import { Box } from "@mui/material";
 import type { BoxProps } from "@mui/material";
 import DataExplorationRoundedIcon from "@mui/icons-material/DataExplorationRounded";
-import NotificationsRoundedIcon from "@mui/icons-material/NotificationsRounded";
 
 import { SearchTopicFilter } from "./search/SearchTopic.tsx";
 import { SearchBarButton } from "./search/SearchBarButton";
 import { ThemeMenuWithButton } from "../ThemeMenu";
-import { AccountMenu } from "./AccountMenu";
 import { APPBAR_HEIGHT } from "./appbarSx";
 
 const flexRowSx: BoxProps["sx"] = {
@@ -16,8 +14,6 @@ const flexRowSx: BoxProps["sx"] = {
 };
 
 const Appbar = () => {
-  const isMd = useMediaQuery((theme) => theme.breakpoints.up("md"));
-
   return (
     <Box
       component="header"
@@ -34,14 +30,7 @@ const Appbar = () => {
       <Box sx={{ position: "absolute", inset: 0, bgcolor: "primary.main", opacity: 0.1, pointerEvents: "none" }} />
 
       <Box sx={{ gap: 6, ...flexRowSx }}>
-        <Box sx={{ gap: 1, ...flexRowSx }}>
-          <DataExplorationRoundedIcon sx={{ fontSize: "3em", color: "primary.main" }} />
-          {isMd && (
-            <Typography variant="h4" component="h1" sx={{ fontFamily: `"timemachine-wa"`, color: "secondary.dark" }}>
-              資料樣板
-            </Typography>
-          )}
-        </Box>
+        <DataExplorationRoundedIcon sx={{ fontSize: "2.5rem", color: "primary.main" }} />
 
         <Box sx={{ gap: 0.5, ...flexRowSx }}>
           <SearchTopicFilter />
@@ -49,19 +38,7 @@ const Appbar = () => {
         </Box>
       </Box>
 
-      <Box sx={{ gap: 2, ...flexRowSx }}>
-        <ThemeMenuWithButton />
-
-        <Tooltip title="通知" arrow>
-          <IconButton>
-            <Badge variant="dot" badgeContent={1} color="error">
-              <NotificationsRoundedIcon />
-            </Badge>
-          </IconButton>
-        </Tooltip>
-
-        <AccountMenu />
-      </Box>
+      <ThemeMenuWithButton />
     </Box>
   );
 };
