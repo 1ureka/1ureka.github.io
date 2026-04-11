@@ -71,7 +71,7 @@ function sortObjectArray<T>(
   array: readonly T[],
   keySelector: (item: T) => string | number | Date | null | undefined,
   order: "asc" | "desc" = "asc",
-  options: { caseInsensitive?: boolean; nullsFirst?: boolean } = {}
+  options: { caseInsensitive?: boolean; nullsFirst?: boolean } = {},
 ): T[] {
   const { caseInsensitive = false, nullsFirst = true } = options;
 

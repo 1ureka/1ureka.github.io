@@ -49,7 +49,7 @@ export class SQLiteClient {
         const result = db.exec(sql, params);
         await this.saveDatabase(db);
         return result;
-      })()
+      })(),
     );
 
     // 處理錯誤
@@ -183,7 +183,7 @@ export class SQLiteClient {
    * 從 IndexedDB 或初始文件載入數據庫
    */
   private async loadDatabase(): Promise<Database> {
-    const SQL = await initSqlJs({ locateFile: (file) => `https://sql.js.org/dist/${file}` });
+    const SQL = await initSqlJs({ locateFile: (_) => `https://sql.js.org/dist/sql-wasm.wasm` });
 
     const { data: cached, error: cachedError } = await tryCatch(get<Uint8Array>(this.storageKey));
     if (cachedError) console.error("Failed to get cached database", cachedError);
@@ -194,7 +194,7 @@ export class SQLiteClient {
         const res = await fetch(this.dbPath);
         const buffer = await res.arrayBuffer();
         return new SQL.Database(new Uint8Array(buffer));
-      })()
+      })(),
     );
 
     if (error) {
