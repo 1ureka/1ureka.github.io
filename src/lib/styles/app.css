@@ -1,0 +1,135 @@
+@import "./theme.css";
+
+/* --- reset --- */
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  font: var(--font-body1);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /*
+   * 捲軸常駐，版面不會因為捲軸出現而跳動。
+   * 刻意不用 scrollbar-gutter 達成同一件事——它一旦不是 auto，
+   * Blink 就不再把純色背景視為可搬進捲動內容空間，整頁捲動會變成每格重繪。
+   */
+  overflow-y: scroll;
+  transition:
+    background-color 0.25s var(--ease),
+    color 0.25s var(--ease);
+}
+
+h1,
+h2,
+h3 {
+  font: var(--font-title2);
+  letter-spacing: -0.01em;
+}
+
+a {
+  color: inherit;
+}
+
+button {
+  font: var(--font-button);
+  color: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+input,
+textarea,
+select {
+  font: var(--font-input);
+  color: inherit;
+}
+
+svg,
+img {
+  display: block;
+}
+
+/* --- focus --- */
+
+:where(a[href], button, input, textarea, select, details, [tabindex]:not([tabindex="-1"])) {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  transition:
+    outline-color 0.15s ease,
+    outline-offset 0.15s ease;
+
+  &:focus-visible {
+    outline-color: var(--color-accent);
+  }
+}
+
+/* --- 全域裝飾 --- */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: color-mix(in srgb, var(--color-text) 22%, transparent);
+  border-radius: var(--radius-pill);
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: color-mix(in srgb, var(--color-text) 38%, transparent);
+}
+
+::selection {
+  background-color: hsl(from var(--color-accent) h s l / 0.25);
+  color: var(--color-accent);
+}
+
+/* --- 工具類：僅保留無法由元件自行表達的兩項 --- */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.ellipsis {
+  overflow: hidden;
+  min-width: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* --- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

@@ -1,0 +1,109 @@
+:root {
+  /* 版面 */
+  --wrap-max: 1080px;
+  --border-style: 2px solid var(--color-border);
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --radius-control: 10px;
+  --radius-pill: 999px;
+
+  /* 表單控制項的統一高度。按鈕、TextInput、Select 一律靠 height + 置中，padding 只給水平 */
+  --control-height: 2.5rem;
+
+  /* 動態 */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* 字族 */
+  --font-family: "Comfortaa", "Chiron GoRound TC", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-family-mono: "JetBrains Mono", "Chiron GoRound TC", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --font-hero: 600 2rem/1.2 var(--font-family);
+  --font-title1: 600 1.5rem/1.25 var(--font-family);
+  --font-title2: 600 1.25rem/1.3 var(--font-family);
+  --font-title3: 600 1rem/1.3 var(--font-family);
+  --font-title4: 600 0.875rem/1.3 var(--font-family);
+  --font-button: 500 0.875rem/1 var(--font-family);
+  --font-input: 400 0.875rem/1 var(--font-family);
+  --font-input-hero: 400 1rem/1.4 var(--font-family);
+  --font-body1: 400 1rem/1.7 var(--font-family);
+  --font-body2: 400 0.875rem/1.5 var(--font-family);
+  --font-caption: 400 0.8125rem/1.2 var(--font-family);
+  --font-mono: 400 0.875rem/1.7 var(--font-family-mono);
+  --font-kbd: 400 0.875rem/1.7 var(--font-family-mono);
+
+  /* 取景框：刻意不隨主題變化，它模擬的是一台螢幕而不是頁面的一部分 */
+  --color-screen: #15140f;
+  --color-screen-text: #b9b2a0;
+  --color-screen-text-strong: #ede8dd;
+  --color-screen-line: rgba(255, 255, 255, 0.08);
+  --color-screen-tick: rgba(255, 255, 255, 0.45);
+  --color-scrim: rgba(20, 18, 14, 0.45);
+  --color-scrim-strong: rgba(10, 9, 7, 0.86);
+}
+
+:root,
+[data-theme="light"] {
+  color-scheme: light;
+
+  --color-bg: #f5f3ec;
+  --color-bg-card: #ffffff;
+  --color-bg-subtle: #fbfaf6;
+  --color-bg-popover: #ffffff;
+
+  --color-text: #262420;
+  --color-text-muted: hsl(from var(--color-text) h s l / 0.75);
+
+  --color-border: #d3cdba;
+
+  --color-bg-hover: #efece1;
+  --color-bg-active: #e4e0d3;
+
+  --color-accent: #d97757;
+  --color-accent-hover: #c2633f;
+  --color-accent-text: #fbf7f0;
+  --color-accent-tint: #fbeee7;
+  --color-accent-tint-strong: #f5ddd0;
+
+  --color-success: #4b7d5d;
+  --color-success-tint: #e9f1ea;
+  --color-error: #b3452e;
+  --color-error-tint: #fbeae4;
+  --color-info: #5b7fb8;
+
+  --shadow-sm: 0 1px 2px rgba(38, 36, 32, 0.06);
+  --shadow-lg: 0 20px 48px -12px rgba(38, 36, 32, 0.22);
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --color-bg: #1d1b17;
+  --color-bg-card: #252320;
+  --color-bg-subtle: #2b2925;
+  --color-bg-popover: #252320;
+
+  --color-text: #ede8dd;
+  --color-text-muted: hsl(from var(--color-text) h s l / 0.5);
+
+  --color-border: #3a362e;
+
+  --color-bg-hover: #302d28;
+  --color-bg-active: #3a362e;
+
+  --color-accent: #e28a63;
+  --color-accent-hover: #ea9a76;
+  --color-accent-text: #241a14;
+  --color-accent-tint: #33241c;
+  --color-accent-tint-strong: #432c21;
+
+  --color-success: #7fb893;
+  --color-success-tint: #233229;
+  --color-error: #e28873;
+  --color-error-tint: #3a2621;
+  --color-info: #88a6d9;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 20px 48px -12px rgba(0, 0, 0, 0.6);
+}
