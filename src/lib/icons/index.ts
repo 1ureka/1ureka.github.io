@@ -1,3 +1,4 @@
+export { default as IconAdjustments } from "./IconAdjustments.svelte";
 export { default as IconAlertCircleFilled } from "./IconAlertCircleFilled.svelte";
 export { default as IconArrowsRightLeft } from "./IconArrowsRightLeft.svelte";
 export { default as IconArrowsShuffle } from "./IconArrowsShuffle.svelte";
@@ -6,7 +7,7 @@ export { default as IconChevronDown } from "./IconChevronDown.svelte";
 export { default as IconClock } from "./IconClock.svelte";
 export { default as IconCopy } from "./IconCopy.svelte";
 export { default as IconDownload } from "./IconDownload.svelte";
-export { default as IconEraser } from "./IconEraser.svelte";
+export { default as IconDropletFilled } from "./IconDropletFilled.svelte";
 export { default as IconExternalLink } from "./IconExternalLink.svelte";
 export { default as IconInfoCircleFilled } from "./IconInfoCircleFilled.svelte";
 export { default as IconKeyboard } from "./IconKeyboard.svelte";

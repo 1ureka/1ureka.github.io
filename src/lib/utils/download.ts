@@ -3,9 +3,9 @@
  * 產生純前端的檔案下載，以及不涉及任何欄位語意的 CSV 組裝
  */
 
-/** 觸發瀏覽器下載一份由字串內容組成的檔案 */
-export function downloadText(content: string, filename: string, type: string): void {
-  const url = URL.createObjectURL(new Blob([content], { type }));
+/** 觸發瀏覽器下載一個 Blob */
+export function downloadBlob(blob: Blob, filename: string): void {
+  const url = URL.createObjectURL(blob);
   const anchor = document.createElement("a");
 
   anchor.href = url;
@@ -15,6 +15,11 @@ export function downloadText(content: string, filename: string, type: string): v
   document.body.removeChild(anchor);
 
   setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+/** 觸發瀏覽器下載一份由字串內容組成的檔案 */
+export function downloadText(content: string, filename: string, type: string): void {
+  downloadBlob(new Blob([content], { type }), filename);
 }
 
 /** 依 RFC 4180 逸出單一欄位 */

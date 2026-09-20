@@ -1,7 +1,7 @@
 <script lang="ts">
   import { fly } from "svelte/transition";
 
-  import { IconCopy, IconExternalLink, IconStar, IconStarFilled } from "$lib/icons";
+  import { IconCopy, IconDropletFilled, IconExternalLink, IconStar, IconStarFilled } from "$lib/icons";
   import Button from "$lib/components/actions/Button.svelte";
   import ButtonLink from "$lib/components/actions/ButtonLink.svelte";
   import { copyText } from "$lib/utils/clipboard";
@@ -11,6 +11,7 @@
 
   import { getLookupContext } from "../logic/lookup.svelte";
   import { getHistoryContext } from "../logic/history.svelte";
+  import { getRinseContext } from "../../rinse/logic/rinse.svelte";
   import ResultMonitor from "./ResultMonitor.svelte";
   import ResultEmbed from "./ResultEmbed.svelte";
   import ResultThumbs from "./ResultThumbs.svelte";
@@ -20,6 +21,7 @@
 
   const lookup = getLookupContext();
   const history = getHistoryContext();
+  const rinse = getRinseContext();
 
   type Subtab = "preview" | "embed" | "thumbs" | "raw";
 
@@ -77,6 +79,11 @@
       <Button variant="outlined" onclick={handleCopyUrl}>
         <IconCopy size={14} />
         複製連結
+      </Button>
+
+      <Button variant="outlined" onclick={() => rinse.handleAdopt(card.thumbnailUrl, `${card.videoId}-thumbnail`)}>
+        <IconDropletFilled size={14} />
+        沖洗縮圖
       </Button>
 
       <Button variant={starred ? "primary" : "outlined"} onclick={handleToggleStar}>
