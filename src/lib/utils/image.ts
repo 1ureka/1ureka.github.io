@@ -166,7 +166,7 @@ export function fileNameFromUrl(input: string): string {
 
 /** 去掉副檔名，並濾掉檔案系統不收的字元 */
 export function baseName(name: string): string {
-  const stem = name.replace(/\.[^./\]+$/, "").replace(/[\/:*?"<>|]/g, "-");
+  const stem = name.replace(/\.[^./\\]+$/, "").replace(/[\/:*?"<>|]/g, "-");
   return stem.trim().length === 0 ? "image" : stem.trim();
 }
 
