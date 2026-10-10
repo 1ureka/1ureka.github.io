@@ -25,7 +25,10 @@
     },
     {
       title: "Rinse",
-      rows: [{ label: "沖洗剪貼簿裡的圖片", keys: "Ctrl / ⌘ V" }],
+      rows: [
+        { label: "切換分頁", keys: "1 / 2" },
+        { label: "沖洗剪貼簿裡的圖片", keys: "Ctrl / ⌘ V" },
+      ],
     },
   ];
 </script>

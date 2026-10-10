@@ -7,10 +7,10 @@
   import TextInput from "$lib/components/inputs/TextInput.svelte";
   import { OUTPUT_FORMATS, RINSE_FORMAT, baseName, getFormat, type OutputFormatId } from "$lib/utils/image";
 
-  import { getRinseContext, type RinseEntry } from "./logic/rinse.svelte";
+  import { getRinseContext, type RinseImage } from "./logic/rinse.svelte";
   import { getLightboxContext } from "../logic/lightbox.svelte";
 
-  let { entry, onclose }: { entry: RinseEntry; onclose: () => void } = $props();
+  let { image, onclose }: { image: RinseImage; onclose: () => void } = $props();
 
   const rinse = getRinseContext();
   const lightbox = getLightboxContext();
@@ -30,9 +30,9 @@
   const QUALITY_IDS = Object.keys(QUALITIES);
   const BACKGROUND_IDS = Object.keys(BACKGROUNDS);
 
-  // 對話框由外層的 Modal 在每次開啟時重新掛載，所以這裡要的就是當下那一筆的名字，
-  // 不是一個會跟著 entry 走的衍生值
-  let name = $state(untrack(() => entry.name));
+  // 對話框由外層的 Modal 在每次開啟時重新掛載，所以這裡要的就是當下那一張的名字，
+  // 不是一個會跟著 image 走的衍生值
+  let name = $state(untrack(() => image.name));
   let formatId = $state<OutputFormatId>(RINSE_FORMAT);
   let scaleId = $state("1");
   let qualityId = $state("0.92");
@@ -41,14 +41,14 @@
   const format = $derived(getFormat(formatId));
   const scale = $derived(Number(scaleId));
 
-  const width = $derived(Math.max(1, Math.round(entry.width * scale)));
-  const height = $derived(Math.max(1, Math.round(entry.height * scale)));
+  const width = $derived(Math.max(1, Math.round(image.width * scale)));
+  const height = $derived(Math.max(1, Math.round(image.height * scale)));
 
   const filename = $derived(`${baseName(name)}.${format.ext}`);
 
   function handleDownload() {
     void rinse.handleSave(
-      entry,
+      image,
       {
         format: formatId,
         scale,
@@ -65,10 +65,10 @@
   <h3>另存為</h3>
 
   <div class="preview">
-    <img src={entry.url} alt={entry.name} />
+    <img src={image.url} alt={image.name} />
 
     <div>
-      <Button variant="outlined" padding="icon" onclick={() => lightbox.handleOpen(entry.url, `${entry.name}.png`)}>
+      <Button variant="outlined" padding="icon" onclick={() => lightbox.handleOpen(image.url, `${image.name}.png`)}>
         <span class="zoom"><IconMaximize size={18} /></span>
         <span class="sr-only">放大 {filename}</span>
       </Button>

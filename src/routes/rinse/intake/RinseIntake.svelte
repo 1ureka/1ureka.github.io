@@ -4,7 +4,7 @@
   import { IconAlertCircleFilled, IconDropletFilled, IconLinkFilled } from "$lib/icons";
   import HeroInput from "$lib/components/inputs/HeroInput.svelte";
 
-  import { getRinseContext } from "./logic/rinse.svelte";
+  import { getRinseContext } from "../logic/rinse.svelte";
 
   const rinse = getRinseContext();
 

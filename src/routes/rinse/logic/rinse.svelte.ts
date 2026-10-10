@@ -1,14 +1,12 @@
 /**
  * @file rinse.svelte.ts
- * 管理沖洗：接手一張圖，重畫成 PNG，並留下這次工作階段的紀錄。
+ * 管理沖洗：接手一張圖，重畫成 PNG，存進歷史，並留著最新的那一張給首頁看。
  *
  * 圖可以來自四個地方——全域投放、貼上、圖片連結，或 Playcard 直接遞過來的縮圖。
  * 四者只在「怎麼拿到位元組」這一步不同，拿到之後走的是同一條管線，
  * 所以輸出的保證對誰都一樣。
  *
- * 紀錄只活在記憶體裡。沖洗好的 PNG 當下就已經進了下載資料夾，留在這裡的那一份
- * 是為了「剛剛那幾張」還能再換個格式存一次，不是為了長期保存——localStorage 也
- * 存不下 Blob。
+ * 歷史滿了不影響沖洗：圖照樣洗、照樣下載、照樣顯示在首頁，只是不存。
  */
 
 import { getContext, setContext } from "svelte";
@@ -30,17 +28,16 @@ import {
   type EncodeOptions,
 } from "$lib/utils/image";
 
-/** 紀錄的上限；筆數與位元組兩個都是為了記憶體，任一超出就自最舊的開始丟 */
-const MAX_ENTRIES = 24;
-const MAX_BYTES = 192 * 1024 * 1024;
+import { getRinseTabsContext } from "./tabs.svelte";
+import { getRinseHistoryContext } from "./history.svelte";
+import type { RinseRecord, RinseSource } from "./store";
 
-/** 列表縮圖的最大邊長。不縮的話整份列表會把原尺寸點陣圖全解進記憶體 */
+export type { RinseRecord, RinseSource } from "./store";
+
+/** 歷史列表預覽圖的最大邊長。不縮的話整份列表會把原尺寸點陣圖全解進記憶體 */
 const PREVIEW_EDGE = 360;
 
 const AUTO_DOWNLOAD_KEY = "rinse_auto_download";
-
-/** 這張圖是打哪來的 */
-export type RinseSource = "drop" | "paste" | "url" | "playcard";
 
 export const SOURCE_LABELS: Record<RinseSource, string> = {
   drop: "拖曳",
@@ -49,24 +46,23 @@ export const SOURCE_LABELS: Record<RinseSource, string> = {
   playcard: "Playcard",
 };
 
-/** 一筆沖洗紀錄 */
-export interface RinseEntry {
-  id: number;
+/** 一張已經沖洗好、手上有位元組的圖；另存為與複製只需要這些 */
+export interface RinseImage {
   /** 不含副檔名的檔名 */
   name: string;
-  source: RinseSource;
-  /** 原始位元組的 MIME 與大小，用來對照輸出 */
-  originalType: string;
-  originalSize: number;
   width: number;
   height: number;
   /** 沖洗後的 PNG。PNG 無損，所以任何再輸出都自這裡重新解碼，像素與當初完全相同 */
   blob: Blob;
-  /** 沖洗結果本身的 object URL，放大檢視時看的是這一份 */
+  /** 這份 PNG 的 object URL */
   url: string;
-  /** 列表用的小張預覽。列表若直接掛原尺寸，整份紀錄會把點陣圖全解進記憶體 */
-  previewUrl: string;
-  createdAt: number;
+}
+
+/** 首頁顯示的最新一張 */
+export interface RinseLatest extends RinseImage {
+  record: RinseRecord;
+  /** 有沒有存進歷史 */
+  saved: boolean;
 }
 
 /** 佇列中的一件工作。位元組延後到輪到它才取，一次丟十個連結才不會同時發十個請求 */
@@ -76,12 +72,6 @@ type RinseJob = {
   load: () => Promise<Blob>;
 };
 
-/** 放掉一筆紀錄佔住的 object URL，Blob 本身才收得回去 */
-function release(entry: RinseEntry) {
-  URL.revokeObjectURL(entry.url);
-  URL.revokeObjectURL(entry.previewUrl);
-}
-
 /** 列表縮圖只要看得清楚就好 */
 function previewScale(width: number, height: number): number {
   const longest = Math.max(width, height);
@@ -89,8 +79,11 @@ function previewScale(width: number, height: number): number {
 }
 
 class RinseController {
-  /** 這次工作階段沖洗過的圖，最新的在前 */
-  entries = $state<RinseEntry[]>([]);
+  private tabs = getRinseTabsContext();
+  private history = getRinseHistoryContext();
+
+  /** 最新沖洗好的那一張；raw 是因為裡面有 Blob，而且只會整筆換掉 */
+  latest = $state.raw<RinseLatest | null>(null);
   /** 還有幾張在排隊或處理中 */
   pending = $state(0);
   /** 連結輸入欄目前的值 */
@@ -103,12 +96,12 @@ class RinseController {
   /** 連結輸入欄的 DOM 參照，由欄位元件掛上，供快速鍵直接聚焦 */
   inputEl = $state<HTMLInputElement | undefined>();
 
-  /** 下一筆紀錄的流水號 */
-  private nextId = 1;
-  /** 待處理的工作；不是 $state，畫面看的是 pending 與 entries */
+  /** 待處理的工作；不是 $state，畫面看的是 pending 與 latest */
   private queue: RinseJob[] = [];
   /** 是否已經有一份處理迴圈在跑 */
   private draining = false;
+  /** 這一輪處理中因為歷史已滿而沒存的張數，整輪結束時一次告知 */
+  private skipped = 0;
 
   constructor() {
     // 無依賴，只在掛載後跑一次。放進 effect 是為了避開 SSR 與水合不一致。
@@ -116,9 +109,6 @@ class RinseController {
       this.autoDownload = readText(AUTO_DOWNLOAD_KEY) !== "off";
     });
   }
-
-  /** 目前留著的沖洗成果總共佔多少位元組 */
-  totalBytes = $derived(this.entries.reduce((sum, entry) => sum + entry.blob.size, 0));
 
   // --- 佇列 ---
 
@@ -157,10 +147,21 @@ class RinseController {
       }
     } finally {
       this.draining = false;
+      this.reportSkipped();
     }
   }
 
-  /** 一張圖的完整生命週期：取得位元組、解碼、重畫、留底、下載 */
+  private reportSkipped() {
+    if (this.skipped === 0) return;
+    const count = this.skipped;
+    this.skipped = 0;
+    addToast({
+      message: `歷史已滿，${count === 1 ? "這張" : `${count} 張`}沒有存進歷史；圖片本身已照常沖洗`,
+      variant: "error",
+    });
+  }
+
+  /** 一張圖的完整生命週期：取得位元組、解碼、重畫、存進歷史、下載 */
   private async process(job: RinseJob) {
     const blob = await job.load();
 
@@ -170,55 +171,78 @@ class RinseController {
     }
 
     const decoded = await decodeImage(blob);
+    let rinsed: Blob;
+    let preview: Blob;
 
     try {
-      const rinsed = await encodeImage(decoded, { format: RINSE_FORMAT });
-      const preview = await encodeImage(decoded, {
+      rinsed = await encodeImage(decoded, { format: RINSE_FORMAT });
+      preview = await encodeImage(decoded, {
         format: RINSE_FORMAT,
         scale: previewScale(decoded.width, decoded.height),
       });
-
-      this.insert({
-        id: this.nextId++,
-        name: job.name,
-        source: job.source,
-        originalType: blob.type,
-        originalSize: blob.size,
-        width: decoded.width,
-        height: decoded.height,
-        blob: rinsed,
-        url: URL.createObjectURL(rinsed),
-        previewUrl: URL.createObjectURL(preview),
-        createdAt: Date.now(),
-      });
-
-      if (this.autoDownload) downloadBlob(rinsed, `${job.name}.png`);
-
-      // 由 Playcard 遞過來時使用者不在這個工具的畫面上，沒有別的方式知道事情成了
-      if (job.source === "playcard") {
-        addToast({
-          message: this.autoDownload ? `已沖洗並下載 ${job.name}.png` : `已沖洗 ${job.name}，可到 Rinse 下載`,
-          variant: "success",
-        });
-      }
     } finally {
       decoded.close();
     }
+
+    const record: RinseRecord = {
+      id: crypto.randomUUID(),
+      name: job.name,
+      source: job.source,
+      originalType: blob.type,
+      originalSize: blob.size,
+      width: decoded.width,
+      height: decoded.height,
+      size: rinsed.size,
+      previewSize: preview.size,
+      createdAt: Date.now(),
+    };
+
+    // 下載先於存檔：存檔失敗不該連累已經洗好的圖
+    if (this.autoDownload) downloadBlob(rinsed, `${job.name}.png`);
+
+    const saved = await this.save(record, rinsed, preview);
+    this.show({
+      name: job.name,
+      width: record.width,
+      height: record.height,
+      blob: rinsed,
+      url: URL.createObjectURL(rinsed),
+      record,
+      saved,
+    });
+
+    // 由 Playcard 遞過來時使用者不在這個工具的畫面上，沒有別的方式知道事情成了
+    if (job.source === "playcard") {
+      addToast({
+        message: this.autoDownload ? `已沖洗並下載 ${job.name}.png` : `已沖洗 ${job.name}，可到 Rinse 下載`,
+        variant: "success",
+      });
+    }
   }
 
-  private insert(entry: RinseEntry) {
-    const next = [entry, ...this.entries];
-    let bytes = next.reduce((sum, e) => sum + e.blob.size, 0);
+  /** 試著存進歷史，回傳有沒有存成；放不下或寫入失敗都不中斷沖洗 */
+  private async save(record: RinseRecord, rinsed: Blob, preview: Blob): Promise<boolean> {
+    await this.history.whenReady();
 
-    // 單獨一張就超出位元組上限時仍然留著，否則剛沖好的圖會立刻消失
-    while (next.length > MAX_ENTRIES || (next.length > 1 && bytes > MAX_BYTES)) {
-      const dropped = next.pop();
-      if (dropped === undefined) break;
-      bytes -= dropped.blob.size;
-      release(dropped);
+    if (!this.history.canFit(rinsed.size + preview.size)) {
+      // 讀不到資料庫時歷史本來就不可用，那件事在歷史分頁說，不必每張都提醒一次
+      if (this.history.loadError === null) this.skipped += 1;
+      return false;
     }
 
-    this.entries = next;
+    try {
+      await this.history.handleRecord(record, rinsed, preview);
+      return true;
+    } catch (e) {
+      addToast({ message: `${record.name} 沒有存進歷史：${formatError(e)}`, variant: "error" });
+      return false;
+    }
+  }
+
+  /** 換上新的最新一張，放掉上一張的 object URL */
+  private show(next: RinseLatest) {
+    if (this.latest !== null) URL.revokeObjectURL(this.latest.url);
+    this.latest = next;
   }
 
   // --- 各種來源 ---
@@ -236,6 +260,9 @@ class RinseController {
    * 殼層只負責把內容送到目前的工具，能不能用是這裡自己的判斷。
    */
   handleDrop = (payload: DropPayload) => {
+    // 結果只在首頁看得到，在歷史分頁投放也要切回去
+    this.tabs.handleSelect("intake");
+
     if (payload.files.length > 0) {
       this.enqueue(payload.files.map((file) => this.fileJob(file, "drop")));
       return;
@@ -256,16 +283,22 @@ class RinseController {
 
     const files = [...data.files].filter((file) => file.type.startsWith("image/"));
     if (files.length > 0) {
+      this.tabs.handleSelect("intake");
       this.enqueue(files.map((file) => this.fileJob(file, "paste")));
       return;
     }
 
     const text = data.getData("text/plain").trim();
-    if (/^https?:\/\//i.test(text)) this.enqueue([this.urlJob(text, "paste")]);
+    if (/^https?:\/\//i.test(text)) {
+      this.tabs.handleSelect("intake");
+      this.enqueue([this.urlJob(text, "paste")]);
+    }
   };
 
   /** 由其他工具直接遞來一張圖；Playcard 的縮圖走這裡，不必開第二個分頁再拖一次 */
   handleAdopt = (url: string, name: string) => {
+    // 使用者之後切到 Rinse 時，看到的就是這一張
+    this.tabs.handleSelect("intake");
     this.enqueue([this.urlJob(url, "playcard", baseName(name))]);
   };
 
@@ -289,8 +322,9 @@ class RinseController {
     this.enqueue([this.urlJob(value, "url")]);
   };
 
-  /** 聚焦連結欄位 */
+  /** 切回首頁並聚焦連結欄位 */
   handleFocusInput = () => {
+    this.tabs.handleSelect("intake");
     this.inputEl?.focus();
     this.inputEl?.select();
   };
@@ -301,14 +335,14 @@ class RinseController {
    * 以指定設定再輸出一次。
    * 來源是當初沖洗出來的 PNG，無損，所以像素與從原圖轉出的結果完全一致。
    */
-  handleSave = async (entry: RinseEntry, options: EncodeOptions, filename?: string) => {
+  handleSave = async (image: RinseImage, options: EncodeOptions, filename?: string) => {
     const format = getFormat(options.format);
 
     try {
-      const decoded = await decodeImage(entry.blob);
+      const decoded = await decodeImage(image.blob);
       try {
         const blob = await encodeImage(decoded, options);
-        downloadBlob(blob, `${baseName(filename ?? entry.name)}.${format.ext}`);
+        downloadBlob(blob, `${baseName(filename ?? image.name)}.${format.ext}`);
       } finally {
         decoded.close();
       }
@@ -317,26 +351,17 @@ class RinseController {
     }
   };
 
-  handleCopy = async (entry: RinseEntry) => {
+  /**
+   * 複製 PNG 到剪貼簿。
+   * 可以直接給一個還在讀取中的 Promise：剪貼簿會等它，使用者手勢也不會因為先 await 而失效。
+   */
+  handleCopy = async (blob: Blob | Promise<Blob>) => {
     try {
-      await copyImage(entry.blob);
+      await copyImage(blob);
       addToast({ message: "已複製 PNG 到剪貼簿", variant: "success" });
     } catch (e) {
       addToast({ message: formatError(e), variant: "error" });
     }
-  };
-
-  handleRemove = (id: number) => {
-    const entry = this.entries.find((e) => e.id === id);
-    if (entry === undefined) return;
-
-    release(entry);
-    this.entries = this.entries.filter((e) => e.id !== id);
-  };
-
-  handleClear = () => {
-    for (const entry of this.entries) release(entry);
-    this.entries = [];
   };
 
   handleToggleAutoDownload = () => {

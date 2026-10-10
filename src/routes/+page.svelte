@@ -9,6 +9,8 @@
   import { createShortcutsContext } from "./logic/shortcuts.svelte";
   import { createLightboxContext } from "./logic/lightbox.svelte";
 
+  import { createRinseTabsContext } from "./rinse/logic/tabs.svelte";
+  import { createRinseHistoryContext } from "./rinse/logic/history.svelte";
   import { createRinseContext } from "./rinse/logic/rinse.svelte";
 
   import { createTabsContext } from "./playcard/logic/tabs.svelte";
@@ -33,6 +35,8 @@
   createLightboxContext();
 
   // Rinse 排在 Playcard 前面是因為方向：Playcard 的縮圖可以直接遞給 Rinse 沖洗，反過來沒有
+  const rinseTabs = createRinseTabsContext();
+  createRinseHistoryContext();
   const rinse = createRinseContext();
 
   // Playcard
@@ -81,6 +85,12 @@
     if (tool.current === "playcard" && ["1", "2", "3"].includes(event.key)) {
       event.preventDefault();
       tabs.handleSelectAt(Number(event.key));
+      return;
+    }
+
+    if (tool.current === "rinse" && ["1", "2"].includes(event.key)) {
+      event.preventDefault();
+      rinseTabs.handleSelectAt(Number(event.key));
     }
   }
 
