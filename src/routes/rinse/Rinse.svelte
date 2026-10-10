@@ -3,7 +3,6 @@
 
   import { IconCheckFilled, IconDownload } from "$lib/icons";
   import Chip from "$lib/components/display/Chip.svelte";
-  import CircularProgress from "$lib/components/display/CircularProgress.svelte";
   import PanelHead from "$lib/components/display/PanelHead.svelte";
   import { tooltip } from "$lib/components/floating/tooltip.core.svelte";
 
@@ -27,23 +26,16 @@
     {:else}
       <IconDownload size={13} />
     {/if}
-    沖洗後自動下載
+    自動下載
   </Chip>
-
-  {#if rinse.pending > 0}
-    <span class="pending" transition:fly={{ y: -4, duration: 160 }}>
-      <CircularProgress size="0.875rem" color="var(--color-accent)" />
-      沖洗中 {rinse.pending}
-    </span>
-  {/if}
 </div>
 
 <div class="panel">
   <PanelHead
     size="hero"
-    eyebrow="Canvas · 不經過任何伺服器"
-    title="把圖片沖成乾淨的 PNG"
-    description="從任何網站把圖片拖到這個分頁。它會被重新畫成一張新的 PNG，只有畫面本身留得下來。"
+    eyebrow="Canvas"
+    title="把圖片轉為乾淨的 PNG"
+    description="從任何網站把圖片拖到這個分頁。它會被重新畫成一張新的 PNG，只保留像素資料。"
   />
 
   <RinseIntake />
@@ -62,14 +54,6 @@
     justify-content: center;
     gap: 0.625rem;
     padding-top: 1.75rem;
-  }
-
-  .pending {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.375rem;
-    font: var(--font-caption);
-    color: var(--color-accent);
   }
 
   .panel {

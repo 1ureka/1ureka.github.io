@@ -62,9 +62,7 @@
     </p>
   {/if}
 
-  <p class="note">
-    多數網站不允許其他網站直接取用它的圖片，連結因此常常讀不到。直接把圖片拖進來不受這個限制——那份位元組是瀏覽器交過來的，不需要再去要一次。
-  </p>
+  <p class="note">多數網站不允許其他網站直接取用它的圖片，拖曳圖片則不受這個限制。</p>
 </div>
 
 <style>
@@ -120,7 +118,7 @@
     align-items: center;
     justify-content: center;
     gap: 0.25rem;
-    font: var(--font-caption);
+    font: var(--font-body1);
     color: inherit;
   }
 

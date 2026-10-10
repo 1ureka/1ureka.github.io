@@ -1,17 +1,19 @@
 <script lang="ts">
   import { untrack } from "svelte";
 
-  import { IconDownload } from "$lib/icons";
+  import { IconDownload, IconMaximize } from "$lib/icons";
   import Button from "$lib/components/actions/Button.svelte";
   import Select from "$lib/components/inputs/Select.svelte";
   import TextInput from "$lib/components/inputs/TextInput.svelte";
   import { OUTPUT_FORMATS, RINSE_FORMAT, baseName, getFormat, type OutputFormatId } from "$lib/utils/image";
 
   import { getRinseContext, type RinseEntry } from "./logic/rinse.svelte";
+  import { getLightboxContext } from "../logic/lightbox.svelte";
 
   let { entry, onclose }: { entry: RinseEntry; onclose: () => void } = $props();
 
   const rinse = getRinseContext();
+  const lightbox = getLightboxContext();
 
   /**
    * 這些選項全部自當初沖洗出來的 PNG 重新編碼。
@@ -64,6 +66,13 @@
 
   <div class="preview">
     <img src={entry.url} alt={entry.name} />
+
+    <div>
+      <Button variant="outlined" padding="icon" onclick={() => lightbox.handleOpen(entry.url, `${entry.name}.png`)}>
+        <span class="zoom"><IconMaximize size={18} /></span>
+        <span class="sr-only">放大 {filename}</span>
+      </Button>
+    </div>
   </div>
 
   <div class="fields">
@@ -118,7 +127,7 @@
   <div class="footer">
     <Button variant="outlined" onclick={onclose}>取消</Button>
     <Button variant="primary" onclick={handleDownload}>
-      <IconDownload size={14} />
+      <IconDownload size={16} />
       <span class="ellipsis">下載 {filename}</span>
     </Button>
   </div>
@@ -137,9 +146,11 @@
   }
 
   .preview {
-    display: grid;
-    place-items: center;
-    height: 8.75rem;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 16rem;
     margin-bottom: 1.125rem;
     padding: 0.5rem;
     overflow: hidden;
@@ -148,10 +159,17 @@
     border-radius: var(--radius-control);
   }
 
-  .preview img {
+  .preview > img {
     max-width: 100%;
     max-height: 100%;
     object-fit: contain;
+  }
+
+  .preview > div {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    padding: 0.5rem;
   }
 
   /* Select 與 TextInput 的 root 在格線裡會被拉滿，控制項因此自動同寬 */
