@@ -25,7 +25,7 @@
       {#key tool.current}
         <h1 in:fly={{ y: -6, duration: 200 }}>
           <span class="mark">
-            <active.Icon size={tool.current === "playcard" ? 15 : 20} color="var(--color-accent-text)" />
+            <active.Icon size={active.markSize} color="var(--color-accent-text)" />
           </span>
           {active.name}
         </h1>

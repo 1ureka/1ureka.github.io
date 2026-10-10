@@ -5,14 +5,31 @@
 
   const shortcuts = getShortcutsContext();
 
-  const rows = [
-    { label: "跳到查詢欄位", keys: "Ctrl / ⌘ K" },
-    { label: "查詢目前網址", keys: "Enter" },
-    { label: "開始批次查詢", keys: "Ctrl / ⌘ Enter" },
-    { label: "切換分頁", keys: "1 / 2 / 3" },
-    { label: "切換工具", keys: "Ctrl / ⌘ /" },
-    { label: "顯示這個視窗", keys: "?" },
-    { label: "關閉視窗", keys: "Esc" },
+  const groups = [
+    {
+      title: "共用",
+      rows: [
+        { label: "切換工具", keys: "Ctrl / ⌘ /" },
+        { label: "跳到主要輸入欄位", keys: "Ctrl / ⌘ K" },
+        { label: "送出目前欄位", keys: "Enter" },
+        { label: "顯示這個視窗", keys: "?" },
+        { label: "關閉視窗", keys: "Esc" },
+      ],
+    },
+    {
+      title: "Playcard",
+      rows: [
+        { label: "切換分頁", keys: "1 / 2 / 3" },
+        { label: "開始批次查詢", keys: "Ctrl / ⌘ Enter" },
+      ],
+    },
+    {
+      title: "Rinse",
+      rows: [
+        { label: "切換分頁", keys: "1 / 2" },
+        { label: "沖洗剪貼簿裡的圖片", keys: "Ctrl / ⌘ V" },
+      ],
+    },
   ];
 </script>
 
@@ -20,14 +37,17 @@
   <div class="body">
     <h2>鍵盤快速鍵</h2>
 
-    <dl>
-      {#each rows as row (row.label)}
-        <div class="row">
-          <dt>{row.label}</dt>
-          <dd><kbd>{row.keys}</kbd></dd>
-        </div>
-      {/each}
-    </dl>
+    {#each groups as group (group.title)}
+      <h3>{group.title}</h3>
+      <dl>
+        {#each group.rows as row (row.label)}
+          <div class="row">
+            <dt>{row.label}</dt>
+            <dd><kbd>{row.keys}</kbd></dd>
+          </div>
+        {/each}
+      </dl>
+    {/each}
 
     <div class="footer">
       <Button variant="outlined" onclick={shortcuts.handleClose}>關閉</Button>
@@ -45,6 +65,23 @@
   h2 {
     font: var(--font-title3);
     margin-bottom: 1rem;
+  }
+
+  h3 {
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+    font: var(--font-caption);
+    font-weight: 600;
+    color: var(--color-accent);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    border-top: var(--border-style);
+  }
+
+  h3:first-of-type {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
   }
 
   .row {

@@ -6,10 +6,10 @@
 import { getContext, setContext } from "svelte";
 
 /** 站上的工具；兩個工具共用同一個網址，切換純粹是本地狀態 */
-export type ToolId = "playcard" | "sanitizer";
+export type ToolId = "playcard" | "rinse";
 
 /** 切換的循環順序 */
-const ORDER: ToolId[] = ["playcard", "sanitizer"];
+const ORDER: ToolId[] = ["playcard", "rinse"];
 
 class ToolController {
   /** 目前啟用的工具 */

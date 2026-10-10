@@ -1,15 +1,21 @@
 <script lang="ts">
-  import { IconCopy, IconMaximize } from "$lib/icons";
+  import { IconCopy, IconDropletFilled, IconMaximize } from "$lib/icons";
   import Button from "$lib/components/actions/Button.svelte";
+  import { tooltip } from "$lib/components/floating/tooltip.core.svelte";
   import { copyText } from "$lib/utils/clipboard";
   import { addToast } from "$lib/components/floating/toast-events";
   import { formatError } from "$lib/utils/shared";
   import { THUMBNAIL_VARIANTS, thumbnailUrl, type VideoCard } from "$lib/oembed";
   import { getLightboxContext } from "../../logic/lightbox.svelte";
+  import { getRinseContext } from "../../rinse/logic/rinse.svelte";
 
   let { card }: { card: VideoCard } = $props();
 
   const lightbox = getLightboxContext();
+
+  // 縮圖直接遞給另一個工具去沖洗。YouTube 的縮圖主機開放跨來源讀取，
+  // 所以這條路不必經過拖曳，也不必開第二個分頁。
+  const rinse = getRinseContext();
 
   const variants = $derived(THUMBNAIL_VARIANTS.map((v) => ({ ...v, url: thumbnailUrl(card.videoId, v.file) })));
 
@@ -39,21 +45,41 @@
       <div class="body">
         <div class="name">{variant.name}</div>
         <div class="dim">{variant.width} × {variant.height}</div>
-        <Button variant="outlined" onclick={() => handleCopy(variant.url)}>
-          <IconCopy size={13} />
-          複製連結
-        </Button>
+
+        <div class="actions">
+          <Button
+            variant="outlined"
+            style="flex: 1; min-width: 0;"
+            onclick={() => rinse.handleAdopt(variant.url, `${card.videoId}-${variant.name}`)}
+          >
+            <IconDropletFilled size={13} />
+            沖洗 PNG
+          </Button>
+
+          <Button
+            variant="ghost"
+            padding="icon"
+            onclick={() => handleCopy(variant.url)}
+            {@attach tooltip({ content: "複製縮圖連結" })}
+          >
+            <IconCopy size={16} />
+            <span class="sr-only">複製縮圖連結</span>
+          </Button>
+        </div>
       </div>
     </div>
   {/each}
 </div>
 
-<p class="note">註：maxresdefault 高畫質縮圖並非每部影片都提供，若圖片空白代表該解析度不存在。</p>
+<p class="note">
+  註：maxresdefault 高畫質縮圖並非每部影片都提供，若圖片空白代表該解析度不存在。「沖洗 PNG」會把縮圖交給 Rinse
+  重畫成一張乾淨的 PNG 再存下來。
+</p>
 
 <style>
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(9.375rem, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(10.625rem, 1fr));
     gap: 0.75rem;
   }
 
@@ -113,6 +139,13 @@
     margin-bottom: 0.375rem;
     font: var(--font-caption);
     color: var(--color-text-muted);
+  }
+
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    width: 100%;
   }
 
   .note {
