@@ -2,7 +2,7 @@
   import { flip } from "svelte/animate";
   import { fly } from "svelte/transition";
 
-  import { IconClock, IconDownload, IconSearch, IconTrash } from "#lib/icons/index.ts";
+  import { IconClock, IconDownload, IconSearch, IconTrash } from "#lib/icons";
   import Button from "#lib/components/actions/Button.svelte";
   import TextInput from "#lib/components/inputs/TextInput.svelte";
   import Select from "#lib/components/inputs/Select.svelte";

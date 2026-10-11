@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { HTMLAttributes } from "svelte/elements";
 
-  import { IconX, IconCheckFilled, IconAlertCircleFilled, IconInfoCircleFilled } from "#lib/icons/index.ts";
+  import { IconX, IconCheckFilled, IconAlertCircleFilled, IconInfoCircleFilled } from "#lib/icons";
   import MarkupText from "#lib/components/display/MarkupText.svelte";
   import LinearProgress from "#lib/components/display/LinearProgress.svelte";
   import Button from "#lib/components/actions/Button.svelte";

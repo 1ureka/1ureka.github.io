@@ -2,7 +2,7 @@
   import { fade, scale } from "svelte/transition";
   import { flip } from "svelte/animate";
 
-  import { IconX } from "#lib/icons/index.ts";
+  import { IconX } from "#lib/icons";
   import { Modal } from "#lib/components/floating/modal.core.svelte.ts";
   import { ToastList } from "#lib/components/floating/toastList.core.svelte.ts";
   import { hideToasts } from "#lib/components/floating/toast-events.ts";

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { IconAdjustments, IconCheck, IconCopy, IconDownload, IconPhotoFilled, IconTrash } from "#lib/icons/index.ts";
+  import { IconAdjustments, IconCheck, IconCopy, IconDownload, IconPhotoFilled, IconTrash } from "#lib/icons";
   import { tooltip } from "#lib/components/floating/tooltip.core.svelte.ts";
   import { formatBytes, formatRelative } from "#lib/utils/shared.ts";
 

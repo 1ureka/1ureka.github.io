@@ -1,13 +1,13 @@
 <script lang="ts">
   import { fly } from "svelte/transition";
 
-  import { IconCopy, IconDropletFilled, IconExternalLink, IconStar, IconStarFilled } from "#lib/icons/index.ts";
+  import { IconCopy, IconDropletFilled, IconExternalLink, IconStar, IconStarFilled } from "#lib/icons";
   import Button from "#lib/components/actions/Button.svelte";
   import ButtonLink from "#lib/components/actions/ButtonLink.svelte";
   import { copyText } from "#lib/utils/clipboard.ts";
   import { addToast } from "#lib/components/floating/toast-events.ts";
   import { formatError } from "#lib/utils/shared.ts";
-  import type { VideoCard } from "#lib/oembed/index.ts";
+  import type { VideoCard } from "#lib/oembed";
 
   import { getLookupContext } from "../logic/lookup.svelte";
   import { getHistoryContext } from "../logic/history.svelte";

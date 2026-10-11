@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { IconStar, IconStarFilled, IconTrash } from "#lib/icons/index.ts";
+  import { IconStar, IconStarFilled, IconTrash } from "#lib/icons";
   import Button from "#lib/components/actions/Button.svelte";
   import { tooltip } from "#lib/components/floating/tooltip.core.svelte.ts";
   import { formatRelative } from "#lib/utils/shared.ts";

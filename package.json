@@ -4,6 +4,8 @@
 	"version": "0.3.0",
 	"type": "module",
 	"imports": {
+		"#lib/icons": "./src/lib/icons/index.ts",
+		"#lib/oembed": "./src/lib/oembed/index.ts",
 		"#lib/*": "./src/lib/*"
 	},
 	"scripts": {

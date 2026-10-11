@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { IconCopy, IconDropletFilled, IconMaximize } from "#lib/icons/index.ts";
+  import { IconCopy, IconDropletFilled, IconMaximize } from "#lib/icons";
   import Button from "#lib/components/actions/Button.svelte";
   import { tooltip } from "#lib/components/floating/tooltip.core.svelte.ts";
   import { copyText } from "#lib/utils/clipboard.ts";
   import { addToast } from "#lib/components/floating/toast-events.ts";
   import { formatError } from "#lib/utils/shared.ts";
-  import { THUMBNAIL_VARIANTS, thumbnailUrl, type VideoCard } from "#lib/oembed/index.ts";
+  import { THUMBNAIL_VARIANTS, thumbnailUrl, type VideoCard } from "#lib/oembed";
   import { getLightboxContext } from "../../logic/lightbox.svelte";
   import { getRinseContext } from "../../rinse/logic/rinse.svelte";
 

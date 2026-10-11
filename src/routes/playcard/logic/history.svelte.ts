@@ -8,7 +8,7 @@
 
 import { getContext, setContext } from "svelte";
 import { readJson, writeJson } from "#lib/utils/storage.ts";
-import { thumbnailUrl, type VideoCard } from "#lib/oembed/index.ts";
+import { thumbnailUrl, type VideoCard } from "#lib/oembed";
 import { downloadText } from "#lib/utils/download.ts";
 
 const STORAGE_KEY = "playcard_history";

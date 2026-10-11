@@ -1,7 +1,7 @@
 <script lang="ts">
   import { untrack } from "svelte";
 
-  import { IconDownload, IconMaximize } from "#lib/icons/index.ts";
+  import { IconDownload, IconMaximize } from "#lib/icons";
   import Button from "#lib/components/actions/Button.svelte";
   import Select from "#lib/components/inputs/Select.svelte";
   import TextInput from "#lib/components/inputs/TextInput.svelte";

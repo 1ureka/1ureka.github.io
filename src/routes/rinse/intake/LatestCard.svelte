@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { IconAdjustments, IconCheckFilled, IconCopy, IconDownload, IconInfoCircleFilled, IconMaximize } from "#lib/icons/index.ts";
+  import { IconAdjustments, IconCheckFilled, IconCopy, IconDownload, IconInfoCircleFilled, IconMaximize } from "#lib/icons";
   import Button from "#lib/components/actions/Button.svelte";
   import Modal from "#lib/components/floating/Modal.svelte";
   import { formatBytes } from "#lib/utils/shared.ts";

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { fly } from "svelte/transition";
 
-  import { IconCopy, IconDownload, IconPlayerPlayFilled } from "#lib/icons/index.ts";
+  import { IconCopy, IconDownload, IconPlayerPlayFilled } from "#lib/icons";
   import Button from "#lib/components/actions/Button.svelte";
   import PanelHead from "#lib/components/display/PanelHead.svelte";
   import EmptyState from "#lib/components/display/EmptyState.svelte";

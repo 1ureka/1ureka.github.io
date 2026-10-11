@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
   import type { HTMLAttributes } from "svelte/elements";
-  import { IconX } from "#lib/icons/index.ts";
+  import { IconX } from "#lib/icons";
 
   type Props = HTMLAttributes<HTMLElement> & {
     variant?: "filled" | "outlined";

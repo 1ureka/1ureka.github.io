@@ -2,7 +2,7 @@
   import { fly } from "svelte/transition";
   import { cubicIn, cubicOut } from "svelte/easing";
 
-  import { IconCheck } from "#lib/icons/index.ts";
+  import { IconCheck } from "#lib/icons";
   import Tabs from "#lib/components/display/Tabs.svelte";
   import { tooltip } from "#lib/components/floating/tooltip.core.svelte.ts";
 

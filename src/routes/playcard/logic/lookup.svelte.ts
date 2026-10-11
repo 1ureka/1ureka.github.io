@@ -4,7 +4,7 @@
  */
 
 import { getContext, setContext, untrack } from "svelte";
-import { lookup, type VideoCard } from "#lib/oembed/index.ts";
+import { lookup, type VideoCard } from "#lib/oembed";
 import { formatError } from "#lib/utils/shared.ts";
 import type { DropPayload } from "#lib/utils/dnd.ts";
 

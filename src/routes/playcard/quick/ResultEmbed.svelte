@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { IconCopy } from "#lib/icons/index.ts";
+  import { IconCopy } from "#lib/icons";
   import Button from "#lib/components/actions/Button.svelte";
   import CodeBlock from "#lib/components/display/CodeBlock.svelte";
   import { copyText } from "#lib/utils/clipboard.ts";
   import { addToast } from "#lib/components/floating/toast-events.ts";
   import { formatError } from "#lib/utils/shared.ts";
-  import type { VideoCard } from "#lib/oembed/index.ts";
+  import type { VideoCard } from "#lib/oembed";
 
   import { getEmbedContext, EMBED_SIZES } from "../logic/embed.svelte";
 

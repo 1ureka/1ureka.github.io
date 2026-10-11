@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onDestroy } from "svelte";
 
-  import { IconAlertCircleFilled, IconCheck, IconClock, IconDownload, IconTrash } from "#lib/icons/index.ts";
+  import { IconAlertCircleFilled, IconCheck, IconClock, IconDownload, IconTrash } from "#lib/icons";
   import Button from "#lib/components/actions/Button.svelte";
   import Modal from "#lib/components/floating/Modal.svelte";
   import PanelHead from "#lib/components/display/PanelHead.svelte";

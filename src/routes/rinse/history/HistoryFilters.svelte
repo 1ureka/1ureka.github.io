@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { IconSearch, IconX } from "#lib/icons/index.ts";
+  import { IconSearch, IconX } from "#lib/icons";
   import Button from "#lib/components/actions/Button.svelte";
   import TextInput from "#lib/components/inputs/TextInput.svelte";
   import Select from "#lib/components/inputs/Select.svelte";

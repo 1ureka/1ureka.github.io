@@ -5,7 +5,7 @@
 
 import { getContext, setContext } from "svelte";
 
-import { lookup, normalizeUrl, thumbnailUrl, type VideoCard } from "#lib/oembed/index.ts";
+import { lookup, normalizeUrl, thumbnailUrl, type VideoCard } from "#lib/oembed";
 import { downloadText, toCsv } from "#lib/utils/download.ts";
 import { copyText } from "#lib/utils/clipboard.ts";
 import { formatError, sleep } from "#lib/utils/shared.ts";
