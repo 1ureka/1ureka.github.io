@@ -126,8 +126,9 @@
 
   <div class="footer">
     <Button variant="outlined" onclick={onclose}>取消</Button>
-    <Button variant="primary" onclick={handleDownload}>
-      <IconDownload size={16} />
+    <!-- 按鈕預設不會縮得比內容窄，檔名過長時要讓它能縮，省略號才有作用 -->
+    <Button variant="primary" onclick={handleDownload} style="min-width: 0;">
+      <span class="icon"><IconDownload size={16} /></span>
       <span class="ellipsis">下載 {filename}</span>
     </Button>
   </div>
@@ -206,5 +207,11 @@
     gap: 0.5rem;
     margin-top: 1.25rem;
     min-width: 0;
+  }
+
+  /* 按鈕縮窄時只讓檔名讓位，圖示維持原尺寸 */
+  .icon {
+    display: inline-flex;
+    flex-shrink: 0;
   }
 </style>

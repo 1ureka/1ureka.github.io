@@ -17,12 +17,18 @@
   /** 已經有勾選時，點整張卡就是勾選；否則是放大檢視 */
   const selecting = $derived(history.selection.length > 0);
 
+  /**
+   * 虛擬化每次捲動都會給出新的項目物件，直接讀 record 等於訂閱整個項目；
+   * 隔一層 derived 的相等檢查，下面的 effect 才只在 id 真的換了時重跑，
+   * 否則每次捲動都會重讀預覽、換一個新的 blob URL，整張卡跟著重繪
+   */
+  const id = $derived(record.id);
+
   let src = $state<string | null>(null);
   let failed = $state(false);
 
   // 卡片只在出現於畫面上時才被掛載（虛擬化），預覽圖就在這時讀，卸載時放掉
   $effect(() => {
-    const id = record.id;
     let url: string | null = null;
     let cancelled = false;
 
