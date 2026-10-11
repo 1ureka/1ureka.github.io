@@ -1,8 +1,8 @@
 <script lang="ts">
   import { fly, slide } from "svelte/transition";
 
-  import LinearProgress from "$lib/components/display/LinearProgress.svelte";
-  import PanelHead from "$lib/components/display/PanelHead.svelte";
+  import LinearProgress from "#lib/components/display/LinearProgress.svelte";
+  import PanelHead from "#lib/components/display/PanelHead.svelte";
 
   import { getRinseContext } from "../logic/rinse.svelte";
   import RinseIntake from "./RinseIntake.svelte";

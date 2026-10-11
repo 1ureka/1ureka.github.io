@@ -2,7 +2,7 @@
   import type { Snippet } from "svelte";
   import type { HTMLAttributes } from "svelte/elements";
   import type { Placement } from "@floating-ui/dom";
-  import { Popover, popoverIntro, popoverOutro } from "$lib/components/floating/popover.core.svelte";
+  import { Popover, popoverIntro, popoverOutro } from "#lib/components/floating/popover.core.svelte.ts";
 
   interface Props extends HTMLAttributes<HTMLDivElement> {
     /** 開關狀態 */

@@ -1,9 +1,9 @@
 <script lang="ts">
   import { fade, scale } from "svelte/transition";
 
-  import { IconX } from "$lib/icons";
-  import Button from "$lib/components/actions/Button.svelte";
-  import { Modal } from "$lib/components/floating/modal.core.svelte";
+  import { IconX } from "#lib/icons/index.ts";
+  import Button from "#lib/components/actions/Button.svelte";
+  import { Modal } from "#lib/components/floating/modal.core.svelte.ts";
   import { getLightboxContext } from "../logic/lightbox.svelte";
 
   const lightbox = getLightboxContext();

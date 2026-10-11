@@ -1,11 +1,11 @@
 <script lang="ts">
   import { untrack } from "svelte";
 
-  import { IconDownload, IconMaximize } from "$lib/icons";
-  import Button from "$lib/components/actions/Button.svelte";
-  import Select from "$lib/components/inputs/Select.svelte";
-  import TextInput from "$lib/components/inputs/TextInput.svelte";
-  import { OUTPUT_FORMATS, RINSE_FORMAT, baseName, getFormat, type OutputFormatId } from "$lib/utils/image";
+  import { IconDownload, IconMaximize } from "#lib/icons/index.ts";
+  import Button from "#lib/components/actions/Button.svelte";
+  import Select from "#lib/components/inputs/Select.svelte";
+  import TextInput from "#lib/components/inputs/TextInput.svelte";
+  import { OUTPUT_FORMATS, RINSE_FORMAT, baseName, getFormat, type OutputFormatId } from "#lib/utils/image.ts";
 
   import { getRinseContext, type RinseImage } from "./logic/rinse.svelte";
   import { getLightboxContext } from "../logic/lightbox.svelte";

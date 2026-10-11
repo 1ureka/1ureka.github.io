@@ -1,10 +1,10 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
   import type { HTMLButtonAttributes } from "svelte/elements";
-  import { IconChevronDown } from "$lib/icons";
-  import { Select } from "$lib/components/inputs/select.core.svelte";
-  import Popover from "$lib/components/floating/Popover.svelte";
-  import CircularProgress from "$lib/components/display/CircularProgress.svelte";
+  import { IconChevronDown } from "#lib/icons/index.ts";
+  import { Select } from "#lib/components/inputs/select.core.svelte.ts";
+  import Popover from "#lib/components/floating/Popover.svelte";
+  import CircularProgress from "#lib/components/display/CircularProgress.svelte";
 
   const DEFAULT_NO_OPTIONS_TEXT = "No options available";
 

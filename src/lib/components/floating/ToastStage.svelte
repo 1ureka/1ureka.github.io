@@ -1,7 +1,7 @@
 <script lang="ts">
   import { fly } from "svelte/transition";
-  import { ToastStage } from "$lib/components/floating/toastStage.core.svelte";
-  import Toast from "$lib/components/floating/Toast.svelte";
+  import { ToastStage } from "#lib/components/floating/toastStage.core.svelte.ts";
+  import Toast from "#lib/components/floating/Toast.svelte";
 
   const stage = new ToastStage();
 

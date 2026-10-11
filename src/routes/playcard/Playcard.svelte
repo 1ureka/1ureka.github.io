@@ -2,7 +2,7 @@
   import { fly } from "svelte/transition";
   import { cubicIn, cubicOut } from "svelte/easing";
 
-  import Tabs from "$lib/components/display/Tabs.svelte";
+  import Tabs from "#lib/components/display/Tabs.svelte";
 
   import { getTabsContext, type PlaycardTab } from "./logic/tabs.svelte";
   import QuickPanel from "./quick/QuickPanel.svelte";

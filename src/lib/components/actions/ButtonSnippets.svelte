@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
   import type { HTMLAnchorAttributes, HTMLButtonAttributes } from "svelte/elements";
-  import CircularProgress from "$lib/components/display/CircularProgress.svelte";
+  import CircularProgress from "#lib/components/display/CircularProgress.svelte";
 
   type BasicProps = {
     variant?: "primary" | "outlined" | "ghost" | "destructive";

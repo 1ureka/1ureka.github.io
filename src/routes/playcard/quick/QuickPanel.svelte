@@ -1,7 +1,7 @@
 <script lang="ts">
   import { fly } from "svelte/transition";
 
-  import PanelHead from "$lib/components/display/PanelHead.svelte";
+  import PanelHead from "#lib/components/display/PanelHead.svelte";
   import { getLookupContext } from "../logic/lookup.svelte";
   import LookupForm from "./LookupForm.svelte";
   import ResultCard from "./ResultCard.svelte";

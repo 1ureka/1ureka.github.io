@@ -2,7 +2,7 @@
   import type { Snippet } from "svelte";
   import type { HTMLAttributes } from "svelte/elements";
   import { scale } from "svelte/transition";
-  import { Modal } from "$lib/components/floating/modal.core.svelte";
+  import { Modal } from "#lib/components/floating/modal.core.svelte.ts";
 
   interface Props extends HTMLAttributes<HTMLDialogElement> {
     /** 開關狀態 */

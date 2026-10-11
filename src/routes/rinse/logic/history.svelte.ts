@@ -9,9 +9,9 @@
 import { getContext, setContext } from "svelte";
 import { SvelteSet } from "svelte/reactivity";
 
-import { formatBytes, formatError, sleep } from "$lib/utils/shared";
-import { downloadBlob } from "$lib/utils/download";
-import { addToast } from "$lib/components/floating/toast-events";
+import { formatBytes, formatError, sleep } from "#lib/utils/shared.ts";
+import { downloadBlob } from "#lib/utils/download.ts";
+import { addToast } from "#lib/components/floating/toast-events.ts";
 
 import { getLightboxContext } from "../../logic/lightbox.svelte";
 import {

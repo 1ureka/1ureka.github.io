@@ -1,7 +1,7 @@
-import { TOAST_ADD, TOAST_PROGRESS_UPDATE, TOAST_PROGRESS_DONE } from "$lib/components/floating/toast-events";
-import { TOAST_HISTORY_SHOW, TOAST_HISTORY_HIDE } from "$lib/components/floating/toast-events";
-import type { ToastVariant, ToastAddPayload } from "$lib/components/floating/toast-events";
-import type { ToastProgressUpdatePayload, ToastProgressDonePayload } from "$lib/components/floating/toast-events";
+import { TOAST_ADD, TOAST_PROGRESS_UPDATE, TOAST_PROGRESS_DONE } from "#lib/components/floating/toast-events.ts";
+import { TOAST_HISTORY_SHOW, TOAST_HISTORY_HIDE } from "#lib/components/floating/toast-events.ts";
+import type { ToastVariant, ToastAddPayload } from "#lib/components/floating/toast-events.ts";
+import type { ToastProgressUpdatePayload, ToastProgressDonePayload } from "#lib/components/floating/toast-events.ts";
 
 export interface HistoryItem {
   /** 該項目的識別 id */

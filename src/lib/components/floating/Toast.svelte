@@ -1,11 +1,11 @@
 <script lang="ts">
   import type { HTMLAttributes } from "svelte/elements";
 
-  import { IconX, IconCheckFilled, IconAlertCircleFilled, IconInfoCircleFilled } from "$lib/icons";
-  import MarkupText from "$lib/components/display/MarkupText.svelte";
-  import LinearProgress from "$lib/components/display/LinearProgress.svelte";
-  import Button from "$lib/components/actions/Button.svelte";
-  import type { ToastVariant } from "$lib/components/floating/toast-events";
+  import { IconX, IconCheckFilled, IconAlertCircleFilled, IconInfoCircleFilled } from "#lib/icons/index.ts";
+  import MarkupText from "#lib/components/display/MarkupText.svelte";
+  import LinearProgress from "#lib/components/display/LinearProgress.svelte";
+  import Button from "#lib/components/actions/Button.svelte";
+  import type { ToastVariant } from "#lib/components/floating/toast-events.ts";
 
   interface Props extends HTMLAttributes<HTMLDivElement> {
     /** 支援與 `MarkupText` 相同的輕量 markup 語法 */

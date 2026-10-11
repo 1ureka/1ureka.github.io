@@ -1,6 +1,6 @@
 <!-- 只用在勾選框這種小尺寸，線條刻意比其他圖示粗，縮小後才看得見 -->
 <script lang="ts">
-  import type { IconProps } from "$lib/types";
+  import type { IconProps } from "#lib/types.ts";
   let { color = "currentColor", size = 24, ...rest }: IconProps = $props();
 </script>
 

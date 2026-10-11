@@ -7,7 +7,7 @@
  */
 
 import { getContext, setContext } from "svelte";
-import { hasDragPayload } from "$lib/utils/dnd";
+import { hasDragPayload } from "#lib/utils/dnd.ts";
 
 class DropzoneController {
   /**

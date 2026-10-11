@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IconProps } from "$lib/types";
+  import type { IconProps } from "#lib/types.ts";
   let { color = "currentColor", size = 24, ...rest }: IconProps = $props();
 </script>
 

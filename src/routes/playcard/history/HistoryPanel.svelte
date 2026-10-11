@@ -2,14 +2,14 @@
   import { flip } from "svelte/animate";
   import { fly } from "svelte/transition";
 
-  import { IconClock, IconDownload, IconSearch, IconTrash } from "$lib/icons";
-  import Button from "$lib/components/actions/Button.svelte";
-  import TextInput from "$lib/components/inputs/TextInput.svelte";
-  import Select from "$lib/components/inputs/Select.svelte";
-  import Modal from "$lib/components/floating/Modal.svelte";
-  import PanelHead from "$lib/components/display/PanelHead.svelte";
-  import EmptyState from "$lib/components/display/EmptyState.svelte";
-  import { addToast } from "$lib/components/floating/toast-events";
+  import { IconClock, IconDownload, IconSearch, IconTrash } from "#lib/icons/index.ts";
+  import Button from "#lib/components/actions/Button.svelte";
+  import TextInput from "#lib/components/inputs/TextInput.svelte";
+  import Select from "#lib/components/inputs/Select.svelte";
+  import Modal from "#lib/components/floating/Modal.svelte";
+  import PanelHead from "#lib/components/display/PanelHead.svelte";
+  import EmptyState from "#lib/components/display/EmptyState.svelte";
+  import { addToast } from "#lib/components/floating/toast-events.ts";
 
   import { getHistoryContext, type HistorySort } from "../logic/history.svelte";
   import HistoryItem from "./HistoryItem.svelte";

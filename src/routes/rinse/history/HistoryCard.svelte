@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { IconAdjustments, IconCheck, IconCopy, IconDownload, IconPhotoFilled, IconTrash } from "$lib/icons";
-  import { tooltip } from "$lib/components/floating/tooltip.core.svelte";
-  import { formatBytes, formatRelative } from "$lib/utils/shared";
+  import { IconAdjustments, IconCheck, IconCopy, IconDownload, IconPhotoFilled, IconTrash } from "#lib/icons/index.ts";
+  import { tooltip } from "#lib/components/floating/tooltip.core.svelte.ts";
+  import { formatBytes, formatRelative } from "#lib/utils/shared.ts";
 
   import { getRinseContext } from "../logic/rinse.svelte";
   import { getRinseHistoryContext } from "../logic/history.svelte";

@@ -1,8 +1,8 @@
 <script lang="ts">
   import { fly } from "svelte/transition";
 
-  import { IconAlertCircleFilled, IconDropletFilled, IconLinkFilled } from "$lib/icons";
-  import HeroInput from "$lib/components/inputs/HeroInput.svelte";
+  import { IconAlertCircleFilled, IconDropletFilled, IconLinkFilled } from "#lib/icons/index.ts";
+  import HeroInput from "#lib/components/inputs/HeroInput.svelte";
 
   import { getRinseContext } from "../logic/rinse.svelte";
 

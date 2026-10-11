@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { IconAdjustments, IconCheckFilled, IconCopy, IconDownload, IconInfoCircleFilled, IconMaximize } from "$lib/icons";
-  import Button from "$lib/components/actions/Button.svelte";
-  import Modal from "$lib/components/floating/Modal.svelte";
-  import { formatBytes } from "$lib/utils/shared";
-  import { RINSE_FORMAT, describeType } from "$lib/utils/image";
+  import { IconAdjustments, IconCheckFilled, IconCopy, IconDownload, IconInfoCircleFilled, IconMaximize } from "#lib/icons/index.ts";
+  import Button from "#lib/components/actions/Button.svelte";
+  import Modal from "#lib/components/floating/Modal.svelte";
+  import { formatBytes } from "#lib/utils/shared.ts";
+  import { RINSE_FORMAT, describeType } from "#lib/utils/image.ts";
 
   import { getLightboxContext } from "../../logic/lightbox.svelte";
   import { getRinseContext, SOURCE_LABELS, type RinseLatest } from "../logic/rinse.svelte";

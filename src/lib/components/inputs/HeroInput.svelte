@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
-  import CircularProgress from "$lib/components/display/CircularProgress.svelte";
+  import CircularProgress from "#lib/components/display/CircularProgress.svelte";
 
   /**
    * 每個工具的主角輸入：貼一個連結進去、按一下就開始。

@@ -1,11 +1,11 @@
 <script lang="ts">
   import { fly } from "svelte/transition";
 
-  import { IconCopy, IconDownload, IconPlayerPlayFilled } from "$lib/icons";
-  import Button from "$lib/components/actions/Button.svelte";
-  import PanelHead from "$lib/components/display/PanelHead.svelte";
-  import EmptyState from "$lib/components/display/EmptyState.svelte";
-  import LinearProgress from "$lib/components/display/LinearProgress.svelte";
+  import { IconCopy, IconDownload, IconPlayerPlayFilled } from "#lib/icons/index.ts";
+  import Button from "#lib/components/actions/Button.svelte";
+  import PanelHead from "#lib/components/display/PanelHead.svelte";
+  import EmptyState from "#lib/components/display/EmptyState.svelte";
+  import LinearProgress from "#lib/components/display/LinearProgress.svelte";
 
   import { getBatchContext } from "../logic/batch.svelte";
   import BatchRow from "./BatchRow.svelte";

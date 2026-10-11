@@ -2,9 +2,9 @@
   import { fly } from "svelte/transition";
   import { cubicIn, cubicOut } from "svelte/easing";
 
-  import { IconCheck } from "$lib/icons";
-  import Tabs from "$lib/components/display/Tabs.svelte";
-  import { tooltip } from "$lib/components/floating/tooltip.core.svelte";
+  import { IconCheck } from "#lib/icons/index.ts";
+  import Tabs from "#lib/components/display/Tabs.svelte";
+  import { tooltip } from "#lib/components/floating/tooltip.core.svelte.ts";
 
   import { getRinseContext } from "./logic/rinse.svelte";
   import { getRinseTabsContext, type RinseTab } from "./logic/tabs.svelte";

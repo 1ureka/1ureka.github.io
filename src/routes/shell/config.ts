@@ -1,4 +1,4 @@
-import { IconDropletFilled, IconLinkFilled, IconPhotoFilled, IconPlayerPlayFilled } from "$lib/icons";
+import { IconDropletFilled, IconLinkFilled, IconPhotoFilled, IconPlayerPlayFilled } from "#lib/icons/index.ts";
 import type { ToolId } from "../logic/tool.svelte";
 
 type ToolPresentation = {
