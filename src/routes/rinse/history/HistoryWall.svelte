@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Virtualizer } from "$lib/utils/virtualize.svelte";
+  import { Virtualizer } from "#lib/utils/virtualize.svelte.ts";
 
   import { getRinseHistoryContext } from "../logic/history.svelte";
   import type { RinseRecord } from "../logic/store";

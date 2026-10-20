@@ -1,10 +1,10 @@
 <script lang="ts">
   import { fly } from "svelte/transition";
 
-  import { IconKeyboard, IconNotification, IconMoon, IconSun } from "$lib/icons";
-  import Button from "$lib/components/actions/Button.svelte";
-  import { tooltip } from "$lib/components/floating/tooltip.core.svelte";
-  import { showToasts } from "$lib/components/floating/toast-events";
+  import { IconKeyboard, IconNotification, IconMoon, IconSun } from "#lib/icons";
+  import Button from "#lib/components/actions/Button.svelte";
+  import { tooltip } from "#lib/components/floating/tooltip.core.svelte.ts";
+  import { showToasts } from "#lib/components/floating/toast-events.ts";
 
   import { getToolContext } from "../logic/tool.svelte";
   import { getThemeContext } from "../logic/theme.svelte";

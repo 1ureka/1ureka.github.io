@@ -5,11 +5,11 @@
 
 import { getContext, setContext } from "svelte";
 
-import { lookup, normalizeUrl, thumbnailUrl, type VideoCard } from "$lib/oembed";
-import { downloadText, toCsv } from "$lib/utils/download";
-import { copyText } from "$lib/utils/clipboard";
-import { formatError, sleep } from "$lib/utils/shared";
-import { addToast } from "$lib/components/floating/toast-events";
+import { lookup, normalizeUrl, thumbnailUrl, type VideoCard } from "#lib/oembed";
+import { downloadText, toCsv } from "#lib/utils/download.ts";
+import { copyText } from "#lib/utils/clipboard.ts";
+import { formatError, sleep } from "#lib/utils/shared.ts";
+import { addToast } from "#lib/components/floating/toast-events.ts";
 
 import { getHistoryContext } from "./history.svelte";
 

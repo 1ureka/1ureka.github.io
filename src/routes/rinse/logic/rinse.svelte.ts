@@ -11,12 +11,12 @@
 
 import { getContext, setContext } from "svelte";
 
-import { formatError } from "$lib/utils/shared";
-import { readText, writeText } from "$lib/utils/storage";
-import { downloadBlob } from "$lib/utils/download";
-import { copyImage } from "$lib/utils/clipboard";
-import { addToast } from "$lib/components/floating/toast-events";
-import type { DropPayload } from "$lib/utils/dnd";
+import { formatError } from "#lib/utils/shared.ts";
+import { readText, writeText } from "#lib/utils/storage.ts";
+import { downloadBlob } from "#lib/utils/download.ts";
+import { copyImage } from "#lib/utils/clipboard.ts";
+import { addToast } from "#lib/components/floating/toast-events.ts";
+import type { DropPayload } from "#lib/utils/dnd.ts";
 import {
   RINSE_FORMAT,
   baseName,
@@ -26,7 +26,7 @@ import {
   fileNameFromUrl,
   getFormat,
   type EncodeOptions,
-} from "$lib/utils/image";
+} from "#lib/utils/image.ts";
 
 import { getRinseTabsContext } from "./tabs.svelte";
 import { getRinseHistoryContext } from "./history.svelte";

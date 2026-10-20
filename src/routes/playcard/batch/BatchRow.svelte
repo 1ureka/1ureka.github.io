@@ -1,14 +1,14 @@
 <script lang="ts">
-  import { IconCopy, IconExternalLink } from "$lib/icons";
-  import Button from "$lib/components/actions/Button.svelte";
-  import ButtonLink from "$lib/components/actions/ButtonLink.svelte";
-  import StatusPill from "$lib/components/display/StatusPill.svelte";
-  import { copyText } from "$lib/utils/clipboard";
-  import { addToast } from "$lib/components/floating/toast-events";
-  import { formatError } from "$lib/utils/shared";
-  import { thumbnailUrl } from "$lib/oembed";
+  import { IconCopy, IconExternalLink } from "#lib/icons";
+  import Button from "#lib/components/actions/Button.svelte";
+  import ButtonLink from "#lib/components/actions/ButtonLink.svelte";
+  import StatusPill from "#lib/components/display/StatusPill.svelte";
+  import { copyText } from "#lib/utils/clipboard.ts";
+  import { addToast } from "#lib/components/floating/toast-events.ts";
+  import { formatError } from "#lib/utils/shared.ts";
+  import { thumbnailUrl } from "#lib/oembed";
   import type { BatchRow } from "../logic/batch.svelte";
-  import { tooltip } from "$lib/components/floating/tooltip.core.svelte";
+  import { tooltip } from "#lib/components/floating/tooltip.core.svelte.ts";
 
   let { row }: { row: BatchRow } = $props();
 

@@ -1,6 +1,6 @@
 <script lang="ts">
-  import LinearProgress from "$lib/components/display/LinearProgress.svelte";
-  import { formatBytes } from "$lib/utils/shared";
+  import LinearProgress from "#lib/components/display/LinearProgress.svelte";
+  import { formatBytes } from "#lib/utils/shared.ts";
 
   import { getRinseHistoryContext, MAX_BYTES, MAX_RECORDS } from "../logic/history.svelte";
 

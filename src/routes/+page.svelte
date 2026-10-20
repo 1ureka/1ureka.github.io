@@ -1,7 +1,7 @@
 <script lang="ts">
   import { fly } from "svelte/transition";
 
-  import { readDropPayload } from "$lib/utils/dnd";
+  import { readDropPayload } from "#lib/utils/dnd.ts";
 
   import { createThemeContext } from "./logic/theme.svelte";
   import { createToolContext } from "./logic/tool.svelte";

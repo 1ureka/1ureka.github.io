@@ -6,7 +6,7 @@
  * 同一部影片因此可能有數筆，上限以整體筆數計算，超出時捨棄最舊的。
  */
 
-import { readJson, writeJson } from "$lib/utils/storage";
+import { readJson, writeJson } from "#lib/utils/storage.ts";
 import type { VideoCard } from "./types";
 
 const STORAGE_KEY = "playcard_cache";

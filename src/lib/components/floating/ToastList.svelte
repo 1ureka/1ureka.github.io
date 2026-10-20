@@ -2,12 +2,12 @@
   import { fade, scale } from "svelte/transition";
   import { flip } from "svelte/animate";
 
-  import { IconX } from "$lib/icons";
-  import { Modal } from "$lib/components/floating/modal.core.svelte";
-  import { ToastList } from "$lib/components/floating/toastList.core.svelte";
-  import { hideToasts } from "$lib/components/floating/toast-events";
-  import Toast from "$lib/components/floating/Toast.svelte";
-  import Button from "$lib/components/actions/Button.svelte";
+  import { IconX } from "#lib/icons";
+  import { Modal } from "#lib/components/floating/modal.core.svelte.ts";
+  import { ToastList } from "#lib/components/floating/toastList.core.svelte.ts";
+  import { hideToasts } from "#lib/components/floating/toast-events.ts";
+  import Toast from "#lib/components/floating/Toast.svelte";
+  import Button from "#lib/components/actions/Button.svelte";
 
   const toastList = new ToastList();
 

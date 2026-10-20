@@ -1,9 +1,9 @@
 <script lang="ts">
   import { fly } from "svelte/transition";
 
-  import { IconAlertCircleFilled, IconArrowsShuffle, IconLinkFilled } from "$lib/icons";
-  import HeroInput from "$lib/components/inputs/HeroInput.svelte";
-  import Chip from "$lib/components/display/Chip.svelte";
+  import { IconAlertCircleFilled, IconArrowsShuffle, IconLinkFilled } from "#lib/icons";
+  import HeroInput from "#lib/components/inputs/HeroInput.svelte";
+  import Chip from "#lib/components/display/Chip.svelte";
   import { getLookupContext, EXAMPLES } from "../logic/lookup.svelte";
 
   const lookup = getLookupContext();

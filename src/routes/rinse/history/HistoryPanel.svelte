@@ -1,13 +1,13 @@
 <script lang="ts">
   import { onDestroy } from "svelte";
 
-  import { IconAlertCircleFilled, IconCheck, IconClock, IconDownload, IconTrash } from "$lib/icons";
-  import Button from "$lib/components/actions/Button.svelte";
-  import Modal from "$lib/components/floating/Modal.svelte";
-  import PanelHead from "$lib/components/display/PanelHead.svelte";
-  import EmptyState from "$lib/components/display/EmptyState.svelte";
-  import { addToast } from "$lib/components/floating/toast-events";
-  import { formatBytes, formatError } from "$lib/utils/shared";
+  import { IconAlertCircleFilled, IconCheck, IconClock, IconDownload, IconTrash } from "#lib/icons";
+  import Button from "#lib/components/actions/Button.svelte";
+  import Modal from "#lib/components/floating/Modal.svelte";
+  import PanelHead from "#lib/components/display/PanelHead.svelte";
+  import EmptyState from "#lib/components/display/EmptyState.svelte";
+  import { addToast } from "#lib/components/floating/toast-events.ts";
+  import { formatBytes, formatError } from "#lib/utils/shared.ts";
 
   import type { RinseImage } from "../logic/rinse.svelte";
   import { getRinseHistoryContext } from "../logic/history.svelte";

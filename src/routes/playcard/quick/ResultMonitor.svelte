@@ -1,9 +1,9 @@
 <script lang="ts">
   import { fade } from "svelte/transition";
 
-  import { IconPlayerPlayFilled } from "$lib/icons";
-  import { formatClock } from "$lib/utils/shared";
-  import type { VideoCard } from "$lib/oembed";
+  import { IconPlayerPlayFilled } from "#lib/icons";
+  import { formatClock } from "#lib/utils/shared.ts";
+  import type { VideoCard } from "#lib/oembed";
   import { getLightboxContext } from "../../logic/lightbox.svelte";
 
   let { card }: { card: VideoCard } = $props();

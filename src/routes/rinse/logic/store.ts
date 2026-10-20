@@ -11,7 +11,7 @@
  * 轉了只會變大三分之一，還要多編解碼一次。
  */
 
-import { commit, openDatabase, request } from "$lib/utils/idb";
+import { commit, openDatabase, request } from "#lib/utils/idb.ts";
 
 const DB_NAME = "rinse";
 const DB_VERSION = 1;

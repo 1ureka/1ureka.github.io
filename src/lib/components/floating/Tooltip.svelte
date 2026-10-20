@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { TooltipState } from "$lib/components/floating/tooltip.core.svelte";
-  import Popover from "$lib/components/floating/Popover.svelte";
+  import { TooltipState } from "#lib/components/floating/tooltip.core.svelte.ts";
+  import Popover from "#lib/components/floating/Popover.svelte";
 
   const tooltip = new TooltipState();
 </script>

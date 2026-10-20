@@ -4,7 +4,7 @@
  */
 
 import { getContext, setContext } from "svelte";
-import { writeText } from "$lib/utils/storage";
+import { writeText } from "#lib/utils/storage.ts";
 
 export type Theme = "light" | "dark";
 

@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { IconArrowsRightLeft } from "$lib/icons";
-  import Button from "$lib/components/actions/Button.svelte";
-  import { tooltip } from "$lib/components/floating/tooltip.core.svelte";
+  import { IconArrowsRightLeft } from "#lib/icons";
+  import Button from "#lib/components/actions/Button.svelte";
+  import { tooltip } from "#lib/components/floating/tooltip.core.svelte.ts";
   import { getToolContext } from "../logic/tool.svelte";
   import { TOOLS } from "./config";
 
