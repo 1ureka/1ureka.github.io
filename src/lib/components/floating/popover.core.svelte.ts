@@ -1,6 +1,6 @@
 import { crossfade, fly } from "svelte/transition";
 import { computePosition, autoUpdate, arrow, flip, offset, shift, size } from "@floating-ui/dom";
-import type { Placement, Middleware, ElementRects } from "@floating-ui/dom";
+import type { Placement, Middleware, ElementRects, ReferenceElement, OffsetOptions } from "@floating-ui/dom";
 import { Spring } from "svelte/motion";
 
 /** placement 對應的「箭頭附著側」（與 placement 相反） */
@@ -13,14 +13,14 @@ type ArrowSide = (typeof ARROW_SIDE)[keyof typeof ARROW_SIDE];
 type PopoverOptions = {
   /** 開關狀態 */
   open: boolean;
-  /** 參照元素（定位錨點） */
-  reference: HTMLElement | undefined;
+  /** 參照元素（定位錨點），可為 VirtualElement，例如跟著游標走的一個點 */
+  reference: ReferenceElement | undefined;
   /** 偏好位置 */
   placement: Placement;
   /** 是否匹配參照元素寬度 */
   matchWidth: boolean;
-  /** 離參照元素的距離 */
-  offset: number;
+  /** 離參照元素的距離；也可以是 floating-ui 的 offset 設定，例如依參照元素尺寸計算的函式 */
+  offset: OffsetOptions;
   /** 是否啟用箭頭 */
   arrow: boolean;
 };
@@ -91,7 +91,7 @@ export class Popover {
   }
 
   /** 建立 middleware 並計算 popover 的寬度後計算位置 */
-  #compute(node: HTMLElement, reference: HTMLElement, placement: Placement) {
+  #compute(node: HTMLElement, reference: ReferenceElement, placement: Placement) {
     const middleware = this.#buildMiddleware();
     const config = { strategy: "fixed", placement, middleware } as const;
 
@@ -124,7 +124,8 @@ export class Popover {
  * Popover ?
  */
 export const [popoverIntro, popoverOutro] = crossfade({
-  duration: 150,
+  // 同 key 的兩端可能隔著大半個畫面，固定時長會讓遠距離的變形快到看不清，改依距離拉長
+  duration: (d) => Math.max(150, Math.sqrt(d) * 12),
   fallback(node) {
     return fly(node, { duration: 150, opacity: 0, y: -8 });
   },

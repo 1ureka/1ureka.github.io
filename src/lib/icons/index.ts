@@ -6,6 +6,7 @@ export { default as IconCheck } from "./IconCheck.svelte";
 export { default as IconCheckFilled } from "./IconCheckFilled.svelte";
 export { default as IconChevronDown } from "./IconChevronDown.svelte";
 export { default as IconClock } from "./IconClock.svelte";
+export { default as IconColorPicker } from "./IconColorPicker.svelte";
 export { default as IconCopy } from "./IconCopy.svelte";
 export { default as IconDownload } from "./IconDownload.svelte";
 export { default as IconDropletFilled } from "./IconDropletFilled.svelte";

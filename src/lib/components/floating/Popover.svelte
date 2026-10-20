@@ -1,22 +1,22 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
   import type { HTMLAttributes } from "svelte/elements";
-  import type { Placement } from "@floating-ui/dom";
+  import type { Placement, ReferenceElement, OffsetOptions } from "@floating-ui/dom";
   import { Popover, popoverIntro, popoverOutro } from "#lib/components/floating/popover.core.svelte.ts";
 
   interface Props extends HTMLAttributes<HTMLDivElement> {
     /** 開關狀態 */
     open: boolean;
-    /** 參照元素（定位錨點） */
-    reference: HTMLElement | undefined;
+    /** 參照元素（定位錨點），可為 VirtualElement */
+    reference: ReferenceElement | undefined;
     /** 內容 */
     children: Snippet;
     /** 偏好位置，預設 'bottom-start' */
     placement?: Placement;
     /** 是否匹配參照元素寬度，預設 false */
     matchWidth?: boolean;
-    /** 離參照元素的距離，預設 4px */
-    offset?: number;
+    /** 離參照元素的距離，預設 4px；也可以是 floating-ui 的 offset 設定 */
+    offset?: OffsetOptions;
     /** 是否顯示箭頭（Astroid 形狀），預設 false */
     arrow?: boolean;
     /** 箭頭尺寸（px） */
@@ -110,11 +110,14 @@
     margin: 0;
     padding: 0;
     overflow: visible;
+    /* 外層只是定位用的透明殼，命中判定交給內容自己決定 */
+    pointer-events: none;
   }
 
   div[popover="manual"] > div {
     position: relative;
     overflow: visible;
+    pointer-events: auto;
   }
 
   div[popover="manual"] > div > svg {
