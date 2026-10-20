@@ -62,6 +62,8 @@
 
   .viewport {
     display: grid;
+    /* 隱式的 auto 列會被圖片的高度撐開，max-height: 100% 就跟著失效；固定成填滿視窗且不可被內容撐大的軌道 */
+    grid-template: minmax(0, 1fr) / minmax(0, 1fr);
     place-items: center;
     width: 100%;
     height: 100%;
