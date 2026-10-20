@@ -22,7 +22,7 @@
   import Header from "./shell/Header.svelte";
   import DropOverlay from "./shell/DropOverlay.svelte";
   import ShortcutsModal from "./shell/ShortcutsModal.svelte";
-  import Lightbox from "./shell/Lightbox.svelte";
+  import Lightbox from "./shell/lightbox/Lightbox.svelte";
   import { TOOLS } from "./shell/config";
   import Playcard from "./playcard/Playcard.svelte";
   import Rinse from "./rinse/Rinse.svelte";
