@@ -16,8 +16,8 @@
   });
 </script>
 
-<!-- 外框常駐，按鈕收起成面板時它仍是面板的定位錨點 -->
-<div class="corner" bind:this={picker.cornerEl}>
+<!-- 外框常駐，按鈕收起成面板時位置仍在；面板以同一個 --edge 對齊這裡 -->
+<div class="corner">
   {#if picker.mode !== "picked"}
     <!--
       進場和面板共用 crossfade key，面板收起時就是縮回這顆按鈕；
@@ -46,8 +46,8 @@
 <style>
   .corner {
     position: absolute;
-    right: 1.25rem;
-    bottom: 1.25rem;
+    right: var(--edge);
+    bottom: var(--edge);
     width: var(--control-height);
     height: var(--control-height);
   }
