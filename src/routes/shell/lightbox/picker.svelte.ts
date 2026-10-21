@@ -45,8 +45,6 @@ export class Picker {
   adjusted = $state<Hsl>({ h: 0, s: 0, l: 0 });
   /** 輸出格式 */
   format = $state<ColorFormat>("hex");
-  /** 右下角觸發按鈕的外框，也是結果面板的定位錨點 */
-  cornerEl = $state<HTMLElement>();
 
   /** 調整後顏色的 hex，給色塊與 CSS 背景用 */
   adjustedHex = $derived(formatHex(hslToRgb(this.adjusted)));

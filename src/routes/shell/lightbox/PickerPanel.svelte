@@ -4,7 +4,7 @@
 
   import { IconColorPicker, IconCopy, IconX } from "#lib/icons";
   import Button from "#lib/components/actions/Button.svelte";
-  import Popover from "#lib/components/floating/Popover.svelte";
+  import { popoverIntro, popoverOutro } from "#lib/components/floating/popover.core.svelte.ts";
   import { tooltip } from "#lib/components/floating/tooltip.core.svelte.ts";
   import { addToast } from "#lib/components/floating/toast-events.ts";
   import { copyText } from "#lib/utils/clipboard.ts";
@@ -19,7 +19,7 @@
   const [send, receive] = crossfade({ duration: 260, easing: cubicOut });
   const indicatorKey = $props.id();
 
-  // 面板內距加邊框。定位時往右下多推這麼多，右下角的收起鈕就正好疊在原本觸發按鈕的位置
+  // 面板內距加邊框。面板右下角比觸發按鈕往外多推這麼多，右下角的收起鈕就正好疊在原本觸發按鈕的位置
   const INSET = 12;
 
   const original = $derived(formatHex(picker.original));
@@ -37,17 +37,21 @@
 </script>
 
 <!--
-  錨點是右下角觸發按鈕的外框，負的 offset 讓面板蓋回按鈕上、收起鈕與按鈕重疊，看起來就是按鈕展開成面板。
+  面板蓋回右下角的觸發按鈕上、收起鈕與按鈕重疊，看起來就是按鈕展開成面板。
   與放大鏡共用 crossfade key：點下像素時，放大鏡從圖片上飛過來變成這個面板。
+
+  位置固定，所以直接以 CSS 定位而不用 Popover：crossfade 在面板插入後就量它的終點，
+  Popover 的位置要等非同步的 computePosition 才算得出來，量到的會是上一次（甚至是面板還沒渲染、尺寸為 0 時）的位置。
 -->
-<Popover
-  open={picker.mode === "picked"}
-  reference={picker.cornerEl}
-  placement="top-end"
-  offset={({ rects }) => ({ mainAxis: -(rects.reference.height + INSET), crossAxis: INSET })}
-  crossfadeKey={PICKER_KEY}
->
-  <div class="panel" role="group" aria-label="取色結果" style:--inset="{INSET}px">
+{#if picker.mode === "picked"}
+  <div
+    class="panel"
+    role="group"
+    aria-label="取色結果"
+    style:--inset="{INSET}px"
+    in:popoverIntro={{ key: PICKER_KEY }}
+    out:popoverOutro={{ key: PICKER_KEY }}
+  >
     <div class="swatch">
       <button
         type="button"
@@ -127,10 +131,13 @@
       </Button>
     </div>
   </div>
-</Popover>
+{/if}
 
 <style>
   .panel {
+    position: absolute;
+    right: calc(var(--edge) - var(--inset));
+    bottom: calc(var(--edge) - var(--inset));
     display: flex;
     flex-direction: column;
     gap: 0.75rem;

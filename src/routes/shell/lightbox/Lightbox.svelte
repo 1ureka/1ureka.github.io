@@ -76,7 +76,7 @@
   {/if}
 
   <!--
-    放大鏡與結果面板是 popover，必須留在 dialog 裡：modal dialog 開著時，它以外的節點全是 inert。
+    放大鏡與結果面板必須留在 dialog 裡：modal dialog 開著時，它以外的節點全是 inert。
     但要放在 viewport 外——viewport 離場時其中的區塊會被暫停，它們就沒辦法自己播完離場動畫。
   -->
   <PickerLoupe {picker} />
@@ -85,6 +85,9 @@
 
 <style>
   dialog {
+    /* 關閉鈕、取色按鈕與取色結果面板離視窗邊緣的距離 */
+    --edge: 1.25rem;
+
     position: fixed;
     inset: 0;
     width: 100dvw;
@@ -112,8 +115,8 @@
 
   .close {
     position: absolute;
-    top: 1.25rem;
-    right: 1.25rem;
+    top: var(--edge);
+    right: var(--edge);
   }
 
   img {
